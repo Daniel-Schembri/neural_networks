@@ -41,16 +41,13 @@ void TrainingData::getTopology(vector<unsigned> &topology)
 
     getline(m_trainingDataFile, line);
     stringstream ss(line);
+
     ss >> label;
-    if (this->isEof()) {
+    if (this->isEof() || label.compare("topology:") != 0)
         abort();
-    }
 
-    if (label.compare("topology:") != 0) {
-        abort();
-    }
-
-    while (!ss.eof()) {
+    while (!ss.eof()) 
+    {
         unsigned n;
         ss >> n;
         topology.push_back(n);
@@ -61,11 +58,7 @@ void TrainingData::getTopology(vector<unsigned> &topology)
 
 TrainingData::TrainingData(const string filename)
 {
-    m_trainingDataFile.open(filename.c_str(), ifstream::in);
-    if (m_trainingDataFile.fail())
-    {
-        std::cout << "bad\n";
-    }
+    m_trainingDataFile.open(filename.c_str());
 }
 
 unsigned TrainingData::getNextInputs(vector<double> &inputVals)
@@ -77,12 +70,12 @@ unsigned TrainingData::getNextInputs(vector<double> &inputVals)
     stringstream ss(line);
 
     string label;
-    ss>> label;
-    if (label.compare("in:") == 0) {
+    ss >> label;
+    if (label.compare("in:") == 0) 
+    {
         double oneValue;
-        while (ss >> oneValue) {
+        while (ss >> oneValue)
             inputVals.push_back(oneValue);
-        }
     }
 
     return inputVals.size();
@@ -97,12 +90,12 @@ unsigned TrainingData::getTargetOutputs(vector<double> &targetOutputVals)
     stringstream ss(line);
 
     string label;
-    ss>> label;
-    if (label.compare("out:") == 0) {
+    ss >> label;
+    if (label.compare("out:") == 0) 
+    {
         double oneValue;
-        while (ss >> oneValue) {
+        while (ss >> oneValue)
             targetOutputVals.push_back(oneValue);
-        }
     }
 
     return targetOutputVals.size();
@@ -111,9 +104,8 @@ unsigned TrainingData::getTargetOutputs(vector<double> &targetOutputVals)
 void showVectorVals(string label, vector<double> &v)
 {
     cout << label << " ";
-    for (unsigned i = 0; i < v.size(); ++i) {
+    for (unsigned i = 0; i < v.size(); ++i) 
         cout << v[i] << " ";
-    }
 
     cout << endl;
 }

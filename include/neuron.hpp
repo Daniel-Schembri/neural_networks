@@ -15,12 +15,12 @@
 class Neuron
 {
 public:
-    Neuron(unsigned numOutputs, unsigned myIndex);
+    Neuron(unsigned numOutputs, unsigned myIndex, const bool &connectsToContext);
     void setOutputVal(double val) { m_outputVal = val; }
     double getOutputVal(void) const { return m_outputVal; }
-    void feedForward(const Layer &prevLayer);
+    void feedForward(const Layer &prevLayer, const Layer &currentLayer);
     void calcOutputGradients(double targetVal);
-    void calcHiddenGradients(const Layer &nextLayer);
+    void calcHiddenGradients(const Layer &nextLayer, const bool &bias);
     void updateInputWeights(Layer &prevLayer);
 
 private:
@@ -29,11 +29,12 @@ private:
     static double transferFunction(double x);
     static double transferFunctionDerivative(double x);
     static double randomWeight(void) { return rand() / double(RAND_MAX); }
-    double sumDOW(const Layer &nextLayer) const;
+    double sumDOW(const Layer &nextLayer, const bool &bias) const;
     double m_outputVal;
     std::vector<Connection> m_outputWeights;
     unsigned m_myIndex;
     double m_gradient;
+    bool m_connectsToContext;
 };
 
 #endif /* NEURON_HPP */

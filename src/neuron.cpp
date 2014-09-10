@@ -8,8 +8,11 @@ void Neuron::updateInputWeights(Layer &prevLayer)
     // The weights to be updated are in the Connection container
     // in the neurons in the preceding layer
 
-    for (unsigned n = 0; n < prevLayer.size(); ++n) {
+    for (unsigned n = 0; n < prevLayer.size(); ++n) 
+    {
         Neuron &neuron = prevLayer[n];
+
+        //the old weight from it to us
         double oldDeltaWeight = neuron.m_outputWeights[m_myIndex].deltaWeight;
 
         double newDeltaWeight =
@@ -26,22 +29,21 @@ void Neuron::updateInputWeights(Layer &prevLayer)
     }
 }
 
-double Neuron::sumDOW(const Layer &nextLayer) const
+double Neuron::sumDOW(const Layer &nextLayer, const bool &bias) const
 {
     double sum = 0.0;
 
+    unsigned nbNeuronsInLayer = nextLayer.size() - (1*bias);
     // Sum our contributions of the errors at the nodes we feed.
-
-    for (unsigned n = 0; n < nextLayer.size() - 1; ++n) {
+    for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
         sum += m_outputWeights[n].weight * nextLayer[n].m_gradient;
-    }
 
     return sum;
 }
 
-void Neuron::calcHiddenGradients(const Layer &nextLayer)
+void Neuron::calcHiddenGradients(const Layer &nextLayer, const bool &bias)
 {
-    double dow = sumDOW(nextLayer);
+    double dow = sumDOW(nextLayer, bias);
     m_gradient = dow * Neuron::transferFunctionDerivative(m_outputVal);
 }
 
@@ -60,31 +62,85 @@ double Neuron::transferFunction(double x)
 
 double Neuron::transferFunctionDerivative(double x)
 {
-    // tanh derivative
+    // tanh derivative approximation. Actual derivative is 1 - tanh^2(x) 
     return 1.0 - x * x;
 }
 
-void Neuron::feedForward(const Layer &prevLayer)
+void Neuron::feedForward(const Layer &prevLayer, const Layer &currentLayer)
 {
     double sum = 0.0;
+    unsigned nbNeuronsInLayer = prevLayer.size();
+   
+    if(false != m_connectsToContext)
+    {
+        // sum up the input from the previous layer
+        for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
+        {
+            sum += prevLayer[n].getOutputVal() *
+                   prevLayer[n].m_outputWeights[m_myIndex].weight;
+        }
 
-    // Sum the previous layer's outputs (which are our inputs)
-    // Include the bias node from the previous layer.
+        nbNeuronsInLayer = currentLayer.size();
+        // add the context layer input
+        for (unsigned n = currentLayer.size()/2; n < nbNeuronsInLayer; ++n) 
+        {
+            //TODO: Stimmt der Index?
+            sum += currentLayer[n].getOutputVal() *
+                   currentLayer[n].m_outputWeights[m_myIndex].weight;
+        }
+    } 
+    else
+    {
+        // If there's a bias (odd number of neurons in layer), add it first
+        if(0 != nbNeuronsInLayer % 2)
+            sum += prevLayer[nbNeuronsInLayer - 1].getOutputVal() *
+                   prevLayer[nbNeuronsInLayer - 1].m_outputWeights[m_myIndex].weight;
 
-    for (unsigned n = 0; n < prevLayer.size(); ++n) {
-        sum += prevLayer[n].getOutputVal() *
-                prevLayer[n].m_outputWeights[m_myIndex].weight;
+        for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
+        {
+            if(prevLayer[n].m_connectsToContext)
+            {
+                // We only get Input from non-context neurons
+                nbNeuronsInLayer /= 2;
+                break;
+            }
+        }
+        
+        for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
+        {
+            sum += prevLayer[n].getOutputVal() *
+                   prevLayer[n].m_outputWeights[m_myIndex].weight;
+        }
     }
 
     m_outputVal = Neuron::transferFunction(sum);
 }
 
-Neuron::Neuron(unsigned numOutputs, unsigned myIndex)
-{
-    for (unsigned c = 0; c < numOutputs; ++c) {
-        m_outputWeights.push_back(Connection());
-        m_outputWeights.back().weight = randomWeight();
-    }
 
-    m_myIndex = myIndex;
+Neuron::Neuron(unsigned numOutputs, unsigned myIndex, const bool &connectsToContext):
+    m_myIndex(myIndex),
+    m_connectsToContext(connectsToContext)
+{
+    // We don't need connections for the output layer
+    if(0 != numOutputs)
+    {
+        for(unsigned c = 0; c < numOutputs-1; ++c) 
+        {
+            m_outputWeights.push_back(Connection());
+            m_outputWeights.back().weight = randomWeight();
+        }
+
+        // If we're dealing with a SRN, the last Output connects to a context Neuron, 
+        // and is therefore constant 1.0
+        if(true == m_connectsToContext)
+        {
+            m_outputWeights.push_back(Connection());
+            m_outputWeights.back().weight = 1.0;
+        }
+        else
+        {
+            m_outputWeights.push_back(Connection());
+            m_outputWeights.back().weight = randomWeight();
+        }
+    }
 }

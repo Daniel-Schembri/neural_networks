@@ -13,9 +13,8 @@ void Net::getResults(std::vector<double> &resultVals) const
 {
     resultVals.clear();
 
-    for (unsigned n = 0; n < m_layers.back().size() - 1; ++n) {
+    for (unsigned n = 0; n < m_layers.back().size() - (m_bias*1); ++n) 
         resultVals.push_back(m_layers.back()[n].getOutputVal());
-    }
 }
 
 void Net::backProp(const std::vector<double> &targetVals)
@@ -24,12 +23,17 @@ void Net::backProp(const std::vector<double> &targetVals)
 
     Layer &outputLayer = m_layers.back();
     m_error = 0.0;
+    unsigned nbOutputNeurons;
 
-    for (unsigned n = 0; n < outputLayer.size() - 1; ++n) {
+    nbOutputNeurons = outputLayer.size() - (1*m_bias); 
+
+    for (unsigned n = 0; n < nbOutputNeurons; ++n) 
+    {
         double delta = targetVals[n] - outputLayer[n].getOutputVal();
         m_error += delta * delta;
     }
-    m_error /= outputLayer.size() - 1; // get average error squared
+
+    m_error /= nbOutputNeurons; // get average error squared
     m_error = sqrt(m_error); // RMS
 
     // Implement a recent average measurement
@@ -39,79 +43,111 @@ void Net::backProp(const std::vector<double> &targetVals)
             / (m_recentAverageSmoothingFactor + 1.0);
 
     // Calculate output layer gradients
-
-    for (unsigned n = 0; n < outputLayer.size() - 1; ++n) {
+    for (unsigned n = 0; n < nbOutputNeurons; ++n) 
+    {
         outputLayer[n].calcOutputGradients(targetVals[n]);
     }
 
-    // Calculate hidden layer gradients
+    // Calculate hidden layer gradients, start at rightmost hidden layer
+    for (unsigned nbLayer = m_layers.size() - 2; nbLayer > 0; --nbLayer) 
+    {
+        Layer &hiddenLayer = m_layers[nbLayer];
+        Layer &nextLayer = m_layers[nbLayer + 1];
 
-    for (unsigned layerNum = m_layers.size() - 2; layerNum > 0; --layerNum) {
-        Layer &hiddenLayer = m_layers[layerNum];
-        Layer &nextLayer = m_layers[layerNum + 1];
-
-        for (unsigned n = 0; n < hiddenLayer.size(); ++n) {
-            hiddenLayer[n].calcHiddenGradients(nextLayer);
+        for (unsigned n = 0; n < hiddenLayer.size(); ++n) 
+        {
+            hiddenLayer[n].calcHiddenGradients(nextLayer, m_bias);
         }
     }
 
     // For all layers from outputs to first hidden layer,
     // update connection weights
 
-    for (unsigned layerNum = m_layers.size() - 1; layerNum > 0; --layerNum) {
-        Layer &layer = m_layers[layerNum];
-        Layer &prevLayer = m_layers[layerNum - 1];
+    for (unsigned nbLayer = m_layers.size() - 1; nbLayer > 0; --nbLayer)
+    {
+        Layer &layer = m_layers[nbLayer];
+        Layer &prevLayer = m_layers[nbLayer - 1];
 
-        for (unsigned n = 0; n < layer.size() - 1; ++n) {
-            layer[n].updateInputWeights(prevLayer);
+        unsigned nbNeuronsToUpdate = layer.size() - (m_bias*1);
+
+        if(FEED_FORWARD == m_netType)
+        {
+            for (unsigned n = 0; n < nbNeuronsToUpdate; ++n) 
+                layer[n].updateInputWeights(prevLayer);
+        }
+        else if(SIMPLE_RECURRENT == m_netType)
+        {
+            //context neurons only exist in hidden layers
+            if(m_layers.size() -1 != nbLayer)
+                nbNeuronsToUpdate = layer.size() / 2;
+
+            //skip context neurons, as their input weights are constant
+            for (unsigned n = 0; n < nbNeuronsToUpdate; ++n) 
+                layer[n].updateInputWeights(prevLayer);
         }
     }
 }
 
 void Net::feedForward(const std::vector<double> &inputVals)
 {
-    assert(inputVals.size() == m_layers[0].size() - 1);
-
     // Assign (latch) the input values into the input neurons
-    for (unsigned i = 0; i < inputVals.size(); ++i) {
+    for (unsigned i = 0; i < inputVals.size(); ++i) 
         m_layers[0][i].setOutputVal(inputVals[i]);
-    }
 
     // forward propagate
-    for (unsigned layerNum = 1; layerNum < m_layers.size(); ++layerNum) {
-        Layer &prevLayer = m_layers[layerNum - 1];
-        for (unsigned n = 0; n < m_layers[layerNum].size() - 1; ++n) {
-            m_layers[layerNum][n].feedForward(prevLayer);
-        }
+    for (unsigned nbLayer = 1; nbLayer < m_layers.size(); ++nbLayer) 
+    {
+        Layer &currentLayer = m_layers[nbLayer];
+        Layer &prevLayer = m_layers[nbLayer - 1];
+
+        unsigned nbNeuronsInLayer = m_layers[nbLayer].size() - (1*m_bias);
+        for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
+            m_layers[nbLayer][n].feedForward(prevLayer, currentLayer);
     }
 }
 
-Net::Net(const std::vector<unsigned> &topology, const bool &bias, const NET_TYPE &netType)
+Net::Net(const std::vector<unsigned> &topology, const bool &bias, const NET_TYPE &netType):
+    m_netType(netType),
+    m_bias(bias)
 {
     unsigned numLayers = topology.size();
-    for (unsigned layerNum = 0; layerNum < numLayers; ++layerNum) {
+
+    for (unsigned nbLayer = 0; nbLayer < numLayers; ++nbLayer) {
         m_layers.push_back(Layer());
-        unsigned numOutputs = layerNum == topology.size() - 1 ? 0 : topology[layerNum + 1];
+        unsigned numOutputs;
         unsigned neuronNum = 0;
 
+        if(topology.size() -1 == nbLayer)
+           // Output neurons don't have outputs
+           numOutputs = 0;
+        else
+           // The number of outputs is equal to the number of neurons in the next layer
+           numOutputs = topology[nbLayer + 1];
+
         // We have a new layer, now fill it with neurons
-        for (neuronNum = 0; neuronNum < topology[layerNum]; ++neuronNum) 
+        for (neuronNum = 0; neuronNum < topology[nbLayer]; ++neuronNum) 
         {
-            m_layers.back().push_back(Neuron(numOutputs, neuronNum));
+            if((SIMPLE_RECURRENT == netType) && (0 < nbLayer) && (numLayers -1 != nbLayer))
+                // Hidden layer within a SRN, the neurons connect to an additional context neuron
+                m_layers.back().push_back(Neuron(numOutputs + 1, neuronNum, true));
+            else
+                m_layers.back().push_back(Neuron(numOutputs, neuronNum, false));
         }
 
-//        if((SIMPLE_RECURRENT == netType) && (0 < layerNum) && (numLayers != layerNum -1))
-//        {
-//            for (unsigned contextUnitNum = 0; contextUnitNum < topology[layerNum]; ++contextUnitNum) 
-//            {
-//                m_layers.back().push_back(Neuron(numOutputs, ++neuronNum));
-//            }
-//        }
+        // Create context neurons if requested
+        if((SIMPLE_RECURRENT == netType) && (0 < nbLayer) && (numLayers -1 != nbLayer))
+        {
+            // A context neurons feeds all non-context neurons in its layer
+            numOutputs = topology[nbLayer];
 
-        // Add a bias neuron if requested
+            for (unsigned nbContextNeurons = 0; nbContextNeurons < topology[nbLayer]; ++nbContextNeurons) 
+                m_layers.back().push_back(Neuron(numOutputs, ++neuronNum, false));
+        }
+
+        // Create bias neurons if requested
         if(false != bias)
         {
-            m_layers.back().push_back(Neuron(numOutputs, ++neuronNum));
+            m_layers.back().push_back(Neuron(numOutputs, ++neuronNum, false));
             // Force the bias node's output to 1.0 (it was the last recent neuron pushed in this layer):
             m_layers.back().back().setOutputVal(1.0);
         }

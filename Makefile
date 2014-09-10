@@ -18,8 +18,8 @@ CXXFLAGS  = -Wall
 CXXFLAGS  += -Wextra
 
 #maximum optimization
-CXXFLAGS  += -O3
-CXXFLAGS  += -march=native
+#CXXFLAGS  += -O3
+#CXXFLAGS  += -march=native
 
 CXXFLAGS  += -I$(INCDIR)
 

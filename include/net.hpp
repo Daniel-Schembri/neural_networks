@@ -25,6 +25,8 @@ private:
     std::vector<Layer> m_layers; // m_layers[layerNum][neuronNum]
     double m_error;
     double m_recentAverageError;
+    NET_TYPE m_netType; 
+    bool m_bias;
     static double m_recentAverageSmoothingFactor;
 };
 
