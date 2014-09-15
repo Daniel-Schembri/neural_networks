@@ -22,7 +22,7 @@
 
 %tikz
 \usepackage{tikz}
-\usetikzlibrary{arrows,automata,positioning,shapes.multipart,snakes}
+\usetikzlibrary{arrows,positioning,fit}
 
 %plots
 \usepackage{pgfplots}
@@ -66,7 +66,7 @@
 %always include as last package
 \usepackage{hyperref}
 
-%=========================================TITLE PAGE=========================================
+%===========================TITLE PAGE=======================================
 
 %university logo
 \titlehead
@@ -167,8 +167,11 @@
     deletekeywords={...}             
 }
 
-%=========================================DOCUMENT START=========================================
+%=====================================DOCUMENT START=========================
 \begin{document}
+
+\tikzstyle{line}=[draw]
+\tikzstyle{arrow}=[draw, -latex] 
 
 %\renewcommand*\contentsname{Content}
 %\renewcommand*\listtablename{Tables}
@@ -181,9 +184,66 @@
 {\large\tableofcontents}
 \newpage
 
-\chapter{Neural networks}
-\section{Basics}
-\subsection{Units}
+\chapter{Artifical neural networks}
+\section{Artifical neural networks}
+The wish to build reproduce human intelligence has been around since the dawn of mankind. In the effort of building truely intelligent systems, thinking about our brain has turned out to be very useful, helping scientists to extent the scope of technical ideas to do so. One of the basic findings of neuron science is a hypohesis, which suggesst that mental acivity consists primarily of electrochemical acivity in large networks of brain cells, or neurons. Hence the name called neuronal networks. Let's take a look on the biological neuron in deatails. Figure \ref{fig:neuron} introduces the different parts of a neuron. Branching out from the Soma or cell body, several fibers called dendrites can be observed. The axon is a single long fiber with a length of 1 cm, is typically 100 times the diameter of the cell body. As a matter of fact, it can reach up to one meter. Up to 100,000 other neurons connect via the synpatic erminals at the end of the axon, building a neural network. Signals between neurons are transmitted between the network through a complicated chemical reaction. However, not every input has the same significance. In fact, the synapses amplify or reduce the signal strength of each connection, which enables the network control brain acivity in both the short term, and also long-term changes in the connectivity of neurons.
+
+\begin{center}
+\begin{figure}[H]
+\includegraphics[width=0.8\textwidth,scale=1]{files/neuron.jpg}  
+\caption{The parts of a nerve cell or neuron as shown in \cite{NEU}.}
+\label{fig:neuron}
+\end{figure}
+\end{center}
+
+Inspired by his hypothesis, some of the earliest work in the field of Artifical Intelligence aimed on building a similar srucure, a so called artifical neural network. The general idea of this approach perceives the neuron as a basic Input-Ouput unit, which somehow processes the signals of other neurons and propagades its result further into the network. The funcion of synpasis is simply reproduced by altering each individual input by a  factor which is constantly modified by a certain percentage. This never-ending modificaion of all the input weights represents the learning effect of an artifical neuron. A simple mathematical model of a neuron was first devised by \cite{NEURONMATH}.
+
+\begin{figure}[H]
+\centering
+
+\begin{tikzpicture}
+\node [align=center] (in1) at (-0.5,0) {$a_i$}; 
+\node [align=center] (in2) at (-0.3,0.75)   {}; 
+\node [align=center] (in3) at (-0.8,1.5) {$a_i = 1$}; 
+\node [align=center] (w1) at (0.7,0) {$w_{ij}$}; 
+\node [align=center] (w3) at (0.7,1.5) {$w_{0j}$};
+\node [align=center] (input) at (2,0.75) {$\sum_{}^{in_{j}}$}; 
+\node [align=center] (function) at (4,0.75) {$g()$}; 
+\node [align=center] (output) at (6,0.75) {$a_j$}; 
+\node [align=center] (o1) at (8.5,0) {};
+\node [align=center] (o2) at (8.5,0.75) {};
+\node [align=center] (o3) at (8.5,1.5) {};
+
+\node [align=center] (desilinks) at (0,-1) {Input\\ Links}; 
+\node [align=center] (desinput) at (1.9,-1) {Input\\ funcion}; 
+\node [align=center] (desfunc) at (4,-1) {Activation\\ function}; 
+\node [align=center] (desoutput) at (6,-1) {Output}; 
+\node [align=center] (desolinks) at (8,-1) {Output\\ links}; 
+
+\node [align=center] (desweight) at (4,2) {$a_j = g(in_j)$}; 
+\node [align=center] (desinfunc) at (0.75,2) {\small Bias Weight}; 
+\node [align=center] (descneuron) at (6,1.5) {\small \textcolor{red}{Cell body}}; 
+
+\node [align=center] (dummy1) at (2.4,0.75) {}; 
+\node [align=center] (dummy2) at (5.36,0.75) {}; 
+
+\draw[arrow]	(in1) -- (input);
+\draw[arrow]	(in2) -- (input);
+\draw[arrow]	(in3) -- (input);
+
+\draw[arrow]	(output) -- (o1);
+\draw[arrow]	(output) -- (o2);
+\draw[arrow]	(output) -- (o3);
+
+\node[draw=red,fit=(dummy1) (function) (dummy2) ,ellipse] (tmp) {};
+
+\end{tikzpicture}
+\caption{A simple mathematical model for a neuron}
+\label{fig:procthread}
+\end{figure}
+
+
+\subsection{Artifical neural networks}
 %...
 \section{Learning rules}
 \subsection{Backpropargation}
@@ -210,7 +270,7 @@
 
 %=========================================DICTIONARY====================================
 
-%dictionary style
+%dictiary style
 \bibliographystyle{./files/alphadin}
 %dictionary source
 \bibliography{./files/bibdb}
