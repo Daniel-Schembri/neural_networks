@@ -56,7 +56,6 @@ void Neuron::calcOutputGradients(double targetVal)
 double Neuron::transferFunction(double x)
 {
     // tanh - output range [-1.0..1.0]
-
     return tanh(x);
 }
 
@@ -74,6 +73,22 @@ void Neuron::feedForward(const Layer &prevLayer, const Layer &currentLayer)
     if(false != m_connectsToContext)
     {
         // sum up the input from the previous layer
+        //
+        // If there's a bias (odd number of neurons in layer), add it first
+        if(0 != nbNeuronsInLayer % 2)
+            sum += prevLayer[nbNeuronsInLayer - 1].getOutputVal() *
+                   prevLayer[nbNeuronsInLayer - 1].m_outputWeights[m_myIndex].weight;
+
+        for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
+        {
+            if(prevLayer[n].m_connectsToContext)
+            {
+                // We only get Input from non-context neurons
+                nbNeuronsInLayer /= 2;
+                break;
+            }
+        }
+        
         for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
         {
             sum += prevLayer[n].getOutputVal() *
