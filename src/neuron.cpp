@@ -3,29 +3,50 @@
 double Neuron::eta = 0.15;    // overall net learning rate, [0.0..1.0]
 double Neuron::alpha = 0.5;   // momentum, multiplier of last deltaWeight, [0.0..1.0]
 
-void Neuron::updateInputWeights(Layer &prevLayer)
+void Neuron::updateInputWeights(Layer &prevLayer, const bool &competitive = false)
 {
-    // The weights to be updated are in the Connection container
-    // in the neurons in the preceding layer
-
-    for (unsigned n = 0; n < prevLayer.size(); ++n) 
+    if(false != competitive)
     {
-        Neuron &neuron = prevLayer[n];
+        for (unsigned n = 0; n < prevLayer.size(); ++n) 
+        {
+            Neuron &neuron = prevLayer[n];
 
-        //the old weight from it to us
-        double oldDeltaWeight = neuron.m_outputWeights[m_myIndex].deltaWeight;
+            //the old weight from it to us
+            double oldDeltaWeight = neuron.m_outputWeights[m_myIndex].deltaWeight;
 
-        double newDeltaWeight =
-                // Individual input, magnified by the gradient and train rate:
-                eta
-                * neuron.getOutputVal()
-                * m_gradient
-                // Also add momentum = a fraction of the previous delta weight;
-                + alpha
-                * oldDeltaWeight;
+            double newDeltaWeight =
+                    eta *
+                    (neuron.getOutputVal()
+                    - oldDeltaWeight);
 
-        neuron.m_outputWeights[m_myIndex].deltaWeight = newDeltaWeight;
-        neuron.m_outputWeights[m_myIndex].weight += newDeltaWeight;
+            neuron.m_outputWeights[m_myIndex].deltaWeight = newDeltaWeight;
+            neuron.m_outputWeights[m_myIndex].weight += newDeltaWeight;
+        }
+    }
+    else
+    {
+        // The weights to be updated are in the Connection container
+        // in the neurons in the preceding layer
+
+        for (unsigned n = 0; n < prevLayer.size(); ++n) 
+        {
+            Neuron &neuron = prevLayer[n];
+
+            //the old weight from it to us
+            double oldDeltaWeight = neuron.m_outputWeights[m_myIndex].deltaWeight;
+
+            double newDeltaWeight =
+                    // Individual input, magnified by the gradient and train rate:
+                    eta
+                    * neuron.getOutputVal()
+                    * m_gradient
+                    // Also add momentum = a fraction of the previous delta weight;
+                    + alpha
+                    * oldDeltaWeight;
+
+            neuron.m_outputWeights[m_myIndex].deltaWeight = newDeltaWeight;
+            neuron.m_outputWeights[m_myIndex].weight += newDeltaWeight;
+        }
     }
 }
 

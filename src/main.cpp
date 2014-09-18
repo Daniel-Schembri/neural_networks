@@ -9,7 +9,8 @@
 #include <sstream>
 
 #include "neuron.hpp"
-#include "net.hpp"
+#include "feedForwardNet.hpp"
+#include "srn.hpp"
 #include "commonDefs.hpp"
 
 using namespace std;
@@ -119,7 +120,7 @@ int main()
     vector<unsigned> topology;
     trainData.getTopology(topology);
 
-    Net myNet(topology, true, FEED_FORWARD);
+    srn myNet(topology, true);
 
     vector<double> inputVals, targetVals, resultVals;
     int trainingPass = 0;
@@ -144,7 +145,7 @@ int main()
         showVectorVals("Targets:", targetVals);
         assert(targetVals.size() == topology.back());
 
-        myNet.backProp(targetVals);
+        myNet.learn(targetVals);
 
         // Report how well the training is working, average over recent samples:
         cout << "Net recent average error: "

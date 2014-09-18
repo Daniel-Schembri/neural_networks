@@ -97,8 +97,8 @@
 
 \publishers
 {
-    Examiner: Prof. Dr. rer. nat. Richard Alznauer\\
-    Supervisor: Dr.Ing. Christoph Ussfeller
+    Examiner: Prof Dr Richard Alznauer\\
+    Supervisor: Dr Christoph Ussfeller
 }
 
 
@@ -185,20 +185,29 @@
 \newpage
 
 \chapter{Artifical neural networks}
-\section{Artifical neural networks}
-The wish to build reproduce human intelligence has been around since the dawn of mankind. In the effort of building truely intelligent systems, thinking about our brain has turned out to be very useful, helping scientists to extent the scope of technical ideas to do so. One of the basic findings of neuron science is a hypohesis, which suggesst that mental acivity consists primarily of electrochemical acivity in large networks of brain cells, or neurons. Hence the name called neuronal networks. Let's take a look on the biological neuron in deatails. Figure \ref{fig:neuron} introduces the different parts of a neuron. Branching out from the Soma or cell body, several fibers called dendrites can be observed. The axon is a single long fiber with a length of 1 cm, is typically 100 times the diameter of the cell body. As a matter of fact, it can reach up to one meter. Up to 100,000 other neurons connect via the synpatic erminals at the end of the axon, building a neural network. Signals between neurons are transmitted between the network through a complicated chemical reaction. However, not every input has the same significance. In fact, the synapses amplify or reduce the signal strength of each connection, which enables the network control brain acivity in both the short term, and also long-term changes in the connectivity of neurons.
+\section{Biological and mathematical neurons}
+The wish to build reproduce human intelligence has been around since the dawn of mankind. In the effort of building truely intelligent systems, thinking about our brain has turned out to be very useful, helping scientists to extent the scope of technical ideas. One of the basic findings of neuron science is a hypohesis, which suggesst that mental acivity consists primarily of electrochemical acivity in large networks of brain cells, or neurons. Hence the name called neuronal networks. \marginpar{\textit{The biological neuron}}
+Although their is still not fully understood, we do know that neurons receive input from other neurons and create an output themselves, as soon as the neuron is activated \textit{it fires}. This ouput will again be received by other neurons. Figure \ref{fig:neuron} introduces the different parts of the biological neuron. Branching out from the cell body or Soma, several fibers called dendrites can be observed. The main function of the dendrites is to receive input from up to 100,000 connected neurons. The axon is a single long fiber with a length of 1 cm, what is typically 100 times the diameter of the cell body. As a matter of fact, it can reach up to one meter. The output signals of the neuron are transmitted over the axon via complicated chemical process. The synaptic terminals, which can be found at the end of the terminal are special connections, which can be strengthend or weakend, therefore amplifying or reducing the output signal strength. This modification of signals, which is achieved by the synapses release of chemicals called neurotransmitter, define the behavior of the network, enabling the network to control brain acivity in the short term, and also long-term changes in the connectivity of neurons.
 
 \begin{center}
-\begin{figure}[H]
+\begin{figure}
 \includegraphics[width=0.8\textwidth,scale=1]{files/neuron.jpg}  
 \caption{The parts of a nerve cell or neuron as shown in \cite{NEU}.}
 \label{fig:neuron}
 \end{figure}
 \end{center}
 
-Inspired by his hypothesis, some of the earliest work in the field of Artifical Intelligence aimed on building a similar srucure, a so called artifical neural network. The general idea of this approach perceives the neuron as a basic Input-Ouput unit, which somehow processes the signals of other neurons and propagades its result further into the network. The funcion of synpasis is simply reproduced by altering each individual input by a  factor which is constantly modified by a certain percentage. This never-ending modificaion of all the input weights represents the learning effect of an artifical neuron. A simple mathematical model of a neuron was first devised by \cite{NEURONMATH}.
 
-\begin{figure}[H]
+Inspired by his hypothesis, some of the earliest work in the field of Artifical Intelligence aimed on building a similar srucure, a so called artifical neural network. \marginpar{\textit{The artifical neuron}}The general idea of this approach perceives the neuron as a basic Input/Ouput unit, which somehow processes the signals of other neurons and propagades its result further into the network. The funcion of the synpases is simply reproduced by altering each individual input by a  factor which is constantly modified by a certain percentage. This never-ending modificaion of all the input weights represents the learning effect of an artifical neuron. Figure \ref{fig:mathneuron} shows a simple mathematical model of a neuron which was first devised by \cite{NEURONMATH}. The artifical neurons output function is:\\
+
+\begin{equation}
+a_j = g(\sum_{i=0}^{} w_{i,j} \cdot a_{i})
+\end{equation}
+
+$a_{i}$ is the output of unit ${i}$ and $w_{i,j}$ the wight on the link from unit $i$ to unit $j$ (this unit). 
+
+
+\begin{figure}
 \centering
 
 \begin{tikzpicture}
@@ -207,7 +216,7 @@ Inspired by his hypothesis, some of the earliest work in the field of Artifical 
 \node [align=center] (in3) at (-0.8,1.5) {$a_i = 1$}; 
 \node [align=center] (w1) at (0.7,0) {$w_{ij}$}; 
 \node [align=center] (w3) at (0.7,1.5) {$w_{0j}$};
-\node [align=center] (input) at (2,0.75) {$\sum_{}^{in_{j}}$}; 
+\node [align=center] (input) at (2,0.75) {\ \ $\sum_{}^{in_{j}}$}; 
 \node [align=center] (function) at (4,0.75) {$g()$}; 
 \node [align=center] (output) at (6,0.75) {$a_j$}; 
 \node [align=center] (o1) at (8.5,0) {};
@@ -222,7 +231,7 @@ Inspired by his hypothesis, some of the earliest work in the field of Artifical 
 
 \node [align=center] (desweight) at (4,2) {$a_j = g(in_j)$}; 
 \node [align=center] (desinfunc) at (0.75,2) {\small Bias Weight}; 
-\node [align=center] (descneuron) at (6,1.5) {\small \textcolor{red}{Cell body}}; 
+\node [align=center] (descneuron) at (6,1.5) {\small Cell body}; 
 
 \node [align=center] (dummy1) at (2.4,0.75) {}; 
 \node [align=center] (dummy2) at (5.36,0.75) {}; 
@@ -235,17 +244,172 @@ Inspired by his hypothesis, some of the earliest work in the field of Artifical 
 \draw[arrow]	(output) -- (o2);
 \draw[arrow]	(output) -- (o3);
 
-\node[draw=red,fit=(dummy1) (function) (dummy2) ,ellipse] (tmp) {};
+\node[draw=black,fit=(dummy1) (function) (dummy2) ,ellipse] (tmp) {};
 
 \end{tikzpicture}
 \caption{A simple mathematical model for a neuron}
-\label{fig:procthread}
+\label{fig:mathneuron}
 \end{figure}
 
+\subsection{Units, Activity and Training}
 
-\subsection{Artifical neural networks}
-%...
-\section{Learning rules}
+The units in a representation of a neural network on a computer are divided into 3 classes, depending on their position in the network. \marginpar{\textit{Layers}}Neurons which reseve input from external sources, e.g. sensors, are called Input units and simply latch  their input into the next layer of neurons. At the other end of the network, the output layer which represents the last layer of the network, can be found. Its output is collected and evaluated by a logic that utilizes the neural network as a black box. In between those layers, a variable amount of so-called hidden layers can be found. They represent the networks \textbf{backbone so lassen?} or center. The complexity of the network increases by the amount of hidden layers. Figure \ref{fig:3layer} shows a three layer (sometimes called two layer, since the input layer does no computation) neural network. 
+In order to allow computers quick and easy calculations, weights are often stored in matrices, representing the whole model as a basic mathematical unit. Let $N_{i}$ be a neural network, consisting of $i$ layers: Input,  output and $i-2$ hidden layers. $N_{i}$ can be fully described by $i-1$ matrices $W_{i,j}$ where $i$ is the number of units in the preceding layer, and $j$ the amount of neurons that are connected to any of those $i$ units:
+\begin{equation}
+W_{i,j} = 
+\begin{pmatrix}
+w_{1,1} & \cdots & w_{i,1} \\
+\vdots & \ddots & \vdots \\
+w_{1,j} & \cdots & w_{i,j} \\
+\end{pmatrix}
+\end{equation}
+
+
+
+
+
+In addition, the concept of Bias Neurons has proven itself useful. Bias units  \marginpar{\textit{Bias-Units}} are neurons, which don't receive any input signals and have a fixed output of $+ 1$, although the weight on the connection link may be $\pm 1$. The Bias-Unit connected to a link with a positive weight is used to keep Neurons \textit{alive}, if they don't receive a significant input. On the contrary, a negative link may be used to keep a neuron in an inactive state.
+Another application ist the implementation of a threshold value on a unit, preventing it from fireing too often.\\ 
+
+As discussed before, the weights of the connections between the neurons represent the 'Intelligence' of the network. The bigger the absolute value of the weight, the greater the influence of a neuron to another. This value can be both positive and negative, as well as neutral \textit{(0)}, meaning that there is currently no influence between the neurons, although there is still a link connecting them. A weight of 0 can be understood as a logical pinch of the link, preventing it from transmitting signals.
+
+\begin{figure}
+\centering
+
+\begin{tikzpicture}
+\node [draw=red, fill=red, align=center, circle] (i1) at (0,3) {}; 
+\node [draw=red, fill=red, align=center, circle] (i2) at (0,2) {}; 
+\node [draw=red, fill=red, align=center, circle] (i3) at (0,1) {}; 
+\node [draw=red, fill=red, align=center, circle] (i4) at (0,0) {}; 
+
+\node [draw=blue, fill=blue, align=center, circle] (h1) at (2,2.5) {}; 
+\node [draw=blue, fill=blue, align=center, circle] (h2) at (2,1.5) {};
+\node [draw=blue, fill=blue, align=center, circle] (h3) at (2,0.5) {};
+
+\node [draw=green, fill=green, align=center, circle] (o1) at (4,2) {};
+\node [draw=green, fill=green, align=center, circle] (o2) at (4,1) {};
+
+\draw[arrow]	(i1) -- (h1);
+\draw[arrow]	(i1) -- (h2);
+\draw[arrow]	(i1) -- (h3);
+
+\draw[arrow]	(i2) -- (h1);
+\draw[arrow]	(i2) -- (h2);
+\draw[arrow]	(i2) -- (h3);
+
+\draw[arrow]	(i3) -- (h1);
+\draw[arrow]	(i3) -- (h2);
+\draw[arrow]	(i3) -- (h3);
+
+\draw[arrow]	(i4) -- (h1);
+\draw[arrow]	(i4) -- (h2);
+\draw[arrow]	(i4) -- (h3);
+
+\draw[arrow]	(h1) -- (o1);
+\draw[arrow]	(h1) -- (o2);
+
+\draw[arrow]	(h2) -- (o1);
+\draw[arrow]	(h2) -- (o2);
+
+\draw[arrow]	(h3) -- (o1);
+\draw[arrow]	(h3) -- (o2);
+
+\node[draw=red,fit=(i1) (i2) (i3) (i4),ellipse] (inputLayer) {};
+\node[draw=blue,fit=(h1) (h2) (h3) ,ellipse] (hiddenLayer) {};
+\node[draw=green,fit=(o1) (o2) ,ellipse] (outputLayer) {};
+
+\node [align=center] (di) at (0,5) {\textcolor{red}Input\\ Layer};
+\node [align=center] (dh) at (2,5) {\textcolor{blue}Hidden\\ Layer};
+\node [align=center] (do) at (4,5) {\textcolor{green}Output\\ Layer};
+
+
+\end{tikzpicture}
+\caption{A three-layer neural network}
+\label{fig:3layer}
+\end{figure}
+
+The connection between the input values and the activity level of the neuron is made by the activity function $g()$.\marginpar{\textit{Activity}} Different models are obtained depending on the choice of the activity or transfer function. Amongst the most common choices are the linear, binary step and sigmoid function as illustrated in Figure \ref{fig:plots}. The linear function has a threshold $t$, which can be used to avoid low network input (e.g. noise) to be further propagted into the network. The binary step function represents the firing of a pulse down the axon if positive $1$), while $0$ represents no firing. The step function is sometimes defined to jump from $-1$ to $1$. 
+
+Sigmoid functions are widely used amongst network which are to represent cognitive processes such as perception, recoginition, problem solving, etc. .
+Both the logistic function as well as the hyperbolic tangent function $\tanh()$ can be used. The main advantage of sigmoid functions are:
+
+\begin{itemize}
+\item In contrast with the linear function (without a threshold), the activity level of the function is limited in both the positive and the negative. This means that activity in the network can not spill over unintentionally, which can be caused by recurrent connections.
+\item Differentiability
+As distinct from the binary step function, it is differntiable at all parts, which as an example, is a requirement of the gradient descent, used by the Backpropagation algorithm (about to be introdced in section \ref{sec:learning}
+\end{itemize}
+
+
+\begin{figure}[H]
+\centering
+\subfigure[]
+{
+   \begin{tikzpicture}
+		\begin{axis}[
+        width=4cm, height=4cm,     % size of the image
+        grid = major,
+        grid style={dashed, gray!30},
+		xmax=1,        
+        ymin=-1,
+        ymax=1,
+        axis background/.style={fill=white},
+        ylabel=$a_{j}$,
+        xlabel=$in_{j}$]
+     
+		\addplot[black]{x};
+		\end{axis}
+	\end{tikzpicture}
+\label{fig:plot1}
+}
+
+\subfigure[]
+{
+   \begin{tikzpicture}
+		\begin{axis}[
+        width=4cm, height=4cm,     % size of the image
+        grid = major,
+        grid style={dashed, gray!30},
+		xmax=1,        
+        ymin=-1,
+        ymax=1,
+        axis background/.style={fill=white},
+        ylabel=$a_{j}$,
+        xlabel=$in_{j}$]
+     
+		\addplot[black]{x+2};
+		\end{axis}
+	\end{tikzpicture}
+\label{fig:plot2}
+}
+
+\subfigure[]
+{
+   \begin{tikzpicture}
+		\begin{axis}[
+        width=4cm, height=4cm,     % size of the image
+        grid = major,
+        grid style={dashed, gray!30},
+		xmax=1,        
+        ymin=-1,
+        ymax=1,
+        axis background/.style={fill=white},
+        ylabel=$a_{j}$,
+        xlabel=$in_{j}$]
+     
+		\addplot[black]{x};
+		\end{axis}
+	\end{tikzpicture}
+\label{fig:plot2}
+}
+
+	
+\caption{Comparison of commonly used activation functions}
+\label{fig:plots}
+\end{figure}
+
+In order to teach neural networks and enbale them to apply learned behavior in following scenarios, the work with them is divided in a training- and test phase. During the training, the network learns certain behavior by feeding repetitive input to the first layer and observing the output of the network. This can be done in a supervised and unsupervised way. In a supervised training phase, the targeted output of the network is already known and is presented to the network as a \textit{teaching factor}. The network produces output depending on the current weights on its connections and adjusts them acordingly to the margin between the targeted and produced output. Unsupervised learning is necessary in situations, where no reasonable teaching factors are available or the observant is more interested on the performance. Similarity between input incentives and connection weights is the factor, acording to which weight adjustment is done in such models.
+
+\section{Learning}\label{sec:learning}
 \subsection{Backpropargation}
 %...
 \section{Network tpyes}

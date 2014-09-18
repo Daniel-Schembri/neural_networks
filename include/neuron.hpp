@@ -9,7 +9,6 @@
 #include <fstream>
 #include <sstream>
 
-//connection
 #include "commonDefs.hpp"
 
 class Neuron
@@ -21,7 +20,7 @@ public:
     void feedForward(const Layer &prevLayer, const Layer &currentLayer);
     void calcOutputGradients(double targetVal);
     void calcHiddenGradients(const Layer &nextLayer, const bool &bias);
-    void updateInputWeights(Layer &prevLayer);
+    void updateInputWeights(Layer &prevLayer, const bool &competitive = false);
 
 private:
     static double eta;   // [0.0..1.0] overall net training rate

@@ -1,9 +1,6 @@
 #ifndef COMMONDEFS_HPP
 #define COMMONDEFS_HPP 
 
-//neural network type
-enum NET_TYPE {FEED_FORWARD, SIMPLE_RECURRENT};
-
 class Neuron;
 
 typedef std::vector<Neuron> Layer;

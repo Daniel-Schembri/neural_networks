@@ -1,3 +1,11 @@
+//------------------------------------------------------
+//Author             : Jonathan Schwarz
+//University         : Pforzheim University
+//Date of last edit  : Mon, 15 Sep 2014 16:09:44 +0200
+//Filename           : net.hpp
+//------------------------------------------------------
+
+
 #ifndef NET_HPP
 #define NET_HPP
 
@@ -12,20 +20,24 @@
 #include "commonDefs.hpp"
 #include "neuron.hpp"
 
+// Abstract class
 class Net
 {
 public:
-    Net(const std::vector<unsigned> &topology, const bool &bias, const NET_TYPE &netType);
+    Net();
+    virtual ~Net();
     void feedForward(const std::vector<double> &inputVals);
-    void backProp(const std::vector<double> &targetVals);
+
+    // Pure virtual function
+    virtual void learn(const std::vector<double> &targetVals) = 0;
+
     void getResults(std::vector<double> &resultVals) const;
     double getRecentAverageError(void) const { return m_recentAverageError; }
 
-private:
+protected:
     std::vector<Layer> m_layers; // m_layers[layerNum][neuronNum]
     double m_error;
     double m_recentAverageError;
-    NET_TYPE m_netType; 
     bool m_bias;
     static double m_recentAverageSmoothingFactor;
 };

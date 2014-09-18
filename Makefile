@@ -23,13 +23,15 @@ CXXFLAGS  += -Wextra
 
 CXXFLAGS  += -I$(INCDIR)
 
-SRCS      = main.cpp \
-			net.cpp \
-            neuron.cpp
+SRCS   = net.cpp \
+         neuron.cpp \
+	     feedForwardNet.cpp \
+	     srn.cpp \
+	     main.cpp 
 
-OBJS      = ${SRCS:%.cpp=%.o}
+OBJS   = ${SRCS:%.cpp=%.o}
 
-TARGET    = neural_network
+TARGET = neural_network
 
 %.o:$(SRCDIR)%.cpp
 	$(CXX) -c -o $@ $(CXXFLAGS) $(CXXDEBUGFLAGS) $<
@@ -37,7 +39,8 @@ TARGET    = neural_network
 default: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CXX) -o $@ -static $(OBJS)
+#	$(CXX) -o $@ -static $(OBJS)
+	$(CXX) -o $@ $(OBJS)
 	mkdir -p $(BINDIR); mv *.o $(BINDIR)
 
 .PHONY: doc
