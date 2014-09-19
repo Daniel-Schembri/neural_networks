@@ -217,7 +217,7 @@ $a_{i}$ is the output of unit ${i}$ and $w_{i,j}$ the wight on the link from uni
 \node [align=center] (w1) at (0.7,0) {$w_{ij}$}; 
 \node [align=center] (w3) at (0.7,1.5) {$w_{0j}$};
 \node [align=center] (input) at (2,0.75) {\ \ $\sum_{}^{in_{j}}$}; 
-\node [align=center] (function) at (4,0.75) {$g()$}; 
+\node [align=center] (function) at (4,0.75) {$\varphi$}; 
 \node [align=center] (output) at (6,0.75) {$a_j$}; 
 \node [align=center] (o1) at (8.5,0) {};
 \node [align=center] (o2) at (8.5,0.75) {};
@@ -328,7 +328,7 @@ As discussed before, the weights of the connections between the neurons represen
 \label{fig:3layer}
 \end{figure}
 
-The connection between the input values and the activity level of the neuron is made by the activity function $g()$.\marginpar{\textit{Activity}} Different models are obtained depending on the choice of the activity or transfer function. Amongst the most common choices are the linear, binary step and sigmoid function as illustrated in Figure \ref{fig:plots}. The linear function has a threshold $t$, which can be used to avoid low network input (e.g. noise) to be further propagted into the network. The binary step function represents the firing of a pulse down the axon if positive $1$), while $0$ represents no firing. The step function is sometimes defined to jump from $-1$ to $1$. 
+The connection between the input values and the activity level of the neuron is made by the activity function $\varphi$.\marginpar{\textit{Activity}} Different models are obtained depending on the choice of the activity or transfer function. Amongst the most common choices are the linear, binary step and sigmoid function as illustrated in Figure \ref{fig:plots}. The linear function has a threshold $t$, which can be used to avoid low network input (e.g. noise) to be further propagted into the network. The binary step function represents the firing of a pulse down the axon if positive $1$), while $0$ represents no firing. The step function is sometimes defined to jump from $-1$ to $1$. 
 
 Sigmoid functions are widely used amongst network which are to represent cognitive processes such as perception, recoginition, problem solving, etc. .
 Both the logistic function as well as the hyperbolic tangent function $\tanh()$ can be used. The main advantage of sigmoid functions are:
@@ -410,7 +410,97 @@ As distinct from the binary step function, it is differntiable at all parts, whi
 In order to teach neural networks and enbale them to apply learned behavior in following scenarios, the work with them is divided in a training- and test phase. During the training, the network learns certain behavior by feeding repetitive input to the first layer and observing the output of the network. This can be done in a supervised and unsupervised way. In a supervised training phase, the targeted output of the network is already known and is presented to the network as a \textit{teaching factor}. The network produces output depending on the current weights on its connections and adjusts them acordingly to the margin between the targeted and produced output. Unsupervised learning is necessary in situations, where no reasonable teaching factors are available or the observant is more interested on the performance. Similarity between input incentives and connection weights is the factor, acording to which weight adjustment is done in such models.
 
 \section{Learning}\label{sec:learning}
+\subsection{Hebbian learning rule}
+The psychologist Donald Olding Hebb proposed on the easiest learning rules with high biological plausibility in \cite{HEBB}:\\
+
+\textit{``Let us assume that the persistence or repetition of a reverberatory activity (or "trace") tends to induce lasting cellular changes that add to its stability.… When an axon of cell A is near enough to excite a cell B and repeatedly or persistently takes part in firing it, some growth process or metabolic change takes place in one or both cells such that A's efficiency, as one of the cells firing B, is increased.''}\\
+
+In summary: The weight between two units $i$ and $j$ is changed, if both units are active at the same time. The amount of change is set by three factors:
+
+\begin{itemize}
+\item The activity level of the sending unit $a_i$.
+\item The activity level of the receiving unit $a_j$.
+\item A settled and constant paramter $\eta$
+\end{itemize}
+
+The weight change $\Delta w_{ij}$ using the hebbian learning rule is shown in equation \eqref{eq:hebb}.
+\begin{equation}
+\Delta w_{i,j} = \eta \cdot a_i \cdot a_j
+\label{eq:hebb}
+\end{equation}
+
+One of the major drawbacks of the hebbian rule is the fact, that is can only applied on networks without a hidden layer, and therefore only very simple neural networks.
+
+\subsection{Delta rule}
+The delta rule is based on the comparison between a targeted output $t$ and the observed output $o$ and can therefore only be applied with supervised learning.
+It can be expressed using equation \eqref{eq:delta1}.
+\begin{equation}
+\delta = t - o
+\label{eq:delta1}
+\end{equation}
+
+The following possibilities can be observed:
+\begin{itemize}
+\item \textbf{The observed output is too low}\\
+In order to amplify the output, the weights between neurons is strengthened, provided a positive weight on the connection linking them. Negative weights are weakened.
+\item \textbf{The observed output is too high}\\
+All connections with positiv weights are weakened, while the ones with negative weights are strengthened 
+\item \textbf{Targeted and observed output are equivalent. (= ideal behavior)}\\ There is no need to change the links.
+\end{itemize}
+
+The deltas learning rule equation \eqref{eq:delta2} covers all three posiblities, thus ensuring that the changing rate is proportional to the difference between targeted and observed. The learning paramter $\eta$ is again set before the beginning of the learning process and remains constant. The multiplication with the sending units output $a_i$ esures that those connections, that have the greatest influence into the error have the greatest $\delta w_{i,j}$.
+\begin{equation}
+\Delta w_{i,j} = \eta \cdot \delta \cdot a_i
+\label{eq:delta2}
+\end{equation}
+
+The simplicity of this learning rules also comes at great cost: The comparison only allows us to adjust connections which connect to the rightmost layer in the network. This fact restricts the application of this method from networks with a hidden layer. 
+
 \subsection{Backpropargation}
+
+The backpropargation algorithm is yet another learning rule for supervised networks, but in comparison to the hebbian and delta rules, it can also be applied for networks with $n$ numbers of hidden layers. There are certain problems that cannot be solved by networks without at least one hidden layer, the XOR-Gate being an famous example for such problems. I was first  by Paul Werbos in 1975 \cite{BACK} and consists of three main steps:
+\begin{itemize}
+\item[1.] \textbf{The forward-pass}:
+A pattern is presented to the input layer and further propargated into the network.
+\item[2.] \textbf{Error-determination}:\\
+The observed output is compared to targeted result and an error $E$ is determined by a derivale error-function $\varphi$ shown in equation \eqref{eq:backerror}. The factor of $\frac{1}{2}$ is used to simplify the derivation by cancelling the exponent.
+
+\begin{equation}
+\varphi = \frac{1}{2} (t-o)^2
+\label{eq:backerror}
+\end{equation}
+\item[3.] \textbf{Backward-pass}:\\
+The error is propargated from the back of the network to the front, hence the name \textbf{Backpropargation}. The connection are updated independent from their influence to $E$, which guarantees a result $o$ that is closer to $t$, provided the same output is presented to the input layer.
+\end{itemize}
+
+A first approach on finding a method to changing all weights in a weight that will minimize the error is to find $E$ for all possible combinations of weights $W$. The combination $W_{min}$ with the smallest $E$ would be the perfect solution, an abolute minimum of the error. The problem of this approach is that the computitional effort to finding this solution is way to high, since $W_{min}$ would have to be found in a $n$-dimensonial  hyperplane (given the number of neurons $n$).\\
+
+Instead, the weights are adjusted using the gradient descent, which does not need to know the complete hyperplane\marginpar{\textit{gradient descent}}. It starts with a random combination of weights for which the gradient is determinded. The gradient is the function of a scalar field which shows the rate of change and the direction of the greatest change in the form of a vector field. After the gradient is determined it will be stepped down at a given rate - the learning rate, meaning that the weights are adjusted. For this new combination of weights, the gradient is again determined and stepped down until a local (or global minimum) is found or a maximum amount of repetitions is reached.\\
+
+The amount of change between neurons $i$ and $j$ $\delta w_{i,j}$ is calculated as shown in \eqref{eq:backrule}.
+\begin{equation}
+\Delta w_{i,j} = -\eta \frac{\partial E}{\partial w_{i,j}} = \eta \cdot \delta_j \cdot a_i
+\label{eq:backrule}
+\end{equation}
+As distinct form the delta rule, the backpropargation rule differs two cases, shown in equation \eqref{eq:backcases}. $k$ is the index of the neurons in the subsequent layer.
+\begin{equation}
+   \delta_j =
+   \begin{cases}
+     \varphi'(in_j)(t_j-o_j) & \text{In case j is an output neuron} \\
+     \varphi'(in_j)\sum_{k} \delta_k \cdot w_{j,k} & \text{In case j is a hidden neuron}
+   \end{cases}
+\label{eq:backcases}
+\end{equation}
+
+Eventuall the weights are changed acording to equation \eqref{eq:backweight}.
+
+\begin{equation}
+   w_{i,j}^{new} = w_{i,j}^{old} + \Delta w_{i,j}
+\label{eq:backweight}
+\end{equation}
+
+\subsection{Backpropargation through time}
+\subsection{Competitive learning}
 %...
 \section{Network tpyes}
 \subsection{Feed Forward}
