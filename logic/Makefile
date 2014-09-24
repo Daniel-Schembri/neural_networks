@@ -27,6 +27,7 @@ SRCS   = net.cpp \
 	     feedForwardNet.cpp \
 	     srn.cpp \
 	     competitive.cpp \
+		 selfOrganizingMap.cpp \
 	     main.cpp 
 
 OBJS   = ${SRCS:%.cpp=%.o}
@@ -42,13 +43,13 @@ $(TARGET): $(OBJS)
 	$(CXX) -o $@ $(OBJS)
 	mkdir -p $(BINDIR); mv *.o $(BINDIR)
 
-.PHONY: auto
-
-auto: $(TARGET)
-
-$(TARGET): $(OBJS)
-	$(CXX) -o $@ $(OBJS)
-	mkdir -p $(BINDIR); mv *.o $(BINDIR)
+#.PHONY: auto
+#
+#auto: $(TARGET)
+#
+#$(TARGET): $(OBJS)
+#	$(CXX) -o $@ $(OBJS)
+#	mkdir -p $(BINDIR); mv *.o $(BINDIR)
 
 .PHONY: train
 
@@ -59,6 +60,5 @@ train:
 
 clean: 
 	rm -r -f $(TARGET)* $(BINDIR) core *~ *.o
-	cd $(DOCDIR); make clean
 	cd $(TRAINDIR); make clean
 	clear

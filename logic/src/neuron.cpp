@@ -117,6 +117,7 @@ void Neuron::feedForward(const Layer &prevLayer, const Layer &currentLayer)
         }
 
         nbNeuronsInLayer = currentLayer.size();
+
         // add the context layer input
         for (unsigned n = currentLayer.size()/2; n < nbNeuronsInLayer; ++n) 
         {
