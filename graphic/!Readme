@@ -1,0 +1,5 @@
+install X-Server with GLX support (Xserver Xorg) if its not already installed...
+
+sudo apt-get install xorg-dev
+sudo apt-get install libsm-dev    (Das X11-dev wird unter Mint benoetigt..)
+Administratorrechte benoetigt bei make install!
