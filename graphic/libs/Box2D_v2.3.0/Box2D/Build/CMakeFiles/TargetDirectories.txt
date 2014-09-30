@@ -1,5 +1,0 @@
-/home/daniel/Projects/graphic/libs/Box2D_v2.3.0/Box2D/Build/Box2D/CMakeFiles/Box2D.dir
-/home/daniel/Projects/graphic/libs/Box2D_v2.3.0/Box2D/Build/HelloWorld/CMakeFiles/HelloWorld.dir
-/home/daniel/Projects/graphic/libs/Box2D_v2.3.0/Box2D/Build/Testbed/CMakeFiles/Testbed.dir
-/home/daniel/Projects/graphic/libs/Box2D_v2.3.0/Box2D/Build/freeglut/CMakeFiles/freeglut_static.dir
-/home/daniel/Projects/graphic/libs/Box2D_v2.3.0/Box2D/Build/glui/CMakeFiles/glui.dir
