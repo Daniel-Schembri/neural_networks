@@ -45,6 +45,9 @@ srn::srn(const std::vector<unsigned> &topology, const bool &bias)
 
 srn::~srn()
 {
+    for (unsigned i = 0; i < m_layers.size(); ++i)
+        for (unsigned j = 0; j < m_layers[i].size(); ++j)
+            delete m_layers[i][j];
 }
 
 void srn::learn(const std::vector<double> &targetVals)

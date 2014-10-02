@@ -42,6 +42,9 @@ FeedForwardNet::FeedForwardNet(const std::vector<unsigned> &topology, const bool
 
 FeedForwardNet::~FeedForwardNet()
 {
+    for (unsigned i = 0; i < m_layers.size(); ++i)
+        for (unsigned j = 0; j < m_layers[i].size(); ++j)
+            delete m_layers[i][j];
 }
 
 double FeedForwardNet::getRecentAverageError() const 

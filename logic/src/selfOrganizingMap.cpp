@@ -67,6 +67,9 @@ SelfOrganizingMap::SelfOrganizingMap(const std::vector<unsigned> &topology, cons
 
 SelfOrganizingMap::~SelfOrganizingMap()
 {
+    for (unsigned i = 0; i < m_layers.size(); ++i)
+        for (unsigned j = 0; j < m_layers[i].size(); ++j)
+            delete m_layers[i][j];
 }
 
 
