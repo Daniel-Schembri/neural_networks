@@ -6,7 +6,7 @@
 //------------------------------------------------------
 
 #include "selfOrganizingMap.hpp"
-#include <cmath>
+#include "somNeuron.hpp"
 
 SelfOrganizingMap::SelfOrganizingMap(const std::vector<unsigned> &topology, const bool &bias, const unsigned &maxSteps):
     m_maxSteps(maxSteps)
@@ -53,14 +53,14 @@ SelfOrganizingMap::SelfOrganizingMap(const std::vector<unsigned> &topology, cons
 
         // We have a new layer, now fill it with neurons
         for (neuronNum = 0; neuronNum < topology[nbLayer]; ++neuronNum) 
-            m_layers.back().push_back(Neuron(numOutputs, neuronNum, false));
+            m_layers.back().push_back(new somNeuron(numOutputs, neuronNum, LEARNING_RATE));
 
         // Create bias neurons if requested
         if(false != bias)
         {
-            m_layers.back().push_back(Neuron(numOutputs, ++neuronNum, false));
+            m_layers.back().push_back(new somNeuron(numOutputs, ++neuronNum, LEARNING_RATE));
             // Force the bias node's output to 1.0 (it was the last recent neuron pushed in this layer):
-            m_layers.back().back().setOutputVal(1.0);
+            m_layers.back().back()->setOutputVal(1.0);
         }
     }
 }
@@ -111,26 +111,6 @@ void SelfOrganizingMap::learn(const std::vector<double> &targetVals)
         std::cout << "Max. number of iterations (" << m_maxSteps << ") reached.\n";
         return;
     }
-    // Calculate overall net error (RMS of output neuron errors)
-    Layer &outputLayer = m_layers.back();
-    m_error = 0.0;
-    unsigned nbOutputNeurons;
-
-    nbOutputNeurons = outputLayer.size() - (1*m_bias); 
-
-    for(unsigned n = 0; n < nbOutputNeurons; ++n) 
-    {
-        double delta = targetVals[n] - outputLayer[n].getOutputVal();
-        m_error += delta * delta;
-    }
-
-    m_error /= nbOutputNeurons; // get average error squared
-    m_error = sqrt(m_error); // RMS
-
-    // Implement a recent average measurement
-    m_recentAverageError =
-            (m_recentAverageError * m_recentAverageSmoothingFactor + m_error)
-            / (m_recentAverageSmoothingFactor + 1.0);
 
     // The similarity between the connection weigth vector to one neuron and the input vector
     std::vector<double> similarities;
@@ -144,7 +124,7 @@ void SelfOrganizingMap::learn(const std::vector<double> &targetVals)
         // Compute the euclidean distance between the input neurons and the connection weights 
         // between them and this neuron
         for(unsigned n = 0; n < m_layers[0].size(); ++n)
-            distance += getDistance(m_layers[0][n].m_outputWeights[m].weight, m_layers[0][n].getOutputVal());
+            distance += getDistance(m_layers[0][n]->m_outputWeights[m].weight, m_layers[0][n]->getOutputVal());
         
         similarities.push_back(distance);
     }
@@ -166,11 +146,11 @@ void SelfOrganizingMap::learn(const std::vector<double> &targetVals)
     std::vector<unsigned> neighbors = getNeighbors(bmu);
 
     // Update bmu 
-    m_layers[1][bmu].updateInputWeights(m_layers[0], true);
+    m_layers[1][bmu]->updateInputWeights(m_layers, 1);
     // neighbors 
     for(unsigned i = 0; i < neighbors.size(); ++i)
     {
-        m_layers[1][neighbors[i]].updateInputWeights(m_layers[0], true);
+        m_layers[1][neighbors[i]]->updateInputWeights(m_layers, 1);
     }
 }
 

@@ -12,10 +12,10 @@
 #include <vector>
 #include <iostream>
 #include <cstdlib>
-#include <cassert>
+//#include <cassert>
 #include <cmath>
-#include <fstream>
-#include <sstream>
+//#include <fstream>
+//#include <sstream>
 
 #include "commonDefs.hpp"
 #include "neuron.hpp"
@@ -28,18 +28,13 @@ public:
     virtual ~Net();
     void feedForward(const std::vector<double> &inputVals);
 
-    // Pure virtual function
     virtual void learn(const std::vector<double> &targetVals) = 0;
 
     void getResults(std::vector<double> &resultVals) const;
-    double getRecentAverageError(void) const { return m_recentAverageError; }
 
 protected:
-    std::vector<Layer> m_layers; // m_layers[layerNum][neuronNum]
-    double m_error;
-    double m_recentAverageError;
+    std::vector<Layer> m_layers;
     bool m_bias;
-    static double m_recentAverageSmoothingFactor;
 };
 
 #endif /* NET_HPP */

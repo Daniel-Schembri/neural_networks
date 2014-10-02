@@ -1,14 +1,14 @@
-#ifndef SRNNEURON_HPP
-#define SRNNEURON_HPP 
+#ifndef FFNEURON_HPP
+#define FFNEURON_HPP 
 
 #include "commonDefs.hpp"
 #include "neuron.hpp"
 
-class srnNeuron : public Neuron
+class ffNeuron : public Neuron
 {
 public:
-    srnNeuron(unsigned numOutputs, unsigned myIndex,double alpha, double eta);
-    virtual ~srnNeuron();
+    ffNeuron(unsigned numOutputs, unsigned myIndex, double alpha, double eta);
+    virtual ~ffNeuron();
 
     void calcHiddenGradients(const Layer &nextLayer, const bool &bias);
     void calcOutputGradients(double targetVal);
@@ -19,9 +19,11 @@ public:
 protected:
     double m_alpha; // [0.0..n] multiplier of last weight change (momentum)
     double m_gradient;
+    double m_recentAverageError;
+    double m_recentAverageErrorSmoothingFactor;
 
+    double transferFunctionDerivative(double x) const;
     double sumDOW(const Layer &nextLayer, const bool &bias) const;
-    static double transferFunctionDerivative(double x);
 };
 
-#endif /* SRNNEURON_HPP */
+#endif /* FFNEURON_HPP */

@@ -19,7 +19,12 @@ public:
     srn(const std::vector<unsigned> &topology, const bool &bias);
     virtual ~srn();
 
+    double getRecentAverageError() const { return m_recentAverageError; }
     virtual void learn(const std::vector<double> &targetVals);
-};
 
+protected:
+    double m_error;
+    double m_recentAverageError;
+    double m_recentAverageSmoothingFactor;
+};
 #endif /* SRN_HPP */

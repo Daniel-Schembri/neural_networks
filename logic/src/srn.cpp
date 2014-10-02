@@ -6,11 +6,14 @@
 //------------------------------------------------------
 
 #include "srn.hpp"
+#include "srnNeuron.hpp"
 
 srn::srn(const std::vector<unsigned> &topology, const bool &bias)
 {
     m_bias = bias;
     unsigned numLayers = topology.size();
+
+    m_recentAverageSmoothingFactor = 100.0; // Number of training samples to average over
 
     for (unsigned nbLayer = 0; nbLayer < numLayers; ++nbLayer) {
         m_layers.push_back(Layer());
@@ -27,29 +30,15 @@ srn::srn(const std::vector<unsigned> &topology, const bool &bias)
         // We have a new layer, now fill it with neurons
         for (neuronNum = 0; neuronNum < topology[nbLayer]; ++neuronNum) 
         {
-            if((0 < nbLayer) && (numLayers -1 != nbLayer))
-                // Hidden layer within a SRN, the neurons connect to an additional context neuron
-                m_layers.back().push_back(Neuron(numOutputs + 1, neuronNum, true));
-            else
-                m_layers.back().push_back(Neuron(numOutputs, neuronNum, false));
-        }
-
-        // Create context neurons if requested
-        if((0 < nbLayer) && (numLayers -1 != nbLayer))
-        {
-            // A context neurons feeds all non-context neurons in its layer
-            numOutputs = topology[nbLayer];
-
-            for (unsigned nbContextNeurons = 0; nbContextNeurons < topology[nbLayer]; ++nbContextNeurons) 
-                m_layers.back().push_back(Neuron(numOutputs, ++neuronNum, false));
+                m_layers.back().push_back(new srnNeuron(numOutputs, neuronNum, MOMENTUM, LEARNING_RATE));
         }
 
         // Create bias neurons if requested
         if(false != bias)
         {
-            m_layers.back().push_back(Neuron(numOutputs, ++neuronNum, false));
+            m_layers.back().push_back(new srnNeuron(numOutputs, ++neuronNum, MOMENTUM, LEARNING_RATE));
             // Force the bias node's output to 1.0 (it was the last recent neuron pushed in this layer):
-            m_layers.back().back().setOutputVal(1.0);
+            m_layers.back().back()->setOutputVal(1.0);
         }
     }
 }
@@ -70,7 +59,7 @@ void srn::learn(const std::vector<double> &targetVals)
 
     for (unsigned n = 0; n < nbOutputNeurons; ++n) 
     {
-        double delta = targetVals[n] - outputLayer[n].getOutputVal();
+        double delta = targetVals[n] - outputLayer[n]->getOutputVal();
         m_error += delta * delta;
     }
 
@@ -86,7 +75,7 @@ void srn::learn(const std::vector<double> &targetVals)
     // Calculate output layer gradients
     for (unsigned n = 0; n < nbOutputNeurons; ++n) 
     {
-        outputLayer[n].calcOutputGradients(targetVals[n]);
+        (dynamic_cast<srnNeuron*>(outputLayer[n]))->calcOutputGradients(targetVals[n]);    
     }
 
     // Calculate hidden layer gradients, start at rightmost hidden layer
@@ -97,7 +86,7 @@ void srn::learn(const std::vector<double> &targetVals)
 
         for (unsigned n = 0; n < hiddenLayer.size(); ++n) 
         {
-            hiddenLayer[n].calcHiddenGradients(nextLayer, m_bias);
+            (dynamic_cast<srnNeuron*>(hiddenLayer[n]))->calcHiddenGradients(nextLayer, m_bias);    
         }
     }
 
@@ -106,18 +95,10 @@ void srn::learn(const std::vector<double> &targetVals)
 
     for (unsigned nbLayer = m_layers.size() - 1; nbLayer > 0; --nbLayer)
     {
-        Layer &layer = m_layers[nbLayer];
-        Layer &prevLayer = m_layers[nbLayer - 1];
+        unsigned nbNeuronsInLayer = m_layers[nbLayer].size() - (m_bias*1);
 
-        unsigned nbNeuronsToUpdate = layer.size() - (m_bias*1);
-
-        //context neurons only exist in hidden layers
-        if(m_layers.size() -1 != nbLayer)
-            nbNeuronsToUpdate = layer.size() / 2;
-
-        //skip context neurons, as their input weights are constant
-        for (unsigned n = 0; n < nbNeuronsToUpdate; ++n) 
-            layer[n].updateInputWeights(prevLayer);
+        for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
+            m_layers[nbLayer][n]->updateInputWeights(m_layers, nbLayer);
     }
 }
 

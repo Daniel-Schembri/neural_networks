@@ -23,11 +23,15 @@ CXXFLAGS  += -march=native
 CXXFLAGS  += -I$(INCDIR)
 
 SRCS   = net.cpp \
-         neuron.cpp \
 	     feedForwardNet.cpp \
 	     srn.cpp \
 	     competitive.cpp \
 		 selfOrganizingMap.cpp \
+         neuron.cpp \
+		 ffNeuron.cpp \
+		 srnNeuron.cpp \
+		 somNeuron.cpp \
+		 competitiveNeuron.cpp \
 	     main.cpp 
 
 OBJS   = ${SRCS:%.cpp=%.o}
