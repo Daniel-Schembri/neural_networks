@@ -167,6 +167,8 @@
     deletekeywords={...}             
 }
 
+
+\setcounter{tocdepth}{4}  %a deeper contentsmenue
 %=====================================DOCUMENT START=========================
 \begin{document}
 
@@ -423,7 +425,7 @@ In summary: The weight between two units $i$ and $j$ is changed, if both units a
 \item A settled and constant paramter $\eta$
 \end{itemize}
 
-The weight change $\Delta w_{ij}$ using the hebbian learning rule is shown in equation \eqref{eq:hebb}.
+The weight change $\Delta w_{ij}$ using the bian learning rule is shown in equation \eqref{eq:hebb}.
 \begin{equation}
 \Delta w_{i,j} = \eta \cdot a_i \cdot a_j
 \label{eq:hebb}
@@ -503,32 +505,211 @@ Eventuall the weights are changed acording to equation \eqref{eq:backweight}.
 \subsection{Competitive learning}
 %...
 \section{Network types}
-At the moment there are three generatios of neural networks. 
+At the moment there are three generations of neural networks. 
+The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
+In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
+The newest generation uses spikes, an encoding through time.
 
 \subsection{First generation}
+The first generation of neural networks have binary in- and outputs.
 
 \subsubsection{McCulloch-Pitts neuron}
 The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
-developed by Warren McCulluch and Walter Pitts in 1943. It has binary in- and outputs.
+developed by Warren McCulloch and Walter Pitts in 1943.
+They wanted to realise a simple, realistic neuron-modell of operations in the brain and find out if the brain could compute turing computability functions.
+McCulloch-Pitts-neuron has binary in- and outputs.
+A real threshold can be defined, which reached, let the neuron fire an one, otherwise zero.
+Its possible to add suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs.
+
+
+Neural networks of this type of neuron can just learn by changing topology of the network, that is laborious.
+
+At the following a figure of a single neuron:
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	\node [align=center] (dummy1) at (-0.25,3.5) {$x_{1}$}; 
+	\node [align=center] (dummy2) at (-0.25,2.5) {$x_{n}$}; 
+	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
+	\node [align=center] (dummy3) at (3,3) {f($x_{1}$,..,$x_{n}$)}; 
+	\draw[arrow]	(dummy1) -- (f1);
+	\draw[arrow]	(dummy2) -- (f1);
+	\draw[arrow]	(f1) -- (dummy3);
+	\draw[dotted] (dummy1) -- (dummy2);
+	
+	\end{tikzpicture}
+	\caption{A McCulloch-Pitts-neuron}
+	\label{fig:pitts1}
+\end{figure}
+The neuroninput is computed by:
+
+\begin{equation}
+	neuroninput = \sum_{i=1}^{n} x_{n} \quad  x \in \{0, 1\}
+\end{equation}
+
+The output is given by:
+
+\begin{equation}
+	neuronoutput=\begin{cases}
+		0 \quad  neuroninput < S \\  % Or minimum 1 supressing input is 1
+		1 \quad  neuroninput \geq S \\
+	\end{cases}
+	S \in \mathbb{R}
+\end{equation}
+
+A function composition:
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	\node [align=center] (dummy1) at (-0.25,3.5) {$x_{1}$}; 
+	\node [align=center] (dummy2) at (-0.25,2.5) {$x_{n}$}; 
+	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
+	\node [draw=black, fill=white, align=center, circle] (g1) at (2.5,3) {g}; 
+	\node [align=center] (dummy3) at (4.5,3) {f(g($x_{1}$,..,$x_{n}$)}; 
+	\draw[arrow]	(dummy1) -- (f1);
+	\draw[arrow]	(dummy2) -- (f1);
+	\draw[arrow]	(f1) -- (g1);
+	\draw[arrow]	(g1) -- (dummy3);
+	\draw[dotted] (dummy1) -- (dummy2);
+	
+	\end{tikzpicture}
+	\caption{Function composition of two McCulloch-Pitts-neurons}
+	\label{fig:pitts2}
+\end{figure}
+
+A recursive neuron:
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	\node [align=center] (dummy1) at (-0.25,3) {$x_{t}$}; 
+	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
+	\node [align=center] (dummy2) at (4,3) {f($x_{t}$,f($x_{t-1}$,f($x_{t-2}$,...)))}; 
+	\draw[arrow]	(dummy1) -- (f1);
+	\draw[arrow]	(f1) -- (dummy2);
+	\draw[arrow]	(f1) -- (f1);
+	\draw[->] (1.35,3) .. controls (1.3,2.15) and (0.6,2.2) .. (0.65, 3);
+	\end{tikzpicture}
+	\caption{Recursive McCulloch-Pitts-neuron}
+	\label{fig:pitts3}
+\end{figure}
+
+The output is given after a fixed timestep t.
+
+\paragraph{Applications}
+The McCulloch-Pitts-neuron is biologically not plausible, because of
+the need of complex learning algorithms, changing the network topology.
+But this neuron type can realise AND-, OR- and NOT-Gates.
+Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates
+It was the first mathematical model of artifical neural networks.\cite{NEURONMATH}
+
 
 \subsubsection{Perceptron}
+The classical perceptron was published by Frank Rosenblatt in 1958.
+It has an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
+the perceptron has real weights. The advantage is that learning-algorithms has just to change the weights
+instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero(neutral) weights.
 
+\paragraph{Linear seperability}
+A classical perceptron can only seperate linear datasets. This is due to only two layers. For seperating non-linear datasets read \ref{sec:mlp}.
+\begin{figure}
+	\centering
+\begin{tabular}{|l|l|l|}
+	\hline
+	x1 & x2 & f6\\
+	\hline
+	0 & 0 & 0 \\
+	\hline
+	0 & 1 & 1 \\
+	\hline
+	1 & 0 & 1 \\
+	\hline
+	1 & 1 & 0 \\
+	\hline
+\end{tabular}
+	\caption{XOR-Function: Not linear seperable}
+	\label{fig:linsep1}
+	
+		\subfigure[]
+		{
+			\begin{tikzpicture}
+			\begin{axis}[
+			width=4cm, height=4cm,     % size of the image
+			grid = major,
+			grid style={dashed, gray!30},
+			xmax=1,        
+			ymin=-1,
+			ymax=1,
+			axis background/.style={fill=white},
+			ylabel=$a_{j}$,
+			xlabel=$in_{j}$]
+			
+			\addplot[black]{-0.5*x+0.5};
+		%	\addplot[black]{-2*x-1.5};
+			\end{axis}
+			\end{tikzpicture}
+			\label{fig:sepplot1}
+		}
+		
+	
+\end{figure}
+
+\paragraph{Applications}
+The perceptron can be used as pattern associator to categorise an inputpattern to a class, competitive network. Also linear seperable data can be categorised.
+It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{sec:learning})
+
+\begin{center}
+	\begin{figure}
+		\includegraphics[width=0.8\textwidth,scale=1]{files/neuron.jpg}  
+		\caption{A singlelayer perceptron \cite{PERSIN}.}
+		\label{fig:neuron}
+	\end{figure}
+\end{center}
 
 \subsection{Second generation}
+The idea of the second generation of neural networks is born in the 90s. The firerate of a neuron encodes the transmitted signal. In this case now real values are used for in- and outputs.
 
-\subsubsection{Multi layer perceptron (MLP)}
-\subsubsection{Kohonen networks}
+\subsubsection{Multi layer perceptron (MLP)} \label{sec:mlp}
+The multilayer perceptron was intruduced by Minsky and Papert in . It has an input-, an output- and
+one or multiple hiddenlayers. In contrast to the singlelayerperceptron it can
+solve the xor-problem. It can be trained super- or unsupervised.
+
+\paragraph{Applications}
+
+\subsubsection{Kohonen networks / Selforganizing maps (SOM)}
+Kohonen-networks are inventioned by the finnish engineer Teuvo Kohonen in 1982. They have two layers. An inputlayer and a n-dimensional outputlayer.
+Kohonen-networks usually don't have hidden layers.
+The inputspace 
+
+\paragraph{Applications}
+Data-mining, unsupervised learning, clusteranalysis, computergraphics. 
 
 \subsection{Third generation}
+In the third generation of artifical neural networks the signal is additionally encoded in time. These called spikes are
+
 \subsubsection{Spiking neural networks}
 
-\subsection{Feed Forward}
+\paragraph{Applications}
+
+%\subsection{Feed Forward}
 \subsection{Recurrent}
 
+\paragraph{Applications}
+
 %...
-\section{Applications}
-\subsection{Pattern recognition}
+%\section{Applications}
+%\subsection{Pattern recognition}
+
+%\subsection{Traveling salesman problem}
+
+%\subsection{Aproximation of functions}
 %...
+
+\chapter{Genetic algorithms}
+
+
 
 \KOMAoptions{listof=leveldown}
 
