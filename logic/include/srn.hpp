@@ -20,10 +20,14 @@ public:
     virtual ~srn();
 
     double getRecentAverageError() const { return m_recentAverageError; }
+
+    void feedForward(const std::vector<double> &inputVals);
     virtual void learn(const std::vector<double> &targetVals);
+    void unroll(); // Does the function unrolling required by the BTT algorithm
 
 protected:
     double m_error;
+    double m_recurrentWeight;
     double m_recentAverageError;
     double m_recentAverageSmoothingFactor;
 };

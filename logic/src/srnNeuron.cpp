@@ -1,10 +1,10 @@
 #include "srnNeuron.hpp"
 
 srnNeuron::srnNeuron(unsigned numOutputs, unsigned myIndex, double alpha, double eta):
-    Neuron(eta,myIndex),
+    Neuron(eta, myIndex),
     m_alpha(alpha)
 {
-    // We don't need connections for the output layer
+    // Output neurons don't have connections
     if(0 != numOutputs)
     {
         for(unsigned c = 0; c < numOutputs; ++c) 
@@ -38,16 +38,16 @@ void srnNeuron::feedForward(const std::vector<Layer> &layers, const unsigned &my
     unsigned nbNeuronsInLayer = layers[myLayer - 1].size();
    
     // If there's a bias (odd number of neurons in layer), add it first
-    if(0 != nbNeuronsInLayer % 2)
-        sum += layers[myLayer - 1][nbNeuronsInLayer - 1]->getOutputVal() *
-               layers[myLayer - 1][nbNeuronsInLayer - 1]->m_outputWeights[m_myIndex].weight;
+//    if(0 != nbNeuronsInLayer % 2)
+//        sum += layers[myLayer - 1][nbNeuronsInLayer - 1]->getOutputVal() *
+//               layers[myLayer - 1][nbNeuronsInLayer - 1]->m_outputWeights[m_myIndex].weight;
     
+    // Sums up everything including bias, if existent
     for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
-    {
         sum += layers[myLayer - 1][n]->getOutputVal() *
                layers[myLayer - 1][n]->m_outputWeights[m_myIndex].weight;
-    }
 
+    m_input = sum;
     m_outputVal = transferFunction(sum);
 }
 
@@ -98,5 +98,30 @@ void srnNeuron::updateInputWeights(const std::vector<Layer> &layers, const unsig
 
         neuron->m_outputWeights[m_myIndex].deltaWeight = newDeltaWeight;
         neuron->m_outputWeights[m_myIndex].weight += newDeltaWeight;
+    }
+}
+
+void srnNeuron::singleConnection(const unsigned &index, const unsigned &weight)
+{
+    unsigned size = m_outputWeights.size();
+
+    while(index > --size)
+    {
+        // Create dummy connections. They won't contribute to the next neuron's input
+        m_outputWeights.push_back(Connection());
+        m_outputWeights.back().weight = 0.0;
+    }
+
+    for(unsigned i=0;i<m_outputWeights.size();i++)
+    {
+        if(index != i)
+        {
+            m_outputWeights[i].weight = 0.0;
+            m_outputWeights[i].deltaWeight = 0.0;
+        }
+        else
+        {
+            m_outputWeights[i].weight = weight;
+        }
     }
 }

@@ -115,7 +115,7 @@ void showVectorVals(string label, vector<double> &v)
 
 int main()
 {
-    TrainingData trainData("/home/jona/git/neural_networks/src/trainingData.txt");
+    TrainingData trainData("./trainingData.txt");
 
     // e.g., { 3, 2, 1 }
     vector<unsigned> topology;

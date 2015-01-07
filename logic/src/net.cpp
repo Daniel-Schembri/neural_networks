@@ -35,6 +35,6 @@ void Net::feedForward(const std::vector<double> &inputVals)
         unsigned nbNeuronsInLayer = m_layers[nbLayer].size() - (1*m_bias);
 
         for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
-            m_layers[nbLayer][n]->feedForward(m_layers,nbLayer);
+            m_layers[nbLayer][n]->feedForward(m_layers, nbLayer);
     }
 }

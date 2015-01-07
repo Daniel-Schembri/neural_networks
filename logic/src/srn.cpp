@@ -50,6 +50,25 @@ srn::~srn()
             delete m_layers[i][j];
 }
 
+// Overwrite base class method to implement function unrolling
+void srn::feedForward(const std::vector<double> &inputVals)
+{
+    // Assign (latch) the input values into the input neurons
+    for (unsigned i = 0; i < inputVals.size(); ++i) 
+        m_layers[0][i]->setOutputVal(inputVals[i]);
+
+    // forward propagate
+    for (unsigned nbLayer = 1; nbLayer < m_layers.size(); ++nbLayer) 
+    {
+        unsigned nbNeuronsInLayer = m_layers[nbLayer].size() - (1*m_bias);
+
+        for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
+            m_layers[nbLayer][n]->feedForward(m_layers, nbLayer);
+    }
+
+    unroll();
+}
+
 void srn::learn(const std::vector<double> &targetVals)
 {
     // Calculate overall net error (RMS of output neuron errors)
@@ -105,3 +124,33 @@ void srn::learn(const std::vector<double> &targetVals)
     }
 }
 
+void srn::unroll()
+{
+    std::vector<Layer>::iterator it = (m_layers.end())-1;
+    std::vector<Layer>::iterator itMinus = it - 1;
+
+    m_layers.insert(it, Layer());
+
+    unsigned numOutputs = m_layers.end()->size();
+    unsigned neuronNum = 0;
+
+    for (; neuronNum < it->size(); ++neuronNum) 
+        it->push_back(new srnNeuron(numOutputs, neuronNum, MOMENTUM, LEARNING_RATE));
+
+    // Copy bias neuron for output layer to rightmost hidden layer
+    it->push_back(new srnNeuron(*dynamic_cast<srnNeuron*>(itMinus->back())));
+    delete itMinus->back();
+
+    // Save current input x_T of preceeding hidden layer by creating constant neurons in the same layer.
+    // Those neurons have only one link
+    neuronNum = itMinus->size()-1;
+    unsigned neuronsToAdd = itMinus->size();
+
+    for (unsigned n = 0; n < neuronsToAdd; ++n, ++neuronNum)
+    {
+        itMinus->push_back(new srnNeuron(1, neuronNum, MOMENTUM, LEARNING_RATE));
+        double x_T = dynamic_cast<srnNeuron*>((*itMinus)[n])->getInput();
+        itMinus->back()->setOutputVal(x_T);
+        dynamic_cast<srnNeuron*>(itMinus->back())->singleConnection(n, 1.0);
+    }
+}

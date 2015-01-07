@@ -13,7 +13,7 @@ public:
     void calcHiddenGradients(const Layer &nextLayer, const bool &bias);
     void calcOutputGradients(double targetVal);
     virtual void feedForward(const std::vector<Layer> &layers, const unsigned &myLayer);
-    inline double getGradient() const;
+    double getGradient() const;
     virtual void updateInputWeights(const std::vector<Layer> &layers, const unsigned &myLayer);
 
 protected:

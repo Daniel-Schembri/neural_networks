@@ -18,8 +18,8 @@ public:
     Neuron(double eta, unsigned myIndex);
     virtual ~Neuron();
 
-    inline void setOutputVal(double val) { m_outputVal = val; }
-    inline double getOutputVal(void) const { return m_outputVal; }
+    void setOutputVal(const double val) {m_outputVal = val;}
+    double getOutputVal() const {return m_outputVal;}
 
     virtual void feedForward(const std::vector<Layer> &layers, const unsigned &myLayer) = 0;
     virtual void updateInputWeights(const std::vector<Layer> &layers, const unsigned &myLayer) = 0;
@@ -31,7 +31,7 @@ protected:
     unsigned m_myIndex;
     double m_outputVal;
 
-    inline static double randomWeight(void) { return rand() / double(RAND_MAX); }
+    static double randomWeight() {return rand() / double(RAND_MAX);}
     static double transferFunction(double x);
 };
 

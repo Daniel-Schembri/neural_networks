@@ -10,8 +10,8 @@ public:
     somNeuron(unsigned numOutputs, unsigned myIndex, double eta);
     virtual ~somNeuron();
 
-    inline double getEta() const;
-    inline void setEta(double newEta);
+    double getEta() const;
+    void setEta(double newEta);
 
     virtual void feedForward(const std::vector<Layer> &layers, const unsigned &myLayer);
     virtual void updateInputWeights(const std::vector<Layer> &layers, const unsigned &myLayer);

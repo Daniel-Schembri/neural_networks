@@ -25,7 +25,7 @@ private:
     unsigned m_maxSteps;
     unsigned m_currentStep;
 
-    inline double getDistance(const double &x, const double &y) const;
+    double getDistance(const double &x, const double &y) const;
 };
 
 #endif /* SELF_ORGANIZING_MAP_HPP */

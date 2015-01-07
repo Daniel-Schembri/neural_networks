@@ -26,11 +26,11 @@ class Net
 public:
     Net();
     virtual ~Net();
-    void feedForward(const std::vector<double> &inputVals);
-
-    virtual void learn(const std::vector<double> &targetVals) = 0;
 
     void getResults(std::vector<double> &resultVals) const;
+
+    void feedForward(const std::vector<double> &inputVals);
+    virtual void learn(const std::vector<double> &targetVals) = 0;
 
 protected:
     std::vector<Layer> m_layers;
