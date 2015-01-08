@@ -167,6 +167,7 @@
     deletekeywords={...}             
 }
 
+\setcounter{tocdepth}{4}  %a deeper contentsmenue
 %=====================================DOCUMENT START=========================
 \begin{document}
 
@@ -190,7 +191,7 @@ The wish to build reproduce human intelligence has been around since the dawn of
 Although their is still not fully understood, we do know that neurons receive input from other neurons and create an output themselves, as soon as the neuron is activated \textit{it fires}. This ouput will again be received by other neurons. Figure \ref{fig:neuron} introduces the different parts of the biological neuron. Branching out from the cell body or Soma, several fibers called dendrites can be observed. The main function of the dendrites is to receive input from up to 100,000 connected neurons. The axon is a single long fiber with a length of 1 cm, what is typically 100 times the diameter of the cell body. As a matter of fact, it can reach up to one meter. The output signals of the neuron are transmitted over the axon via complicated chemical process. The synaptic terminals, which can be found at the end of the terminal are special connections, which can be strengthend or weakend, therefore amplifying or reducing the output signal strength. This modification of signals, which is achieved by the synapses release of chemicals called neurotransmitter, define the behavior of the network, enabling the network to control brain acivity in the short term, and also long-term changes in the connectivity of neurons.
 
 \begin{center}
-\begin{figure}
+\begin{figure}[H]
 \includegraphics[width=0.8\textwidth,scale=1]{files/neuron.jpg}  
 \caption{The parts of a nerve cell or neuron as shown in \cite{NEU}.}
 \label{fig:neuron}
@@ -207,7 +208,7 @@ a_j = g(\sum_{i=0}^{} w_{i,j} \cdot a_{i})
 $a_{i}$ is the output of unit ${i}$ and $w_{i,j}$ the wight on the link from unit $i$ to unit $j$ (this unit). 
 
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 
 \begin{tikzpicture}
@@ -273,7 +274,7 @@ Another application ist the implementation of a threshold value on a unit, preve
 
 As discussed before, the weights of the connections between the neurons represent the 'Intelligence' of the network. The bigger the absolute value of the weight, the greater the influence of a neuron to another. This value can be both positive and negative, as well as neutral \textit{(0)}, meaning that there is currently no influence between the neurons, although there is still a link connecting them. A weight of 0 can be understood as a logical pinch of the link, preventing it from transmitting signals.
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 
 \begin{tikzpicture}
@@ -423,7 +424,7 @@ In summary: The weight between two units $i$ and $j$ is changed, if both units a
 \item A settled and constant paramter $\eta$
 \end{itemize}
 
-The weight change $\Delta w_{ij}$ using the hebbian learning rule is shown in equation \eqref{eq:hebb}.
+The weight change $\Delta w_{ij}$ using the bian learning rule is shown in equation \eqref{eq:hebb}.
 \begin{equation}
 \Delta w_{i,j} = \eta \cdot a_i \cdot a_j
 \label{eq:hebb}
@@ -503,32 +504,346 @@ Eventuall the weights are changed acording to equation \eqref{eq:backweight}.
 \subsection{Competitive learning}
 %...
 \section{Network types}
-At the moment there are three generatios of neural networks. 
+At the moment there are three generations of neural networks. 
+The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
+In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
+The newest generation uses spikes, an encoding through time.
 
 \subsection{First generation}
+The first generation of neural networks have binary in- and outputs.
 
 \subsubsection{McCulloch-Pitts neuron}
 The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
-developed by Warren McCulluch and Walter Pitts in 1943. It has binary in- and outputs.
+developed by Warren McCulloch and Walter Pitts in 1943.
+They wanted to realise a simple, realistic neuron-modell of operations in the brain and find out if the brain could compute turing computability functions.
+McCulloch-Pitts-neuron has binary in- and outputs.
+A real threshold can be defined, which reached, let the neuron fire an one, otherwise zero.
+Its possible to add absolute suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs. The use of such absolute supressing inputs is for the most cases doubtfull.
+
+
+Neural networks of this type of neuron can just learn by changing topology of the network, that is laborious.
+
+At the following a figure of a single neuron:
+
+\begin{figure}[H]  % [H] erzwingt Position an der Stelle im Text
+	\centering
+	\begin{tikzpicture}
+	\node [align=center] (dummy1) at (-0.25,3.5) {$x_{1}$}; 
+	\node [align=center] (dummy2) at (-0.25,2.5) {$x_{n}$}; 
+	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
+	\node [align=center] (dummy3) at (3,3) {f($x_{1}$,..,$x_{n}$)}; 
+	\draw[arrow]	(dummy1) -- (f1);
+	\draw[arrow]	(dummy2) -- (f1);
+	\draw[arrow]	(f1) -- (dummy3);
+	\draw[dotted] (dummy1) -- (dummy2);
+	
+	\end{tikzpicture}
+	\caption{A McCulloch-Pitts-neuron}
+	\label{fig:pitts1}
+\end{figure}
+The neuroninput is computed by:
+
+\begin{equation}
+	neuroninput = \sum_{i=1}^{n} x_{n} \quad  x \in \{0, 1\}
+\end{equation}
+
+The output is given by:
+
+\begin{equation}
+	neuronoutput=\begin{cases}
+		0 \quad  neuroninput < S \\  % Or minimum 1 supressing input is 1
+		1 \quad  neuroninput \geq S \\
+	\end{cases}
+	S \in \mathbb{R}
+\end{equation}
+
+A function composition:
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+	\node [align=center] (dummy1) at (-0.25,3.5) {$x_{1}$}; 
+	\node [align=center] (dummy2) at (-0.25,2.5) {$x_{n}$}; 
+	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
+	\node [draw=black, fill=white, align=center, circle] (g1) at (2.5,3) {g}; 
+	\node [align=center] (dummy3) at (4.5,3) {f(g($x_{1}$,..,$x_{n}$)}; 
+	\draw[arrow]	(dummy1) -- (f1);
+	\draw[arrow]	(dummy2) -- (f1);
+	\draw[arrow]	(f1) -- (g1);
+	\draw[arrow]	(g1) -- (dummy3);
+	\draw[dotted] (dummy1) -- (dummy2);
+	
+	\end{tikzpicture}
+	\caption{Function composition of two McCulloch-Pitts-neurons}
+	\label{fig:pitts2}
+\end{figure}
+
+A recursive neuron:
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+	\node [align=center] (dummy1) at (-0.25,3) {$x_{t}$}; 
+	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
+	\node [align=center] (dummy2) at (4,3) {f($x_{t}$,f($x_{t-1}$,f($x_{t-2}$,...)))}; 
+	\draw[arrow]	(dummy1) -- (f1);
+	\draw[arrow]	(f1) -- (dummy2);
+	\draw[arrow]	(f1) -- (f1);
+	\draw[->] (1.35,3) .. controls (1.3,2.15) and (0.6,2.2) .. (0.65, 3);
+	\end{tikzpicture}
+	\caption{Recursive McCulloch-Pitts-neuron}
+	\label{fig:pitts3}
+\end{figure}
+
+The output is given after a fixed timestep t.
+
+\paragraph{Applications}
+The McCulloch-Pitts-neuron is biologically not plausible, because learning
+can just happen by changing the threshold and the network topology. This
+needs complex algorithms.
+But this neuron type can realise AND-, OR- and NOT-Gates.
+Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. You can simulate finite state machines, too.
+You may think if its better to have real or at least integer values to transmit more information instead of just binary signals. This depends on the applicationtype. Binary values are easier to realize, both in electrical and biological systems and mcculloch-pitts-networks are equivalent to other kind of networks with more signalstates. Though you get a more complex networktopology, if you use binary neurons.
+
+It was the first mathematical model of artifical neural networks.\cite{NEURONMATH}
+
 
 \subsubsection{Perceptron}
+The classical perceptron was published by Frank Rosenblatt in 1958.
+It has an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
+the perceptron has real weights. The advantage is that learning-algorithms has just to change the weights
+instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero(neutral) weights.
 
+\paragraph{Linear seperability}
+A classical perceptron can only seperate linear datasets. This is due to only two layers. For seperating non-linear datasets read \ref{sec:mlp}.
+An widely known example is the xor-problem.
+
+\begin{figure}[H]
+	\centering
+%	\subfigure[]
+%	{
+\begin{tabular}{|l|l|l|}
+	\hline
+	x1 & x2 & f6\\
+	\hline
+	0 & 0 & 0 \\
+	\hline
+	0 & 1 & 1 \\
+	\hline
+	1 & 0 & 1 \\
+	\hline
+	1 & 1 & 0 \\
+	\hline
+\end{tabular}
+%}
+	\caption{XOR-Function: Not linear seperable}
+	\label{fig:linsep1}
+	
+		\subfigure[]
+		{
+			\begin{tikzpicture}
+			\begin{axis}[
+			width=4cm, height=4cm,     % size of the image
+			grid = major,
+			grid style={dashed, gray!30},
+			xmax=1,        
+			ymin=-1,
+			ymax=1,
+			axis background/.style={fill=white},
+			ylabel=$a_{j}$,
+			xlabel=$in_{j}$]
+			
+			\addplot[black]{-0.5*x+0.5};
+		%	\addplot[black]{-2*x-1.5};
+			\end{axis}
+			\end{tikzpicture}
+			\label{fig:sepplot1}
+		}
+		
+\end{figure}
+
+\paragraph{Applications}
+The perceptron can be used as pattern associator to categorise an inputpattern to a class, competitive network. Also linear seperable data can be categorised.
+It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{sec:learning})
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\textwidth,scale=1]{files/neuron.jpg}  
+		\caption{A singlelayer perceptron \cite{PERSIN}.}
+		\label{fig:neuron}
+	\end{figure}
+\end{center}
 
 \subsection{Second generation}
+The idea of the second generation of neural networks is born in the 90s. The firerate of a neuron encodes the transmitted signal. In this case now real values are used for in- and outputs.
 
-\subsubsection{Multi layer perceptron (MLP)}
-\subsubsection{Kohonen networks}
+\subsubsection{Multi layer perceptron (MLP)} \label{sec:mlp}
+The multilayer perceptron was intruduced by Minsky and Papert in . It has an input-, an output- and
+one or multiple hiddenlayers. In contrast to the singlelayerperceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
+
+\paragraph{Applications}
+
+\subsubsection{Radial basis function} %Oder paragraph?
+
+
+\subsubsection{Kohonen networks / Selforganizing maps (SOM)}
+Kohonen-networks are inventioned by the finnish engineer Teuvo Kohonen in 1982. They have two layers. An inputlayer and a n-dimensional outputlayer.
+Kohonen-networks usually don't have hidden layers.
+The inputspace 
+
+\paragraph{Applications}
+Data-mining, unsupervised learning, clusteranalysis, computergraphics. 
+
+\subsection{Combination of networkmodels}
+
+\subsubsection{MLP and SOM} %look at neuronale netze im klartext chapter 6.3
 
 \subsection{Third generation}
+In the third generation of artifical neural networks the signal is additionally encoded in time. These called spikes are
+
 \subsubsection{Spiking neural networks}
 
-\subsection{Feed Forward}
+\paragraph{Applications}
+
+%\subsection{Feed Forward}
 \subsection{Recurrent}
 
+\paragraph{Applications}
+
 %...
-\section{Applications}
-\subsection{Pattern recognition}
+%\section{Applications}
+%\subsection{Pattern recognition}
+
+%\subsection{Traveling salesman problem}
+
+%\subsection{Aproximation of functions}
 %...
+
+\chapter{Optimization with evolutionary algorithms}
+Optimization is widely used, for example in information technology, engineering,
+economics, etc. Applications are the routing of circuits, the optimal usage of machinery,
+the traveling-salesman-problem and much more. It is often difficult to create a mathematical
+model of such optimization problems. Therefore in the last decades were developed methods who
+uses principles of the evolution.
+The simples method is the selection-method. In this model a dateset will be generated and randomly
+changes, called mutations, are made. The best datasets, chosen by the best fitness, will be kept.
+Each dateset is called an individual. A set of individuals is called a population. The individuals
+of a population can be recombined. Mostly the best individuals are recombined with randomly chosen
+ones. This method is more effective than the selection-method. This and other methods are  called
+evolutionary algorithms. To use an evolutionary algorithm, the problem must not be in a defined form;
+therefore it hasn't to be linear or differentiable. \\
+
+In this project evolutionary algortihms are used to find the best 
+(unsupervised) neural network to controll one creature. The idea is to use the amount of food a creature collect over a defined time as fitnessvalue.
+
+\section{The creepy random search method or hill climber method}
+The creepy random search method is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973. % 1973 correct?? look at literaturesource in kinnebruck
+Parameters of a system are randomly changed till a minimum or maximum of a targetfunction is reached. The value of the parameterchanges per iterationstep are limited. \\
+
+\textbf{The main algorithm is:}
+
+\fbox{
+\begin{minipage}{15cm}
+	\begin{enumerate} 
+		\item Generate a randomly initialized chromosome.
+		\item Change the chromosome parameter by limited random delta-values. 
+		\item Prove if the chromosome has a better fitness than the old one and replace it. Otherwise forget the new chromosome.
+		\item If the optimization-condition is reached abort, otherwise go to step 2.
+	\end{enumerate}
+\end{minipage}
+} \\
+
+The algorihm can be imagined as a blind hillclimber. The hillclimber makes a random step. If he gets higher, he makes the next step. Otherwise he takes back his last step and makes another random step. The big problem is, that this algorithm mostly converges in a local optimum. \\
+
+\textbf{Reasons to use this kind of algorithm:}
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item For many nonlinear problems there are no alternative solution approaches.
+			\item Implementing this method is easy.
+		\end{itemize}
+	\end{minipage}
+}   \\
+
+
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.6\textwidth,scale=1]{files/Hill_climb.png}  
+		\caption{A convex function. Ideal for the hillclimbing method \cite{wiki-hill}.}
+		\label{fig:hill}
+	\end{figure}
+\end{center}
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.6\textwidth,scale=1]{files/Local_maximum.png}  
+		\caption{A function with two optima. Hillclimbing could end in the worse optimum if it starts at a bad coordinate. \cite{wiki-hill}.}
+		\label{fig:hill2}
+	\end{figure}
+\end{center}
+
+
+\subsection{Constraints} %Bedingungen und Nebenbedingungen
+The main condition is the fitness-function. Second conditions
+can be the
+
+%\subsection{Efficency} %Optional chapter to test the efficency between mathematical methods and evolutionary methods. For example zero of a function.
+
+\section{Variants of the creepy random search method}
+In the main-method of the creepy random search you just accept better fitness values after an iteration-step and reject worse ones.
+The problem is, that with this algorithm you will mostly get stuck on a local optimum, instead of finding the global one.
+To solve this problem you should allow temporal low fitness-values. It should be possible to leave a local optimum to find a better one.
+To realise this, there have been developed some extended versions of this method: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item A stagnation of the fitness is allowed by a specified probability (Simulated annealing)
+			\item A stagnation of the fitness is allowed till a maximal deterioration. (Threshold accepting, deluge method)
+		\end{itemize}
+	\end{minipage}
+} \\
+
+
+\subsection{Simulated annealing}
+Simulated annealing is a probabilistic optimization method.
+It is inspired by the annealing of fluid materia to a solid aggregate states in metallurgy. While cooling down a material the thermodynamic free energy has to get as minimal as possible to get a clear crystalline structure. Therefore its suggested to cool down to material slowly for a better probability of getting a clear solid body.
+
+Analog in optimization you start with a high temperature T, means a big delta, to make wide jumps in the problemphase-space. So jumps between more maxima are possible. At the beginning each chromosome has the same probability to get selected. With each iteration the temperature is reduced and the jumps are getting shorter. Selecting better chromosomes is now more probalistic.
+Towards the end the algorithm commutes in a optimum and behaves like the standard hillclimbing-algorithm.
+
+Slowly reducing the temperature increases the chance to find the global optimum. Cooling to fast leads to commuting early into a local optimum instead.
+
+The following formula shows the probability of selecting a chromosome with lower fitness:
+
+\begin{equation}
+p(r) = \frac{1}{1+exp(-r/T)}
+\end{equation} 
+
+The probability to select a worse chromosome should be small.
+At the beginning a big T tends to equalize the probability of all chromosomes. For $T \to \infty$ all chromosomes have the same chance to get selected. Lowering T gives good chromosomes priority. For T = 0.1
+
+\subsection{Threshold accepting}
+
+\section{Genetic algorithms - An artifical duck}
+
+\section{}
+
+\chapter{Other 'intelligent' algorithms}
+In this chapter other intelligent algorithms are presented.
+These algortihms are for comparing the neural network to simpler
+methods.
+
+\section{The greedy algorithm}
+
+\subsection{Weaknesses}
+
+
 
 \KOMAoptions{listof=leveldown}
 
