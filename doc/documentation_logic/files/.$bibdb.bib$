@@ -87,15 +87,6 @@
   Publisher                = {AAAI Press}
 }
 
-@Booklet{GCC,
-  Title                    = {GCC, the GNU Compiler Collection},
-  Author                   = {GNU},
-  Year                     = {4.7.2},
-
-  Institution              = {GNU},
-  Url                      = {http://gcc.gnu.org/}
-}
-
 @Article{NURING,
   Title                    = {Turing compability with neural nets},
   Author                   = {Hava T. Siegelmann, Eduardo D. Sontag},

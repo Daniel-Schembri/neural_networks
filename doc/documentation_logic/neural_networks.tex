@@ -1,8 +1,8 @@
 %------------------------------------------------------
-%Author             : Daniel Schembri, Jonathan Schwarz
+%Author             : Jonathan Schwarz
 %University         : Pforzheim University
-%Date of last edit  : Wed, 03 Sep 2014 14:12:16 +0200
-%Filename           : multithreading_with_posix_pthreads.tex
+%Date of last edit  : Fri, 06 Mar 2015 10:00:53 +0100
+%Filename           : neural_networks.tex
 %------------------------------------------------------
 
 \documentclass[10pt,a4paper,DIV=11]{scrreprt}
@@ -81,17 +81,16 @@
 	
 \title
 {
-    Evolving neutral networks\\
+     A comparison of neural network types and learning techniques with an application in STOCA\cite{DAN}.
 }
 
 \author
 {
-    by \textbf{Daniel Schembri} - matriculation number: 310026 \\
-    and \textbf{Jonathan Schwarz} - matriculation number: 304728
+    \textbf{Jonathan Schwarz} - matriculation number: 304727
 }
 \date
 {
-    Winter term 2013/2014
+    Summer term 2015
 }
 %\today{}}
 
@@ -212,26 +211,30 @@ The other level of change is defined by the interaction of the neurons between e
 \end{center}
 
 
-\section{Mathematical formalisation}
-During the second world war, research in computer technology has been promoted for the sake of military purposes. With the advent of computer technology, neural networks started to become significant as models of abstract automata. McCulloch and Pitt's 1943 published work (>> A logical calculus of the ideas immamnent in nervous activity<<) showed, that every boolean function can simulated by a NN with simple binary thresholds. Within their work, neurons are perceived as basic Input/Ouput units, which process input of $i$ neurons and propagate their output further into the network through a single output.\\
+\section{Mathematical formalisation}\label{sec:mcpitts}
+During the second world war, research in computer technology has been promoted for the sake of military purposes. With the advent of computer technology, neural networks started to become significant as models of abstract automata. McCulloch and Pitt's 1943 published work (>>\textit{A logical calculus of the ideas immamnent in nervous activity}<<) proposes a cell which allows th simulation of AND-, OR- and NOT-gates and therefore every boolean function. This cell is a simple model of neuron with binary threshold and the first formal describtion of a neural network. Within their work, neurons are perceived as basic Input/Ouput units, which process input of $i$ neurons and propagate their output further into the network through a single output.\\
 
-
-The neurons activity level $a_j$ is assigned by transfer function $\varphi$:\\
+The activity level $a_j$ of a neuron $j$ is assigned by its transfer function $\varphi$. McCulloch and Pitt proposed a simple step function, where $S$ is the threshold:\\
 
 \begin{equation}
 	\varphi(x)=\begin{cases}
-		0: \quad  x \leq S \\
-		1: \quad  x > S \\
+		0: \quad  x < S \\
+		1: \quad  x \geq S \\
 	\end{cases}
+\label{eq:step}
 \end{equation}
-The synaptic terminal's function is depicted by the multiplication of the original input by a factor, the weight $w_i$ of the connection link. This model has later been named \textbf{McCulloch-Pitts neuron}.
-\\
+%The synaptic terminal's function is depicted by the multiplication of the input from neuron $a_i$ by a factor, the weight $w_{ij}$ of the connection link between neurons $i$ and $j$. $w_{ij}$ is either excitatory or inhibitory. 
+Given the definition of $\varphi$ in equation \eqref{eq:step}, activity levels are always binary and computed as follows:\\
+
+%\begin{equation}
+%a_j = \varphi(\sum_{i=0}^{} w_{ij} \cdot a_{i}), \quad a_i \in \{0, 1\}, w_{ij} \in \{1, -1\}
+%\end{equation}
 
 \begin{equation}
-a_j = \varphi(\sum_{i=0}^{} w_{i,j} \cdot a_{i}), \quad a_i \in \{0, 1\}
+a_j = \varphi(\sum_{i}^{} a_{i}), \quad a_i \in \{0, 1\}
 \end{equation}
 
-Where $a_{i}$ is the output (activity state) of neuron ${i}$ and $w_{i,j}$ the weight on the link from unit $i$ to unit $j$. Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed in \cite{MATHNEURON}.
+Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed in \cite{MATHNEURON}. This model has later been named \textbf{McCulloch-Pitts neuron}. 
 
 
 \begin{figure}[H]
@@ -241,23 +244,23 @@ Where $a_{i}$ is the output (activity state) of neuron ${i}$ and $w_{i,j}$ the w
 \node [align=center] (in1) at (-0.5,0) {$a_i$}; 
 \node [align=center] (in2) at (-0.3,0.75)   {}; 
 \node [align=center] (in3) at (-0.8,1.5) {$a_i = 1$}; 
-\node [align=center] (w1) at (0.7,0) {$w_{ij}$}; 
-\node [align=center] (w3) at (0.7,1.5) {$w_{0j}$};
+%\node [align=center] (w1) at (0.7,0) {$w_{ij}$}; 
+%\node [align=center] (w3) at (0.7,1.5) {$w_{0j}$};
 \node [align=center] (input) at (2,0.75) {\ \ $\sum_{}^{in_{j}}$}; 
 \node [align=center] (function) at (4,0.75) {$\varphi$}; 
 \node [align=center] (output) at (6,0.75) {$a_j$}; 
-\node [align=center] (o1) at (8.5,0) {};
+%\node [align=center] (o1) at (8.5,0) {};
 \node [align=center] (o2) at (8.5,0.75) {};
-\node [align=center] (o3) at (8.5,1.5) {};
+%\node [align=center] (o3) at (8.5,1.5) {};
 
-\node [align=center] (desilinks) at (0,-1) {Input\\ Links}; 
+\node [align=center] (desilinks) at (-0.60,-1) {Input\\ Links}; 
 \node [align=center] (desinput) at (1.9,-1) {Input\\ funcion}; 
 \node [align=center] (desfunc) at (4,-1) {Activation\\ function}; 
 \node [align=center] (desoutput) at (6,-1) {Output}; 
-\node [align=center] (desolinks) at (8,-1) {Output\\ links}; 
+\node [align=center] (desolinks) at (8,-1) {Output\\ link}; 
 
 \node [align=center] (desweight) at (4,2) {$a_j = \varphi(in_j)$}; 
-\node [align=center] (desinfunc) at (0.75,2) {\small Bias Weight}; 
+%\node [align=center] (desinfunc) at (0.75,2) {\small Weight}; 
 \node [align=center] (descneuron) at (6,1.5) {\small Cell body}; 
 
 \node [align=center] (dummy1) at (2.4,0.75) {}; 
@@ -267,23 +270,20 @@ Where $a_{i}$ is the output (activity state) of neuron ${i}$ and $w_{i,j}$ the w
 \draw[arrow]	(in2) -- (input);
 \draw[arrow]	(in3) -- (input);
 
-\draw[arrow]	(output) -- (o1);
+%\draw[arrow]	(output) -- (o1);
 \draw[arrow]	(output) -- (o2);
-\draw[arrow]	(output) -- (o3);
+%\draw[arrow]	(output) -- (o3);
 
 \node[draw=black,fit=(dummy1) (function) (dummy2) ,ellipse] (tmp) {};
 
-This proposal is of particular importance for the theory of NN and inspired significant researchers like John von Neumann. However, the McCulloch-Pitts neurons are limited by their inability to learn, resulting from their fixed structure.
-
 \end{tikzpicture}
-\caption{A mathematical model of a neuron}
+\caption{A mathematical model of a neuron $j$}
 \label{fig:mathneuron}
 \end{figure}
 
+This proposal is of particular importance for the theory of ANN and inspired significant researchers like John von Neumann or Nobert Wiener, who developed cybernetics. However, the McCulloch-Pitts neurons are limited by their inability to learn, resulting from their fixed structure. They also lack the surprising robustness of biological nerve networks, since they rely on a flawless operation of all components. Nevertheless, they still have significance in electrical engineering, where they are used to realise binary functions, due to their increased efficiency in contrast to gates. 
+
 \chapter{Artificial neural networks}
-
-\section{Historical development of ANN technology}
-
 \subsection{Units, Activity and Training}
 
 The units in a representation of a neural network on a computer are divided into 3 classes, depending on their position in the network. Neurons which receive input from external sources, e.g. sensors, are called Input units and simply latch  their input into the next layer of neurons. At the other end of the network, the output layer which represents the last layer of the network, can be found. Its output is collected and evaluated by a logic that utilizes the neural network as a black box. In between those layers, a variable amount of so-called hidden layers can be found. They represent the networks \textbf{backbone so lassen?} or center. The complexity of the network increases by the amount of hidden layers. Figure \ref{fig:3layer} shows a three layer (sometimes called two layer, since the input layer does no computation) neural network. 
@@ -438,6 +438,76 @@ As distinct from the binary step function, it is differntiable at all parts, whi
 
 In order to teach neural networks and enable them to apply learned behavior in following scenarios, the work with them is divided in a training- and test phase. During the training, the network learns certain behavior by feeding repetitive input to the first layer and observing the output of the network. This can be done in a supervised and unsupervised way. In a supervised training phase, the targeted output of the network is already known and is presented to the network as a \textit{teaching factor}. The network produces output depending on the current weights on its connections and adjusts them according to the margin between the targeted and produced output. Unsupervised learning is necessary in situations, where no reasonable teaching factors are available or the observant is more interested on the performance. Similarity between input incentives and connection weights is the factor, according to which weight adjustment is done in such models.
 
+\section{Overview}
+
+Scientists have proposed a multitude of different network structures since the advent of reasearch in ANN through their first formalisation. A lot of which have been designed with various motivations, stemming from the differnent perception of neural networks across disciblines. We are nowadays able to solve a vast variety of problems, both supervised (being taught by known data) and unsupervised (untaught). Categorisation can be achieved by distinguishing several parameters, e.g. the number of layers, acceptance of input types or usage of learning techniques. Figure \ref{fig:class} shows one possible categorisation taken from \cite{NNGER}, that allows us to present an overview. Signal flow presents the first layer of distinction. Within feed forward networks, the initial signal received by the input neurons will be further propagated into the network according to the transfer functions of each individual neurons. The connections between the neurons are straight forward and always lead from one layer to the next, without any loops. 
+
+As distinct from feed-forward networs, feedback (or recurrent) networks allow signal flow in both directions. Connections between neurons can be established in both directions, i.e. from a neuron to all other neurons in the network. Feedback networks can become extremely complex due to their dynamic nature. The bidirectional signal flow affords them some sort of a memory. As the current state of a neuron is continously changing, supervised recurrent networks need advanced learning algorithms. 
+
+\begin{figure}[H]
+\centering
+
+\fbox{
+\begin{tikzpicture}
+\node [align=center] (L1) at (3,10) {feed forward}; 
+
+\node [align=center] (R1) at (10,10) {recurrent}; 
+
+
+\node [align=center] (L21) at (2,8.5) {one layer,\\ binary}; 
+\node [align=center] (L22) at (4,8.5) {multi layer}; 
+
+\node [align=center] (R21) at (9,9) {deterministic}; 
+\node [align=center] (R22) at (11,9) {stochastic}; 
+
+
+\node [align=center] (L31) at (1,7) {Perceptron\\Adaline}; 
+\node [align=center] (L32) at (3,7) {non-recurrent}; 
+\node [align=center] (L33) at (5,7) {recurrent}; 
+
+\node [align=center] (R31) at (8,7.75) {self organising}; 
+\node [align=center] (R32) at (10.6,6.5) {BSB Hopfield\\BAM}; 
+\node [align=center] (R33) at (12,7.75) {Simulated annealing/\\Boltzmann-Machine}; 
+
+
+\node [align=center] (L41) at (2.25,6) {BPG}; 
+\node [align=center] (L42) at (3.25,6) {CPN}; 
+\node [align=center] (L43) at (4.35,6) {SRN}; 
+\node [align=center] (L44) at (5.35,6) {LTSM}; 
+
+\node [align=center] (R41) at (6.5,6) {ART}; 
+\node [align=center] (R42) at (8.80,6) {Cognition/\\Neocognition}; 
+
+\foreach \s/\t in {L1/L21,
+                   L1/L22,
+                   L21/L31,
+                   L22/L32,
+                   L22/L33,
+                   L32/L41,
+                   L32/L42,
+                   L33/L43,
+                   L33/L44}
+    \draw (\s) -- (\t);
+
+\foreach \s/\t in {R1/R21,
+                   R1/R22,
+                   R21/R31,
+                   R21/R32,
+                   R22/R33,
+                   R31/R41,
+                   R31/R42}
+    \draw (\s) -- (\t);
+
+\end{tikzpicture}}
+\caption{A categorisation of neural network types.BPG = Bachpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
+
+\label{fig:class}
+\end{figure}
+A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced.
+An appraisal of advantages and detriments of the presented models is rahter difficult as there performance hugly depends on the specific application. The selection and appropriate usage of network types, as well as the chosen sturcutre requires extensive experience. 
+
+
+
 \section{Learning}\label{sec:learning}
 \subsection{Hebbian learning rule}
 The psychologist Donald Olding Hebb proposed on the easiest learning rules with high biological plausibility in \cite{HEBB}:\\
@@ -521,7 +591,7 @@ As distinct form the delta rule, the backpropargation rule differs two cases, sh
 \label{eq:backcases}
 \end{equation}
 
-Eventuall the weights are changed acording to equation \eqref{eq:backweight}.
+Eventually, the weights are changed acording to equation \eqref{eq:backweight}.
 
 \begin{equation}
    w_{i,j}^{new} = w_{i,j}^{old} + \Delta w_{i,j}
@@ -861,6 +931,12 @@ methods.
 \section{The greedy algorithm}
 
 \subsection{Weaknesses}
+
+\chapter{Evaluation}
+\chapter{Related work}
+\chapter{Conclusion}
+\chapter{Future work}
+
 
 
 
