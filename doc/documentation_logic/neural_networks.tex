@@ -375,9 +375,10 @@ As distinct from feed-forward networs, recurrent (or feedback) networks allow bi
 
 \label{fig:class}
 \end{figure}
-A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced. Within this chapter, I will give an introduction of the terminology and mathematical models used to represent a neural network on a computing machine. An appraisal of advantages and detriments of the presented models is rather difficult, as their performance hugly depends on the specific application. Regarding machine learning, and thereforea also ANN, the term% \texit{performance} demands for a new definition. Machine learning is a scientific discipline that explores the construction and study of algorithms that can learn from data.\cite{MLDEF1} Such algorithms operate by building a model from example inputs and using that to make predictions or decisions.\cite{MLDEF2} As distict from other algorithms, there can never be absolute certainity of the correctness of a machine learning model. This stems from their usage of the probability of statistics applied to real world problems. Algorithmic measures, such as optimality and completeness cannot be utilised to assess the usefulness of a machine learning technique. A performance evaluation can therefore only be conducted given a specific problem and the according data. After all, the selection and appropriate usage of neural network structures requires extensive experience and/or thorough testing. 
+A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced. Within this chapter, I will give an introduction of the terminology and mathematical models used to represent a neural network on a computing machine. An appraisal of advantages and detriments of the presented models is rather difficult, as their performance hugly depends on the specific application. Regarding machine learning, and thereforea also ANN, the term performancedemands for a new definition. Machine learning is a scientific discipline that explores the construction and study of algorithms that can learn from data.\cite{MLDEF1} Such algorithms operate by building a model from example inputs and using that to make predictions or decisions.\cite{MLDEF2} As distict from other algorithms, there can never be absolute certainity of the correctness of a machine learning model. This stems from their usage of the probability of statistics applied to real world problems. Algorithmic measures, such as optimality and completeness cannot be utilised to assess the usefulness of a machine learning technique. A performance evaluation can therefore only be conducted given a specific problem and the according data. After all, the selection and appropriate usage of neural network structures requires extensive experience and/or thorough testing. 
 
 \section{Network structure}
+\subsection{Layers}
 The units within a network are categorised into several layers according to their position. This allows for an accurate describtion of the network and the function of each respective unit within the network. The set of layers of a ANN will be denoted as $L$, where an artificial neural network of size n, written as $\text{ANN}^n$ is the union of the n layers in the network:
 
 \begin{equation}
@@ -458,12 +459,9 @@ Praticular significance is drawn to the layers in between input and output layer
 H \subseteq L; H = \{L_i|1<i<n\}
 \end{equation}
 
+\subsection{Units}
 
-\begin{equation}
-\end{equation}
-
-The units of a network are devided into several classes, depending on their position in the network. Neurons which receive input from external sources, e.g. sensors, are called Input units and simply latch  their input into the next layer of neurons. At the other end of the network, the output layer which represents the last layer of the network, can be found. Its output is collected and evaluated by a logic that utilizes the neural network as a black box. In between those layers, a variable amount of so-called hidden layers can be found. They represent the networks \textbf{backbone so lassen?} or center. The complexity of the network increases by the amount of hidden layers. Figure \ref{fig:3layer} shows a three layer (sometimes called two layer, since the input layer does no computation) neural network. 
-In order to allow computers quick and easy calculations, weights are often stored in matrices, representing the whole model as a basic mathematical unit. Let $N_{i}$ be a neural network, consisting of $i$ layers: Input,  output and $i-2$ hidden layers. $N_{i}$ can be fully described by $i-1$ matrices $W_{ij}$ where $i$ is the number of units in the preceding layer, and $j$ the amount of neurons that are connected to any of those $i$ units:
+A first improvement to McCulloch and Pitt's model was the concept of weights on the connecting links. Inspired by the function of the synaptic terminals, a weight $w_{ij}$ between two neurons $n_i$ and $n_j$, models the magnitude of influence. Weights may be both positive and negative, exhibatory or inhibatory. A magnitude of zero stands for a cut-off signal flow. The entirety of connection weights wihin a network is often sored in a matrix, which allows for performant manipulation. The manipulation of connections weight may be used to alter the network's behaviour. $W$ is called the connection matrix, which fully represnts the structure of a feed-forward network with $i$ layers:
 \begin{equation}
 W = 
 \begin{pmatrix}
@@ -473,10 +471,71 @@ w_{1j} & \cdots & w_{ij} \\
 \end{pmatrix}
 \end{equation}
 
-In addition, the concept of Bias Neurons has proven itself useful. Bias units are neurons, which don't receive any input signals and have a fixed output of $+ 1$, although the weight on the connection link may be $\pm 1$. The Bias-Unit connected to a link with a positive weight is used to keep Neurons \textit{alive}, if they don't receive a significant input. On the contrary, a negative link may be used to keep a neuron in an inactive state.
-Another application is the implementation of a threshold value on a unit, preventing it from firing too often.\\ 
+In addition, the concept of bias neurons has proven itself useful. Bias units are non-receptive, both in feed-forward and recurrent networks. Hence their activity level is steady, usually $+1$. Links between bias and normal neurons are to be treated normally, the influence of a bias can therefore be altered. They are often used to keep units with little weighted input active, by shifting their activation function $\varphi$ they don't receive significant input. In contrast, a negative link may be used to keep a neuron in an inactive state.
+\begin{figure}[H]
+\centering
+
+\begin{tikzpicture}
+\node [draw=black, align=center, circle] (i) at (0,0) {$n_0$}; 
+
+\node [draw=black, align=center, circle] (o) at (4,0) {$n_1$}; 
+
+\draw[arrow]	(i) -- (o);
+
+\node[] (dw) at (2,0.3){$w_{ij}$};
+\node[] (di) at (0,0.6){Input: $x$};
+\node[] (do) at (4,0.6){\center Output};
+\node[] (df) at (2.1,-0.7){$\varphi = sig(w_{01}\cdot x)$};
+\end{tikzpicture}
+\caption{A single input-output network}
+\label{fig:1on1}
+\end{figure}
+
+Consider the network shown in figure \ref{fig:1on1}. The activation function of the output neuron is chosen to be the sigmoid function. Figure \ref{fig:sigmoid-scale} shows the output for several values of $w$. It can seen that $w$ changes the steepness of the sigmoid function. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth,scale=1]{files/sigmoid-scale.png}  
+    \caption{The output of unit $n_1$ in figure \ref{fig:1on1}}
+    \label{fig:sigmoid-scale}
+\end{figure}
+
+
+Figure \ref{fig:2on1} shows the same network with an additional bias neuron. This allows us to shift the activation function according to the weight of the connection link $w_{12}$ as shown in figure \ref{fig:sigmoid-shift}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\node [draw=black, align=center, circle] (i2) at (0,2) {$n_0$}; 
+\node [draw=black, align=center, circle] (i1) at (0,0) {$n_1$}; 
+\node [draw=black, align=center, circle] (o) at (4,1)  {$n_2$}; 
+
+\draw[arrow]	(i2) -- (o);
+\draw[arrow]	(i1) -- (o);
+
+\node[] (dw) at (2,1.8){$w_{02}$};
+\node[] (dw) at (2,0.8){$w_{12}$};
+\node[] (di) at (0,0.6){Bias: $1.0$};
+\node[] (di) at (0,2.6){Input: $x$};
+\node[] (do) at (4,1.6){\center Output};
+\node[] (df) at (2.1,-0.7){$\varphi = sig(w_{02}\cdot x + w_{12}\cdot 1.0)$};
+\end{tikzpicture}
+\caption{A single input-output network}
+\label{fig:2on1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth,scale=1]{files/sigmoid-shift.png}  
+    \caption{The output of unit $n_1$ in figure \ref{fig:2on1}}
+    \label{fig:sigmoid-shift}
+\end{figure}
+
+\subsection{Activation functions}
 
 As discussed before, the weights of the connections between the neurons represent the 'Intelligence' of the network. The bigger the absolute value of the weight, the greater the influence of a neuron to another. This value can be both positive and negative, as well as neutral \textit{(0)}, meaning that there is currently no influence between the neurons, although there is still a link connecting them. A weight of 0 can be understood as a logical pinch of the link, preventing it from transmitting signals.
+
+
 
 
 The connection between the input values and the activity level of the neuron is made by the activity function $\varphi$. Different models are obtained depending on the choice of the activity or transfer function. Amongst the most common choices are the linear, binary step and sigmoid function as illustrated in Figure \ref{fig:plots}. The linear function has a threshold $t$, which can be used to avoid low network input (e.g. noise) to be further propagated into the network. The binary step function represents the firing of a pulse down the axon if positive $1$), while $0$ represents no firing. The step function is sometimes defined to jump from $-1$ to $1$. 
@@ -559,8 +618,10 @@ As distinct from the binary step function, it is differntiable at all parts, whi
 
 In order to teach neural networks and enable them to apply learned behavior in following scenarios, the work with them is divided in a training- and test phase. During the training, the network learns certain behavior by feeding repetitive input to the first layer and observing the output of the network. This can be done in a supervised and unsupervised way. In a supervised training phase, the targeted output of the network is already known and is presented to the network as a \textit{teaching factor}. The network produces output depending on the current weights on its connections and adjusts them according to the margin between the targeted and produced output. Unsupervised learning is necessary in situations, where no reasonable teaching factors are available or the observant is more interested on the performance. Similarity between input incentives and connection weights is the factor, according to which weight adjustment is done in such models.
 
-\section{Learning}\label{sec:learning}
-\subsection{Hebbian learning rule}
+\section{Applications}
+
+\chapter{Learning}\label{sec:learning}
+\section{Hebbian learning rule}
 The psychologist Donald Olding Hebb proposed on the easiest learning rules with high biological plausibility in \cite{HEBB}:\\
 
 \textit{“Let us assume that the persistence or repetition of a reverberatory activity (or "trace") tends to induce lasting cellular changes that add to its stability.… When an axon of cell A is near enough to excite a cell B and repeatedly or persistently takes part in firing it, some growth process or metabolic change takes place in one or both cells such that A's efficiency, as one of the cells firing B, is increased.”}\\
@@ -581,7 +642,7 @@ The weight change $\Delta w_{ij}$ using the bian learning rule is shown in equat
 
 One of the major drawbacks of the Hebbian rule is the fact, that is can only applied on networks without a hidden ayer, and therefore only very simple neural networks.
 
-\subsection{Delta rule}
+\section{Delta rule}
 The delta rule is based on the comparison between a targeted output $t$ and the observed output $o$ and can therefore only be applied with supervised learning.
 It can be expressed using equation \eqref{eq:delta1}.
 \begin{equation}
@@ -695,8 +756,8 @@ Eventually, the weights are changed acording to equation \eqref{eq:backweight}.
 \label{eq:backweight}
 \end{equation}
 
-\subsection{Backpropargation through time}
-\subsection{Competitive learning}
+\section{Backpropargation through time}
+\section{Competitive learning}
 %...
 \chapter{Network types}\label{chap:nets}
 At the moment there are three generations of neural networks. 
