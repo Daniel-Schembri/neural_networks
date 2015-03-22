@@ -61,9 +61,10 @@
 \usepackage[square,numbers]{natbib}
 \usepackage{gensymb}
 
-%equation
+%maths
 \usepackage[tbtags]{amsmath}
 \usepackage{amssymb} 
+\usepackage{dsfont}
 
 %table of contents with hyperlinks
 %always include as last package
@@ -84,7 +85,7 @@
 	
 \title
 {
-     A comparison of neural network types and learning techniques with an application in STOCA\cite{DAN}.
+     A comparison of neural network types and learning techniques with an application in STOCA\cite{DANIEL}.
 }
 
 \author
@@ -192,19 +193,20 @@
 \section*{List of acronyms}
 \begin{acronym}
     \acro{ANN}{Artificial neural network}
-    \acro{$a_j$}{Activity of unit $j$}
-    \acro{$a_j(t)$}{Activity of unit $j$ at time $t$}
+    \acro{$a_j$}{Activity of unit $n_j$}
+    \acro{$a_j(t)$}{Activity of unit $n_j$ at time $t$}
     \acro{$H$}{The set of hidden layers of a neural network}
     \acro{$L$}{The set of layers of a neural network}
     \acro{ML}{Machine learning}
+    \acro{$n_j$}{Neuron (also unit) $j$}
     \acro{$W$}{The connection matrix}
-    \acro{$w_{ij}$}{Weight on the connection link between unit $i$ and $j$}
-    \acro{$\Delta w_{ij}$}{Weight change  on the connection link between unit $i$ and $j$}
+    \acro{$w_{ij}$}{Weight on the connection link between neuros $n_i$ and $n_j$}
+%    \acro{$\Delta w_{ij}$}{Weight change  on the connection link between unit $i$ and $j$}
 %    \acro{$\overrightarrow{x}$}{The input vector of a neural network}
 %    \acro{$\overrightarrow{y}$}{The output vector of a neural network}
-    \acro{$\varphi$}{Activation (transfer) function of a neuron}
-    \acro{$\eta$}{Learning rate of a network}
-    \acro{$\nabla F(a)$}{Gradient of the multivariable function $F(x)$ at point $a$}
+%    \acro{$\varphi$}{Activation (transfer) function of a neuron}
+%    \acro{$\eta$}{Learning rate of a network}
+%    \acro{$\nabla F(a)$}{Gradient of the multivariable function $F(x)$ at point $a$}
 \end{acronym}
 
 \newpage
@@ -311,9 +313,9 @@ This proposal is of particular importance for the theory of ANN and inspired sig
 \chapter{Artificial neural networks}
 \section{Overview}
 
-Scientists have proposed a multitude of different network structures since the advent of reasearch in ANN through their first formalisation. A lot of which have been designed with various motivations, stemming from the differnent perception of neural networks across disciblines. We are nowadays able to solve a vast variety of problems, both supervised (being taught by known data) and unsupervised (untaught). Categorisation can be achieved by distinguishing several parameters, e.g. the number of layers, acceptance of input types or usage of learning techniques. Figure \ref{fig:class} shows one possible categorisation taken from \cite{NNGER}, that allows us to present an overview. Signal flow presents the first layer of distinction. Within feed forward networks, the initial signal received by the input neurons will be further propagated into the network according to the transfer functions of each individual neurons. The connections between the neurons are straight forward and always lead from one layer to the next, without any loops. 
+Scientists have proposed a multitude of different network structures since the advent of reasearch in ANN through their first formalisation. A lot of which have been designed with various motivations, stemming from the differnent perception of neural networks across disciblines. Categorisation can be achieved by distinguishing several parameters, e.g. the number of layers, acceptance of input types or usage of learning techniques. Figure \ref{fig:class} illustrates a possible categorisation\cite{NNGER}. The direction of signal flow serves as a first level of distinction, as it substantially characterises the networks structure, complexity and so on. Both types of signal flow mandate the propagation of network input further into the network. Feedforward network prohibit the usage of non-straightforward signal flow, i.e. connections may only emerge between subsequent neurons. Any connections to predecessors are forbidden. This constraint has allowed for a quick development of learning techniques, empowering ANN to learn from data. 
 
-As distinct from feed-forward networs, feedback (or recurrent) networks allow signal flow in both directions. Connections between neurons can be established in both directions, i.e. from a neuron to all other neurons in the network. Feedback networks can become extremely complex due to their dynamic nature. The bidirectional signal flow affords them some sort of a memory. As the current state of a neuron is continously changing, supervised recurrent networks need advanced learning algorithms. 
+As distinct from feed-forward networs, recurrent (or feedback) networks allow bidirectional signal flow. As links from one neuron may be formed with any other neuron in the network, recurrent network are often categorised by increased complexity. As the current state of a neuron may be continously changing, recurrent networks demand advanced learning algorithms. Due to their dynamic nature, they allow for the modelling of advanced techniques, such as long and short term memory.
 
 \begin{figure}[H]
 \centering
@@ -342,8 +344,7 @@ As distinct from feed-forward networs, feedback (or recurrent) networks allow si
 
 
 \node [align=center] (L41) at (2.25,6) {BPG}; 
-\node [align=center] (L42) at (3.25,6) {CPN}; 
-\node [align=center] (L43) at (4.35,6) {SRN}; 
+\node [align=center] (L42) at (3.25,6) {CPN}; \node [align=center] (L43) at (4.35,6) {SRN}; 
 \node [align=center] (L44) at (5.35,6) {LTSM}; 
 
 \node [align=center] (R41) at (6.5,6) {ART}; 
@@ -370,16 +371,98 @@ As distinct from feed-forward networs, feedback (or recurrent) networks allow si
     \draw (\s) -- (\t);
 
 \end{tikzpicture}}
-\caption{A categorisation of neural network types.BPG = Bachpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
+\caption{A categorisation of neural network types. BPG = Bachpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
 
 \label{fig:class}
 \end{figure}
-A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced.
-An appraisal of advantages and detriments of the presented models is rahter difficult as there performance hugly depends on the specific application. The selection and appropriate usage of network types, as well as the chosen sturcutre requires extensive experience. 
+A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced. Within this chapter, I will give an introduction of the terminology and mathematical models used to represent a neural network on a computing machine. An appraisal of advantages and detriments of the presented models is rather difficult, as their performance hugly depends on the specific application. Regarding machine learning, and thereforea also ANN, the term% \texit{performance} demands for a new definition. Machine learning is a scientific discipline that explores the construction and study of algorithms that can learn from data.\cite{MLDEF1} Such algorithms operate by building a model from example inputs and using that to make predictions or decisions.\cite{MLDEF2} As distict from other algorithms, there can never be absolute certainity of the correctness of a machine learning model. This stems from their usage of the probability of statistics applied to real world problems. Algorithmic measures, such as optimality and completeness cannot be utilised to assess the usefulness of a machine learning technique. A performance evaluation can therefore only be conducted given a specific problem and the according data. After all, the selection and appropriate usage of neural network structures requires extensive experience and/or thorough testing. 
 
-\subsection{Units, Activity and Training}
+\section{Network structure}
+The units within a network are categorised into several layers according to their position. This allows for an accurate describtion of the network and the function of each respective unit within the network. The set of layers of a ANN will be denoted as $L$, where an artificial neural network of size n, written as $\text{ANN}^n$ is the union of the n layers in the network:
 
-The units in a representation of a neural network on a computer are divided into 3 classes, depending on their position in the network. Neurons which receive input from external sources, e.g. sensors, are called Input units and simply latch  their input into the next layer of neurons. At the other end of the network, the output layer which represents the last layer of the network, can be found. Its output is collected and evaluated by a logic that utilizes the neural network as a black box. In between those layers, a variable amount of so-called hidden layers can be found. They represent the networks \textbf{backbone so lassen?} or center. The complexity of the network increases by the amount of hidden layers. Figure \ref{fig:3layer} shows a three layer (sometimes called two layer, since the input layer does no computation) neural network. 
+\begin{equation}
+    \text{ANN}^n = \bigcup_{N}^{i=1}{L_i}
+\end{equation}
+
+The amount of neurons within a layer is equal to the elements of the respective set. The total number of neurons in an ANN is $\sum_{i=1}^{n}{|L_i|}$. The tuple $(|L_1|,...,|L_n|)$ is called the \textbf{network topolgy} and fully describes the stucture (with exclution of the connections) of a feed-forward network. Recurrent networks need and additional describtion.
+
+The first network layer $L_1$, is referred to as the the input layer. It receives the input vector $\overrightarrow{x} \in \mathds{R}^{|L_1|}$ and passes it onto the next layer. Likewise, $L_n$ is the output layer of the network, whose neurons are called the output units. $\overrightarrow{y} \in \mathds{R}^{|L_n|}$ is the output vector of an ANN. A computer application will later utilise the neural network as a black box, being only interested in the transformation from $\overrightarrow{x}$ to $\overrightarrow{y}$. Figure \ref{fig:layer} shows this. 
+
+\begin{figure}[H]
+\centering
+
+\begin{tikzpicture}
+\node [draw=black, align=center, circle] (i1) at (0,3) {}; 
+\node [draw=black, align=center, circle] (i2) at (0,2) {}; 
+\node [draw=black, align=center, circle] (i3) at (0,1) {}; 
+\node [draw=black, align=center, circle] (i4) at (0,0) {}; 
+
+\node [draw=black, align=center, circle] (h01) at (2,2.5) {}; 
+\node [draw=black, align=center, circle] (h02) at (2,1.5) {};
+\node [draw=black, align=center, circle] (h03) at (2,0.5) {};
+
+\node [draw=black, align=center, circle] (h1) at (4,2.5) {}; 
+\node [draw=black, align=center, circle] (h2) at (4,1.5) {};
+\node [draw=black, align=center, circle] (h3) at (4,0.5) {};
+
+\node [draw=black, align=center, circle] (o1) at (6,2) {};
+\node [draw=black, align=center, circle] (o2) at (6,1) {};
+
+\draw[arrow]	(i1) -- (h01);
+\draw[arrow]	(i1) -- (h02);
+\draw[arrow]	(i1) -- (h03);
+
+\draw[arrow]	(i2) -- (h01);
+\draw[arrow]	(i2) -- (h02);
+\draw[arrow]	(i2) -- (h03);
+
+\draw[arrow]	(i3) -- (h01);
+\draw[arrow]	(i3) -- (h02);
+\draw[arrow]	(i3) -- (h03);
+
+\draw[arrow]	(i4) -- (h01);
+\draw[arrow]	(i4) -- (h02);
+\draw[arrow]	(i4) -- (h03);
+
+\draw[arrow]	(h1) -- (o1);
+\draw[arrow]	(h1) -- (o2);
+
+\draw[arrow]	(h2) -- (o1);
+\draw[arrow]	(h2) -- (o2);
+
+\draw[arrow]	(h3) -- (o1);
+\draw[arrow]	(h3) -- (o2);
+
+\node[draw=black,fit=(i1) (i2) (i3) (i4),ellipse] (inputLayer) {};
+\node[draw=black,fit=(h01) (h02) (h03) ,ellipse] (hiddenLayer) {};
+\node[draw=black,fit=(h1) (h2) (h3) ,ellipse] (hiddenLayer) {};
+\node[draw=black,fit=(o1) (o2) ,ellipse] (outputLayer) {};
+
+\node [align=center] (x) at (-1,1.5) {$\overrightarrow{x}$};
+
+\node [align=center] (di) at (0,5) {\textcolor{black}Input\\ layer\\ $L_1$};
+\node [align=center] (dh1) at (2,5) {\textcolor{black}Hidden\\ layer\\ $L_{2}$};
+\node [align=center] (dh1) at (3,1.5) {$\cdots$};
+\node [align=center] (dh2) at (4,5) {\textcolor{black}Hidden\\ layer\\ $L_{n-1}$};
+\node [align=center] (do) at (6,5) {\textcolor{black}Output\\ layer\\ $L_n$};
+
+\node [align=center] (y1) at (7,1.5) {$\overrightarrow{y}$};
+
+\end{tikzpicture}
+%\caption{%An example of an artificial neural network with $n$ layers. Its network topology is $(|L_1|=4,|L_2|=3,...,|L_{n-1}|=3,|L_n|=2)$}
+\label{fig:layer}
+\end{figure}
+
+Praticular significance is drawn to the layers in between input and output layer. Those layers are optional, but needed to solve certain problems. We will discuss the importance of hidden layers for problem solution in chapter \ref{chap:nets}. We denote the set of hidden layers as $H$. It is described as follows:
+\begin{equation}
+H \subseteq L; H = \{L_i|1<i<n\}
+\end{equation}
+
+
+\begin{equation}
+\end{equation}
+
+The units of a network are devided into several classes, depending on their position in the network. Neurons which receive input from external sources, e.g. sensors, are called Input units and simply latch  their input into the next layer of neurons. At the other end of the network, the output layer which represents the last layer of the network, can be found. Its output is collected and evaluated by a logic that utilizes the neural network as a black box. In between those layers, a variable amount of so-called hidden layers can be found. They represent the networks \textbf{backbone so lassen?} or center. The complexity of the network increases by the amount of hidden layers. Figure \ref{fig:3layer} shows a three layer (sometimes called two layer, since the input layer does no computation) neural network. 
 In order to allow computers quick and easy calculations, weights are often stored in matrices, representing the whole model as a basic mathematical unit. Let $N_{i}$ be a neural network, consisting of $i$ layers: Input,  output and $i-2$ hidden layers. $N_{i}$ can be fully described by $i-1$ matrices $W_{ij}$ where $i$ is the number of units in the preceding layer, and $j$ the amount of neurons that are connected to any of those $i$ units:
 \begin{equation}
 W = 
@@ -395,60 +478,6 @@ Another application is the implementation of a threshold value on a unit, preven
 
 As discussed before, the weights of the connections between the neurons represent the 'Intelligence' of the network. The bigger the absolute value of the weight, the greater the influence of a neuron to another. This value can be both positive and negative, as well as neutral \textit{(0)}, meaning that there is currently no influence between the neurons, although there is still a link connecting them. A weight of 0 can be understood as a logical pinch of the link, preventing it from transmitting signals.
 
-\begin{figure}[H]
-\centering
-
-\begin{tikzpicture}
-\node [draw=red, fill=red, align=center, circle] (i1) at (0,3) {}; 
-\node [draw=red, fill=red, align=center, circle] (i2) at (0,2) {}; 
-\node [draw=red, fill=red, align=center, circle] (i3) at (0,1) {}; 
-\node [draw=red, fill=red, align=center, circle] (i4) at (0,0) {}; 
-
-\node [draw=blue, fill=blue, align=center, circle] (h1) at (2,2.5) {}; 
-\node [draw=blue, fill=blue, align=center, circle] (h2) at (2,1.5) {};
-\node [draw=blue, fill=blue, align=center, circle] (h3) at (2,0.5) {};
-
-\node [draw=green, fill=green, align=center, circle] (o1) at (4,2) {};
-\node [draw=green, fill=green, align=center, circle] (o2) at (4,1) {};
-
-\draw[arrow]	(i1) -- (h1);
-\draw[arrow]	(i1) -- (h2);
-\draw[arrow]	(i1) -- (h3);
-
-\draw[arrow]	(i2) -- (h1);
-\draw[arrow]	(i2) -- (h2);
-\draw[arrow]	(i2) -- (h3);
-
-\draw[arrow]	(i3) -- (h1);
-\draw[arrow]	(i3) -- (h2);
-\draw[arrow]	(i3) -- (h3);
-
-\draw[arrow]	(i4) -- (h1);
-\draw[arrow]	(i4) -- (h2);
-\draw[arrow]	(i4) -- (h3);
-
-\draw[arrow]	(h1) -- (o1);
-\draw[arrow]	(h1) -- (o2);
-
-\draw[arrow]	(h2) -- (o1);
-\draw[arrow]	(h2) -- (o2);
-
-\draw[arrow]	(h3) -- (o1);
-\draw[arrow]	(h3) -- (o2);
-
-\node[draw=red,fit=(i1) (i2) (i3) (i4),ellipse] (inputLayer) {};
-\node[draw=blue,fit=(h1) (h2) (h3) ,ellipse] (hiddenLayer) {};
-\node[draw=green,fit=(o1) (o2) ,ellipse] (outputLayer) {};
-
-\node [align=center] (di) at (0,5) {\textcolor{red}Input\\ Layer};
-\node [align=center] (dh) at (2,5) {\textcolor{blue}Hidden\\ Layer};
-\node [align=center] (do) at (4,5) {\textcolor{green}Output\\ Layer};
-
-
-\end{tikzpicture}
-\caption{A three-layer neural network}
-\label{fig:3layer}
-\end{figure}
 
 The connection between the input values and the activity level of the neuron is made by the activity function $\varphi$. Different models are obtained depending on the choice of the activity or transfer function. Amongst the most common choices are the linear, binary step and sigmoid function as illustrated in Figure \ref{fig:plots}. The linear function has a threshold $t$, which can be used to avoid low network input (e.g. noise) to be further propagated into the network. The binary step function represents the firing of a pulse down the axon if positive $1$), while $0$ represents no firing. The step function is sometimes defined to jump from $-1$ to $1$. 
 
@@ -577,7 +606,53 @@ The deltas learning rule equation \eqref{eq:delta2} covers all three possibiliti
 
 The simplicity of this learning rules also comes at great cost: The comparison only allows us to adjust connections which connect to the rightmost layer in the network. This fact restricts the application of this method from networks with a hidden layer. 
 
-\subsection{Backpropargation}
+\section{Backpropargation}
+
+\subsection{Gradient descent}
+
+The optimisation algorithm gradient descent (also steepest descent) tackles the problem of finding a local minimum of a multivariable function $F(x)$. In order to do, one substracts the gradient $\nabla F(a)$ from the current point $a$ to obtain a new point $b$ so that $F(a) \geq F(b)$. The non-negative weight $\gamma$ is often referred to as the stepsize.
+
+\begin{equation}
+ b = a - \gamma \nabla F(a)
+\label{eq:graddes}
+\end{equation} 
+
+The gradient of a differentiable function $f: D \subseteq \mathds{R}^n$ $\rightarrow$ $\mathds{R}$ must disappear at a local minimum or maximum at $x_i$:\cite{MATHINF}
+
+\begin{equation}
+\nabla F(x_i) = 0
+\end{equation} 
+
+Starting with guess $x_0$ for a local minimum, and iteratively calculating an $x_{i+1}$ according to equation \eqref{eq:graddes}, we will obtain $x_0, ..., x_i$ so that $F(x_0) \geq F(x_1) \geq ... \geq F(x_{n-1}) \geq F(x_n)$. The parameters $\theta$ and $n$ are  used as an ending criteria for the algorithm. Algorithm \ref{alg:GD} shows the complete algorithm.
+
+\begin{algorithm}[H]
+\LinesNumbered
+\DontPrintSemicolon
+\BlankLine
+\Ein{A differentiable function $F(x)$, stepsize $\gamma$, tolerance $\theta$, point $x_0$}
+\Aus{A local minimum at $x_i$}
+\BlankLine
+\Begin
+{
+    \Repeat{$\Delta x < \theta$ for $n$ iterations}
+    {
+        $x_{i+1}$ = $x_i - \gamma \nabla F(x_i)$
+    }
+}
+\caption{The gradient descent algorithm}
+\label{alg:GD}
+\end{algorithm}
+
+Gradient descent may be imagined as the effort of a wanderer to reach the bottom of valley as quick as possible, therefore always seeking to climb down as the point of steepest descent. This is illustrated in Figure \ref{fig:grad}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth,scale=1]{files/graddes.png}  
+    \caption{Illustration of gradient descent.\cite{GRADFIG}}
+    \label{fig:grad}
+\end{figure}
+
+\subsection{The backpropagation algorithm}
 
 The backpropargation algorithm is yet another learning rule for supervised networks, but in comparison to the hebbian and delta rules, it can also be applied for networks with $n$ numbers of hidden layers. There are certain problems that cannot be solved by networks without at least one hidden layer, the XOR-Gate being an famous example for such problems. It was first devised by Paul Werbos in 1975 \cite{BACK} and consists of three stages:
 \begin{itemize}
@@ -623,7 +698,7 @@ Eventually, the weights are changed acording to equation \eqref{eq:backweight}.
 \subsection{Backpropargation through time}
 \subsection{Competitive learning}
 %...
-\section{Network types}
+\chapter{Network types}\label{chap:nets}
 At the moment there are three generations of neural networks. 
 The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
 In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
