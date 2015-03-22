@@ -54,6 +54,9 @@
 %clean footer & header
 \fancyhf{}
 
+%acronyms
+\usepackage[nohyperlinks]{acronym}
+
 %bibtex
 \usepackage[square,numbers]{natbib}
 \usepackage{gensymb}
@@ -184,6 +187,28 @@
 {\large\tableofcontents}
 \newpage
 
+\thispagestyle{empty}
+
+\section*{List of acronyms}
+\begin{acronym}
+    \acro{ANN}{Artificial neural network}
+    \acro{$a_j$}{Activity of unit $j$}
+    \acro{$a_j(t)$}{Activity of unit $j$ at time $t$}
+    \acro{$H$}{The set of hidden layers of a neural network}
+    \acro{$L$}{The set of layers of a neural network}
+    \acro{ML}{Machine learning}
+    \acro{$W$}{The connection matrix}
+    \acro{$w_{ij}$}{Weight on the connection link between unit $i$ and $j$}
+    \acro{$\Delta w_{ij}$}{Weight change  on the connection link between unit $i$ and $j$}
+%    \acro{$\overrightarrow{x}$}{The input vector of a neural network}
+%    \acro{$\overrightarrow{y}$}{The output vector of a neural network}
+    \acro{$\varphi$}{Activation (transfer) function of a neuron}
+    \acro{$\eta$}{Learning rate of a network}
+    \acro{$\nabla F(a)$}{Gradient of the multivariable function $F(x)$ at point $a$}
+\end{acronym}
+
+\newpage
+
 \chapter{Introduction}
 \section{Neural networks}
 Neural networks may be looked at and described from widely different angles. Their models serve neuroscience for the understanding of biological processes in the human brain, while a psychologist verifies learning- and memory theories using those models. A physicist regards them as a physical structure, which can be described by their energy functions and probabilistic regularities. From a computer scientific point of view, neural networks (NN) are massive parallelised, adaptive and partially self-organised information processing systems. \cite{NNGER}
@@ -284,16 +309,84 @@ Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed 
 This proposal is of particular importance for the theory of ANN and inspired significant researchers like John von Neumann or Nobert Wiener, who developed cybernetics. However, the McCulloch-Pitts neurons are limited by their inability to learn, resulting from their fixed structure. They also lack the surprising robustness of biological nerve networks, since they rely on a flawless operation of all components. Nevertheless, they still have significance in electrical engineering, where they are used to realise binary functions, due to their increased efficiency in contrast to gates. 
 
 \chapter{Artificial neural networks}
+\section{Overview}
+
+Scientists have proposed a multitude of different network structures since the advent of reasearch in ANN through their first formalisation. A lot of which have been designed with various motivations, stemming from the differnent perception of neural networks across disciblines. We are nowadays able to solve a vast variety of problems, both supervised (being taught by known data) and unsupervised (untaught). Categorisation can be achieved by distinguishing several parameters, e.g. the number of layers, acceptance of input types or usage of learning techniques. Figure \ref{fig:class} shows one possible categorisation taken from \cite{NNGER}, that allows us to present an overview. Signal flow presents the first layer of distinction. Within feed forward networks, the initial signal received by the input neurons will be further propagated into the network according to the transfer functions of each individual neurons. The connections between the neurons are straight forward and always lead from one layer to the next, without any loops. 
+
+As distinct from feed-forward networs, feedback (or recurrent) networks allow signal flow in both directions. Connections between neurons can be established in both directions, i.e. from a neuron to all other neurons in the network. Feedback networks can become extremely complex due to their dynamic nature. The bidirectional signal flow affords them some sort of a memory. As the current state of a neuron is continously changing, supervised recurrent networks need advanced learning algorithms. 
+
+\begin{figure}[H]
+\centering
+
+\fbox{
+\begin{tikzpicture}
+\node [align=center] (L1) at (3,10) {feed forward}; 
+
+\node [align=center] (R1) at (10,10) {recurrent}; 
+
+
+\node [align=center] (L21) at (2,8.5) {one layer,\\ binary}; 
+\node [align=center] (L22) at (4,8.5) {multi layer}; 
+
+\node [align=center] (R21) at (9,9) {deterministic}; 
+\node [align=center] (R22) at (11,9) {stochastic}; 
+
+
+\node [align=center] (L31) at (1,7) {Perceptron\\Adaline}; 
+\node [align=center] (L32) at (3,7) {non-recurrent}; 
+\node [align=center] (L33) at (5,7) {recurrent}; 
+
+\node [align=center] (R31) at (8,7.75) {self organising}; 
+\node [align=center] (R32) at (10.6,6.5) {BSB Hopfield\\BAM}; 
+\node [align=center] (R33) at (12,7.75) {Simulated annealing/\\Boltzmann-Machine}; 
+
+
+\node [align=center] (L41) at (2.25,6) {BPG}; 
+\node [align=center] (L42) at (3.25,6) {CPN}; 
+\node [align=center] (L43) at (4.35,6) {SRN}; 
+\node [align=center] (L44) at (5.35,6) {LTSM}; 
+
+\node [align=center] (R41) at (6.5,6) {ART}; 
+\node [align=center] (R42) at (8.80,6) {Cognition/\\Neocognition}; 
+
+\foreach \s/\t in {L1/L21,
+                   L1/L22,
+                   L21/L31,
+                   L22/L32,
+                   L22/L33,
+                   L32/L41,
+                   L32/L42,
+                   L33/L43,
+                   L33/L44}
+    \draw (\s) -- (\t);
+
+\foreach \s/\t in {R1/R21,
+                   R1/R22,
+                   R21/R31,
+                   R21/R32,
+                   R22/R33,
+                   R31/R41,
+                   R31/R42}
+    \draw (\s) -- (\t);
+
+\end{tikzpicture}}
+\caption{A categorisation of neural network types.BPG = Bachpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
+
+\label{fig:class}
+\end{figure}
+A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced.
+An appraisal of advantages and detriments of the presented models is rahter difficult as there performance hugly depends on the specific application. The selection and appropriate usage of network types, as well as the chosen sturcutre requires extensive experience. 
+
 \subsection{Units, Activity and Training}
 
 The units in a representation of a neural network on a computer are divided into 3 classes, depending on their position in the network. Neurons which receive input from external sources, e.g. sensors, are called Input units and simply latch  their input into the next layer of neurons. At the other end of the network, the output layer which represents the last layer of the network, can be found. Its output is collected and evaluated by a logic that utilizes the neural network as a black box. In between those layers, a variable amount of so-called hidden layers can be found. They represent the networks \textbf{backbone so lassen?} or center. The complexity of the network increases by the amount of hidden layers. Figure \ref{fig:3layer} shows a three layer (sometimes called two layer, since the input layer does no computation) neural network. 
-In order to allow computers quick and easy calculations, weights are often stored in matrices, representing the whole model as a basic mathematical unit. Let $N_{i}$ be a neural network, consisting of $i$ layers: Input,  output and $i-2$ hidden layers. $N_{i}$ can be fully described by $i-1$ matrices $W_{i,j}$ where $i$ is the number of units in the preceding layer, and $j$ the amount of neurons that are connected to any of those $i$ units:
+In order to allow computers quick and easy calculations, weights are often stored in matrices, representing the whole model as a basic mathematical unit. Let $N_{i}$ be a neural network, consisting of $i$ layers: Input,  output and $i-2$ hidden layers. $N_{i}$ can be fully described by $i-1$ matrices $W_{ij}$ where $i$ is the number of units in the preceding layer, and $j$ the amount of neurons that are connected to any of those $i$ units:
 \begin{equation}
-W_{i,j} = 
+W = 
 \begin{pmatrix}
-w_{1,1} & \cdots & w_{i,1} \\
+w_{11} & \cdots & w_{i1} \\
 \vdots & \ddots & \vdots \\
-w_{1,j} & \cdots & w_{i,j} \\
+w_{1j} & \cdots & w_{ij} \\
 \end{pmatrix}
 \end{equation}
 
@@ -430,83 +523,12 @@ As distinct from the binary step function, it is differntiable at all parts, whi
 	\end{tikzpicture}
 \label{fig:plot2}
 }
-
 	
 \caption{Comparison of commonly used activation functions}
 \label{fig:plots}
 \end{figure}
 
 In order to teach neural networks and enable them to apply learned behavior in following scenarios, the work with them is divided in a training- and test phase. During the training, the network learns certain behavior by feeding repetitive input to the first layer and observing the output of the network. This can be done in a supervised and unsupervised way. In a supervised training phase, the targeted output of the network is already known and is presented to the network as a \textit{teaching factor}. The network produces output depending on the current weights on its connections and adjusts them according to the margin between the targeted and produced output. Unsupervised learning is necessary in situations, where no reasonable teaching factors are available or the observant is more interested on the performance. Similarity between input incentives and connection weights is the factor, according to which weight adjustment is done in such models.
-
-\section{Overview}
-
-Scientists have proposed a multitude of different network structures since the advent of reasearch in ANN through their first formalisation. A lot of which have been designed with various motivations, stemming from the differnent perception of neural networks across disciblines. We are nowadays able to solve a vast variety of problems, both supervised (being taught by known data) and unsupervised (untaught). Categorisation can be achieved by distinguishing several parameters, e.g. the number of layers, acceptance of input types or usage of learning techniques. Figure \ref{fig:class} shows one possible categorisation taken from \cite{NNGER}, that allows us to present an overview. Signal flow presents the first layer of distinction. Within feed forward networks, the initial signal received by the input neurons will be further propagated into the network according to the transfer functions of each individual neurons. The connections between the neurons are straight forward and always lead from one layer to the next, without any loops. 
-
-As distinct from feed-forward networs, feedback (or recurrent) networks allow signal flow in both directions. Connections between neurons can be established in both directions, i.e. from a neuron to all other neurons in the network. Feedback networks can become extremely complex due to their dynamic nature. The bidirectional signal flow affords them some sort of a memory. As the current state of a neuron is continously changing, supervised recurrent networks need advanced learning algorithms. 
-
-\begin{figure}[H]
-\centering
-
-\fbox{
-\begin{tikzpicture}
-\node [align=center] (L1) at (3,10) {feed forward}; 
-
-\node [align=center] (R1) at (10,10) {recurrent}; 
-
-
-\node [align=center] (L21) at (2,8.5) {one layer,\\ binary}; 
-\node [align=center] (L22) at (4,8.5) {multi layer}; 
-
-\node [align=center] (R21) at (9,9) {deterministic}; 
-\node [align=center] (R22) at (11,9) {stochastic}; 
-
-
-\node [align=center] (L31) at (1,7) {Perceptron\\Adaline}; 
-\node [align=center] (L32) at (3,7) {non-recurrent}; 
-\node [align=center] (L33) at (5,7) {recurrent}; 
-
-\node [align=center] (R31) at (8,7.75) {self organising}; 
-\node [align=center] (R32) at (10.6,6.5) {BSB Hopfield\\BAM}; 
-\node [align=center] (R33) at (12,7.75) {Simulated annealing/\\Boltzmann-Machine}; 
-
-
-\node [align=center] (L41) at (2.25,6) {BPG}; 
-\node [align=center] (L42) at (3.25,6) {CPN}; 
-\node [align=center] (L43) at (4.35,6) {SRN}; 
-\node [align=center] (L44) at (5.35,6) {LTSM}; 
-
-\node [align=center] (R41) at (6.5,6) {ART}; 
-\node [align=center] (R42) at (8.80,6) {Cognition/\\Neocognition}; 
-
-\foreach \s/\t in {L1/L21,
-                   L1/L22,
-                   L21/L31,
-                   L22/L32,
-                   L22/L33,
-                   L32/L41,
-                   L32/L42,
-                   L33/L43,
-                   L33/L44}
-    \draw (\s) -- (\t);
-
-\foreach \s/\t in {R1/R21,
-                   R1/R22,
-                   R21/R31,
-                   R21/R32,
-                   R22/R33,
-                   R31/R41,
-                   R31/R42}
-    \draw (\s) -- (\t);
-
-\end{tikzpicture}}
-\caption{A categorisation of neural network types.BPG = Bachpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
-
-\label{fig:class}
-\end{figure}
-A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced.
-An appraisal of advantages and detriments of the presented models is rahter difficult as there performance hugly depends on the specific application. The selection and appropriate usage of network types, as well as the chosen sturcutre requires extensive experience. 
-
-
 
 \section{Learning}\label{sec:learning}
 \subsection{Hebbian learning rule}
@@ -524,7 +546,7 @@ In summary: The weight between two units $i$ and $j$ is changed, if both units a
 
 The weight change $\Delta w_{ij}$ using the bian learning rule is shown in equation \eqref{eq:hebb}.
 \begin{equation}
-\Delta w_{i,j} = \eta \cdot a_i \cdot a_j
+\Delta w_{ij} = \eta \cdot a_i \cdot a_j
 \label{eq:hebb}
 \end{equation}
 
@@ -547,9 +569,9 @@ All connections with positive weights are weakened, while the ones with negative
 \item \textbf{Targeted and observed output are equivalent. (= ideal behavior)}\\ There is no need to change the links.
 \end{itemize}
 
-The deltas learning rule equation \eqref{eq:delta2} covers all three possibilities, thus ensuring that the changing rate is proportional to the difference between targeted and observed. The learning parameter $\eta$ is again set before the beginning of the learning process and remains constant. The multiplication with the sending units output $a_i$ ensures that those connections, that have the greatest influence into the error have the greatest $\delta w_{i,j}$.
+The deltas learning rule equation \eqref{eq:delta2} covers all three possibilities, thus ensuring that the changing rate is proportional to the difference between targeted and observed. The learning parameter $\eta$ is again set before the beginning of the learning process and remains constant. The multiplication with the sending units output $a_i$ ensures that those connections, that have the greatest influence into the error have the greatest $\delta w_{ij}$.
 \begin{equation}
-\Delta w_{i,j} = \eta \cdot \delta \cdot a_i
+\Delta w_{ij} = \eta \cdot \delta \cdot a_i
 \label{eq:delta2}
 \end{equation}
 
@@ -576,9 +598,9 @@ A first approach on finding a method to changing all weights in a weight that wi
 
 Instead, the weights are adjusted using the gradient descent, which does not need to know the complete hyperplane\marginpar{\textit{gradient descent}}. It starts with a random combination of weights for which the gradient is determinded. The gradient is the function of a scalar field which shows the rate of change and the direction of the greatest change in the form of a vector field. After the gradient is determined it will be stepped down at a given rate - the learning rate, meaning that the weights are adjusted. For this new combination of weights, the gradient is again determined and stepped down until a local (or global minimum) is found or a maximum amount of repetitions is reached.\\
 
-The amount of change between neurons $i$ and $j$ $\delta w_{i,j}$ is calculated as shown in \eqref{eq:backrule}.
+The amount of change between neurons $i$ and $j$ $\delta w_{ij}$ is calculated as shown in \eqref{eq:backrule}.
 \begin{equation}
-\Delta w_{i,j} = -\eta \frac{\partial E}{\partial w_{i,j}} = \eta \cdot \delta_j \cdot a_i
+\Delta w_{ij} = -\eta \frac{\partial E}{\partial w_{ij}} = \eta \cdot \delta_j \cdot a_i
 \label{eq:backrule}
 \end{equation}
 As distinct form the delta rule, the backpropargation rule differs two cases, shown in equation \eqref{eq:backcases}. $k$ is the index of the neurons in the subsequent layer.
@@ -594,7 +616,7 @@ As distinct form the delta rule, the backpropargation rule differs two cases, sh
 Eventually, the weights are changed acording to equation \eqref{eq:backweight}.
 
 \begin{equation}
-   w_{i,j}^{new} = w_{i,j}^{old} + \Delta w_{i,j}
+   w_{ij}^{new} = w_{ij}^{old} + \Delta w_{ij}
 \label{eq:backweight}
 \end{equation}
 
