@@ -26,11 +26,13 @@ CXXFLAGS  += -march=native
 
 CXXFLAGS  += -I$(INCDIR) -I$(INCDIRBOX2D) -I$(INCUSR) -I$(INCDIRTESTS)
 
-SRCS   = TestEntries.cpp \
-	 Render.cpp \
+SRCS   = Render.cpp \
 	 Test.cpp \
 	 neuron.cpp \
 	 net.cpp \
+     Creature.cpp \
+     evolutionary.cpp \
+     NeuralWorld.cpp \
 	 Main.cpp 
 OBJS   = ${SRCS:%.cpp=%.o}
 
