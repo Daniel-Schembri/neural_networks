@@ -36,7 +36,6 @@ Test::Test()
 	b2Vec2 gravity;
 	gravity.Set(0.0f, 0.0f); //-10.0f before
 	m_world = new b2World(gravity);
-	m_bomb = NULL;
 	m_textLine = 30;
 	m_mouseJoint = NULL;
 	m_pointCount = 0;
@@ -46,7 +45,6 @@ Test::Test()
 	m_world->SetContactListener(this);
 	m_world->SetDebugDraw(&m_debugDraw);
 	
-	m_bombSpawning = false;
 
 	m_stepCount = 0;
 
@@ -168,26 +166,6 @@ void Test::MouseDown(const b2Vec2& p)
 	}
 }
 
-void Test::SpawnBomb(const b2Vec2& worldPt)
-{
-	m_bombSpawnPoint = worldPt;
-	m_bombSpawning = true;
-}
-    
-void Test::CompleteBombSpawn(const b2Vec2& p)
-{
-	if (m_bombSpawning == false)
-	{
-		return;
-	}
-
-	const float multiplier = 30.0f;
-	b2Vec2 vel = m_bombSpawnPoint - p;
-	vel *= multiplier;
-	LaunchBomb(m_bombSpawnPoint,vel);
-	m_bombSpawning = false;
-}
-
 void Test::ShiftMouseDown(const b2Vec2& p)
 {
 	m_mouseWorld = p;
@@ -197,7 +175,6 @@ void Test::ShiftMouseDown(const b2Vec2& p)
 		return;
 	}
 
-	SpawnBomb(p);
 }
 
 void Test::MouseUp(const b2Vec2& p)
@@ -207,11 +184,7 @@ void Test::MouseUp(const b2Vec2& p)
 		m_world->DestroyJoint(m_mouseJoint);
 		m_mouseJoint = NULL;
 	}
-	
-	if (m_bombSpawning)
-	{
-		CompleteBombSpawn(p);
-	}
+
 }
 
 void Test::MouseMove(const b2Vec2& p)
@@ -222,46 +195,6 @@ void Test::MouseMove(const b2Vec2& p)
 	{
 		m_mouseJoint->SetTarget(p);
 	}
-}
-
-void Test::LaunchBomb()
-{
-	b2Vec2 p(RandomFloat(-15.0f, 15.0f), 30.0f);
-	b2Vec2 v = -5.0f * p;
-	LaunchBomb(p, v);
-}
-
-void Test::LaunchBomb(const b2Vec2& position, const b2Vec2& velocity)
-{
-	if (m_bomb)
-	{
-		m_world->DestroyBody(m_bomb);
-		m_bomb = NULL;
-	}
-
-	b2BodyDef bd;
-	bd.type = b2_dynamicBody;
-	bd.position = position;
-	bd.bullet = true;
-	m_bomb = m_world->CreateBody(&bd);
-	m_bomb->SetLinearVelocity(velocity);
-	
-	b2CircleShape circle;
-	circle.m_radius = 0.3f;
-
-	b2FixtureDef fd;
-	fd.shape = &circle;
-	fd.density = 20.0f;
-	fd.restitution = 0.0f;
-	
-	b2Vec2 minV = position - b2Vec2(0.3f,0.3f);
-	b2Vec2 maxV = position + b2Vec2(0.3f,0.3f);
-	
-	b2AABB aabb;
-	aabb.lowerBound = minV;
-	aabb.upperBound = maxV;
-
-	m_bomb->CreateFixture(&fd);
 }
 
 void Test::Step(Settings* settings)
@@ -279,16 +212,8 @@ void Test::Step(Settings* settings)
 			timeStep = 0.0f;
 		}
 
-		m_debugDraw.DrawString(5, m_textLine, "****PAUSED****");
-		m_textLine += DRAW_STRING_NEW_LINE;
-	}
 
-	uint32 flags = 0;
-	flags += settings->drawShapes			* b2Draw::e_shapeBit;
-	flags += settings->drawJoints			* b2Draw::e_jointBit;
-	flags += settings->drawAABBs			* b2Draw::e_aabbBit;
-	flags += settings->drawCOMs				* b2Draw::e_centerOfMassBit;
-	m_debugDraw.SetFlags(flags);
+	}
 
 	m_world->SetAllowSleeping(settings->enableSleep > 0);
 	m_world->SetWarmStarting(settings->enableWarmStarting > 0);
@@ -297,31 +222,15 @@ void Test::Step(Settings* settings)
 
 	m_pointCount = 0;
 
-	for (int32 i = 0;i<settings->iterations;i++)  //ds
-	  m_world->Step(timeStep, settings->velocityIterations, settings->positionIterations);
+    m_world->Step(timeStep, settings->velocityIterations, settings->positionIterations);
 
-	m_world->DrawDebugData();
 
 	if (timeStep > 0.0f)
 	{
 		++m_stepCount;
 	}
 
-	if (settings->drawStats)
-	{
-		int32 bodyCount = m_world->GetBodyCount();
-		int32 contactCount = m_world->GetContactCount();
-		int32 jointCount = m_world->GetJointCount();
-		m_debugDraw.DrawString(5, m_textLine, "bodies/contacts/joints = %d/%d/%d", bodyCount, contactCount, jointCount);
-		m_textLine += DRAW_STRING_NEW_LINE;
 
-		int32 proxyCount = m_world->GetProxyCount();
-		int32 height = m_world->GetTreeHeight();
-		int32 balance = m_world->GetTreeBalance();
-		float32 quality = m_world->GetTreeQuality();
-		m_debugDraw.DrawString(5, m_textLine, "proxies/height/balance/quality = %d/%d/%d/%g", proxyCount, height, balance, quality);
-		m_textLine += DRAW_STRING_NEW_LINE;
-	}
 
 	// Track maximum profile times
 	{
@@ -343,6 +252,40 @@ void Test::Step(Settings* settings)
 		m_totalProfile.solvePosition += p.solvePosition;
 		m_totalProfile.solveTOI += p.solveTOI;
 		m_totalProfile.broadphase += p.broadphase;
+	}
+
+	//ds Drawpart separated
+  if(!settings->turbo)
+  {
+	if (settings->pause)
+	{
+		m_debugDraw.DrawString(5, m_textLine, "****PAUSED****");
+		m_textLine += DRAW_STRING_NEW_LINE;
+	}
+
+	uint32 flags = 0;
+	flags += settings->drawShapes			* b2Draw::e_shapeBit;
+	flags += settings->drawJoints			* b2Draw::e_jointBit;
+	flags += settings->drawAABBs			* b2Draw::e_aabbBit;
+	flags += settings->drawCOMs			* b2Draw::e_centerOfMassBit;
+	m_debugDraw.SetFlags(flags);
+
+    m_world->DrawDebugData();
+
+	if (settings->drawStats)
+	{
+		int32 bodyCount = m_world->GetBodyCount();
+		int32 contactCount = m_world->GetContactCount();
+		int32 jointCount = m_world->GetJointCount();
+		m_debugDraw.DrawString(5, m_textLine, "bodies/contacts/joints = %d/%d/%d", bodyCount, contactCount, jointCount);
+		m_textLine += DRAW_STRING_NEW_LINE;
+
+		int32 proxyCount = m_world->GetProxyCount();
+		int32 height = m_world->GetTreeHeight();
+		int32 balance = m_world->GetTreeBalance();
+		float32 quality = m_world->GetTreeQuality();
+		m_debugDraw.DrawString(5, m_textLine, "proxies/height/balance/quality = %d/%d/%d/%g", proxyCount, height, balance, quality);
+		m_textLine += DRAW_STRING_NEW_LINE;
 	}
 
 	if (settings->drawProfile)
@@ -395,16 +338,6 @@ void Test::Step(Settings* settings)
 		c.Set(0.8f, 0.8f, 0.8f);
 		m_debugDraw.DrawSegment(p1, p2, c);
 	}
-	
-	if (m_bombSpawning)
-	{
-		b2Color c;
-		c.Set(0.0f, 0.0f, 1.0f);
-		m_debugDraw.DrawPoint(m_bombSpawnPoint, 4.0f, c);
-
-		c.Set(0.8f, 0.8f, 0.8f);
-		m_debugDraw.DrawSegment(m_mouseWorld, m_bombSpawnPoint, c);
-	}
 
 	if (settings->drawContactPoints)
 	{
@@ -448,6 +381,7 @@ void Test::Step(Settings* settings)
 			}
 		}
 	}
+  }
 }
 
 void Test::ShiftOrigin(const b2Vec2& newOrigin)

@@ -75,10 +75,21 @@ struct Settings
 		enableSleep = 1;
 		pause = 0;
 		singleStep = 0;
-		iterations = 1;  //ds
+		//ds
+		turbo = false; 
+		mode = 0;
+		randomfood_pos = 1;
+		randomcreature_pos = 1;
+		evolve_time = 30;
+		evolve_algorithm = 0;
+		population_size = 10;
+		amount_of_food = 40;
+		world_size = 100;
+		field_size = 50.0f;
 	}
 
 	b2Vec2 viewCenter;
+	b2Vec2 viewCenter_plotter;
 	float32 hz;
 	int32 velocityIterations;
 	int32 positionIterations;
@@ -98,7 +109,19 @@ struct Settings
 	int32 enableSleep;
 	int32 pause;
 	int32 singleStep;
-	int32 iterations;  //ds
+	//ds
+	bool turbo;
+	int32 mode;
+	int32 randomfood_pos;
+	int32 randomcreature_pos;
+	int32 evolve_time;
+	int32 evolve_algorithm;
+	int32 population_size;
+	int32 amount_of_food;
+	float mutation_rate;
+	int32 world_size;
+	int32 field_size;
+
 };
 
 struct TestEntry
@@ -149,11 +172,6 @@ public:
 	virtual void MouseDown(const b2Vec2& p);
 	virtual void MouseUp(const b2Vec2& p);
 	void MouseMove(const b2Vec2& p);
-	void LaunchBomb();
-	void LaunchBomb(const b2Vec2& position, const b2Vec2& velocity);
-	
-	void SpawnBomb(const b2Vec2& worldPt);
-	void CompleteBombSpawn(const b2Vec2& p);
 
 	// Let derived tests know that a joint was destroyed.
 	virtual void JointDestroyed(b2Joint* joint) { B2_NOT_USED(joint); }
@@ -183,10 +201,7 @@ protected:
 	DebugDraw m_debugDraw;
 	int32 m_textLine;
 	b2World* m_world;
-	b2Body* m_bomb;
 	b2MouseJoint* m_mouseJoint;
-	b2Vec2 m_bombSpawnPoint;
-	bool m_bombSpawning;
 	b2Vec2 m_mouseWorld;
 	int32 m_stepCount;
 

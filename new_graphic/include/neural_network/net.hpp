@@ -22,7 +22,7 @@ public:
     ~Net();
 
     void getResults(std::vector<double> &resultVals) const;
-    void randomize_layer();
+    void randomize_net();
     std::vector<double> get_neuron_weights(unsigned int layernr, unsigned int neuronnr);
     void set_weights(unsigned int layernr, unsigned int neuronnr, std::vector<double> weights);
     std::vector<unsigned int> sizeof_layers();

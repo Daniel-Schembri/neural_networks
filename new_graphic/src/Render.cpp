@@ -27,12 +27,12 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-void DebugDraw::DrawLine(const b2Vec2* Vector1,const b2Vec2* Vector2, const b2Color& color)
+void DebugDraw::DrawLine(const b2Vec2& Vector1,const b2Vec2& Vector2, const b2Color& color)
 {
 	glColor3f(color.r, color.g, color.b);
 	glBegin(GL_LINES);
-	glVertex2f(Vector1->x, Vector1->y);
-	glVertex2f(Vector2->x, Vector2->y);	
+	glVertex2f(Vector1.x, Vector1.y);
+	glVertex2f(Vector2.x, Vector2.y);	
 	glEnd();
 }
 
@@ -52,6 +52,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 	glEnable(GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4f(0.5f * color.r, 0.5f * color.g, 0.5f * color.b, 0.5f);
+//  	glColor4f(0.0f ,0.0f, 1.0f, 1.0f);  
 	glBegin(GL_TRIANGLE_FAN);
 	for (int32 i = 0; i < vertexCount; ++i)
 	{
@@ -61,12 +62,17 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 	glDisable(GL_BLEND);
 
 	glColor4f(color.r, color.g, color.b, 1.0f);
-	glBegin(GL_LINE_LOOP);
+
+//    glColor4f(0.0f,0.0f,0.0f, 0.5f);
+	
+    glBegin(GL_LINE_LOOP);
 	for (int32 i = 0; i < vertexCount; ++i)
 	{
 		glVertex2f(vertices[i].x, vertices[i].y);
 	}
-	glEnd();
+
+    glEnd();
+
 }
 
 void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color)
@@ -178,13 +184,13 @@ void DebugDraw::DrawString(int x, int y, const char *string, ...)
 	glPushMatrix();
 	glLoadIdentity();
 
-	glColor3f(0.9f, 0.6f, 0.6f);
+	glColor3f(0.0f, 0.0f, 0.0f);
 	glRasterPos2i(x, y);
 	int32 length = (int32)strlen(buffer);
 	for (int32 i = 0; i < length; ++i)
 	{
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, buffer[i]);
-		//glutBitmapCharacter(GLUT_BITMAP_9_BY_15, buffer[i]);
+		//glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, buffer[i]);
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, buffer[i]);
 	}
 
 	glPopMatrix();
@@ -202,13 +208,14 @@ void DebugDraw::DrawString(const b2Vec2& p, const char *string, ...)
 	vsprintf(buffer, string, arg);
 	va_end(arg);
 
-	glColor3f(0.5f, 0.9f, 0.5f);
+	glColor3f(0.0f, 0.0f, 0.0f);
 	glRasterPos2f(p.x, p.y);
 
 	int32 length = (int32)strlen(buffer);
 	for (int32 i = 0; i < length; ++i)
 	{
-		glutBitmapCharacter(GLUT_BITMAP_8_BY_13, buffer[i]);
+//		glutBitmapCharacter(GLUT_BITMAP_8_BY_13, buffer[i]);
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, buffer[i]);
 	}
 
 	glPopMatrix();
