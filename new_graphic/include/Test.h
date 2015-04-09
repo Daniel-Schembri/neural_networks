@@ -59,33 +59,19 @@ struct Settings
 		hz = 60.0f;
 		velocityIterations = 8;
 		positionIterations = 3;
-		drawShapes = 1;
-		drawJoints = 1;
-		drawAABBs = 0;
-		drawContactPoints = 0;
-		drawContactNormals = 0;
-		drawContactImpulse = 0;
-		drawFrictionImpulse = 0;
-		drawCOMs = 0;
-		drawStats = 0;
-		drawProfile = 0;
-		enableWarmStarting = 1;
-		enableContinuous = 1;
-		enableSubStepping = 0;
-		enableSleep = 1;
 		pause = 0;
 		singleStep = 0;
 		//ds
 		turbo = false; 
+		/*
 		mode = 0;
-		randomfood_pos = 1;
-		randomcreature_pos = 1;
 		evolve_time = 30;
 		evolve_algorithm = 0;
 		population_size = 10;
 		amount_of_food = 40;
 		world_size = 100;
 		field_size = 50.0f;
+		*/
 	}
 
 	b2Vec2 viewCenter;
@@ -93,44 +79,21 @@ struct Settings
 	float32 hz;
 	int32 velocityIterations;
 	int32 positionIterations;
-	int32 drawShapes;
-	int32 drawJoints;
-	int32 drawAABBs;
-	int32 drawContactPoints;
-	int32 drawContactNormals;
-	int32 drawContactImpulse;
-	int32 drawFrictionImpulse;
-	int32 drawCOMs;
-	int32 drawStats;
-	int32 drawProfile;
-	int32 enableWarmStarting;
-	int32 enableContinuous;
-	int32 enableSubStepping;
-	int32 enableSleep;
 	int32 pause;
 	int32 singleStep;
 	//ds
 	bool turbo;
-	int32 mode;
-	int32 randomfood_pos;
-	int32 randomcreature_pos;
-	int32 evolve_time;
-	int32 evolve_algorithm;
-	int32 population_size;
-	int32 amount_of_food;
-	float mutation_rate;
-	int32 world_size;
-	int32 field_size;
+	//int32 mode;
+	//int32 evolve_time;
+	//int32 evolve_algorithm;
+	//int32 population_size;
+	//int32 amount_of_food;
+	//float mutation_rate;
+	//int32 world_size;
+	//int32 field_size;
 
 };
 
-struct TestEntry
-{
-	const char *name;
-	TestCreateFcn *createFcn;
-};
-
-extern TestEntry g_testEntries[];
 // This is called when a joint in the world is implicitly destroyed
 // because an attached body is destroyed. This gives us a chance to
 // nullify the mouse joint.
@@ -164,7 +127,7 @@ public:
 	Test();
 	virtual ~Test();
 
-    void DrawTitle(const char *string);
+    //void DrawTitle(const char *string);
 	virtual void Step(Settings* settings);
 	virtual void Keyboard(unsigned char key) { B2_NOT_USED(key); }
 	virtual void KeyboardUp(unsigned char key) { B2_NOT_USED(key); }
@@ -205,8 +168,8 @@ protected:
 	b2Vec2 m_mouseWorld;
 	int32 m_stepCount;
 
-	b2Profile m_maxProfile;
-	b2Profile m_totalProfile;
+	//b2Profile m_maxProfile;
+	//b2Profile m_totalProfile;
 };
 
 #endif

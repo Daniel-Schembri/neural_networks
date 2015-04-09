@@ -21,9 +21,11 @@
 #include "glui/glui.h"
 #include <stdio.h>
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include "NeuralWorld.h"
 #include "evolutionary.h"
-
 
 namespace
 {
@@ -49,7 +51,14 @@ namespace
 	bool rMouseDown;
 	b2Vec2 lastp;
 	DebugDraw plot_debugDraw;
+	struct parameter sim_parameter;
+	struct parameter temp_sim_parameter;
 
+	std::vector< std::vector<float> > trainingdata;
+
+	//For Singleplayer Recording
+	std::vector< std::vector<double> > record_inputs;
+	std::vector< std::vector<double> > record_outputs;
 
 }
 
@@ -156,12 +165,12 @@ static void plotting() // function used by second window ds
 				plot_debugDraw.DrawLine(b2Vec2(((i - 1) / 1.0f) - 30.0f, evolution_control->average_fitnesses[i - 1]), b2Vec2((i / 1.0f) - 30.0f, evolution_control->average_fitnesses[i]), b2Color(0.0f, 0.0f, 0.0f));
 
 			//Plot Statistics
-			plot_debugDraw.DrawString(5, 20, "Mode: %d", settings.mode);
-			plot_debugDraw.DrawString(5, 45, "Evolve_Algorithm: %d", settings.evolve_algorithm);
+			plot_debugDraw.DrawString(5, 20, "Mode: %d", sim_parameter.mode);
+			plot_debugDraw.DrawString(5, 45, "Evolve_Algorithm: %d", sim_parameter.evolve_algorithm);
 			plot_debugDraw.DrawString(5, 70, "generation: %d", evolution_control->generations);
-			plot_debugDraw.DrawString(5, 95, "iterations: %d", evolution_control->iterationsteps);
-			plot_debugDraw.DrawString(5, 120, "mutation_rate: %f", evolution_control->mutation_rate);
-			plot_debugDraw.DrawString(5, 145, "annealing_rate: %f", evolution_control->annealing_rate);
+			plot_debugDraw.DrawString(5, 95, "iterations: %d / %d", evolution_control->iterationsteps, evolution_control->evolvesteps);
+			plot_debugDraw.DrawString(5, 120, "mutation_rate: %f", evolution_control->sim_parameter.mutation_rate);
+			plot_debugDraw.DrawString(5, 145, "annealing_rate: %d", evolution_control->sim_parameter.annealing_rate);
 			plot_debugDraw.DrawString(5, 170, "Actual Best_Fitness: %d", evolution_control->best_fitnesses.back());
 			plot_debugDraw.DrawString(5, 185, "Actual Average_Fitness: %f", evolution_control->average_fitnesses.back());
 			plot_debugDraw.DrawString(5, 210, "Best_Fitness overall: %d", evolution_control->get_bestFitness_overall());
@@ -194,20 +203,37 @@ static void SimulationLoop()
 				glLoadIdentity();
 				oldCenter = settings.viewCenter;
 			}
+
 			settings.hz = settingsHz;
 			test->Step(&settings);
-			test->move_bodies(evolution_control->process(test->get_sensor_vectors()));  //TODO: Remove encapsulation
-			reset_sim = evolution_control->evolve(settings.evolve_algorithm);
+			if (0 < sim_parameter.mode)  //If mode is not singleplayer
+			{
+				test->move_bodies(evolution_control->process(test->get_sensor_vectors()));  //TODO: Remove encapsulation
+				reset_sim = evolution_control->evolve(sim_parameter.evolve_algorithm);
+			}
+			else //If Single-Player-Mode enabled //TODO 60 Recordings per Second, like in Box2D
+			{
+				std::vector<double> local_output;
+				std::vector< std::vector<double> > local_inputs;
 
+				local_output = test->move_player();
+				record_outputs.push_back(local_output);
+				local_inputs = test->get_sensor_vectors();
+				record_inputs.push_back(local_inputs[0]);
+			}
+			
 
 			if (settings.turbo)
 			{
 				for (int i = 0; i < 20; i++)
 				{
 					test->Step(&settings);
-					test->move_bodies(evolution_control->process(test->get_sensor_vectors()));  //TODO: Remove encapsulation
-					reset_sim = evolution_control->evolve(settings.evolve_algorithm);
-					if (reset_sim) break;
+					if (0 < sim_parameter.mode)  //If mode is not singleplayer
+					{
+						test->move_bodies(evolution_control->process(test->get_sensor_vectors()));  //TODO: Remove encapsulation
+						reset_sim = evolution_control->evolve(sim_parameter.evolve_algorithm);
+						if (reset_sim) break;
+					}
 				}
 			}
 			if (reset_sim)
@@ -525,38 +551,31 @@ static void Restart(int)
 		evolution_control = NULL;
 	}
 
-	evolution_control = new evolutionary(settings.population_size, settings.amount_of_food, 4, settings.mutation_rate, (settings.evolve_time*50), topology);
-	test = new NeuralWorld(&(evolution_control->population), evolution_control->amount_of_food, evolution_control->amount_of_obstacles, (float) settings.field_size);
+	evolution_control = new evolutionary(sim_parameter, topology);
+	test = new NeuralWorld(&(evolution_control->population), sim_parameter.amount_of_food, sim_parameter.field_size, sim_parameter.mode);
+	evolution_control->set_trainingdata(trainingdata);
 	glui_createevolution->hide();
 	Resize(width, height);
 }
-
-static void new_evolution()
+//Called if OK-Button pressed
+static void new_evolution(int)
 {
-	/*
-	if (test != NULL)
-	{
-		delete test;
-		test = NULL;
-	}
-		
-	if (evolution_control != NULL)
-	{
-		delete evolution_control;
-		evolution_control = NULL;
-	}
-	*/
-	glui_createevolution->show();
-	//evolution_control = new evolutionary(10, 40, 10, 0.3f, topology);
-	//test = new NeuralWorld(&(evolution_control->population), evolution_control->amount_of_food, evolution_control->amount_of_obstacles);
+	sim_parameter = temp_sim_parameter;
+	Restart(0);
 
 }
 
 static void create_evolution(int)
 {
-
-	new_evolution();
+	glui_createevolution->show();
 }
+
+static void Restart_setVal(int)
+{
+	if (sim_parameter.population_size)
+		Restart(0);
+}
+
 
 static void glui_create_hide(int)
 {
@@ -592,13 +611,23 @@ int main(int argc, char** argv)
     settings.positionIterations = 3;
     settingsHz = 60;
 
-	//Init
+	//Init 
+	//Default Values
+	sim_parameter.population_size = 0;  // For check of unitialised Varialbes on early Restart/Button press
+	temp_sim_parameter.amount_of_food = 40;
+	temp_sim_parameter.evolvetime = 30;
+	temp_sim_parameter.evolve_algorithm = 0;
+	temp_sim_parameter.field_size = 50;
+	temp_sim_parameter.mode = 0;
+	temp_sim_parameter.mutation_rate = 0.3f;
+	temp_sim_parameter.annealing_rate = 1000;
+	temp_sim_parameter.population_size = 10;
 
+	//TODO: Choose in new_evolution window!
 	//Evolution
 	topology.push_back(3); //Input-Layer
 	topology.push_back(6); //Hidden-Layer
 	topology.push_back(2); //Output-Layer
-//	evolution_control = new evolutionary(10, 40, 10, 0.3f, topology);
 
 	//Init end
     glutInit(&argc, argv);
@@ -631,11 +660,11 @@ int main(int argc, char** argv)
 	glui->add_column_to_panel(drawPanel, true);
 	glui->add_button_to_panel(drawPanel, "Pause/Resume", 0, Pause);  //TODO: Pause and Resume!
     glui->add_column_to_panel(drawPanel, true);
-	glui->add_button_to_panel(drawPanel, "Restart", 0, Restart);
+	glui->add_button_to_panel(drawPanel, "Restart", 0, Restart_setVal);
     glui->add_column_to_panel(drawPanel, true);
 	glui->add_button_to_panel(drawPanel, "Best Creatures");
-
-
+	glui->add_column_to_panel(drawPanel, true);
+	glui->add_button_to_panel(drawPanel, "Help");
 	glui->add_column_to_panel(drawPanel, true);
 	glui->add_button_to_panel(drawPanel, "Quit", 0,(GLUI_Update_CB)Exit);
 	glui->add_column_to_panel(drawPanel, true);
@@ -646,10 +675,7 @@ int main(int argc, char** argv)
 	glutTimerFunc(framePeriod, Timer, 0);
 
 	//Second Window for Plotting ds
-//    glutInitWindowPosition(1024, 0);
-//	glutInitWindowSize(400, 928);
 	
-//	plotterWindow = glutCreateWindow("Neural Network Status");
 	//TODO: Set Focus on Subwindow that under Freeglut (Win) it gets Keyboard-callback
     plotterWindow = glutCreateSubWindow(mainWindow, 880, 0, 400, 848);	
     glutDisplayFunc(plotting);
@@ -660,41 +686,57 @@ int main(int argc, char** argv)
 	// Use a timer to control the frame rate.
 	glutTimerFunc(framePeriod, Timer2, 0);
 	
+	//Clear 1st GLUT-Window
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_MODELVIEW);
+	glutSwapBuffers();
+
 	//Window to create new Evolution
 	glui_createevolution = GLUI_Master.create_glui("New Evolution", 0, 300, 300);
 
-	//glui_createevolution->add_statictext("Mode");
-	//GLUI_Listbox* testList = glui_createevolution->add_listbox("", &settings.mode);
-	//testList->add_item(1, "Evolution");
-	//testList->add_item(2, "Single-Training");
-	//glui_createevolution->add_separator();
-
-	//TODO Maybe in a later version glui_createevolution->add_checkbox("Random Food Position", &settings.randomfood_pos);
-	//TODO Maybe in a later version glui_createevolution->add_checkbox("Random Creature Position", &settings.randomcreature_pos);
 	
 	glui_createevolution->add_separator();
 
-	glui_createevolution->add_button("OK", 0, Restart);
+	glui_createevolution->add_button("OK", 0, new_evolution);
 	glui_createevolution->add_column(false);
-
-	GLUI_Spinner* popSizeSpinner = glui_createevolution->add_spinner("Population Size", GLUI_SPINNER_INT, &settings.population_size);
+	
+	GLUI_Spinner* popSizeSpinner = glui_createevolution->add_spinner("Population Size", GLUI_SPINNER_INT, &temp_sim_parameter.population_size);
 	popSizeSpinner->set_int_limits(1, 100);
-	GLUI_Spinner* amountfoodSpinner = glui_createevolution->add_spinner("Amount of Objects", GLUI_SPINNER_INT, &settings.amount_of_food);
+	GLUI_Spinner* amountfoodSpinner = glui_createevolution->add_spinner("Amount of Objects", GLUI_SPINNER_INT, &temp_sim_parameter.amount_of_food);
 	amountfoodSpinner->set_int_limits(1, 1000);
-	GLUI_Spinner* evolveTimeSpinner = glui_createevolution->add_spinner("Evolve Time in Sec", GLUI_SPINNER_INT, &settings.evolve_time);
+	GLUI_Spinner* evolveTimeSpinner = glui_createevolution->add_spinner("Evolve Time in Sec", GLUI_SPINNER_INT, &temp_sim_parameter.evolvetime);
 	evolveTimeSpinner->set_int_limits(5, 1000);
 
-	GLUI_Spinner* fieldsizeSpinner = glui_createevolution->add_spinner("Field Size", GLUI_SPINNER_INT, &settings.field_size);
+	GLUI_Spinner* fieldsizeSpinner = glui_createevolution->add_spinner("Field Size", GLUI_SPINNER_INT, &temp_sim_parameter.field_size);
 	fieldsizeSpinner->set_int_limits(40, 200);
-	GLUI_Spinner* mutationRateSpinner = glui_createevolution->add_spinner("Mutation Rate", GLUI_SPINNER_FLOAT, &settings.mutation_rate);
+	GLUI_Spinner* mutationRateSpinner = glui_createevolution->add_spinner("Mutation Rate", GLUI_SPINNER_FLOAT, &temp_sim_parameter.mutation_rate);
 	mutationRateSpinner->set_float_limits(0.01f, 1.0f);
 	glui_createevolution->add_separator();
-	glui_createevolution->add_statictext("Evolutionary algorithm");
-	GLUI_Listbox* listevolvealgo = glui_createevolution->add_listbox("", &settings.evolve_algorithm);
-	listevolvealgo->add_item(1, "Hillclimber");
-	listevolvealgo->add_item(2, "Simulated Annealing");
-	listevolvealgo->set_int_val(1);
+	GLUI_Spinner* simulated_annealingSpinner = glui_createevolution->add_spinner("Annealing Rate", GLUI_SPINNER_INT, &temp_sim_parameter.annealing_rate);
+	simulated_annealingSpinner->set_int_limits(1, 10000);
 	glui_createevolution->add_separator();
+	glui_createevolution->add_statictext("Evolutionary algorithm");
+
+	GLUI_RadioGroup* evolve_algorithms_radiogroup = glui_createevolution->add_radiogroup(&temp_sim_parameter.evolve_algorithm);
+
+	glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Hillclimber");
+	glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Simulated Annealing");
+	glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Supervised Learning");
+
+	glui_createevolution->add_separator();
+
+	GLUI_RadioGroup* mode_radiogroup = glui_createevolution->add_radiogroup(&temp_sim_parameter.mode);
+	glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Singleplayer");
+	glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Evolution");
+	glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Best Creatures");
+	
+	glui_createevolution->add_separator();
+	
+	GLUI_RadioGroup* random_radiogroup = glui_createevolution->add_radiogroup(&temp_sim_parameter.random);
+	glui_createevolution->add_radiobutton_to_group(random_radiogroup, "Zero Initialized Weights");
+	glui_createevolution->add_radiobutton_to_group(random_radiogroup, "Random Initialized Weights");
+	
 	glui_createevolution->add_button("Cancel", 0, glui_create_hide);
 
 	/*
@@ -705,12 +747,56 @@ int main(int argc, char** argv)
 	GLUI_Master.set_glutMouseFunc(Mouse);
 	*/
 	glui_createevolution->set_main_gfx_window(mainWindow);
-
 	glui_createevolution->hide();
 
-	
+	//Clear 2nd GLUT Window
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_MODELVIEW);
+	glutSwapBuffers();
 
-    glutMainLoop();
+	//Load TrainingData
+	std::string line;
+	std::ifstream myfile("N:\\Box2D_v2.3.0\\Box2D\\new_graphic_win\\trainingsData.txt");
 
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			std::vector<float> single;
+			std::string tmpString = "";
+
+			int first = 0;
+			int last = 0;
+
+			for (int i = 0; i<3; i++)
+			{
+				while (line[last] != ';')
+				{
+					last++;
+				}
+
+				tmpString = line.substr(first, last);
+				single.push_back(atof(tmpString.c_str()));
+
+				last++;
+				first = last;
+			}
+
+			last = line.length() - 1;
+			tmpString = line.substr(first, last);
+			single.push_back(atof(tmpString.c_str()));
+
+			trainingdata.push_back(single);
+		}
+		myfile.close();
+	}
+	else
+	{
+		std::cerr << "Unable to open file";
+	}
+
+	//Start Program
+	glutMainLoop();
 	return 0;
 }

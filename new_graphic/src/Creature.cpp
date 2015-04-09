@@ -12,7 +12,7 @@ fitness = 0; lastfitness = 0; bestfitness = 0; id=pid;
 
 health = phealth; posx = pposx; posy = pposy;
 topology = ptopology;
-mynet = new Net(topology, true);
+mynet = new FeedForwardNet(topology, true);
 }
 
 /*
@@ -38,6 +38,18 @@ void Creature::addLayer(int amountneurons)
 void Creature::randomize_net()
 {
    mynet->randomize_net();
+}
+
+void Creature::setNet_zero()
+{
+	mynet->set_net_zero();
+}
+
+
+void Creature::learn(std::vector<double> ptrainingdata_output)
+{
+	mynet->learn(ptrainingdata_output);
+
 }
 
 std::vector<double> Creature::process(std::vector<double> inputvals)

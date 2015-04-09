@@ -6,18 +6,32 @@ evolutionary::evolutionary()
 
 }
 
-evolutionary::evolutionary(int populationsize, int pamount_of_food, int pamount_of_obstacles, float pmutation_rate, unsigned int pevolvetime, std::vector<unsigned> ptopology)
+evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned> ptopology)
 {
   srand((unsigned)time(NULL));
-  population_size = populationsize; amount_of_food = pamount_of_food; amount_of_obstacles = pamount_of_obstacles;
-  iterationsteps = 0; generations = 0; evolvesteps = pevolvetime;
-  mutation_rate = pmutation_rate;
-  annealing_rate = 1000;
-  for (int i=0; i < populationsize; i++)
+  sim_parameter = psim_parameter;
+  evolvesteps = sim_parameter.evolvetime * 60; //60 Steps per Second (60Hz)
+  iterationsteps = 0; generations = 0;
+
+  if (MODE_SINGLEPLAYER == sim_parameter.mode)
+  {
+	  sim_parameter.population_size = 1;
+  }
+
+  for (int i = 0; i < sim_parameter.population_size; i++)
   {
     population.push_back(new Creature (100, rand() % 90 - 90, rand() % 80 + 10, i, ptopology));
-    population.back()->randomize_net();
+	if (sim_parameter.random)
+	{
+		population.back()->randomize_net(); 
+	}
+	else
+	{
+		population.back()->setNet_zero(); 
+	}
+
   }
+
 best_fitnesses.push_back(0);
 average_fitnesses.push_back(0.0f);
 
@@ -62,7 +76,7 @@ int evolutionary::evolve_hillclimber()
     iterationsteps = 0;
     save_bestCreature();
      //if fitness < lastfitness -> revert the last hillclimber-changes
-     for(int i=0; i<population_size; i++)
+	for (int i = 0; i<sim_parameter.population_size; i++)
      {
        if(population[i]->lastfitness > population[i]->fitness)
        {
@@ -84,48 +98,98 @@ int evolutionary::evolve_simulatedannealing()
 	double T;
 	double randomval = 0.0f;
 	double r, p;
-	r = 0.0f; p = 0.0f; T = annealing_rate;
+	r = 0.0f; p = 0.0f; T = sim_parameter.annealing_rate;
 	iterationsteps++;
 
-	if (iterationsteps >= evolvesteps) // 3000 = 1Min //TODO Makro or Variable for iterationstepborder
+	if (iterationsteps >= evolvesteps) // 3000 = 1Min
 	{
 
 		iterationsteps = 0;
 		save_bestCreature();
-		//if fitness < lastfitness -> revert the last hillclimber-changes
-		for (int i = 0; i<population_size; i++)
+
+		for (int i = 0; i<sim_parameter.population_size; i++)
 		{
 			r = (population[i]->fitness - population[i]->lastfitness);
 			p = 1 / (1 + exp(-r / T));
-				if(randomval > p) 
+				if(randomval > p) 	//with probality p, keep the changes
 				{
-					simulated_annealing(population[i], true); //Revert simulated annealing
+					simulated_annealing(population[i], true); //Otherwise revert simulated annealing step
 				}
 			population[i]->lastfitness = population[i]->fitness; //Save Last fitness to revert if worse fitness
 			simulated_annealing(population[i], false);
 		}
 		generations++;
+		// Cool down annealing rate
+		if (sim_parameter.annealing_rate > 1)
+			sim_parameter.annealing_rate--;
 		return 1;  //Signal that Simulation must be Reset
 	}
 	return 0;
 }
+
+int evolutionary::evolve_learn()
+{
+
+	iterationsteps++;
+
+	if (iterationsteps >= evolvesteps) // 3000 = 1Min
+	{
+		iterationsteps = 0;
+		save_bestCreature();
+		//Learn one time the training-dataset
+		std::vector<double> trainingdata_input;
+		std::vector<double> trainingdata_output;
+		for (int learningcycles = 0; learningcycles < 10; learningcycles++)
+		{
+			for (int i = 0; i < population.size(); i++)
+			{
+				std::vector< std::vector<float> >::iterator row;
+				std::vector<float>::iterator col;
+				for (row = trainingdata.begin(); row != trainingdata.end(); row++) {
+					col = row->begin();
+					// do stuff ...
+					trainingdata_input.push_back(col[0]);
+					trainingdata_input.push_back(col[1]);
+					trainingdata_output.push_back(col[2]);
+					trainingdata_output.push_back(col[3]);
+
+					population[i]->mynet->feedForward(trainingdata_input);
+					population[i]->learn(trainingdata_output);
+
+					//Clear for new Values
+					trainingdata_input.clear();
+					trainingdata_output.clear();
+				}
+			}
+
+		}
+		generations++;
+
+		return 1;  //Signal that Simulation must be Reset
+	}
+	return 0;
+}
+
 
 int evolutionary::evolve(int id_algo)
 {
 	int reset_sim = -1;
 	switch (id_algo)
 	{
-		case 1: 
+		case 0: 
 			reset_sim = evolve_hillclimber();
 			return reset_sim; 
 			break;
-		case 2:
+		case 1:
 			reset_sim = evolve_simulatedannealing();
 			return reset_sim;
 			break;
-
+		case 2:
+			reset_sim = evolve_learn();
+			return reset_sim;
+			break;
 	default: 
-		return -1;
+		return reset_sim;
 		break;
 	}
 
@@ -161,7 +225,7 @@ double randomval = 0.0f;
           }
           else
           {
-          if( randomval < mutation_rate )
+			  if (randomval < sim_parameter.mutation_rate)
             {
              creature->mynet->m_layers[i][j]->m_outputWeights[w].weight += delta;
             }
@@ -200,11 +264,10 @@ double randomval = 0.0f;
        for(unsigned int w=0;w<creature->mynet->m_layers[i][j]->m_outputWeights.size();w++)
        {
          delta = (((((double) rand() / double(RAND_MAX)) / 5.0f)-0.1f)*(int) 1000) / (1000.0f);  //Range -0.1f to +0.1f //resolution 0.001f
-		 //delta *= annealing_rate;
 		 if (delta > 1.0f) delta = 1.0f;
 		 if (delta < -1.0f) delta = -1.0f;
 		 randomval = (double) rand() / double(RAND_MAX); //
-         if( randomval < mutation_rate )
+		 if (randomval < sim_parameter.mutation_rate)
          {
           creature->mynet->m_layers[i][j]->m_outputWeights[w].weight += delta;
          }
@@ -220,8 +283,7 @@ double randomval = 0.0f;
        }
      }
   }
-if (annealing_rate > 1)
-      annealing_rate--;
+
 }
 
 
@@ -278,5 +340,10 @@ void evolutionary::save_bestCreature()
     }
   }
 
+}
+
+void evolutionary::set_trainingdata(std::vector< std::vector<float> > ptrainingdata)
+{
+	trainingdata = ptrainingdata;
 }
 

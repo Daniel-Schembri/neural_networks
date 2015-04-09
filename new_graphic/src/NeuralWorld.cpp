@@ -7,12 +7,12 @@
     }
 
 
-	NeuralWorld::NeuralWorld(std::vector<Creature *> *ppopulation, int pamount_food, int pamount_obstacles, int pfield_size)
+	NeuralWorld::NeuralWorld(std::vector<Creature *> *ppopulation, int pamount_food, int pfield_size, int pmode)
 	{
-//    Test();
 
+	mode = pmode;
 	population = ppopulation;
-    amount_food = pamount_food; amount_obstacles = pamount_obstacles;
+    amount_food = pamount_food;
 	field_size = pfield_size;
 	//Init
 	srand((unsigned)time(NULL)); // Zufallsgenerator initialisieren.
@@ -40,7 +40,7 @@
 		FoodBodydef.push_back(bodydef_filler);
 	}
 	
-	for (unsigned int i = 0; i < amount_obstacles; i++)
+	for (unsigned int i = 0; i < 4; i++)
 	{
 		Obstacle.push_back(NULL);
 		ObstacleFixtureDef.push_back(fixturedef_filler);
@@ -48,7 +48,7 @@
 		ObstacleBodydef.push_back(bodydef_filler);
 	}
 
-	amount_of_all_objects = population->size()*2 + amount_food + amount_obstacles;
+	amount_of_all_objects = population->size()*2 + amount_food;
 	touches = new std::vector< std::vector<bool> >(amount_of_all_objects);
 	std::vector<bool> touch;
 	for (unsigned int i = 0; i < amount_of_all_objects; i++)
@@ -67,6 +67,13 @@
 
 void NeuralWorld::Init()
 {
+	force[0] = false; force[1] = false; force[2] = false; force[3] = false;
+
+	m_world->SetAllowSleeping(true);
+	m_world->SetWarmStarting(true);
+	m_world->SetContinuousPhysics(true);
+	m_world->SetSubStepping(false);
+
 
   for (unsigned int i=0; i<population->size(); i++)
   {
@@ -80,15 +87,10 @@ void NeuralWorld::Init()
     AnimalFixtureDef[i].isSensor = false;
 	// Override the default friction.
     AnimalFixtureDef[i].friction = 1.0f;
-     AnimalFixtureDef[i].filter.maskBits = 0xFFFF;    //Important for Collisions working!
-     AnimalFixtureDef[i].filter.categoryBits = 0x0001; //Important for Collisions working!
 	AnimalBodydef[i].linearDamping = 1.0f;
 	AnimalBodydef[i].angularDamping = 2.0f;
 	AnimalBodydef[i].type = b2_dynamicBody;
-    AnimalBodydef[i].active = true;    //Important that body is active!!
-	AnimalBodydef[i].allowSleep = true;
-//    AnimalBodydef[i].awake = true;
-//    AnimalBodydef[i].bullet = true;
+
 
 	b2Vec2 Animalposition; Animalposition.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
 	
@@ -113,12 +115,8 @@ void NeuralWorld::Init()
 
 
 	AnimalFixture[i] = Animal[i]->CreateFixture(&(AnimalFixtureDef[i]));
-//    AnimalFixture[i]->SetSensor(false);
 	Animal[i]->SetAngularVelocity(0);	
 	AnimalFixture[i]->SetUserData(touches + i);		
-	//Set damping, so that animals dont float away
-	//Animal[i]->SetLinearDamping(1.0f);
-	//Animal[i]->SetAngularDamping(2.0f);
 
     //add semicircle sensor to Animal
 
@@ -134,8 +132,6 @@ void NeuralWorld::Init()
 
     m_sensorShape->Set(m_sensor_vertices, 8);
 	SensorFixtureDef[i].shape = m_sensorShape;
-    SensorFixtureDef[i].filter.maskBits = 0xFFFF;    //Important for Collisions working!
-    SensorFixtureDef[i].filter.categoryBits = 0x0001; //Important for Collisions working!
 	SensorFixture[i] = Animal[i]->CreateFixture(&(SensorFixtureDef[i]));
 	SensorFixture[i]->SetSensor(true);
 	SensorFixture[i]->SetUserData(touches + population->size() + i);
@@ -157,8 +153,6 @@ void NeuralWorld::Init()
 	FoodBodydef[i].linearDamping = 1.0f;
 	FoodBodydef[i].angularDamping = 2.0f;
 	FoodBodydef[i].type = b2_dynamicBody;
-    FoodBodydef[i].active = true;    //Important that body is active!!
-	FoodBodydef[i].allowSleep = true;
 
 	FoodBodydef[i].position.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
 
@@ -169,18 +163,13 @@ void NeuralWorld::Init()
 	Food[i]->SetAngularVelocity(0);	
 	FoodFixture[i]->SetUserData(touches + population->size()*2 + i); //population->size()*2 because of Animals and their sensors
 
-	//Food[i]->SetLinearDamping(1.0f);
-	//Food[i]->SetAngularDamping(2.0f);
-
   }
 
  //Obstacles are the walls for example  
   b2Vec2 wall_rect_horizontal[2] = {b2Vec2((-50.0f), -5.0f), b2Vec2(50.0f, 5.0f)};
    b2Vec2 wall_rect_vertical[2] = {b2Vec2(-5.0f,(-50.0f)), b2Vec2(5.0f, 50.0f)};
-  //b2Vec2 wall_rect_horizontal[2] = {b2Vec2((-(sizex/2), 0.0f), b2Vec2((sizex/2), 1.0f)};
-  //b2Vec2 wall_rect_vertical[2] = {b2Vec2(0.0f,(-(sizey/2)), b2Vec2(1.0f, (sizey/2))};
 
-  for (int i=0; i<amount_obstacles; i++)
+  for (int i=0; i<4; i++)
   {
 	b2PolygonShape* shape_horizontal = new b2PolygonShape();
 	b2PolygonShape* shape_vertical = new b2PolygonShape();
@@ -202,7 +191,6 @@ void NeuralWorld::Init()
 	ObstacleBodydef[i].linearDamping = 0.07f;
 	ObstacleBodydef[i].angularDamping = 0.1f;
 	ObstacleBodydef[i].type = b2_staticBody;
-	ObstacleBodydef[i].active = true; //Important that body is active!!
 
     //Todo: Abstraction: More obstacles, types, etc.
 	ObstacleBodydef[0].position.Set(-field_size, 0.0f);  //horizontal
@@ -259,16 +247,17 @@ for (int i = 0; i < amount_of_all_objects; i++)
 }
 for (unsigned int i = 0; i < amount_food; i++)
 {
+	//Reactivate Food
+	active[population->size() * 2 + i] = true;
+	Food[i]->SetActive(true);
 	Food[i]->SetTransform( b2Vec2( (-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10))),0.0f);
 }
 
-//  Init();
-
 }
 
-Test* NeuralWorld::Create(std::vector<Creature *> *ppopulation, int pamount_food, int pamount_obstacles, int pfield_size)
+Test* NeuralWorld::Create(std::vector<Creature *> *ppopulation, int pamount_food, int pfield_size, int pmode)
 {
-	return new NeuralWorld(ppopulation, pamount_food, pamount_obstacles, pfield_size);
+	return new NeuralWorld(ppopulation, pamount_food, pfield_size, pmode);
 }
 
 
@@ -291,7 +280,6 @@ double NeuralWorld::correct_angle(double angle)
 	return angle;
 }
 
-//TODO: Rename Vector< <Vector> > to Matrix
 std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 {
 	std::vector< std::vector<double> > input_vectors;
@@ -304,10 +292,7 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 		//Animal relative posx and posy to food. If no food detected => (0.0f, 0.0f)
 		single_vector.push_back(0.0f);
 		single_vector.push_back(0.0f);
-		//Todo Optimization speed correction of angle
-		angle = correct_angle(Animal[i]->GetAngle());
-		single_vector.push_back(angle);
-
+		single_vector.push_back(0.0f);
 		input_vectors.push_back(single_vector);
 		single_vector.clear();  //TODO: Reallocation problem? (Dont think so cause not using pointer)
 	}
@@ -318,12 +303,13 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 		{
 			if (((*touches)[population->size() + i])[population->size() * 2 + j])       //Sensor touches food?
 			{
-				single_vector.push_back(Animal[i]->GetPosition().x);
-				single_vector.push_back(Animal[i]->GetPosition().y);
-				angle = correct_angle(Animal[i]->GetAngle());
+				single_vector.push_back( (Animal[i]->GetPosition().x - Food[j]->GetPosition().x));
+				single_vector.push_back((Animal[i]->GetPosition().y - Food[j]->GetPosition().y));
+				//TODO Opitimization Speed of correction of the angle?
+				angle = atan2(Animal[i]->GetPosition().x * Food[j]->GetPosition().y - Animal[i]->GetPosition().y * Food[j]->GetPosition().x, Animal[i]->GetPosition().x * Food[j]->GetPosition().x + Animal[i]->GetPosition().y * Food[j]->GetPosition().y);
+				angle = correct_angle((Animal[i]->GetAngle() - angle));
 				single_vector.push_back(angle);
 				input_vectors[i] = single_vector;
-				//m_debugDraw.DrawString(5, 250, "Sensor Touches food!");
 				single_vector.clear();
 				break;   //The first detected food is the input
 			}
@@ -334,6 +320,14 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 
 void NeuralWorld::Step(Settings* settings)
 {
+	//Deactivate Food if inactive
+	for (unsigned int i = 0; i < amount_food; i++)
+	{
+		if (!active[population->size() * 2 + i])
+			Food[i]->SetActive(false);
+	}
+		
+
 	//TODO: If drawFoodVectors
 	//TODO: Own Method
 	unsigned int last_detected = 0;
@@ -356,26 +350,18 @@ void NeuralWorld::Step(Settings* settings)
 		Test::Step(settings);
 }
 		
-/* Not here!
-		inputVals[0] = 0.0f; inputVals[1] = 0.0f; // if no food detected x and y = 0
-	    inputVals[0] = a; inputVals[1] = b; //The difference vector of the last detected food
-		correct_angle();
-		inputVals[2] =  player_rotation; //player_angle
-*/
 
-//	}
 
 /*
-void NeuralWorld::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) //TODO: Needed?
+void NeuralWorld::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) //TODO: Necessary?
 {
     contact->ResetFriction();
 
 }
 */
-//TODO: also set the other field of touches[][] see first "IF" below
 
-	// Implement contact listener.
-	void NeuralWorld::BeginContact(b2Contact* contact)
+// Implement contact listener.
+void NeuralWorld::BeginContact(b2Contact* contact)
 	{
 		b2Fixture* fixtureA = contact->GetFixtureA();
 		b2Fixture* fixtureB = contact->GetFixtureB();
@@ -388,22 +374,13 @@ void NeuralWorld::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) //
 			{
 			    if(active[population->size()*2+i])  //Food active?
 			    {
-				if (fixtureB == FoodFixture[i])
-				{
+				  if (fixtureB == FoodFixture[i])
+				  {
 					((*touches)[population->size() + j])[population->size() * 2 + i] = true;
-                  //Todo:	touches[population->size()*2+i][population->size()+j] = true;  //Example
-				}
+				  }
 			    }
 			}
-        /*
-			for (int32 i = 0; i < 4; i++)
-			{
-				if (fixtureB == fixture_wall[i])
-				{
-					touches[2][50 + i] = true;
-				}
-			}
-        */
+
 		}
 		if (fixtureA == AnimalFixture[j])
 		{
@@ -411,15 +388,13 @@ void NeuralWorld::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) //
 			{
 			    if(active[population->size()*2+i])
 			    {
-				if (fixtureB == FoodFixture[i])
-				{
+				  if (fixtureB == FoodFixture[i])
+				  {
                     (*population)[j]->fitness++;
 					((*touches)[j])[population->size() * 2 + i] = false; //Because Food then dont need to be detected if inactive
 				    active[population->size()*2+i] = false;
-                 //TODO: Deactivate Food
-					Food[i]->SetAwake(false);
-					//Food[i]->SetActive(false);
-				}
+					
+				  }
 			    }
 			}
 		}
@@ -429,15 +404,12 @@ void NeuralWorld::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) //
 			{
 			    if(active[population->size()*2+i])
 			    {
-				if (fixtureA == FoodFixture[i])
-				{
+				  if (fixtureA == FoodFixture[i])
+			 	  {
                     (*population)[j]->fitness++;
 					((*touches)[j])[population->size() * 2 + i] = false; //Because Food then dont need to be detected if inactive
 				    active[population->size()*2+i] = false;
-                   //TODO: Deactivate Food
-					Food[i]->SetAwake(false);
-					//Food[i]->SetActive(false);
-				}
+				  }
 			    }
 			}
 		}
@@ -447,21 +419,12 @@ void NeuralWorld::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) //
 			{
 			    if(active[population->size()*2+i])
 			    {
-				if (fixtureA == FoodFixture[i])
-				{
+				  if (fixtureA == FoodFixture[i])
+				  {
 					((*touches)[population->size() + j])[population->size() * 2 + i] = true;
-				}
+				  }
 			    }
 			}
-    /*
-			for (int32 i = 0; i < 4; i++)
-			{
-				if (fixtureA == fixture_wall[i])
-				{
-					touches[2][50 + i] = true;
-				}
-			}
-    */
 		}
       }
     }
@@ -482,15 +445,6 @@ void NeuralWorld::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) //
 					((*touches)[population->size() + j])[population->size() * 2 + i] = false;
 				}
 			}
-        /*
-			for (int32 i = 0; i < 4; i++)
-			{
-				if (fixtureB == fixture_wall[i])
-				{
-					touches[2][50 + i] = false;
-				}
-			}
-        */
 		}
 
 		if (fixtureB == SensorFixture[j])
@@ -502,67 +456,99 @@ void NeuralWorld::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) //
 					((*touches)[population->size() + j])[population->size() * 2 + i] = false;
 				}
 			}
-        /*
-			for (int32 i = 0; i < 4; i++)
-			{
-				if (fixtureA == fixture_wall[i])
-				{
-					touches[2][50 + i] = false;
-				}
-			}
-        */
 		}
       }
 	}
 
-/*
-void Keyboard(unsigned char key)
-{
-	switch (key)
+
+	std::vector<double> NeuralWorld::move_player()
 	{
-	case 'w':
-		//force[FORCE_FORWARD] = true;
-		break;
+		//TODO: correct angle?
+		std::vector<double> Outputs;
+		Outputs.push_back(0.0f); Outputs.push_back(0.0f);
+		if (MODE_SINGLEPLAYER == mode)
+		{
+			if (force[FORCE_FORWARD])
+			{
+				Animal[0]->ApplyForce(b2Vec2(-sin(Animal[0]->GetAngle())*0.075f * 500, cos(Animal[0]->GetAngle())*0.075f * 500), Animal[0]->GetWorldCenter(), true);
+				Outputs[0] = 1.0f;
+			}	
+			else if (force[FORCE_BACKWARD])
+			{
+				Animal[0]->ApplyForce(b2Vec2(sin(Animal[0]->GetAngle())*0.075f * 500, -cos(Animal[0]->GetAngle())*0.075f * 500), Animal[0]->GetWorldCenter(), true);
+				Outputs[0] = -1.0f;
+			}
+			if (force[FORCE_ROT_LEFT])
+			{
+				Animal[0]->SetTransform(Animal[0]->GetPosition(), Animal[0]->GetAngle() + 0.075f);
+				Outputs[1] = 0.075f;
+			}
+			else if (force[FORCE_ROT_RIGHT])
+			{
+				Animal[0]->SetTransform(Animal[0]->GetPosition(), Animal[0]->GetAngle() - 0.075f);
+				Outputs[1] = -0.075f;
+			}
+	
+			return Outputs;
+		}
+		return Outputs;
+	}
 
-	case 's':
-		//force[FORCE_BACKWARD] = true;
-		break;
 
-	case 'a':
-		//force[FORCE_ROT_LEFT] = true;
-		break;
+void NeuralWorld::Keyboard(unsigned char key)
+{
+	if (MODE_SINGLEPLAYER == mode)
+	{
+		switch (key)
+		{
+		case 'w':
+			force[FORCE_FORWARD] = true;
+			break;
 
-	case 'd':
-		//force[FORCE_ROT_RIGHT] = true;
-		break;
-	default: break;
+		case 's':
+			force[FORCE_BACKWARD] = true;
+			break;
+
+		case 'a':
+			force[FORCE_ROT_LEFT] = true;
+			break;
+
+		case 'd':
+			force[FORCE_ROT_RIGHT] = true;
+			break;
+		default: break;
+		}
 	}
 }
 
-void KeyboardUp(unsigned char key) 
+void NeuralWorld::KeyboardUp(unsigned char key)
 {
-	switch (key)
+	if (mode == MODE_SINGLEPLAYER)
 	{
-	case 'w':
-	//	force[FORCE_FORWARD] = false;
-		break;
+		switch (key)
+		{
+		case 'w':
+			force[FORCE_FORWARD] = false;
+			break;
 
-	case 's':
-	//	force[FORCE_BACKWARD] = false;
-		break;
+		case 's':
+			force[FORCE_BACKWARD] = false;
+			break;
 
-	case 'a':
-	//	force[FORCE_ROT_LEFT] = false;
-		break;
+		case 'a':
+			force[FORCE_ROT_LEFT] = false;
+			break;
 
-	case 'd':
-	//	force[FORCE_ROT_RIGHT] = false;
-		break;
-	default: break;
+		case 'd':
+			force[FORCE_ROT_RIGHT] = false;
+			break;
+		default: break;
+		}
 	}
 }
-*/
 
+
+//TODO: Maybe needed for Bestcreatures-Mode
 /*
 	void setPopulation(std::vector<Creature *> *ppopulation)
 	{

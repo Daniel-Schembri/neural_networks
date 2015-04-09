@@ -34,7 +34,7 @@ void DestructionListener::SayGoodbye(b2Joint* joint)
 Test::Test()
 {
 	b2Vec2 gravity;
-	gravity.Set(0.0f, 0.0f); //-10.0f before
+	gravity.Set(0.0f, 0.0f);
 	m_world = new b2World(gravity);
 	m_textLine = 30;
 	m_mouseJoint = NULL;
@@ -51,8 +51,6 @@ Test::Test()
 	b2BodyDef bodyDef;
 	m_groundBody = m_world->CreateBody(&bodyDef);
 
-	memset(&m_maxProfile, 0, sizeof(b2Profile));
-	memset(&m_totalProfile, 0, sizeof(b2Profile));
 }
 
 Test::~Test()
@@ -93,12 +91,6 @@ void Test::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 		cp->separation = worldManifold.separations[i];
 		++m_pointCount;
 	}
-}
-
-void Test::DrawTitle(const char *string)
-{
-    m_debugDraw.DrawString(5, DRAW_STRING_NEW_LINE, string);
-    m_textLine = 2 * DRAW_STRING_NEW_LINE;
 }
 
 class QueryCallback : public b2QueryCallback
@@ -215,11 +207,6 @@ void Test::Step(Settings* settings)
 
 	}
 
-	m_world->SetAllowSleeping(settings->enableSleep > 0);
-	m_world->SetWarmStarting(settings->enableWarmStarting > 0);
-	m_world->SetContinuousPhysics(settings->enableContinuous > 0);
-	m_world->SetSubStepping(settings->enableSubStepping > 0);
-
 	m_pointCount = 0;
 
     m_world->Step(timeStep, settings->velocityIterations, settings->positionIterations);
@@ -230,100 +217,14 @@ void Test::Step(Settings* settings)
 		++m_stepCount;
 	}
 
-
-
-	// Track maximum profile times
-	{
-		const b2Profile& p = m_world->GetProfile();
-		m_maxProfile.step = b2Max(m_maxProfile.step, p.step);
-		m_maxProfile.collide = b2Max(m_maxProfile.collide, p.collide);
-		m_maxProfile.solve = b2Max(m_maxProfile.solve, p.solve);
-		m_maxProfile.solveInit = b2Max(m_maxProfile.solveInit, p.solveInit);
-		m_maxProfile.solveVelocity = b2Max(m_maxProfile.solveVelocity, p.solveVelocity);
-		m_maxProfile.solvePosition = b2Max(m_maxProfile.solvePosition, p.solvePosition);
-		m_maxProfile.solveTOI = b2Max(m_maxProfile.solveTOI, p.solveTOI);
-		m_maxProfile.broadphase = b2Max(m_maxProfile.broadphase, p.broadphase);
-
-		m_totalProfile.step += p.step;
-		m_totalProfile.collide += p.collide;
-		m_totalProfile.solve += p.solve;
-		m_totalProfile.solveInit += p.solveInit;
-		m_totalProfile.solveVelocity += p.solveVelocity;
-		m_totalProfile.solvePosition += p.solvePosition;
-		m_totalProfile.solveTOI += p.solveTOI;
-		m_totalProfile.broadphase += p.broadphase;
-	}
-
 	//ds Drawpart separated
   if(!settings->turbo)
   {
-	if (settings->pause)
-	{
-		m_debugDraw.DrawString(5, m_textLine, "****PAUSED****");
-		m_textLine += DRAW_STRING_NEW_LINE;
-	}
-
 	uint32 flags = 0;
-	flags += settings->drawShapes			* b2Draw::e_shapeBit;
-	flags += settings->drawJoints			* b2Draw::e_jointBit;
-	flags += settings->drawAABBs			* b2Draw::e_aabbBit;
-	flags += settings->drawCOMs			* b2Draw::e_centerOfMassBit;
+	flags += b2Draw::e_shapeBit;
 	m_debugDraw.SetFlags(flags);
 
     m_world->DrawDebugData();
-
-	if (settings->drawStats)
-	{
-		int32 bodyCount = m_world->GetBodyCount();
-		int32 contactCount = m_world->GetContactCount();
-		int32 jointCount = m_world->GetJointCount();
-		m_debugDraw.DrawString(5, m_textLine, "bodies/contacts/joints = %d/%d/%d", bodyCount, contactCount, jointCount);
-		m_textLine += DRAW_STRING_NEW_LINE;
-
-		int32 proxyCount = m_world->GetProxyCount();
-		int32 height = m_world->GetTreeHeight();
-		int32 balance = m_world->GetTreeBalance();
-		float32 quality = m_world->GetTreeQuality();
-		m_debugDraw.DrawString(5, m_textLine, "proxies/height/balance/quality = %d/%d/%d/%g", proxyCount, height, balance, quality);
-		m_textLine += DRAW_STRING_NEW_LINE;
-	}
-
-	if (settings->drawProfile)
-	{
-		const b2Profile& p = m_world->GetProfile();
-
-		b2Profile aveProfile;
-		memset(&aveProfile, 0, sizeof(b2Profile));
-		if (m_stepCount > 0)
-		{
-			float32 scale = 1.0f / m_stepCount;
-			aveProfile.step = scale * m_totalProfile.step;
-			aveProfile.collide = scale * m_totalProfile.collide;
-			aveProfile.solve = scale * m_totalProfile.solve;
-			aveProfile.solveInit = scale * m_totalProfile.solveInit;
-			aveProfile.solveVelocity = scale * m_totalProfile.solveVelocity;
-			aveProfile.solvePosition = scale * m_totalProfile.solvePosition;
-			aveProfile.solveTOI = scale * m_totalProfile.solveTOI;
-			aveProfile.broadphase = scale * m_totalProfile.broadphase;
-		}
-
-		m_debugDraw.DrawString(5, m_textLine, "step [ave] (max) = %5.2f [%6.2f] (%6.2f)", p.step, aveProfile.step, m_maxProfile.step);
-		m_textLine += DRAW_STRING_NEW_LINE;
-		m_debugDraw.DrawString(5, m_textLine, "collide [ave] (max) = %5.2f [%6.2f] (%6.2f)", p.collide, aveProfile.collide, m_maxProfile.collide);
-		m_textLine += DRAW_STRING_NEW_LINE;
-		m_debugDraw.DrawString(5, m_textLine, "solve [ave] (max) = %5.2f [%6.2f] (%6.2f)", p.solve, aveProfile.solve, m_maxProfile.solve);
-		m_textLine += DRAW_STRING_NEW_LINE;
-		m_debugDraw.DrawString(5, m_textLine, "solve init [ave] (max) = %5.2f [%6.2f] (%6.2f)", p.solveInit, aveProfile.solveInit, m_maxProfile.solveInit);
-		m_textLine += DRAW_STRING_NEW_LINE;
-		m_debugDraw.DrawString(5, m_textLine, "solve velocity [ave] (max) = %5.2f [%6.2f] (%6.2f)", p.solveVelocity, aveProfile.solveVelocity, m_maxProfile.solveVelocity);
-		m_textLine += DRAW_STRING_NEW_LINE;
-		m_debugDraw.DrawString(5, m_textLine, "solve position [ave] (max) = %5.2f [%6.2f] (%6.2f)", p.solvePosition, aveProfile.solvePosition, m_maxProfile.solvePosition);
-		m_textLine += DRAW_STRING_NEW_LINE;
-		m_debugDraw.DrawString(5, m_textLine, "solveTOI [ave] (max) = %5.2f [%6.2f] (%6.2f)", p.solveTOI, aveProfile.solveTOI, m_maxProfile.solveTOI);
-		m_textLine += DRAW_STRING_NEW_LINE;
-		m_debugDraw.DrawString(5, m_textLine, "broad-phase [ave] (max) = %5.2f [%6.2f] (%6.2f)", p.broadphase, aveProfile.broadphase, m_maxProfile.broadphase);
-		m_textLine += DRAW_STRING_NEW_LINE;
-	}
 
 	if (m_mouseJoint)
 	{
@@ -339,48 +240,6 @@ void Test::Step(Settings* settings)
 		m_debugDraw.DrawSegment(p1, p2, c);
 	}
 
-	if (settings->drawContactPoints)
-	{
-		const float32 k_impulseScale = 0.1f;
-		const float32 k_axisScale = 0.3f;
-
-		for (int32 i = 0; i < m_pointCount; ++i)
-		{
-			ContactPoint* point = m_points + i;
-
-			if (point->state == b2_addState)
-			{
-				// Add
-				m_debugDraw.DrawPoint(point->position, 10.0f, b2Color(0.3f, 0.95f, 0.3f));
-			}
-			else if (point->state == b2_persistState)
-			{
-				// Persist
-				m_debugDraw.DrawPoint(point->position, 5.0f, b2Color(0.3f, 0.3f, 0.95f));
-			}
-
-			if (settings->drawContactNormals == 1)
-			{
-				b2Vec2 p1 = point->position;
-				b2Vec2 p2 = p1 + k_axisScale * point->normal;
-				m_debugDraw.DrawSegment(p1, p2, b2Color(0.9f, 0.9f, 0.9f));
-			}
-			else if (settings->drawContactImpulse == 1)
-			{
-				b2Vec2 p1 = point->position;
-				b2Vec2 p2 = p1 + k_impulseScale * point->normalImpulse * point->normal;
-				m_debugDraw.DrawSegment(p1, p2, b2Color(0.9f, 0.9f, 0.3f));
-			}
-
-			if (settings->drawFrictionImpulse == 1)
-			{
-				b2Vec2 tangent = b2Cross(point->normal, 1.0f);
-				b2Vec2 p1 = point->position;
-				b2Vec2 p2 = p1 + k_impulseScale * point->tangentImpulse * tangent;
-				m_debugDraw.DrawSegment(p1, p2, b2Color(0.9f, 0.9f, 0.3f));
-			}
-		}
-	}
   }
 }
 
