@@ -66,6 +66,9 @@
 \usepackage{amssymb} 
 \usepackage{dsfont}
 
+%japanese
+\usepackage{CJKutf8}
+
 %table of contents with hyperlinks
 %always include as last package
 \usepackage{hyperref}
@@ -101,7 +104,7 @@
 \publishers
 {
     Examiner: Prof Dr Richard Alznauer\\
-    Supervisor: Dr Christoph Ussfeller
+    Supervisor: Dr Christoph Ußfeller
 }
 
 
@@ -170,6 +173,11 @@
     deletekeywords={...}             
 }
 
+\newenvironment{Japanese}{%
+    \CJKfamily{min}%
+    \CJKtilde
+\CJKnospace}{}
+
 \setcounter{tocdepth}{4}  %a deeper contents menue
 %=====================================DOCUMENT START=========================
 \begin{document}
@@ -192,12 +200,12 @@
 
 \section*{List of acronyms}
 \begin{acronym}
-    \acro{ANN}{Artificial neural network}
+    \acro{$ANN$}{Artificial neural network}
     \acro{$a_j$}{Activity of unit $n_j$}
     \acro{$a_j(t)$}{Activity of unit $n_j$ at time $t$}
     \acro{$H$}{The set of hidden layers of a neural network}
     \acro{$L$}{The set of layers of a neural network}
-    \acro{ML}{Machine learning}
+    \acro{$ML$}{Machine learning}
     \acro{$n_j$}{Neuron (also unit) $j$}
     \acro{$W$}{The connection matrix}
     \acro{$w_{ij}$}{Weight on the connection link between neuros $n_i$ and $n_j$}
@@ -222,7 +230,7 @@ ANN are an equivalent model to the Turing machine in terms of calculability.\cit
 
 \chapter{Basics}
 \section{Biological background}
-From all the other organs, the human brain has a special significance. It is the only organ that does not process any metabolistic products, but a ‘substance’ which became the target of scientific investigation during the last century: Information. It was mainly through the works of \textit{Golgi} and \textit{Ramón y Cajal}, that science began to perceive it as a complex net of interconnected cells.  Contemporary concepts of the operation of the brain suggests, that mental activity consists primarily of electrochemical activity in large networks of nerve cells, or neurons. 
+From all the other organs, the human brain has a special significance. It is the only organ that does not process any metabolic products, but a ‘substance’ which became the target of scientific investigation during the last century: Information. It was mainly through the works of \textit{Golgi} and \textit{Ramón y Cajal}, that science began to perceive it as a complex net of interconnected cells.  Contemporary concepts of the operation of the brain suggests, that mental activity consists primarily of electrochemical activity in large networks of nerve cells, or neurons. 
 Figure \ref{fig:neuron} introduces the different parts of the neuron. Branching out from the cell body or soma, several fibers called dendrites summarise the input of the cell body from up to 100,000 connected neurons. In case this electric potential exceeds a threshold, the cell body will produce a quick spike, which is transmitted by the axon. The axon is a single long fiber, typically with a length of 1 cm, what is roughly 100 times the diameter of the cell body. As a matter of fact, it can a reach a length of up to several metres. As the axon branches out, it transmits this signal to other neurons. The synaptic terminals, are contacts of the axon. The electric potential of the signal causes the release of chemicals called neurotransmitter, which lead to a potential change. This change can be either excitatory or inhibitory, amplifying or reducing the signal. This signal amendment defines the behavior of the network on two levels: 
 
 Brain activity in relatively short periods (within seconds), defined by the current activity state of each individual neuron. The occurring activity patterns encode data, which is continuously changing. Among others, both short term memory and immediate perception are believed to be represented by this changing activity pattern.
@@ -484,7 +492,7 @@ In addition, the concept of bias neurons has proven itself useful. Bias units ar
 
 \node[] (dw) at (2,0.3){$w_{ij}$};
 \node[] (di) at (0,0.6){Input: $x$};
-\node[] (do) at (4,0.6){\center Output};
+\node[] (do) at (4,0.6){Output};
 \node[] (df) at (2.1,-0.7){$\varphi = sig(w_{01}\cdot x)$};
 \end{tikzpicture}
 \caption{A single input-output network}
@@ -517,7 +525,7 @@ Figure \ref{fig:2on1} shows the same network with an additional bias neuron. Thi
 \node[] (dw) at (2,0.8){$w_{12}$};
 \node[] (di) at (0,0.6){Bias: $1.0$};
 \node[] (di) at (0,2.6){Input: $x$};
-\node[] (do) at (4,1.6){\center Output};
+\node[] (do) at (4,1.6){Output};
 \node[] (df) at (2.1,-0.7){$\varphi = sig(w_{02}\cdot x + w_{12}\cdot 1.0)$};
 \end{tikzpicture}
 \caption{A single input-output network}
@@ -619,6 +627,40 @@ As distinct from the binary step function, it is differntiable at all parts, whi
 In order to teach neural networks and enable them to apply learned behavior in following scenarios, the work with them is divided in a training- and test phase. During the training, the network learns certain behavior by feeding repetitive input to the first layer and observing the output of the network. This can be done in a supervised and unsupervised way. In a supervised training phase, the targeted output of the network is already known and is presented to the network as a \textit{teaching factor}. The network produces output depending on the current weights on its connections and adjusts them according to the margin between the targeted and produced output. Unsupervised learning is necessary in situations, where no reasonable teaching factors are available or the observant is more interested on the performance. Similarity between input incentives and connection weights is the factor, according to which weight adjustment is done in such models.
 
 \section{Applications}
+Until today, neural networks have been successfully applied to several problems in a variety of scientific and industrial applications. Although of greatly different nature, almost all of those applications can be reduced to either pattern/shape recognition or logical filter tasks. Examples are:\\
+\begin{itemize}
+    \item On-line recognition of handwritten text
+    \item Autopilots in aerospace engineering
+    \item Noise suppression and signal filtering in communication technology 
+    \item Object recognition
+    \item Weather forecast
+    \item Function approximation including time series prediction
+\end{itemize}
+
+The following sections will give a brief notion of some 'classical' applications where ANNs have found better solutions in quicker time in comparison with other techniques.
+\subsection{Recognition of hand-writing}
+The automated interpretation of hand-written is of great interest for a number of purposes. The destination address of letters and parcels are nowadays processed by computers which use real-time images to recognise letters. The typesetting system \LaTeX allows its users to write complex formulas using certain commands that are later being replaced by symbols such as the existential quantifier $\exists$. One would now wish for a system that can take in a hand written representation of the symbol and output the command by which the symbol can later be written in a document. In \cite{MARTIN} artificial neural networks are used to classify such symbols. The user is then presented a choice of matching symbols and their commands associated with a probability measure of their correctness. The website is available under \url{write-math.com}.
+\\
+
+The challenge for such systems is the great deviation between different styles of hand writing. This makes it virtually infeasible for other conventional methods to reliably classify hand-writing. The network model RCE - Restricted Coulomb Energy Network has been devised by Nobel price winner Leon Cooper. It overcomes the limitations of the Perceptron as it is capable of detecting geometrical figures (therefore also handwritten text) of any size. Cooper's company Nestor, has successfully used this model to develop a system which can detect characters of the Japanese alphabet Kanji. The Kanji alphabet stems from the Chinese language, contains approximately 3000 different symbols and is extremly complex. Examples are \begin{CJK}{UTF8}{min}輸\end{CJK} - transport or \begin{CJK}{UTF8}{min}熊\end{CJK} - bear. It is nowadays extensively used on mobile devises that allow to write text messages by drawing each individual character instead of choosing symbols from a massive dictionary. Complex sentences formulated by simultaneously using three different alphabets, such as \begin{CJK}{UTF8}{min}世界はコンピュータ技術の登場以来、劇的に変化した。\end{CJK} - \textit{The world has changed dramatically since the advent of computer technology} can now be written in a fairly short amount of time.
+
+\subsection{The Travelling-Salesman-Problem}
+Given a set of cities and the distances between each pair of cities, what is the shortest path that, after visiting each city exactly once, leads to the origin of the route? This task, called the Travelling-Salesman-Problem (short: TSP) is an optimisation task which is often encountered in practice (Energy and water supply, microchip design). The TSP can be modelled as a graph: All $n$ cities are represented as vertices, the connections between the cities as edges. Since all cities are connected with each other, the graph is complete. A complete graph is called $K_n$. The cost (travel time) between each pair of vertices $i$ and $j$ is associated with a weight $w(i,j) \geq 0$. A tour that visits each city once and return back to the origin is a Hamilton-circle. As the graph is complete, there are several Hamilton-circles (each of which is a possible solution of the problem). Each permutation of the nodes is a Hamilton-circle, thus there are $n!$ circles. Sought is the Hamilton-circle with the least overall cost, i.e. a permutation $\pi(1),\dots,\pi(n)$ with minimal weight
+\begin{equation}
+    \sum\limits_{i=1}^n w(\pi(i),\pi(i+1)), 
+\end{equation}
+
+where $\pi(n+1)$ is set to $\pi(1)$.\cite{MATHINF}\\
+
+It is of high importance to theoretical computer science, as it is known to be $NP$-complete. In the field of complexity analysis, the class of decision problems for which there is a deterministic Turing-Machine able to solve it in time $\mathcal{O}(n^k)$ is called $P$ (polynomial). An example is the sorting problem. Class $P$ contains problems with running times like $\mathcal{O}(n)$ and $\mathcal{O}(log(n))$ but also those with time $\mathcal{O}(n^{5000})$. In addition to the deterministic Turing machine, complexity analysis also defines the non-deterministic Turing machine. At each time step, there are several possible ways of continuing computation, setting it in contrast with todays computers. The class of Problems $NP$ is solvable by a non-deterministic Turing Machine in polynomial time. $NP$ contains a number of relevant problems, such as the graph isomorphism (Can two graphs be drawn identically?). Problems in $P$ can also be solved by this theoretical model, so $P \subseteq NP$. In other words, a problem is in the class of NP if there is an algorithm (executed by a Turing machine) that can guess a solution and verify whether the guess was correct in polynomial time. In case of omniscient guessing or given a number of processors equal to the number of solutions, trying out all possibilities at the same time one would always get the correct solution. Thus, $NP$ problems would become $P$ problems. 
+
+Nevertheless, computationally feasible approximation techniques have been found which allow to find a good, although not always the best, solution. Hopfield and Tank (1985) proposed an approach using ANNs which allows to find a good, often even the best solution for the TSP. It suggests a single-layer network with $n$ neurons, where $n$ equals the number of cities in the graph, called Hopfield-network. This can be thought of as a square with an edge length of $n$The output of each individual neuron equals the time step at which the city is visited. 
+
+
+
+
+
+
 
 \chapter{Learning}\label{sec:learning}
 \section{Hebbian learning rule}
@@ -631,10 +673,10 @@ In summary: The weight between two units $i$ and $j$ is changed, if both units a
 \begin{itemize}
 \item The activity level of the sending unit $a_i$.
 \item The activity level of the receiving unit $a_j$.
-\item A settled and constant paramter $\eta$
+\item A settled and constant parameter $\eta$
 \end{itemize}
 
-The weight change $\Delta w_{ij}$ using the bian learning rule is shown in equation \eqref{eq:hebb}.
+The weight change $\Delta w_{ij}$ using the bias learning rule is shown in equation \eqref{eq:hebb}.
 \begin{equation}
 \Delta w_{ij} = \eta \cdot a_i \cdot a_j
 \label{eq:hebb}
@@ -929,7 +971,6 @@ The idea of the second generation of neural networks is born in the 90s. The fir
 The multilayer perceptron was intruduced by Minsky and Papert in . It has an input-, an output- and
 one or multiple hiddenlayers. In contrast to the singlelayerperceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
 
-\paragraph{Applications}
 
 \subsubsection{Radial basis function} %Oder paragraph?
 
@@ -938,8 +979,6 @@ one or multiple hiddenlayers. In contrast to the singlelayerperceptron it can so
 Kohonen-networks are inventioned by the finnish engineer Teuvo Kohonen in 1982. They have two layers. An inputlayer and a n-dimensional outputlayer.
 Kohonen-networks usually don't have hidden layers.
 The inputspace 
-
-\paragraph{Applications}
 Data-mining, unsupervised learning, clusteranalysis, computergraphics. 
 
 \subsection{Combination of networkmodels}
@@ -951,15 +990,11 @@ In the third generation of artifical neural networks the signal is additionally 
 
 \subsubsection{Spiking neural networks}
 
-\paragraph{Applications}
 
 %\subsection{Feed Forward}
 \subsection{Recurrent}
 
-\paragraph{Applications}
-
 %...
-%\section{Applications}
 %\subsection{Pattern recognition}
 
 %\subsection{Traveling salesman problem}
