@@ -1,15 +1,15 @@
 #include <time.h>		//For initialising the random_generator
 #include <vector>
-#include "Creature.h"
+#include "Agent.h"
 
 #define MODE_SINGLEPLAYER 0
 #define MODE_EVOLUTION 1
-#define MODE_BESTCREATURES 2
+#define MODE_BESTAgentS 2
 
 struct parameter
 {
 	unsigned int population_size;
-	unsigned int amount_of_food;
+	unsigned int amount_of_Object;
 	unsigned int field_size;
 	unsigned int evolvetime;
 	int evolve_algorithm;
@@ -21,56 +21,66 @@ struct parameter
 
 class evolutionary
 {
+//Attributes
 
-private:
-void randomize_population();
+public:   // PUBLIC
 
-public:
-struct parameter sim_parameter;
+	struct parameter sim_parameter;
+	unsigned int iterationsteps;
+	unsigned int evolvesteps;
+	unsigned int generations;
 
-std::vector< std::vector<double> > inputvals_vector;
+	std::vector< std::vector<double> > inputvals_vector;
 
-std::vector<Creature *> population;
-std::vector<Creature *> best_creatures;
+	//The Fitnesses over generations
+	std::vector<int> best_fitnesses;
+	std::vector<float> average_fitnesses;
 
-//TrainingData
-std::vector< std::vector<float> > trainingdata;
+	std::vector<Agent *> population;
+	std::vector<Agent *> best_Agents;
 
-//The Fitnesses over generations
-std::vector<int> best_fitnesses;
-std::vector<float> average_fitnesses;
+private:    //PRIVATE
 
-//Fitness function
-unsigned int iterationsteps;
-unsigned int evolvesteps;
-unsigned int generations;
+	//double max_delta; 
+	std::vector< std::vector<float> > trainingdata;
+	double revert_agent[100][100][100];
 
-double max_delta;
-double revert_hillclimber[100][100][100];
+	//Methods
+
+public:		//PUBLIC
+
+	evolutionary();
+	evolutionary(struct parameter psim_parameter, std::vector<unsigned> ptopology);
+
+	int evolve(int id_algo);
 
 
-evolutionary();
-evolutionary(struct parameter psim_parameter, std::vector<unsigned> ptopology);
+	std::vector< std::vector<double> > process(std::vector< std::vector<double> > inputvals_vector);
 
-void hillclimber(Creature *creature, bool revert);
-void simulated_annealing(Creature *creature, bool revert);
-void mutation();
-void crossover();
+	void save_bestFitness();
+	void save_averageFitness();
 
-int evolve(int id_algo);
-int evolve_hillclimber();
-int evolve_simulatedannealing();
-int evolve_learn();
+	void save_bestAgent();
 
-std::vector< std::vector<double> > process(std::vector< std::vector<double> > inputvals_vector);
+	int get_bestFitness_overall();
 
-void save_bestFitness();
-void save_averageFitness();
+	void set_trainingdata(std::vector< std::vector<float> > ptrainingdata);
 
-void save_bestCreature();
 
-int get_bestFitness_overall();
+private:	//PRIVATE
 
-void set_trainingdata(std::vector< std::vector<float> > ptrainingdata);
+	void randomize_population();
+
+	int evolve_hillclimber();
+	int evolve_simulatedannealing();
+	int evolve_learn();
+
+	void hillclimber(Agent *Agent, bool revert);
+	void simulated_annealing(Agent *Agent, bool revert);
+	void learn(int plearn_cycles);
+
+	//void mutation();
+	//void crossover();
+
 
 };

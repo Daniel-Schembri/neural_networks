@@ -63,15 +63,6 @@ struct Settings
 		singleStep = 0;
 		//ds
 		turbo = false; 
-		/*
-		mode = 0;
-		evolve_time = 30;
-		evolve_algorithm = 0;
-		population_size = 10;
-		amount_of_food = 40;
-		world_size = 100;
-		field_size = 50.0f;
-		*/
 	}
 
 	b2Vec2 viewCenter;
@@ -83,15 +74,6 @@ struct Settings
 	int32 singleStep;
 	//ds
 	bool turbo;
-	//int32 mode;
-	//int32 evolve_time;
-	//int32 evolve_algorithm;
-	//int32 population_size;
-	//int32 amount_of_food;
-	//float mutation_rate;
-	//int32 world_size;
-	//int32 field_size;
-
 };
 
 // This is called when a joint in the world is implicitly destroyed
@@ -168,8 +150,6 @@ protected:
 	b2Vec2 m_mouseWorld;
 	int32 m_stepCount;
 
-	//b2Profile m_maxProfile;
-	//b2Profile m_totalProfile;
 };
 
 #endif

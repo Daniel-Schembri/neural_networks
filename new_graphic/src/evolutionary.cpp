@@ -20,7 +20,7 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
 
   for (int i = 0; i < sim_parameter.population_size; i++)
   {
-    population.push_back(new Creature (100, rand() % 90 - 90, rand() % 80 + 10, i, ptopology));
+    population.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, i, ptopology));
 	if (sim_parameter.random)
 	{
 		population.back()->randomize_net(); 
@@ -35,7 +35,7 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
 best_fitnesses.push_back(0);
 average_fitnesses.push_back(0.0f);
 
-best_creatures.push_back(population[0]);  //Just to keep one field to save later best creature
+best_Agents.push_back(population[0]);  //Just to keep one field to save later best Agent
 
 for (unsigned int i = 0; i < 100; i++)  
 {
@@ -43,7 +43,7 @@ for (unsigned int i = 0; i < 100; i++)
 	{
 		for (unsigned int w = 0; w < 100; w++)
 		{
-			revert_hillclimber[i][j][w] = 0;
+			revert_agent[i][j][w] = 0;
 		}
 	}
 }
@@ -51,18 +51,30 @@ for (unsigned int i = 0; i < 100; i++)
 }
 
 
-
-std::vector< std::vector<double> > evolutionary::process(std::vector< std::vector<double> > inputvals_vector)
+int evolutionary::evolve(int id_algo)
 {
-  std::vector< std::vector<double> > result_vectors;
- for(unsigned int i=0; i<population.size();i++)
-  {
-  result_vectors.push_back(population[i]->process(inputvals_vector[i]));
-  }
-
-return result_vectors;
+	int reset_sim = -1;
+	switch (id_algo)
+	{
+	case 0:
+		reset_sim = evolve_hillclimber();
+		return reset_sim;
+		break;
+	case 1:
+		reset_sim = evolve_simulatedannealing();
+		return reset_sim;
+		break;
+	case 2:
+		reset_sim = evolve_learn();
+		return reset_sim;
+		break;
+	default:
+		return reset_sim;
+		break;
+	}
 
 }
+
 
 
 int evolutionary::evolve_hillclimber()
@@ -74,7 +86,7 @@ int evolutionary::evolve_hillclimber()
   {
     
     iterationsteps = 0;
-    save_bestCreature();
+    save_bestAgent();
      //if fitness < lastfitness -> revert the last hillclimber-changes
 	for (int i = 0; i<sim_parameter.population_size; i++)
      {
@@ -105,7 +117,7 @@ int evolutionary::evolve_simulatedannealing()
 	{
 
 		iterationsteps = 0;
-		save_bestCreature();
+		save_bestAgent();
 
 		for (int i = 0; i<sim_parameter.population_size; i++)
 		{
@@ -127,7 +139,7 @@ int evolutionary::evolve_simulatedannealing()
 	return 0;
 }
 
-int evolutionary::evolve_learn()
+int evolutionary::evolve_learn()  //TODO How manyLearningCycles?
 {
 
 	iterationsteps++;
@@ -135,34 +147,8 @@ int evolutionary::evolve_learn()
 	if (iterationsteps >= evolvesteps) // 3000 = 1Min
 	{
 		iterationsteps = 0;
-		save_bestCreature();
-		//Learn one time the training-dataset
-		std::vector<double> trainingdata_input;
-		std::vector<double> trainingdata_output;
-		for (int learningcycles = 0; learningcycles < 10; learningcycles++)
-		{
-			for (int i = 0; i < population.size(); i++)
-			{
-				std::vector< std::vector<float> >::iterator row;
-				std::vector<float>::iterator col;
-				for (row = trainingdata.begin(); row != trainingdata.end(); row++) {
-					col = row->begin();
-					// do stuff ...
-					trainingdata_input.push_back(col[0]);
-					trainingdata_input.push_back(col[1]);
-					trainingdata_output.push_back(col[2]);
-					trainingdata_output.push_back(col[3]);
-
-					population[i]->mynet->feedForward(trainingdata_input);
-					population[i]->learn(trainingdata_output);
-
-					//Clear for new Values
-					trainingdata_input.clear();
-					trainingdata_output.clear();
-				}
-			}
-
-		}
+		save_bestAgent();
+		learn(10);
 		generations++;
 
 		return 1;  //Signal that Simulation must be Reset
@@ -170,73 +156,48 @@ int evolutionary::evolve_learn()
 	return 0;
 }
 
-
-int evolutionary::evolve(int id_algo)
-{
-	int reset_sim = -1;
-	switch (id_algo)
-	{
-		case 0: 
-			reset_sim = evolve_hillclimber();
-			return reset_sim; 
-			break;
-		case 1:
-			reset_sim = evolve_simulatedannealing();
-			return reset_sim;
-			break;
-		case 2:
-			reset_sim = evolve_learn();
-			return reset_sim;
-			break;
-	default: 
-		return reset_sim;
-		break;
-	}
-
-}
-
 //Evolutionary Algorithms
-void evolutionary::hillclimber(Creature *creature, bool revert)
+void evolutionary::hillclimber(Agent *Agent, bool revert)
 {
 double delta = 0.0f;
 double randomval = 0.0f;
 
 
-  for (unsigned int i=0; i<creature->mynet->m_layers.size();i++)  //Amount of Layers
+  for (unsigned int i=0; i<Agent->mynet->m_layers.size();i++)  //Amount of Layers
   {
-     for(unsigned int j=0;j<creature->mynet->m_layers[i].size();j++)    //Amount of Neurons
+     for(unsigned int j=0;j<Agent->mynet->m_layers[i].size();j++)    //Amount of Neurons
      {
 		 if (!revert)
 		 {
-			 for (unsigned int w = 0; w < creature->mynet->m_layers[i][j]->m_outputWeights.size(); w++)
+			 for (unsigned int w = 0; w < Agent->mynet->m_layers[i][j]->m_outputWeights.size(); w++)
 			 {
-				 revert_hillclimber[i][j][w] = creature->mynet->m_layers[i][j]->m_outputWeights[w].weight;
+				 revert_agent[i][j][w] = Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight;
 			 }
 		 }
 			 
-       for(unsigned int w=0;w<creature->mynet->m_layers[i][j]->m_outputWeights.size();w++)
+       for(unsigned int w=0;w<Agent->mynet->m_layers[i][j]->m_outputWeights.size();w++)
        {
 
          delta = (((((double) rand() / double(RAND_MAX)) / 5.0f) -0.1f)*(int) 1000) / (1000.0f);  //Range -0.1f to +0.1f //resolution 0.001f
          randomval = (double) rand() / double(RAND_MAX); //
          if (revert)
           {       
-            creature->mynet->m_layers[i][j]->m_outputWeights[w].weight = revert_hillclimber[i][j][w];
+			  Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight = revert_agent[i][j][w];
           }
           else
           {
 			  if (randomval < sim_parameter.mutation_rate)
             {
-             creature->mynet->m_layers[i][j]->m_outputWeights[w].weight += delta;
+             Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight += delta;
             }
           }
-		 if (creature->mynet->m_layers[i][j]->m_outputWeights[w].weight > 1.0f)
+		 if (Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight > 1.0f)
 		 {
-			 creature->mynet->m_layers[i][j]->m_outputWeights[w].weight = 1.0f;
+			 Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight = 1.0f;
 		 }
-		 if (creature->mynet->m_layers[i][j]->m_outputWeights[w].weight < -1.0f)
+		 if (Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight < -1.0f)
 		 {
-			 creature->mynet->m_layers[i][j]->m_outputWeights[w].weight = -1.0f;
+			 Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight = -1.0f;
 		 }
 	   }
      }
@@ -244,24 +205,24 @@ double randomval = 0.0f;
 //get_neuron_weights(
 }
 
-void evolutionary::simulated_annealing(Creature * creature, bool revert)
+void evolutionary::simulated_annealing(Agent * Agent, bool revert)
 {
 double delta = 0.0f;
 double randomval = 0.0f;
 
-  for (unsigned int i=0; i<creature->mynet->m_layers.size();i++)  //Amount of Layers
+  for (unsigned int i=0; i<Agent->mynet->m_layers.size();i++)  //Amount of Layers
   {
-     for(unsigned int j=0;j<creature->mynet->m_layers[i].size();j++)    //Amount of Neurons
+     for(unsigned int j=0;j<Agent->mynet->m_layers[i].size();j++)    //Amount of Neurons
      {
 		 if (!revert)
 		 {
-			 for (unsigned int w = 0; w < creature->mynet->m_layers[i][j]->m_outputWeights.size(); w++)
+			 for (unsigned int w = 0; w < Agent->mynet->m_layers[i][j]->m_outputWeights.size(); w++)
 			 {
-				 revert_hillclimber[i][j][w] = creature->mynet->m_layers[i][j]->m_outputWeights[w].weight;
+				 revert_agent[i][j][w] = Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight;
 			 }
 		 }
 
-       for(unsigned int w=0;w<creature->mynet->m_layers[i][j]->m_outputWeights.size();w++)
+       for(unsigned int w=0;w<Agent->mynet->m_layers[i][j]->m_outputWeights.size();w++)
        {
          delta = (((((double) rand() / double(RAND_MAX)) / 5.0f)-0.1f)*(int) 1000) / (1000.0f);  //Range -0.1f to +0.1f //resolution 0.001f
 		 if (delta > 1.0f) delta = 1.0f;
@@ -269,20 +230,62 @@ double randomval = 0.0f;
 		 randomval = (double) rand() / double(RAND_MAX); //
 		 if (randomval < sim_parameter.mutation_rate)
          {
-          creature->mynet->m_layers[i][j]->m_outputWeights[w].weight += delta;
+          Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight += delta;
          }
 	
-		 if (creature->mynet->m_layers[i][j]->m_outputWeights[w].weight > 1.0f)
+		 if (Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight > 1.0f)
 		 {
-			 creature->mynet->m_layers[i][j]->m_outputWeights[w].weight = 1.0f;
+			 Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight = 1.0f;
 		 }
-		 if (creature->mynet->m_layers[i][j]->m_outputWeights[w].weight < -1.0f)
+		 if (Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight < -1.0f)
 		 {
-			 creature->mynet->m_layers[i][j]->m_outputWeights[w].weight = -1.0f;
+			 Agent->mynet->m_layers[i][j]->m_outputWeights[w].weight = -1.0f;
 		 }
        }
      }
   }
+}
+
+void evolutionary::learn(int plearn_cycles)
+{
+	for (int learningcycles = 0; learningcycles < plearn_cycles; learningcycles++)
+	{
+		for (int i = 0; i < population.size(); i++)
+		{
+			//Learn the with the training-set
+			std::vector<double> trainingdata_input;
+			std::vector<double> trainingdata_output;
+			std::vector< std::vector<float> >::iterator row;
+			std::vector<float>::iterator col;
+			for (row = trainingdata.begin(); row != trainingdata.end(); row++)
+			{
+				col = row->begin();
+				// do stuff ...
+				trainingdata_input.push_back(col[0]);
+				trainingdata_input.push_back(col[1]);
+				trainingdata_output.push_back(col[2]);
+				trainingdata_output.push_back(col[3]);
+
+				population[i]->mynet->feedForward(trainingdata_input);
+				population[i]->learn(trainingdata_output);
+
+				//Clear for new Values
+				trainingdata_input.clear();
+				trainingdata_output.clear();
+			}
+		}
+	}
+}
+
+std::vector< std::vector<double> > evolutionary::process(std::vector< std::vector<double> > inputvals_vector)
+{
+	std::vector< std::vector<double> > result_vectors;
+	for (unsigned int i = 0; i<population.size(); i++)
+	{
+		result_vectors.push_back(population[i]->process(inputvals_vector[i]));
+	}
+
+	return result_vectors;
 
 }
 
@@ -328,7 +331,7 @@ int best_fitness = 0;
 }
 
 
-void evolutionary::save_bestCreature()
+void evolutionary::save_bestAgent()
 {
   int best_fitness = 0;
 
@@ -336,7 +339,7 @@ void evolutionary::save_bestCreature()
   {    
     if (population[i]->fitness > best_fitness)
     {
-      best_creatures[0] = population[i];
+      best_Agents[0] = population[i];
     }
   }
 

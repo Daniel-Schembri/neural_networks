@@ -7,48 +7,48 @@
     }
 
 
-	NeuralWorld::NeuralWorld(std::vector<Creature *> *ppopulation, int pamount_food, int pfield_size, int pmode)
+	NeuralWorld::NeuralWorld(std::vector<Agent *> *ppopulation, int pamount_Object, int pfield_size, int pmode)
 	{
 
 	mode = pmode;
 	population = ppopulation;
-    amount_food = pamount_food;
+    amount_Object = pamount_Object;
 	field_size = pfield_size;
 	//Init
 	srand((unsigned)time(NULL)); // Zufallsgenerator initialisieren.
-    //Animals
+    //Agents
 
 	b2FixtureDef fixturedef_filler;
 	b2BodyDef    bodydef_filler;
 
 	for (unsigned int i = 0; i < population->size(); i++)
 	{
-		Animal.push_back(NULL);
-		AnimalFixtureDef.push_back(fixturedef_filler);
-		AnimalFixture.push_back(NULL);
-		AnimalBodydef.push_back(bodydef_filler);
+		Agentbody.push_back(NULL);
+		AgentFixtureDef.push_back(fixturedef_filler);
+		AgentFixture.push_back(NULL);
+		AgentBodydef.push_back(bodydef_filler);
 
 		SensorFixtureDef.push_back(fixturedef_filler);
 		SensorFixture.push_back(NULL);
 	}
 
-	for (unsigned int i = 0; i < amount_food; i++)
+	for (unsigned int i = 0; i < amount_Object; i++)
 	{
-		Food.push_back(NULL);
-		FoodFixtureDef.push_back(fixturedef_filler);
-		FoodFixture.push_back(NULL);
-		FoodBodydef.push_back(bodydef_filler);
+		Objectbody.push_back(NULL);
+		ObjectFixtureDef.push_back(fixturedef_filler);
+		ObjectFixture.push_back(NULL);
+		ObjectBodydef.push_back(bodydef_filler);
 	}
 	
 	for (unsigned int i = 0; i < 4; i++)
 	{
-		Obstacle.push_back(NULL);
+		Obstaclebody.push_back(NULL);
 		ObstacleFixtureDef.push_back(fixturedef_filler);
 		ObstacleFixture.push_back(NULL);
 		ObstacleBodydef.push_back(bodydef_filler);
 	}
 
-	amount_of_all_objects = population->size()*2 + amount_food;
+	amount_of_all_objects = population->size()*2 + amount_Object;
 	touches = new std::vector< std::vector<bool> >(amount_of_all_objects);
 	std::vector<bool> touch;
 	for (unsigned int i = 0; i < amount_of_all_objects; i++)
@@ -77,48 +77,48 @@ void NeuralWorld::Init()
 
   for (unsigned int i=0; i<population->size(); i++)
   {
-    // Animal
+    // Agent
 	{
 	b2PolygonShape* poly = new b2PolygonShape();
 	poly->Set(triangle, 3);
 	
-	AnimalFixtureDef[i].shape = poly;
-    AnimalFixtureDef[i].density = 1;
-    AnimalFixtureDef[i].isSensor = false;
+	AgentFixtureDef[i].shape = poly;
+    AgentFixtureDef[i].density = 1;
+    AgentFixtureDef[i].isSensor = false;
 	// Override the default friction.
-    AnimalFixtureDef[i].friction = 1.0f;
-	AnimalBodydef[i].linearDamping = 1.0f;
-	AnimalBodydef[i].angularDamping = 2.0f;
-	AnimalBodydef[i].type = b2_dynamicBody;
+    AgentFixtureDef[i].friction = 1.0f;
+	AgentBodydef[i].linearDamping = 1.0f;
+	AgentBodydef[i].angularDamping = 2.0f;
+	AgentBodydef[i].type = b2_dynamicBody;
 
 
-	b2Vec2 Animalposition; Animalposition.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
+	b2Vec2 Agentposition; Agentposition.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
 	
 
 	
     //Position Correction
-    for (unsigned int j=0;j<i;j++) //Look if Animalposition are to near to another Animal and correct it
+    for (unsigned int j=0;j<i;j++) //Look if Agentposition are to near to another Agent and correct it
       {
-        if( ((AnimalBodydef[i].position.x-AnimalBodydef[i].position.y)*(AnimalBodydef[i].position.x-AnimalBodydef[i].position.y)) + (Animalposition.x-Animalposition.y) * (Animalposition.x-Animalposition.y)  < 4.0f )
+        if( ((AgentBodydef[i].position.x-AgentBodydef[i].position.y)*(AgentBodydef[i].position.x-AgentBodydef[i].position.y)) + (Agentposition.x-Agentposition.y) * (Agentposition.x-Agentposition.y)  < 4.0f )
         {
-		  Animalposition; Animalposition.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
+		  Agentposition; Agentposition.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
           j = 0; // and restart algorithm
         }
       }
 	  
-    AnimalBodydef[i].position.Set(Animalposition.x, Animalposition.y);
+    AgentBodydef[i].position.Set(Agentposition.x, Agentposition.y);
     //Position Correction End
 
    
 	//b2Body* player;
-	Animal[i] = m_world->CreateBody(&(AnimalBodydef[i]));
+	Agentbody[i] = m_world->CreateBody(&(AgentBodydef[i]));
 
 
-	AnimalFixture[i] = Animal[i]->CreateFixture(&(AnimalFixtureDef[i]));
-	Animal[i]->SetAngularVelocity(0);	
-	AnimalFixture[i]->SetUserData(touches + i);		
+	AgentFixture[i] = Agentbody[i]->CreateFixture(&(AgentFixtureDef[i]));
+	Agentbody[i]->SetAngularVelocity(0);	
+	AgentFixture[i]->SetUserData(touches + i);		
 
-    //add semicircle sensor to Animal
+    //add semicircle sensor to Agent
 
 	float radius = 13;
 	b2Vec2 m_sensor_vertices[8];
@@ -132,36 +132,36 @@ void NeuralWorld::Init()
 
     m_sensorShape->Set(m_sensor_vertices, 8);
 	SensorFixtureDef[i].shape = m_sensorShape;
-	SensorFixture[i] = Animal[i]->CreateFixture(&(SensorFixtureDef[i]));
+	SensorFixture[i] = Agentbody[i]->CreateFixture(&(SensorFixtureDef[i]));
 	SensorFixture[i]->SetSensor(true);
 	SensorFixture[i]->SetUserData(touches + population->size() + i);
-	} //Animal end
+	} //Agent end
   } //For-Loop end
 
-  for (int i=0; i<amount_food; i++)
+  for (int i=0; i<amount_Object; i++)
   {
     
 	b2PolygonShape* shape = new b2PolygonShape();
 	shape->SetAsBox(0.4f, 0.4f);
-    FoodFixtureDef[i].shape = shape;
+    ObjectFixtureDef[i].shape = shape;
 
-    FoodFixtureDef[i].density = 1;
+    ObjectFixtureDef[i].density = 1;
 	// Override the default friction.
-    FoodFixtureDef[i].filter.maskBits = 0xFFFF;    //Important for Collisions working!
-    FoodFixtureDef[i].filter.categoryBits = 0x0001; //Important for Collisions working!
-    FoodFixtureDef[i].friction = 0.3f;
-	FoodBodydef[i].linearDamping = 1.0f;
-	FoodBodydef[i].angularDamping = 2.0f;
-	FoodBodydef[i].type = b2_dynamicBody;
+    ObjectFixtureDef[i].filter.maskBits = 0xFFFF;    //Important for Collisions working!
+    ObjectFixtureDef[i].filter.categoryBits = 0x0001; //Important for Collisions working!
+    ObjectFixtureDef[i].friction = 0.3f;
+	ObjectBodydef[i].linearDamping = 1.0f;
+	ObjectBodydef[i].angularDamping = 2.0f;
+	ObjectBodydef[i].type = b2_dynamicBody;
 
-	FoodBodydef[i].position.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
+	ObjectBodydef[i].position.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
 
-	Food[i] = m_world->CreateBody(&(FoodBodydef[i]));
+	Objectbody[i] = m_world->CreateBody(&(ObjectBodydef[i]));
 
-	FoodFixture[i] = Food[i]->CreateFixture(&(FoodFixtureDef[i]));
-    FoodFixture[i]->SetSensor(true);
-	Food[i]->SetAngularVelocity(0);	
-	FoodFixture[i]->SetUserData(touches + population->size()*2 + i); //population->size()*2 because of Animals and their sensors
+	ObjectFixture[i] = Objectbody[i]->CreateFixture(&(ObjectFixtureDef[i]));
+    ObjectFixture[i]->SetSensor(true);
+	Objectbody[i]->SetAngularVelocity(0);	
+	ObjectFixture[i]->SetUserData(touches + population->size()*2 + i); //population->size()*2 because of Agents and their sensors
 
   }
 
@@ -198,11 +198,11 @@ void NeuralWorld::Init()
 	ObstacleBodydef[2].position.Set(-field_size, 2 * field_size); //horizontal
 	ObstacleBodydef[3].position.Set(-2 * field_size, field_size); //vertical
 
-	Obstacle[i] = m_world->CreateBody(&(ObstacleBodydef[i]));
+	Obstaclebody[i] = m_world->CreateBody(&(ObstacleBodydef[i]));
 
-	ObstacleFixture[i] = Obstacle[i]->CreateFixture(&(ObstacleFixtureDef[i]));
-	Obstacle[i]->SetAngularVelocity(0);	
-	ObstacleFixture[i]->SetUserData(touches + population->size()*2 + amount_food + i);
+	ObstacleFixture[i] = Obstaclebody[i]->CreateFixture(&(ObstacleFixtureDef[i]));
+	Obstaclebody[i]->SetAngularVelocity(0);	
+	ObstacleFixture[i]->SetUserData(touches + population->size()*2 + amount_Object + i);
   }
 
   for (int i=0; i<amount_of_all_objects; i++)
@@ -222,19 +222,19 @@ void NeuralWorld::Reset()
   {
     (*population)[i]->fitness = 0;
 
-	b2Vec2 Animalposition; Animalposition.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
+	b2Vec2 Agentposition; Agentposition.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
 
     //Position Correction
-    for (unsigned int j=0;j<i;j++) //Look if Animalposition are to near to another Animal and correct it
+    for (unsigned int j=0;j<i;j++) //Look if Agentposition are to near to another Agent and correct it
       {
-        if( ((Animal[i]->GetPosition().x-Animal[i]->GetPosition().y)*(Animal[i]->GetPosition().x-Animal[i]->GetPosition().y)) + (Animalposition.x-Animalposition.y) * (Animalposition.x-Animalposition.y)  < 4.0f )
+        if( ((Agentbody[i]->GetPosition().x-Agentbody[i]->GetPosition().y)*(Agentbody[i]->GetPosition().x-Agentbody[i]->GetPosition().y)) + (Agentposition.x-Agentposition.y) * (Agentposition.x-Agentposition.y)  < 4.0f )
         {
-		 Animalposition; Animalposition.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
+		 Agentposition; Agentposition.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
 			// If positions are to near, randomly generate new
           j = 0; // and restart algorithm
         }
       }
-    Animal[i]->SetTransform(b2Vec2(Animalposition.x, Animalposition.y), 0.0f);
+    Agentbody[i]->SetTransform(b2Vec2(Agentposition.x, Agentposition.y), 0.0f);
   }
 
 for (int i = 0; i < amount_of_all_objects; i++)
@@ -245,19 +245,19 @@ for (int i = 0; i < amount_of_all_objects; i++)
 		((*touches)[i])[j] = false;
 	}
 }
-for (unsigned int i = 0; i < amount_food; i++)
+for (unsigned int i = 0; i < amount_Object; i++)
 {
-	//Reactivate Food
+	//Reactivate Object
 	active[population->size() * 2 + i] = true;
-	Food[i]->SetActive(true);
-	Food[i]->SetTransform( b2Vec2( (-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10))),0.0f);
+	Objectbody[i]->SetActive(true);
+	Objectbody[i]->SetTransform( b2Vec2( (-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10))),0.0f);
 }
 
 }
 
-Test* NeuralWorld::Create(std::vector<Creature *> *ppopulation, int pamount_food, int pfield_size, int pmode)
+Test* NeuralWorld::Create(std::vector<Agent *> *ppopulation, int pamount_Object, int pfield_size, int pmode)
 {
-	return new NeuralWorld(ppopulation, pamount_food, pfield_size, pmode);
+	return new NeuralWorld(ppopulation, pamount_Object, pfield_size, pmode);
 }
 
 
@@ -265,10 +265,10 @@ void NeuralWorld::move_bodies(std::vector< std::vector<double> > output_vectors)
 {
 	for (unsigned int i = 0; i < population->size(); i++)
 	{
-		//Accelerate Animal
-		Animal[i]->ApplyForce(b2Vec2(-sin(Animal[i]->GetAngle())*0.075f * 500 * (output_vectors[i][0]), cos(Animal[i]->GetAngle())*0.075f * 500 * (output_vectors[i][0])), Animal[i]->GetWorldCenter(), true);
-		//Rotate Animal
-		Animal[i]->SetTransform(Animal[i]->GetPosition(), Animal[i]->GetAngle() + 0.075f*(output_vectors[i][1]));
+		//Accelerate Agent
+		Agentbody[i]->ApplyForce(b2Vec2(-sin(Agentbody[i]->GetAngle())*0.075f * 500 * (output_vectors[i][0]), cos(Agentbody[i]->GetAngle())*0.075f * 500 * (output_vectors[i][0])), Agentbody[i]->GetWorldCenter(), true);
+		//Rotate Agent
+		Agentbody[i]->SetTransform(Agentbody[i]->GetPosition(), Agentbody[i]->GetAngle() + 0.075f*(output_vectors[i][1]));
 	}
 }
 
@@ -288,8 +288,8 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 	//Initialization
 	for (unsigned int i = 0; i < population->size(); i++)
 	{
-		//Todo: Get last food position or get nearest food position?
-		//Animal relative posx and posy to food. If no food detected => (0.0f, 0.0f)
+		//Todo: Get last Object position or get nearest Object position?
+		//Agent relative posx and posy to Object. If no Object detected => (0.0f, 0.0f)
 		single_vector.push_back(0.0f);
 		single_vector.push_back(0.0f);
 		single_vector.push_back(0.0f);
@@ -299,19 +299,19 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 
 	for (unsigned int i = 0; i < population->size(); i++)
 	{
-		for (unsigned int j = 0; j < amount_food; j++)
+		for (unsigned int j = 0; j < amount_Object; j++)
 		{
-			if (((*touches)[population->size() + i])[population->size() * 2 + j])       //Sensor touches food?
+			if (((*touches)[population->size() + i])[population->size() * 2 + j])       //Sensor touches Object?
 			{
-				single_vector.push_back( (Animal[i]->GetPosition().x - Food[j]->GetPosition().x));
-				single_vector.push_back((Animal[i]->GetPosition().y - Food[j]->GetPosition().y));
+				single_vector.push_back( (Agentbody[i]->GetPosition().x - Objectbody[j]->GetPosition().x));
+				single_vector.push_back((Agentbody[i]->GetPosition().y - Objectbody[j]->GetPosition().y));
 				//TODO Opitimization Speed of correction of the angle?
-				angle = atan2(Animal[i]->GetPosition().x * Food[j]->GetPosition().y - Animal[i]->GetPosition().y * Food[j]->GetPosition().x, Animal[i]->GetPosition().x * Food[j]->GetPosition().x + Animal[i]->GetPosition().y * Food[j]->GetPosition().y);
-				angle = correct_angle((Animal[i]->GetAngle() - angle));
+				angle = atan2(Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().y - Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().x, Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().x + Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().y);
+				angle = correct_angle((Agentbody[i]->GetAngle() - angle));
 				single_vector.push_back(angle);
 				input_vectors[i] = single_vector;
 				single_vector.clear();
-				break;   //The first detected food is the input
+				break;   //The first detected Object is the input
 			}
 		}
 	}
@@ -320,30 +320,30 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 
 void NeuralWorld::Step(Settings* settings)
 {
-	//Deactivate Food if inactive
-	for (unsigned int i = 0; i < amount_food; i++)
+	//Deactivate Object if inactive
+	for (unsigned int i = 0; i < amount_Object; i++)
 	{
 		if (!active[population->size() * 2 + i])
-			Food[i]->SetActive(false);
+			Objectbody[i]->SetActive(false);
 	}
 		
 
-	//TODO: If drawFoodVectors
+	//TODO: If drawObjectVectors
 	//TODO: Own Method
 	unsigned int last_detected = 0;
 	for (unsigned int j = 0; j < population->size(); j++)
 	{
-		for (unsigned int i = 0; i < amount_food; i++)
+		for (unsigned int i = 0; i < amount_Object; i++)
 		{
 			if (((*touches)[population->size() + j])[population->size() * 2 + i])
 			{
-				m_debugDraw.DrawLine(Animal[j]->GetPosition(), Food[i]->GetPosition(), b2Color(0.8f, 0.8f, 0.8f));
+				m_debugDraw.DrawLine(Agentbody[j]->GetPosition(), Objectbody[i]->GetPosition(), b2Color(0.8f, 0.8f, 0.8f));
 				last_detected = i;
 			}
 		}
 		if (((*touches)[population->size() + j])[population->size() * 2 + last_detected])
 		 {
-			 m_debugDraw.DrawLine(Animal[j]->GetPosition(), Food[last_detected]->GetPosition(), b2Color(1.0f, 0.0f, 0.0f));
+			 m_debugDraw.DrawLine(Agentbody[j]->GetPosition(), Objectbody[last_detected]->GetPosition(), b2Color(1.0f, 0.0f, 0.0f));
 		 }
 
 	}
@@ -370,11 +370,11 @@ void NeuralWorld::BeginContact(b2Contact* contact)
       {
 		if (fixtureA == SensorFixture[j])
 		{
-			for (int32 i = 0; i < amount_food; i++)
+			for (int32 i = 0; i < amount_Object; i++)
 			{
-			    if(active[population->size()*2+i])  //Food active?
+			    if(active[population->size()*2+i])  //Object active?
 			    {
-				  if (fixtureB == FoodFixture[i])
+				  if (fixtureB == ObjectFixture[i])
 				  {
 					((*touches)[population->size() + j])[population->size() * 2 + i] = true;
 				  }
@@ -382,32 +382,32 @@ void NeuralWorld::BeginContact(b2Contact* contact)
 			}
 
 		}
-		if (fixtureA == AnimalFixture[j])
+		if (fixtureA == AgentFixture[j])
 		{
-			for (int32 i = 0; i < amount_food; i++)
+			for (int32 i = 0; i < amount_Object; i++)
 			{
 			    if(active[population->size()*2+i])
 			    {
-				  if (fixtureB == FoodFixture[i])
+				  if (fixtureB == ObjectFixture[i])
 				  {
                     (*population)[j]->fitness++;
-					((*touches)[j])[population->size() * 2 + i] = false; //Because Food then dont need to be detected if inactive
+					((*touches)[j])[population->size() * 2 + i] = false; //Because Object then dont need to be detected if inactive
 				    active[population->size()*2+i] = false;
 					
 				  }
 			    }
 			}
 		}
-		if (fixtureB == AnimalFixture[j])
+		if (fixtureB == AgentFixture[j])
 		{
-			for (int32 i = 0; i < amount_food; i++)
+			for (int32 i = 0; i < amount_Object; i++)
 			{
 			    if(active[population->size()*2+i])
 			    {
-				  if (fixtureA == FoodFixture[i])
+				  if (fixtureA == ObjectFixture[i])
 			 	  {
                     (*population)[j]->fitness++;
-					((*touches)[j])[population->size() * 2 + i] = false; //Because Food then dont need to be detected if inactive
+					((*touches)[j])[population->size() * 2 + i] = false; //Because Object then dont need to be detected if inactive
 				    active[population->size()*2+i] = false;
 				  }
 			    }
@@ -415,11 +415,11 @@ void NeuralWorld::BeginContact(b2Contact* contact)
 		}
 		if (fixtureB == SensorFixture[j])
 		{
-			for (int32 i = 0; i < amount_food; i++)
+			for (int32 i = 0; i < amount_Object; i++)
 			{
 			    if(active[population->size()*2+i])
 			    {
-				  if (fixtureA == FoodFixture[i])
+				  if (fixtureA == ObjectFixture[i])
 				  {
 					((*touches)[population->size() + j])[population->size() * 2 + i] = true;
 				  }
@@ -438,9 +438,9 @@ void NeuralWorld::BeginContact(b2Contact* contact)
      {
         if (fixtureA == SensorFixture[j])
 		{
-			for (int32 i = 0; i < amount_food; i++)
+			for (int32 i = 0; i < amount_Object; i++)
 			{
-				if (fixtureB == FoodFixture[i])
+				if (fixtureB == ObjectFixture[i])
 				{
 					((*touches)[population->size() + j])[population->size() * 2 + i] = false;
 				}
@@ -449,9 +449,9 @@ void NeuralWorld::BeginContact(b2Contact* contact)
 
 		if (fixtureB == SensorFixture[j])
 		{
-			for (int32 i = 0; i < amount_food; i++)
+			for (int32 i = 0; i < amount_Object; i++)
 			{
-				if (fixtureA == FoodFixture[i])
+				if (fixtureA == ObjectFixture[i])
 				{
 					((*touches)[population->size() + j])[population->size() * 2 + i] = false;
 				}
@@ -470,22 +470,22 @@ void NeuralWorld::BeginContact(b2Contact* contact)
 		{
 			if (force[FORCE_FORWARD])
 			{
-				Animal[0]->ApplyForce(b2Vec2(-sin(Animal[0]->GetAngle())*0.075f * 500, cos(Animal[0]->GetAngle())*0.075f * 500), Animal[0]->GetWorldCenter(), true);
+				Agentbody[0]->ApplyForce(b2Vec2(-sin(Agentbody[0]->GetAngle())*0.075f * 500, cos(Agentbody[0]->GetAngle())*0.075f * 500), Agentbody[0]->GetWorldCenter(), true);
 				Outputs[0] = 1.0f;
 			}	
 			else if (force[FORCE_BACKWARD])
 			{
-				Animal[0]->ApplyForce(b2Vec2(sin(Animal[0]->GetAngle())*0.075f * 500, -cos(Animal[0]->GetAngle())*0.075f * 500), Animal[0]->GetWorldCenter(), true);
+				Agentbody[0]->ApplyForce(b2Vec2(sin(Agentbody[0]->GetAngle())*0.075f * 500, -cos(Agentbody[0]->GetAngle())*0.075f * 500), Agentbody[0]->GetWorldCenter(), true);
 				Outputs[0] = -1.0f;
 			}
 			if (force[FORCE_ROT_LEFT])
 			{
-				Animal[0]->SetTransform(Animal[0]->GetPosition(), Animal[0]->GetAngle() + 0.075f);
+				Agentbody[0]->SetTransform(Agentbody[0]->GetPosition(), Agentbody[0]->GetAngle() + 0.075f);
 				Outputs[1] = 0.075f;
 			}
 			else if (force[FORCE_ROT_RIGHT])
 			{
-				Animal[0]->SetTransform(Animal[0]->GetPosition(), Animal[0]->GetAngle() - 0.075f);
+				Agentbody[0]->SetTransform(Agentbody[0]->GetPosition(), Agentbody[0]->GetAngle() - 0.075f);
 				Outputs[1] = -0.075f;
 			}
 	
@@ -548,9 +548,9 @@ void NeuralWorld::KeyboardUp(unsigned char key)
 }
 
 
-//TODO: Maybe needed for Bestcreatures-Mode
+//TODO: Maybe needed for BestAgents-Mode
 /*
-	void setPopulation(std::vector<Creature *> *ppopulation)
+	void setPopulation(std::vector<Agent *> *ppopulation)
 	{
 	  population = ppopulation;
 	}

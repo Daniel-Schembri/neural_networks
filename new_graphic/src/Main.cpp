@@ -552,7 +552,7 @@ static void Restart(int)
 	}
 
 	evolution_control = new evolutionary(sim_parameter, topology);
-	test = new NeuralWorld(&(evolution_control->population), sim_parameter.amount_of_food, sim_parameter.field_size, sim_parameter.mode);
+	test = new NeuralWorld(&(evolution_control->population), sim_parameter.amount_of_Object, sim_parameter.field_size, sim_parameter.mode);
 	evolution_control->set_trainingdata(trainingdata);
 	glui_createevolution->hide();
 	Resize(width, height);
@@ -614,7 +614,7 @@ int main(int argc, char** argv)
 	//Init 
 	//Default Values
 	sim_parameter.population_size = 0;  // For check of unitialised Varialbes on early Restart/Button press
-	temp_sim_parameter.amount_of_food = 40;
+	temp_sim_parameter.amount_of_Object = 40;
 	temp_sim_parameter.evolvetime = 30;
 	temp_sim_parameter.evolve_algorithm = 0;
 	temp_sim_parameter.field_size = 50;
@@ -662,7 +662,7 @@ int main(int argc, char** argv)
     glui->add_column_to_panel(drawPanel, true);
 	glui->add_button_to_panel(drawPanel, "Restart", 0, Restart_setVal);
     glui->add_column_to_panel(drawPanel, true);
-	glui->add_button_to_panel(drawPanel, "Best Creatures");
+	glui->add_button_to_panel(drawPanel, "Best Agents");
 	glui->add_column_to_panel(drawPanel, true);
 	glui->add_button_to_panel(drawPanel, "Help");
 	glui->add_column_to_panel(drawPanel, true);
@@ -703,8 +703,8 @@ int main(int argc, char** argv)
 	
 	GLUI_Spinner* popSizeSpinner = glui_createevolution->add_spinner("Population Size", GLUI_SPINNER_INT, &temp_sim_parameter.population_size);
 	popSizeSpinner->set_int_limits(1, 100);
-	GLUI_Spinner* amountfoodSpinner = glui_createevolution->add_spinner("Amount of Objects", GLUI_SPINNER_INT, &temp_sim_parameter.amount_of_food);
-	amountfoodSpinner->set_int_limits(1, 1000);
+	GLUI_Spinner* amountObjectSpinner = glui_createevolution->add_spinner("Amount of Objects", GLUI_SPINNER_INT, &temp_sim_parameter.amount_of_Object);
+	amountObjectSpinner->set_int_limits(1, 1000);
 	GLUI_Spinner* evolveTimeSpinner = glui_createevolution->add_spinner("Evolve Time in Sec", GLUI_SPINNER_INT, &temp_sim_parameter.evolvetime);
 	evolveTimeSpinner->set_int_limits(5, 1000);
 
@@ -729,7 +729,7 @@ int main(int argc, char** argv)
 	GLUI_RadioGroup* mode_radiogroup = glui_createevolution->add_radiogroup(&temp_sim_parameter.mode);
 	glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Singleplayer");
 	glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Evolution");
-	glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Best Creatures");
+	glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Best Agents");
 	
 	glui_createevolution->add_separator();
 	
