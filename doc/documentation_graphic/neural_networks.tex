@@ -184,15 +184,41 @@
 {\large\tableofcontents}
 \newpage
 
+% Ideas for the documentation 
+% -> Robots playing football
+% -> 
+% 
+%
+%
+%
+%
+
+
+
 \chapter{Introduction}
+Intelligent systems are widely used, like in robotics, the esp in automotive.
+The motivation to write this projectwork was
+to find out basically, how an intelligent system can be created by simple algorithms (rules) and compare them with 'classical' solutions. Therefore a simple task was to let agents collect objects in a virtual environment.
 
-\chapter{Artificial intelligence}
 
-\section{Basics of intelligence}
 
-\section{The concept of agents}
 
-\section{Basics of artificial neural networks}
+
+\section{State of the art}
+
+\section{Artificial intelligence}
+Today there is not a definition of what intelligence exactly is.
+In general there certain categories focusing parts to describe of
+intelligents.
+
+\subsection{}
+
+
+\subsection{Basics of intelligence}
+
+\subsection{The concept of agents}
+
+\subsection{Basics of artificial neural networks}
 
 \section{Applications}
 
@@ -321,17 +347,99 @@ methods.
 
 \section{Applications}
 
+
+
+
+
 \chapter{Development of a simulator for virtual agents}
 
-\section{Concept and project planning}
+\section{Concept}
+
+
+
+Modes:
+Singleplayer with recording
+Supervised learning:
+Evolutionary algorithms
+
+Scalable World:
+- Size
+- Amount of Objects
+- Amount of Agents
+
+\section{Software-Engineering}
+
+\subsection{Classdiagram}
+
+\subsection{Use-Cases}
+
+\subsection{The graphical user interface}
+
+Buttons, Modes
+
+Weight-Matrix
+
+Neural Network Activation
+
+\subsection{The interface}
+
+
+The inputs: 
+x  [0.0, 20.0]
+y   [0.0, 20.0]
+alpha  [-PI, PI] (Radians)
+
+If no object is detected :
+x = 0
+y = 0,
+alpha = 0 
+
+If an object is detected:
+x= Agent.x - Object.x  
+y = Agent.y - Object.y
+alpha = Agent.Angle - (atan2(det, dot)) 
+alpha is the difference between the actual direction of the agent and
+the angle between the Position vector of the agent and the object. 
+Helpervariables:
+determinant: det =  Agent.x * Object.y - Agent.y * Object.x 
+dot product:  dot =  Agent.x * Object.x + Agent.y * Object.y 
+
+
+Outputs are:
+Acceleration of the agent: [0.0, 1.0] (with a resolution of 0.001)
+multiplied with the maximum accelartion of 
+(-sin(Agent->GetAngle())*0.075f * 500 * ,  cos(Agent->GetAngle())*0.075f * 500)
+
+Rotation by angle the agent: [-1.0, 1.0] (with a resolution of 0.001)
+multiplied with the maximum rotationspeed of 0.075
+
+
+%The
+%To minimize  that the agents are missing
 
 \section{OpenGL}
 
+GLUT, Windows Substitute Freeglut and GLUI. (used because Box2D Testbed used it)
+
+
 \section{The Box2D-Physicsengine}
+
+    AnimalFixtureDef[i].isSensor = false;
+    AnimalFixtureDef[i].friction = 1.0f;
+    AnimalBodydef[i].linearDamping = 1.0f;
+    AnimalBodydef[i].angularDamping = 2.0f;
+
+\section{Tools}
+Make, CMake
+Python for Trainingdata
 
 \section{Visualisation}
 
+Fitness Graph
+Weight Matrix
+Neural Network
 % \subsection{The fitness-function}
+
 
 % \subsection{Neural networks}
 
@@ -361,5 +469,25 @@ methods.
 \bibliographystyle{./files/alphadin}
 %dictionary source
 \bibliography{./files/bibdb}
+
+
+%AI-Junkie Smart Sweepers
+
+%Evolutionäre Algorithmen
+%Theorie der neuronalen Netze
+%Jonathan Schwarz
+%Künstliche Intelligenz
+
+%Box2D Manual
+%Box2D Iforce2D
+
+%CMake Manual
+%Makefile Manual
+
+%Software-Engineering books?
+
+%Opengl, GLUT and GLUI
+
+
 
 \end{document}

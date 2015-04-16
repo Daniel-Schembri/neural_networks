@@ -48,7 +48,7 @@ public:
 
     void DrawAABB(b2AABB* aabb, const b2Color& color);
 //ds
-void DrawLine(const b2Vec2* Vector1,const b2Vec2* Vector2, const b2Color& color);
+void DrawLine(const b2Vec2& Vector1,const b2Vec2& Vector2, const b2Color& color);
 };
 
 
