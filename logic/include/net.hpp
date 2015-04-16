@@ -31,6 +31,7 @@ public:
 
     void feedForward(const std::vector<double> &inputVals);
     virtual void learn(const std::vector<double> &targetVals) = 0;
+    // TODO: Give user the opportunity to export and set the weight matrix
 
 protected:
     std::vector<Layer> m_layers;
