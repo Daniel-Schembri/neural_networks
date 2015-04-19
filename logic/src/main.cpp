@@ -16,16 +16,13 @@
 
 using namespace std;
 
-// Silly class to read training data from a text file -- Replace This.
-// Replace class TrainingData with whatever you need to get input data into the
-// program, e.g., connect to a database, or take a stream of data from stdin, or
-// from a file specified by a command line argument, etc.
+// Simple class to read training data from a text file.
 
 class TrainingData
 {
 public:
     TrainingData(const string filename);
-    bool isEof(void) { return m_trainingDataFile.eof(); }
+    bool isEof() {return m_trainingDataFile.eof();}
     void getTopology(vector<unsigned> &topology);
 
     // Returns the number of input values read from the file:
@@ -61,6 +58,11 @@ void TrainingData::getTopology(vector<unsigned> &topology)
 TrainingData::TrainingData(const string filename)
 {
     m_trainingDataFile.open(filename.c_str());
+    if (m_trainingDataFile.fail())
+    {
+        std::cerr << "\Error, could not open file '" << filename << "' !";
+        exit(1);
+    }
 }
 
 unsigned TrainingData::getNextInputs(vector<double> &inputVals)
@@ -115,25 +117,32 @@ void showVectorVals(string label, vector<double> &v)
 
 int main()
 {
-    TrainingData trainData("./trainingData.txt");
+    //.
+    //├── main.cpp
+    //└── training
+    //    └── trainingData.txt
+    TrainingData trainData("./src/training/trainingData.txt");
 
+    // TODO: Use twiddle to find the optimal topology
     // e.g., { 3, 2, 1 }
     vector<unsigned> topology;
     trainData.getTopology(topology);
 
-    srn myNet(topology, true);
+    // use bias neurons
+    FeedForwardNet myNet(topology, true);
 
     vector<double> inputVals, targetVals, resultVals;
     int trainingPass = 0;
 
-    while (!trainData.isEof()) {
+    while (!trainData.isEof()) 
+    {
         ++trainingPass;
         cout << endl << "Pass " << trainingPass;
 
         // Get new input data and feed it forward:
-        if (trainData.getNextInputs(inputVals) != topology[0]) {
+        if (trainData.getNextInputs(inputVals) != topology[0])
             break;
-        }
+
         showVectorVals(": Inputs:", inputVals);
         myNet.feedForward(inputVals);
 
@@ -149,8 +158,7 @@ int main()
         myNet.learn(targetVals);
 
         // Report how well the training is working, average over recent samples:
-        cout << "Net recent average error: "
-                << myNet.getRecentAverageError() << endl;
+        cout << "Net recent average error: " << myNet.getRecentAverageError() << endl;
     }
 
     cout << endl << "Done" << endl;

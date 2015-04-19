@@ -2,37 +2,50 @@
 
 import math
 import os
+import sys
 
 fileName = "trainingData.txt"
 
 if __name__ == '__main__':
-	radius = 20.0
-	halbKreis = {0.0 : 0.0}
+    if 4 != len(sys.argv):
+        print """Missing topology arguments.
+                 Usage: createData.py topology[0] topology[1] topology[2]"""
+        sys.exit(1)
 
-	xTmp = 0.0
-	yTmp = 0.0
+    params   = sys.argv[1:]
+    topology = 'topology:' 
 
-	# define halbKreis
-	for alpha in range(181):
-		rad  = alpha * math.pi/180
-		xTmp = radius * math.cos(rad)
-		yTmp = radius * math.sin(rad)
+    for i in params:
+        topology = topology + ' ' + str(i) 
 
-		halbKreis[xTmp] = yTmp
+    radius = 20.0
+    semicircle = {0.0 : 0.0}
 
-	xList    = sorted(halbKreis.keys())
-	file = open(fileName, 'w+')
+    xTmp = 0.0
+    yTmp = 0.0
 
-	for x in xList:
-		yCurr = 0.0 
-		yMax  = halbKreis[x]
-		stepSize = yMax /20
-		while(yCurr < yMax):
-			hyp      = math.sqrt(x**2 + yCurr**2)
-			velocity = hyp / radius
-			angle    = math.asin(yCurr/hyp)
+    # define semicircle
+    for alpha in range(181):
+            rad  = alpha * math.pi/180
+            xTmp = radius * math.cos(rad)
+            yTmp = radius * math.sin(rad)
 
-			file.write('{0};{1};{2};{3}\n'.format(x,yCurr,velocity,angle))
-			yCurr += stepSize
+            semicircle[xTmp] = yTmp
 
-	file.close;
+    xList = sorted(semicircle.keys())
+    file = open(fileName, 'w+')
+    file.write('{}\n'.format(topology))
+
+    for x in xList:
+            yCurr = 0.0 
+            yMax  = semicircle[x]
+            stepSize = yMax /20
+            while(yCurr < yMax):
+                    hyp      = math.sqrt(x**2 + yCurr**2)
+                    velocity = hyp / radius
+                    angle    = math.asin(yCurr/hyp)
+
+                    file.write('in: {0} {1}\nout: {2} {3}\n'.format(x,yCurr,velocity,angle))
+                    yCurr += stepSize
+
+    file.close;

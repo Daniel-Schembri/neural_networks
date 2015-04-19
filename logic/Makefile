@@ -5,14 +5,18 @@ BINDIR         = bin/
 TRAINDIR       = train/
 TRAINFILE      = trainingData.txt 
 TRAINSRC       = createData.py
+TOPOLOGY       = 2 4 2
 
 CXX = g++
 
 #only in debug version
 CXXDEBUGFLAGS = -ggdb
 
+#use c++11
+CXXFLAGS  = -std=c++11
+
 #all warnings
-CXXFLAGS  = -Wall
+CXXFLAGS  += -Wall
 CXXFLAGS  += -Wextra
 
 #maximum optimization
@@ -38,7 +42,7 @@ OBJS   = ${SRCS:%.cpp=%.o}
 TARGET = neural_network
 
 %.o:$(SRCDIR)%.cpp
-	$(CXX) -c -o $@ $(CXXFLAGS) $(CXXDEBUGFLAGS) $<
+	$(CXX) -c -o $@ $(CXXFLAGS) $< #$(CXXDEBUGFLAGS) $<
 
 default: $(TARGET)
 
@@ -56,12 +60,11 @@ $(TARGET): $(OBJS)
 
 .PHONY: training
 
-training: 
-	cd $(TRAINDIR); ./$(TRAINSRC); mv $(TRAINFILE) ../$(SRCDIR)/training
+training:
+	cd $(TRAINDIR); ./$(TRAINSRC) $(TOPOLOGY); mv $(TRAINFILE) ../$(SRCDIR)/training
 
 .PHONY: clean
 
 clean: 
 	rm -r -f $(TARGET)* $(BINDIR) core *~ *.o
-	cd $(TRAINDIR); make clean
 	clear
