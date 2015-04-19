@@ -45,7 +45,7 @@ Net::~Net()
             delete m_layers[i][j];
 }
 
-void Net::randomize_layer()
+void Net::randomize_net()
 {
    if (m_layers.empty())
        return;
@@ -71,12 +71,12 @@ std::vector<double> Net::get_neuron_weights(unsigned int layernr, unsigned int n
 
 void Net::set_weights(unsigned int layernr, unsigned int neuronnr, std::vector<double> weights)
 { 
-  for (int i=0;i<weights.size();i++)
+  for (unsigned int i=0;i<weights.size();i++)
   {
    if(weights[i] < -1.0f || weights[i] > 1.0f) 
       return;
   }
-  for (int i=0;i<m_layers[layernr][neuronnr]->m_outputWeights.size();i++)
+  for (unsigned int i=0;i<m_layers[layernr][neuronnr]->m_outputWeights.size();i++)
     m_layers[layernr][neuronnr]->m_outputWeights[i].weight = weights[i]; //Random value between -1.0f and 1.0f
 }
 

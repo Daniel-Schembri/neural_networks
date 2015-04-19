@@ -59,55 +59,23 @@ struct Settings
 		hz = 60.0f;
 		velocityIterations = 8;
 		positionIterations = 3;
-		drawShapes = 1;
-		drawJoints = 1;
-		drawAABBs = 0;
-		drawContactPoints = 0;
-		drawContactNormals = 0;
-		drawContactImpulse = 0;
-		drawFrictionImpulse = 0;
-		drawCOMs = 0;
-		drawStats = 0;
-		drawProfile = 0;
-		enableWarmStarting = 1;
-		enableContinuous = 1;
-		enableSubStepping = 0;
-		enableSleep = 1;
 		pause = 0;
 		singleStep = 0;
-		iterations = 1;  //ds
+		//ds
+		turbo = false; 
 	}
 
 	b2Vec2 viewCenter;
+	b2Vec2 viewCenter_plotter;
 	float32 hz;
 	int32 velocityIterations;
 	int32 positionIterations;
-	int32 drawShapes;
-	int32 drawJoints;
-	int32 drawAABBs;
-	int32 drawContactPoints;
-	int32 drawContactNormals;
-	int32 drawContactImpulse;
-	int32 drawFrictionImpulse;
-	int32 drawCOMs;
-	int32 drawStats;
-	int32 drawProfile;
-	int32 enableWarmStarting;
-	int32 enableContinuous;
-	int32 enableSubStepping;
-	int32 enableSleep;
 	int32 pause;
 	int32 singleStep;
-	int32 iterations;  //ds
+	//ds
+	bool turbo;
 };
 
-struct TestEntry
-{
-	const char *name;
-	TestCreateFcn *createFcn;
-};
-
-extern TestEntry g_testEntries[];
 // This is called when a joint in the world is implicitly destroyed
 // because an attached body is destroyed. This gives us a chance to
 // nullify the mouse joint.
@@ -141,7 +109,7 @@ public:
 	Test();
 	virtual ~Test();
 
-    void DrawTitle(const char *string);
+    //void DrawTitle(const char *string);
 	virtual void Step(Settings* settings);
 	virtual void Keyboard(unsigned char key) { B2_NOT_USED(key); }
 	virtual void KeyboardUp(unsigned char key) { B2_NOT_USED(key); }
@@ -149,11 +117,6 @@ public:
 	virtual void MouseDown(const b2Vec2& p);
 	virtual void MouseUp(const b2Vec2& p);
 	void MouseMove(const b2Vec2& p);
-	void LaunchBomb();
-	void LaunchBomb(const b2Vec2& position, const b2Vec2& velocity);
-	
-	void SpawnBomb(const b2Vec2& worldPt);
-	void CompleteBombSpawn(const b2Vec2& p);
 
 	// Let derived tests know that a joint was destroyed.
 	virtual void JointDestroyed(b2Joint* joint) { B2_NOT_USED(joint); }
@@ -183,15 +146,10 @@ protected:
 	DebugDraw m_debugDraw;
 	int32 m_textLine;
 	b2World* m_world;
-	b2Body* m_bomb;
 	b2MouseJoint* m_mouseJoint;
-	b2Vec2 m_bombSpawnPoint;
-	bool m_bombSpawning;
 	b2Vec2 m_mouseWorld;
 	int32 m_stepCount;
 
-	b2Profile m_maxProfile;
-	b2Profile m_totalProfile;
 };
 
 #endif
