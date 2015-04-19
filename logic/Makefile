@@ -3,9 +3,8 @@ INCDIR         = include/
 BINDIR         = bin/
 
 TRAINDIR       = train/
-TRAINTARGET    = training_data
 TRAINFILE      = trainingData.txt 
-TRAINSRC       = training.cpp
+TRAINSRC       = createData.py
 
 CXX = g++
 
@@ -55,10 +54,10 @@ $(TARGET): $(OBJS)
 #	$(CXX) -o $@ $(OBJS)
 #	mkdir -p $(BINDIR); mv *.o $(BINDIR)
 
-.PHONY: train
+.PHONY: training
 
-train: 
-	cd $(TRAINDIR); make; ./$(TRAINTARGET) > $(TRAINFILE); mv $(TRAINFILE) ../$(SRCDIR)
+training: 
+	cd $(TRAINDIR); ./$(TRAINSRC); mv $(TRAINFILE) ../$(SRCDIR)/training
 
 .PHONY: clean
 
