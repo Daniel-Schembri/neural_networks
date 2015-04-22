@@ -18,9 +18,9 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
 	  sim_parameter.population_size = 1;
   }
 
-  for (int i = 0; i < sim_parameter.population_size; i++)
+  for (unsigned int i = 0; i < sim_parameter.population_size; i++)
   {
-    population.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, i, ptopology));
+    population.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, i, ptopology, sim_parameter.nettype));
 	if (sim_parameter.random)
 	{
 		population.back()->randomize_net(); 
@@ -68,6 +68,7 @@ int evolutionary::evolve(int id_algo)
 		reset_sim = evolve_learn();
 		return reset_sim;
 		break;
+	//Todo: Jonathan: Add recombination-method and maybe add roulettewheel-method
 	default:
 		return reset_sim;
 		break;
@@ -76,6 +77,7 @@ int evolutionary::evolve(int id_algo)
 }
 
 
+//Todo: Jonathan: Add recombination-method and maybe add roulettewheel-method
 
 int evolutionary::evolve_hillclimber()
 {
@@ -88,7 +90,7 @@ int evolutionary::evolve_hillclimber()
     iterationsteps = 0;
     save_bestAgent();
      //if fitness < lastfitness -> revert the last hillclimber-changes
-	for (int i = 0; i<sim_parameter.population_size; i++)
+	for (unsigned int i = 0; i<sim_parameter.population_size; i++)
      {
        if(population[i]->lastfitness > population[i]->fitness)
        {
@@ -119,7 +121,7 @@ int evolutionary::evolve_simulatedannealing()
 		iterationsteps = 0;
 		save_bestAgent();
 
-		for (int i = 0; i<sim_parameter.population_size; i++)
+		for (unsigned int i = 0; i<sim_parameter.population_size; i++)
 		{
 			r = (population[i]->fitness - population[i]->lastfitness);
 			p = 1 / (1 + exp(-r / T));
@@ -139,7 +141,7 @@ int evolutionary::evolve_simulatedannealing()
 	return 0;
 }
 
-int evolutionary::evolve_learn()  //TODO How manyLearningCycles?
+int evolutionary::evolve_learn() 
 {
 
 	iterationsteps++;
@@ -148,7 +150,7 @@ int evolutionary::evolve_learn()  //TODO How manyLearningCycles?
 	{
 		iterationsteps = 0;
 		save_bestAgent();
-		learn(10);
+		learn(10);  //TODO How manyLearningCycles?
 		generations++;
 
 		return 1;  //Signal that Simulation must be Reset
@@ -157,6 +159,10 @@ int evolutionary::evolve_learn()  //TODO How manyLearningCycles?
 }
 
 //Evolutionary Algorithms
+
+//Todo: Jonathan: Add recombination-method and maybe add roulettewheel-method
+//		
+
 void evolutionary::hillclimber(Agent *Agent, bool revert)
 {
 double delta = 0.0f;
@@ -260,7 +266,7 @@ void evolutionary::learn(int plearn_cycles)
 			for (row = trainingdata.begin(); row != trainingdata.end(); row++)
 			{
 				col = row->begin();
-				// do stuff ...
+
 				trainingdata_input.push_back(col[0]);
 				trainingdata_input.push_back(col[1]);
 				trainingdata_output.push_back(col[2]);

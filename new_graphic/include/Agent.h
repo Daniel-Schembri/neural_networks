@@ -4,15 +4,20 @@
 #define M_PI 3.14159265359
 #define DEGTORAD (M_PI/180)
 
-#include "FeedForwardNet.hpp"
+#include "feedForwardNet.hpp"
+#include "srn.hpp"
 
 // This is used to test sensor shapes.
 class Agent
 {
 //Attributes
 public:
+	//
+	
+	//TODO Jonathan: implement general purpose class for processing the input
 	Net* mynet;  //The Neural Net
-	int fitness, lastfitness; // bestfitness;
+
+	int fitness, lastfitness;
 
 	//Output
 	//std::vector<double> outputvals;
@@ -21,17 +26,17 @@ private:
 
 	std::vector<unsigned> topology;
 
-	int id; 
+	int id; int nettype;
 	int health;  //NU
 	float posx, posy, angle;  //NU
-
 //Methods
+
 public:
 
 Agent();
 //~Agent();
 //Agent(int phealth, float pposx, float pposy);
-Agent(int phealth, float pposx, float pposy, int pid, std::vector<unsigned> ptopology);
+Agent(int phealth, float pposx, float pposy, int pid, std::vector<unsigned> ptopology, int pnet_type);
 
 void randomize_net();
 void setNet_zero();

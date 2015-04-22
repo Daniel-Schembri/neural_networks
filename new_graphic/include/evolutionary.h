@@ -1,3 +1,6 @@
+#ifndef EVOLUTIONARY_H
+#define EVOLUTIONARY_H
+
 #include <time.h>		//For initialising the random_generator
 #include <vector>
 #include "Agent.h"
@@ -14,6 +17,7 @@ struct parameter
 	unsigned int evolvetime;
 	int evolve_algorithm;
 	int mode;
+	int nettype;
 	int random;
 	float mutation_rate;
 	int annealing_rate;
@@ -71,9 +75,11 @@ private:	//PRIVATE
 
 	void randomize_population();
 
+	
 	int evolve_hillclimber();
 	int evolve_simulatedannealing();
-	int evolve_learn();
+	int evolve_learn(); //Supervised Learning
+	//Todo: Jonathan: Add recombination-method and maybe add roulettewheel-method
 
 	void hillclimber(Agent *Agent, bool revert);
 	void simulated_annealing(Agent *Agent, bool revert);
@@ -84,3 +90,4 @@ private:	//PRIVATE
 
 
 };
+#endif 

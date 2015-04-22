@@ -2,7 +2,7 @@
 #define NEURAL_WORLD_H
 
 #include <time.h>		//For initialising the generator und for timemeasurement
-#include "FeedForwardNet.hpp"
+#include "feedForwardNet.hpp"
 
 #define FORCE_FORWARD   0
 #define FORCE_BACKWARD  1
@@ -34,8 +34,8 @@ public:
 
 private:
 	bool	keys[256];			// Array Used For The Keyboard Routine
-	int amount_Object;
-	int amount_of_all_objects;
+	unsigned int amount_Object;
+	unsigned int amount_of_all_objects;
 
 	int field_size;
 
