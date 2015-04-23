@@ -356,22 +356,25 @@ void NeuralWorld::Step(Settings* settings)
 
 	//TODO: If drawObjectVectors
 	//TODO: Own Method
-	unsigned int last_detected = 0;
 	for (unsigned int j = 0; j < population->size(); j++)
 	{
+        //Draw all active objects in sensorrange
 		for (unsigned int i = 0; i < amount_Object; i++)
 		{
 			if (((*touches)[population->size() + j])[population->size() * 2 + i])
 			{
 				m_debugDraw.DrawLine(Agentbody[j]->GetPosition(), Objectbody[i]->GetPosition(), b2Color(0.8f, 0.8f, 0.8f));
-				last_detected = i;
 			}
 		}
-		if (((*touches)[population->size() + j])[population->size() * 2 + last_detected])
-		 {
-			 m_debugDraw.DrawLine(Agentbody[j]->GetPosition(), Objectbody[last_detected]->GetPosition(), b2Color(1.0f, 0.0f, 0.0f));
-		 }
-
+        //Draw just the first object in the array detected by the sensor (This is the object necessary for tracking!)
+		for (unsigned int i = 0; i < amount_Object; i++)
+		{
+			if (((*touches)[population->size() + j])[population->size() * 2 + i])
+			{
+				m_debugDraw.DrawLine(Agentbody[j]->GetPosition(), Objectbody[i]->GetPosition(), b2Color(1.0f,0.0f,0.0f));
+                break;
+			}
+		}
 	}
 		Test::Step(settings);
 }
