@@ -292,7 +292,7 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 		//Agent relative posx and posy to Object. If no Object detected => (0.0f, 0.0f)
 		single_vector.push_back(0.0f);
 		single_vector.push_back(0.0f);
-		single_vector.push_back(0.0f);
+	//	single_vector.push_back(0.0f);
 		input_vectors.push_back(single_vector);
 		single_vector.clear();  //TODO: Reallocation problem? (Dont think so cause not using pointer)
 	}
@@ -303,15 +303,41 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 		{
 			if (((*touches)[population->size() + i])[population->size() * 2 + j])       //Sensor touches Object?
 			{
-				single_vector.push_back( (Agentbody[i]->GetPosition().x - Objectbody[j]->GetPosition().x));
-				single_vector.push_back((Agentbody[i]->GetPosition().y - Objectbody[j]->GetPosition().y));
-				//TODO Opitimization Speed of correction of the angle?
+				int x_translated = 0;
+				int y_translated = 0;
+				int x_tmp = 0;
+				int y_tmp = 0;
+				//angle correct?
 				angle = atan2(Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().y - Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().x, Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().x + Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().y);
 				angle = correct_angle((Agentbody[i]->GetAngle() - angle));
-				single_vector.push_back(angle);
+
+				//First translation of the x,y coordinates
+				x_translated = (Objectbody[j]->GetPosition().x - Agentbody[i]->GetPosition().x);
+				y_translated = (Objectbody[j]->GetPosition().y - Agentbody[i]->GetPosition().y);
+				//Rotation
+				x_tmp =  x_translated * cos(angle) + y_translated * sin(angle);
+				y_tmp = -x_translated * sin(angle) + y_translated * cos(angle);
+				
+				single_vector.push_back(x_tmp);
+				single_vector.push_back(y_tmp);
+		//		single_vector.push_back(angle);
+
 				input_vectors[i] = single_vector;
 				single_vector.clear();
-				break;   //The first detected Object is the input
+
+				break;
+
+				//Old version: absolute coordinates
+				//single_vector.push_back( (Agentbody[i]->GetPosition().x - Objectbody[j]->GetPosition().x));
+				//single_vector.push_back((Agentbody[i]->GetPosition().y - Objectbody[j]->GetPosition().y));
+				//TODO Opitimization Speed of correction of the angle?
+				//angle = atan2(Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().y - Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().x, Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().x + Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().y);
+				//angle = correct_angle((Agentbody[i]->GetAngle() - angle));
+				
+				//single_vector.push_back(angle);
+				//input_vectors[i] = single_vector;
+				//single_vector.clear();
+				//break;   //The first detected Object is the input
 			}
 		}
 	}
