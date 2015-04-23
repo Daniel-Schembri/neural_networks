@@ -27,14 +27,14 @@ CXXFLAGS  += -march=native
 CXXFLAGS  += -I$(INCDIR) -I$(INCDIRBOX2D) -I$(INCUSR) -I$(INCDIRLOGIC)
 
 
-SRCS = Agent.cpp \
-     Brain.cpp \
+SRCS = agent.cpp \
+     brain.cpp \
      evolutionary.cpp \
      gui.cpp \
-     Main.cpp \
-     NeuralWorld.cpp \
-     Render.cpp \
-     Test.cpp \
+     main.cpp \
+     neuralWorld.cpp \
+     render.cpp \
+     test.cpp \
      ../logic/src/competitive.cpp \
      ../logic/src/competitiveNeuron.cpp \
      ../logic/src/feedForwardNet.cpp \

@@ -3,7 +3,7 @@
 
 #include <time.h>		//For initialising the random_generator
 #include <vector>
-#include "Agent.h"
+#include "agent.h"
 
 #define MODE_SINGLEPLAYER 0
 #define MODE_EVOLUTION 1

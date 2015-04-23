@@ -4,7 +4,7 @@
 #define M_PI 3.14159265359
 #define DEGTORAD (M_PI/180)
 
-#include "Brain.h"
+#include "brain.h"
 
 //Abstract Class to process the inputs
 class Simplescript : public Brain

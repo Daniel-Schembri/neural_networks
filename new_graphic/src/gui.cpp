@@ -48,7 +48,7 @@ void gui::Wrapper_Restart_setVal(int)
 
 void gui::Wrapper_glui_noclose()
 {
-	instance->Wrapper_glui_noclose();
+	instance->glui_noclose();
 }
 
 void gui::Wrapper_glui_create_hide(int)
@@ -752,7 +752,7 @@ void gui::Createevolution_win()
 		glui_createevolution->add_button("Cancel", 0, Wrapper_glui_create_hide);
 
 
-		glutCloseFunc(Wrapper_glui_noclose);
+		//Noeff glutCloseFunc(Wrapper_glui_noclose);
 
 		/*
 		GLUI_Master.set_glutIdleFunc(NULL);
@@ -923,7 +923,8 @@ void gui::load_trainingData(const char * path)
 {
 	//Load TrainingData
 	std::string line;
-	std::ifstream myfile("N:\\Box2D_v2.3.0\\Box2D\\new_graphic_win\\trainingsData.txt");
+	//std::ifstream myfile("N:\\Box2D_v2.3.0\\Box2D\\new_graphic_win\\trainingsData.txt");
+	std::ifstream myfile("trainingsData.txt");
 
 	if (myfile.is_open())
 	{

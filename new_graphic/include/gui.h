@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "NeuralWorld.h"
+#include "neuralWorld.h"
 #include "evolutionary.h"
 
 #include "glui/glui.h"

@@ -1,4 +1,4 @@
-#include "NeuralWorld.h"
+#include "neuralWorld.h"
 
 
     NeuralWorld::NeuralWorld()

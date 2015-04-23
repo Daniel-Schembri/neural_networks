@@ -16,12 +16,12 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "Render.h"
-#include "Test.h"
+#include "render.h"
+#include "test.h"
 #include "glui/glui.h"
 #include <stdio.h>
 #include <vector>
-#include "NeuralWorld.h"
+#include "neuralWorld.h"
 #include "evolutionary.h"
 #include "gui.h"
 
