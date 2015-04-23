@@ -25,7 +25,8 @@ CXXFLAGS  += -march=native
 
 CXXFLAGS  += -I$(INCDIR)
 
-SRCS   = net.cpp \
+SRCS   = script.cpp \
+	     net.cpp \
 	     feedForwardNet.cpp \
 	     srn.cpp \
 	     competitive.cpp \

@@ -14,6 +14,7 @@
 #define MODE_BESTAgentS 2
 
 #define M_PI 3.14159265359
+
 #define DEGTORAD (M_PI/180)
 #define AMOUNT_OF_Object 40
 

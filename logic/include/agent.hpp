@@ -7,6 +7,12 @@
 #include "commonDefs.hpp"
 #include "feedForwardNet.hpp"
 #include "srn.hpp"
+#include "script.hpp"
+
+//Nettypes
+#define NET_FEEDFORWARD   0
+#define NET_SRN           1 
+#define NET_SCRIPT        2
 
 // This is used to test sensor shapes.
 class Agent
@@ -14,6 +20,7 @@ class Agent
     //Attributes
     public:
         Net* mynet;  //The Neural Net
+        Script* myscript; //Script to directly test functions
         int fitness, lastfitness; // bestfitness;
 
         //Output

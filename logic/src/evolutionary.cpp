@@ -53,7 +53,7 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
 
 int evolutionary::evolve(int id_algo)
 {
-    int reset_sim = -1;
+    int reset_sim = 0;
     switch (id_algo)
     {
         case 0:

@@ -36,6 +36,7 @@ SRCS = brain.cpp \
      neuralWorld.cpp \
      render.cpp \
      test.cpp \
+     ../logic/src/script.cpp \
      ../logic/src/agent.cpp \
      ../logic/src/evolutionary.cpp \
      ../logic/src/competitive.cpp \
