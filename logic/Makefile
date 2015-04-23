@@ -13,7 +13,7 @@ CXX = g++
 CXXDEBUGFLAGS = -ggdb
 
 #use c++11
-CXXFLAGS  = -std=c++11
+# CXXFLAGS  = -std=c++11
 
 #all warnings
 CXXFLAGS  += -Wall
