@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <vector>
 #include "neuralWorld.h"
-#include "evolutionary.h"
+#include "evolutionary.hpp"
 #include "gui.h"
 
 

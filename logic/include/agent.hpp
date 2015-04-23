@@ -23,7 +23,7 @@ class Agent
 
         std::vector<unsigned> topology;
 
-        int id; 
+        int id; int nettype; 
         float posx, posy, angle;  //NU
 
         //Methods

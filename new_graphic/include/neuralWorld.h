@@ -22,7 +22,7 @@
 #define TYPE_OBSTACLE 2
 
 #include "test.h"
-#include "agent.h"
+#include "agent.hpp"
 
 const b2Vec2 triangle[3] = {b2Vec2(0.0f, 2.0f), b2Vec2(-1.0f, -1.0f), b2Vec2(1.0f, -1.0f)}; // Triangle-shape
 

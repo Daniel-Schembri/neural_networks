@@ -6,7 +6,7 @@
 #include <fstream>
 #include <string>
 #include "neuralWorld.h"
-#include "evolutionary.h"
+#include "evolutionary.hpp"
 
 #include "glui/glui.h"
 

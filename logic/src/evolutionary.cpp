@@ -29,7 +29,7 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
 
     for (unsigned i = 0; i < sim_parameter.population_size; i++)
     {
-        population.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, i, ptopology, sim_parameter.nettype)));
+        population.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, i, ptopology, sim_parameter.nettype));
     }
 
     best_fitnesses.push_back(0);
@@ -468,8 +468,8 @@ std::vector<Agent*> evolutionary::crossover(Agent* mum, Agent* dad)
         }
     }
 
-    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid1_weights));
-    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid1_weights));
+    kids.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid1_weights));
+    kids.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid1_weights));
 
     return kids;
 }

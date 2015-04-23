@@ -7,7 +7,7 @@ Agent::Agent()
 
 Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology, int pnet_type)
 {
-    fitness = 0; lastfitness = 0; id=pid;
+    fitness = 0; lastfitness = 0; id=pid; nettype = pnet_type;
 
     posx = pposx; posy = pposy;
     topology = ptopology;
@@ -32,7 +32,7 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
 {
     fitness = 0; lastfitness = 0; id=pid;
 
-    health = phealth; posx = pposx; posy = pposy;
+    posx = pposx; posy = pposy;
     topology = ptopology;
 
     switch(nettype)
