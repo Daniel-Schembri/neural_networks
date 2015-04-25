@@ -196,11 +196,13 @@
 
 
 \chapter{Introduction}
-Intelligent systems are widely used, like in robotics, the esp in automotive.
+Intelligent systems are widely used, like in robotics.
 The motivation to write this projectwork was
 to find out basically, how an intelligent system can be created by simple algorithms (rules) and compare them with 'classical' solutions. Therefore a simple task was to let agents collect objects in a virtual environment.
 
 
+
+In this project neural networks of the second type are used, because the main interest lies in finding a good mathematical solution.
 
 
 
@@ -214,9 +216,19 @@ intelligents.
 \subsection{}
 
 
-\subsection{Basics of intelligence}
-
 \subsection{The concept of agents}
+An agent is a programm that interacts self-sufficent depending on the actual state. It has sensors, a processing logic and actuators to interact with its environment. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the 
+
+
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,scale=1]{files/agent.png}  
+		\caption{Structure of an agent (oriented on \cite{ki-book} )} 
+		\label{fig:agent}
+	\end{figure}
+\end{center}
 
 \subsection{Basics of artificial neural networks}
 
@@ -355,6 +367,19 @@ methods.
 
 \section{Concept}
 
+
+Transformation of the inputvalues through the input-neurons from range [-20.0, 20.0] and [0.0, 20.0] (Sensor x and y) and [-Pi, +Pi] (DeltaAngle) to the range [-1.0,+1.0] or [0.0, 1.0] with tanh function. (Better function? Linear function?)
+
+Explain why DeltaAngle is necessary:
+rotate clockwise. If Agent is rotated by 180degree error should rotate counter-clockwise,but
+has learned to rotate clockwise without deltaangle as input.
+
+
+Optional: Random placment of Objects and agents: see algorithm in NeuralWorld.cpp
+
+
+
+Scalability of the World
 
 
 Modes:

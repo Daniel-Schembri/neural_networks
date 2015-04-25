@@ -2,7 +2,7 @@
 #define NEURAL_WORLD_H
 
 #include <time.h>		//For initialising the generator und for timemeasurement
-#include "FeedForwardNet.hpp"
+#include "feedForwardNet.hpp"
 
 #define FORCE_FORWARD   0
 #define FORCE_BACKWARD  1
@@ -21,8 +21,8 @@
 #define TYPE_Object 1
 #define TYPE_OBSTACLE 2
 
-#include "Test.h"
-#include "Agent.h"
+#include "test.h"
+#include "agent.h"
 
 const b2Vec2 triangle[3] = {b2Vec2(0.0f, 2.0f), b2Vec2(-1.0f, -1.0f), b2Vec2(1.0f, -1.0f)}; // Triangle-shape
 
@@ -34,8 +34,8 @@ public:
 
 private:
 	bool	keys[256];			// Array Used For The Keyboard Routine
-	int amount_Object;
-	int amount_of_all_objects;
+	unsigned int amount_Object;
+	unsigned int amount_of_all_objects;
 
 	int field_size;
 

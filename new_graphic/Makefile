@@ -1,10 +1,10 @@
 SRCDIR         = src/
 INCDIR         = include/
+INCDIRLOGIC   = ../logic/include/
 INCDIRBOX2D    = libs/Box2D_v2.3.0/Box2D/
-INCDIRTESTS    = include/Tests/
 INCUSR         = /usr/local/include/
 BINDIR         = bin/
-
+   
 LDFLAGS = -lX11 -lGL -lGLU -lXxf86vm -L${BOX2Dlib} -L${GLUIlib} -lBox2D -lglui -lglut #-lGLU #-lopengl32 -lglu32 -lfreeglut
 
 BOX2Dlib = libs/Box2D_v2.3.0/Box2D/Build/Box2D/libBox2D.a
@@ -24,20 +24,31 @@ CXXFLAGS  += -Wextra
 CXXFLAGS  += -O3
 CXXFLAGS  += -march=native
 
-CXXFLAGS  += -I$(INCDIR) -I$(INCDIRBOX2D) -I$(INCUSR) -I$(INCDIRTESTS)
+CXXFLAGS  += -I$(INCDIR) -I$(INCDIRBOX2D) -I$(INCUSR) -I$(INCDIRLOGIC)
 
-SRCS   = Render.cpp \
-		 Test.cpp \
-		 neuron.cpp \
-		 net.cpp \
-		 Creature.cpp \
-		 evolutionary.cpp \
-		 NeuralWorld.cpp \
-		 Main.cpp 
 
-OBJS   = ${SRCS:%.cpp=%.o}
+SRCS = agent.cpp \
+     brain.cpp \
+     evolutionary.cpp \
+     gui.cpp \
+     main.cpp \
+     neuralWorld.cpp \
+     render.cpp \
+     test.cpp \
+     ../logic/src/competitive.cpp \
+     ../logic/src/competitiveNeuron.cpp \
+     ../logic/src/feedForwardNet.cpp \
+     ../logic/src/ffNeuron.cpp \
+     ../logic/src/net.cpp \
+     ../logic/src/neuron.cpp \
+     ../logic/src/selfOrganizingMap.cpp \
+     ../logic/src/somNeuron.cpp \
+     ../logic/src/srn.cpp \
+     ../logic/src/srnNeuron.cpp 
 
-TARGET = graphic
+OBJS   = ${SRCS:%.cpp=%.o} 
+
+TARGET = new_graphic
 
 %.o:$(SRCDIR)%.cpp
 	$(CXX) -c -o $@ $(CXXFLAGS) $(CXXDEBUGFLAGS) $<
@@ -46,7 +57,8 @@ default: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LDFLAGS)
-	mkdir -p $(BINDIR); mv *.o $(BINDIR)
+	mkdir -p $(BINDIR); mv *.o $(BINDIR); mv ../logic/src/*.o $(BINDIR)
+    
 	
 .PHONY: install
 
@@ -62,7 +74,7 @@ auto: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LDFLAGS)
-	mkdir -p $(BINDIR); mv *.o $(BINDIR)
+	mkdir -p $(BINDIR); mv *.o $(BINDIR); mv ../logic/src/*.o $(BINDIR)
 
 .PHONY: clean
 

@@ -4,8 +4,9 @@
 #define M_PI 3.14159265359
 #define DEGTORAD (M_PI/180)
 
-#include "feedForwardNet.hpp"
 #include "commonDefs.hpp"
+#include "feedForwardNet.hpp"
+#include "srn.hpp"
 
 // This is used to test sensor shapes.
 class Agent
@@ -23,7 +24,6 @@ class Agent
         std::vector<unsigned> topology;
 
         int id; 
-        int health;  //NU
         float posx, posy, angle;  //NU
 
         //Methods
@@ -31,8 +31,8 @@ class Agent
 
         Agent();
         ~Agent();
-        Agent(int phealth, float pposx, float pposy, int pid, std::vector<unsigned> ptopology);
-        Agent(int phealth, float pposx, float pposy, int pid, std::vector<unsigned> ptopology, 
+        Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology, int pnet_type);
+        Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,  int pnet_type,
               vector<vector<vector<Connection> > > pweights);
 
         std::vector<double> process(std::vector<double> inputVals);  //Give input in the neural network and get output

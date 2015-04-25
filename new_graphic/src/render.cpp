@@ -16,7 +16,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "Render.h"
+#include "render.h"
 
 #ifdef __APPLE__
 	#include <GLUT/glut.h>

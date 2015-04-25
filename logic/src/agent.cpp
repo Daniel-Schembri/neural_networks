@@ -5,23 +5,50 @@ Agent::Agent()
     fitness = 0; lastfitness = 0;
 }
 
-Agent::Agent(int phealth, float pposx, float pposy, int pid, std::vector<unsigned> ptopology)
+Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology, int pnet_type)
 {
     fitness = 0; lastfitness = 0; id=pid;
 
-    health = phealth; posx = pposx; posy = pposy;
+    posx = pposx; posy = pposy;
     topology = ptopology;
-    mynet = new FeedForwardNet(topology, true);
+
+	switch(nettype)
+	{
+	case 0:
+		mynet = new FeedForwardNet(topology, true);
+		break;
+	case 1:
+		mynet = new srn(topology, true);
+		break;
+
+	default:
+		mynet = new FeedForwardNet(topology, true);
+		break;
+	};
 }
 
-Agent::Agent(int phealth, float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
+Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology, int pnet_type,
              vector<vector<vector<Connection> > > pweights)
 {
     fitness = 0; lastfitness = 0; id=pid;
 
     health = phealth; posx = pposx; posy = pposy;
     topology = ptopology;
-    mynet = new FeedForwardNet(topology, true);
+
+    switch(nettype)
+	{
+	case 0:
+		mynet = new FeedForwardNet(topology, true);
+		break;
+	case 1:
+		mynet = new srn(topology, true);
+		break;
+
+	default:
+		mynet = new FeedForwardNet(topology, true);
+		break;
+	};
+
     mynet->setConnections(pweights);
 }
 
