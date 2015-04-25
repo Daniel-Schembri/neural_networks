@@ -3,7 +3,8 @@
 
 #include <time.h>		//For initialising the random_generator
 #include <vector>
-#include "Agent.h"
+#include "agent.hpp"
+#include "commonDefs.hpp"
 
 #define MODE_SINGLEPLAYER 0
 #define MODE_EVOLUTION 1
@@ -56,7 +57,6 @@ class evolutionary
     private:
 
         //double max_delta; 
-        std::vector<unsigned int> roulette;
         std::vector< std::vector<float> > trainingdata;
         double revert_agent[100][100][100];
 
@@ -84,14 +84,10 @@ class evolutionary
 
     private:
 
-        void randomize_population();
-
         int evolve_crossover();
         int evolve_hillclimber();
         int evolve_learn();
         int evolve_simulatedannealing();
-
-        Agent* roulette();
 
         void hillclimber(Agent *Agent, bool revert);
         void simulated_annealing(Agent *Agent, bool revert);

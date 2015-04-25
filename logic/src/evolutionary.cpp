@@ -1,9 +1,8 @@
-#include "evolutionary.h"
+#include "evolutionary.hpp"
 #include <stdlib.h>
 
 evolutionary::evolutionary()
 {
-
 }
 
 evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned> ptopology)
@@ -13,11 +12,12 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
     evolvesteps = sim_parameter.evolvetime * 60; //60 Steps per Second (60Hz)
     iterationsteps = 0; generations = 0;
 
-    topology = ptopology;
-    amount_of_weights = 1;
-    for(int i=0;topology.size();i++)
+    sim_parameter.topology = ptopology;
+    sim_parameter.amount_of_weights = 0;
+
+    for(unsigned i=0; i < sim_parameter.topology.size()-1; i++)
     {
-        amount_of_weights *= topology[i];
+        sim_parameter.amount_of_weights += sim_parameter.topology[i] * sim_parameter.topology[i+1];
     }
 
     if (MODE_SINGLEPLAYER == sim_parameter.mode)
@@ -25,18 +25,9 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
         sim_parameter.population_size = 1;
     }
 
-    for (int i = 0; i < sim_parameter.population_size; i++)
+    for (unsigned i = 0; i < sim_parameter.population_size; i++)
     {
         population.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, i, ptopology));
-        if (sim_parameter.random)
-        {
-            population.back()->randomize_net(); 
-        }
-        else
-        {
-            population.back()->setNet_zero(); 
-        }
-
     }
 
     best_fitnesses.push_back(0);
@@ -99,7 +90,7 @@ int evolutionary::evolve_hillclimber()
         iterationsteps = 0;
         save_bestAgent();
         //if fitness < lastfitness -> revert the last hillclimber-changes
-        for (int i = 0; i<sim_parameter.population_size; i++)
+        for (unsigned i = 0; i<sim_parameter.population_size; i++)
         {
             if(population[i]->lastfitness > population[i]->fitness)
             {
@@ -130,7 +121,7 @@ int evolutionary::evolve_simulatedannealing()
         iterationsteps = 0;
         save_bestAgent();
 
-        for (int i = 0; i<sim_parameter.population_size; i++)
+        for (unsigned i = 0; i < sim_parameter.population_size; i++)
         {
             r = (population[i]->fitness - population[i]->lastfitness);
             p = 1 / (1 + exp(-r / T));
@@ -213,7 +204,6 @@ void evolutionary::hillclimber(Agent *Agent, bool revert)
             }
         }
     }
-    //get_neuron_weights(
 }
 
 void evolutionary::simulated_annealing(Agent * Agent, bool revert)
@@ -261,7 +251,7 @@ void evolutionary::learn(int plearn_cycles)
 {
     for (int learningcycles = 0; learningcycles < plearn_cycles; learningcycles++)
     {
-        for (int i = 0; i < population.size(); i++)
+        for (unsigned i = 0; i < population.size(); i++)
         {
             //Learn the with the training-set
             std::vector<double> trainingdata_input;
@@ -361,22 +351,73 @@ void evolutionary::set_trainingdata(std::vector< std::vector<float> > ptrainingd
     trainingdata = ptrainingdata;
 }
 
-
-
-std::vector<Agent *> crossover(Agent * mum, Agent * dad)
+std::vector<Agent*> evolutionary::crossover(Agent* mum, Agent* dad)
 {
     std::vector<Agent *> kids;
     float randval = (rand())/(RAND_MAX+1.0);
 
-    if ( (randval > crossover_rate) || (mum == dad)) 
-	{
+    if ( (randval > sim_parameter.crossover_rate) || (mum == dad)) 
+    {
         kids.push_back(mum);
         kids.push_back(dad);
     }
 
-    int crossover_point = rand() % amount_of_weights + 1;  //Range between 1 and amount_of_weights
+    int crossover_point = rand() % sim_parameter.amount_of_weights + 1;  //Range between 1 and amount_of_weights
 
-    
+    vector<vector<vector<Connection> > > mum_weights = mum->mynet->getConnections();
+    vector<vector<vector<Connection> > > dad_weights = mum->mynet->getConnections();
+
+    vector<vector<vector<Connection> > > kid1_weights;
+    vector<vector<vector<Connection> > > kid2_weights;
+ 
+    // To keep track of how many connections have been added
+    unsigned gene_count = 0;
+
+    unsigned nbLayersInNet = dad_weights.size();
+    // Child 1: mum|dad, child 2: dad|mum
+    // For each layer
+    for(unsigned nbLayer = 0; nbLayer < nbLayersInNet ; ++nbLayer)
+    {
+        // All Connections of the respective layer
+        vector<vector<Connection> > kid1_layerConnections;
+        kid1_weights.push_back(kid1_layerConnections);
+
+        vector<vector<Connection> > kid2_layerConnections;
+        kid2_weights.push_back(kid2_layerConnections);
+
+        unsigned nbNeuronsInLayer = dad_weights[nbLayer].size();
+        // For each neuron in the layer
+        for (unsigned nbNeuron = 0; nbNeuron < nbNeuronsInLayer; ++nbNeuron) 
+        {
+            vector<Connection> kid1_neuronConnections;
+            vector<Connection> kid2_neuronConnections;
+
+            unsigned nbConnectionsOfNeuron = dad_weights[nbLayer][nbNeuron].size();
+            // For each connection of the respective neuron
+            for (unsigned nbConnection = 0; nbConnection < nbConnectionsOfNeuron ; ++nbConnection) 
+            {
+                // Determine whether this connection should be cloned from mum or dad
+                if(gene_count < crossover_point)
+                {
+                    // Mum genes
+                    kid1_neuronConnections.push_back(mum_weights[nbLayer][nbNeuron][nbConnection]);
+                    // Dad genes
+                    kid2_neuronConnections.push_back(dad_weights[nbLayer][nbNeuron][nbConnection]);
+                }
+                else
+                {
+                    // Dad genes
+                    kid1_neuronConnections.push_back(dad_weights[nbLayer][nbNeuron][nbConnection]);
+                    // Mum genes
+                    kid2_neuronConnections.push_back(mum_weights[nbLayer][nbNeuron][nbConnection]);
+                }
+                ++geneCount;
+            }
+        }
+    }
+
+    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, topology, kid1_neuronConnections));
+    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, topology, kid2_neuronConnections));
 
     return kids;
 }
@@ -407,13 +448,12 @@ int evolutionary::evolve_crossover()
             std::vector<Agent*> kids;
 
             // Create offspring
-            // TODO: finish crossover
             kids = crossover(mum, dad);
 
             // Mutate offspring 
             // TODO: Implement mutate
-            mutate(kids[0]);
-            mutate(kids[1]);
+//             mutate(kids[0]);
+//             mutate(kids[1]);
 
             // Insert into the new population
             newPopulation.push_back(kids[0]);
@@ -421,10 +461,6 @@ int evolutionary::evolve_crossover()
         }
         return 1;
     }
-return 0;
+    return 0;
 }
 
-void evolutionary::crossover(std::vector<Agent*> parents)
-{
-
-}

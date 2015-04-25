@@ -2,6 +2,7 @@
 
 import math
 import os
+import random
 import sys
 
 fileName = "trainingData.txt"
@@ -26,26 +27,36 @@ if __name__ == '__main__':
 
     # define semicircle
     for alpha in range(181):
-            rad  = alpha * math.pi/180
+            rad  = alpha/1.0  * math.pi/180
             xTmp = radius * math.cos(rad)
             yTmp = radius * math.sin(rad)
 
             semicircle[xTmp] = yTmp
 
     xList = sorted(semicircle.keys())
-    file = open(fileName, 'w+')
-    file.write('{}\n'.format(topology))
+    results = [[]]
 
     for x in xList:
             yCurr = 0.0 
             yMax  = semicircle[x]
-            stepSize = yMax /20
+            stepSize = yMax / 10
             while(yCurr < yMax):
                     hyp      = math.sqrt(x**2 + yCurr**2)
                     velocity = hyp / radius
                     angle    = math.asin(yCurr/hyp)
 
-                    file.write('in: {0} {1}\nout: {2} {3}\n'.format(x,yCurr,velocity,angle))
+                    results.append([x,yCurr,velocity,angle])
                     yCurr += stepSize
 
+    # Avoid data in the same order as it was created
+    random.shuffle(results)
+
+    file = open(fileName, 'w+')
+    file.write('{}\n'.format(topology))
+    i = 1
+    print len(results)
+    for r in results:
+        print r[0], i
+#         print r[0], i
+#i         file.write('in: {0} {1}\nout: {2} {3}\n'.format(r[0], r[1], r[2], r[3]))
     file.close;

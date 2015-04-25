@@ -5,7 +5,6 @@
 //Filename           : net.hpp
 //------------------------------------------------------
 
-
 #ifndef NET_HPP
 #define NET_HPP
 
@@ -20,6 +19,8 @@
 #include "commonDefs.hpp"
 #include "neuron.hpp"
 
+using std::vector;
+
 // Abstract class
 class Net
 {
@@ -27,14 +28,16 @@ public:
     Net();
     virtual ~Net();
 
-    void getResults(std::vector<double> &resultVals) const;
+    virtual void learn(const vector<double> &targetVals) = 0;
+    void feedForward(const vector<double> &inputVals);
 
-    void feedForward(const std::vector<double> &inputVals);
-    virtual void learn(const std::vector<double> &targetVals) = 0;
-    // TODO: Give user the opportunity to export and set the weight matrix
+    void getResults(vector<double> &resultVals) const;
+    vector<vector<vector<Connection> > > getConnections() const;
 
+    void setConnections(const vector<vector<vector<Connection> > > &connections);
+
+    vector<Layer> m_layers;
 protected:
-    std::vector<Layer> m_layers;
     bool m_bias;
 };
 
