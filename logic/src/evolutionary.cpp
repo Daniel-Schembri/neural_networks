@@ -1,5 +1,4 @@
 #include "evolutionary.hpp"
-#include <stdlib.h>
 
 evolutionary::evolutionary()
 {
@@ -11,6 +10,9 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
     sim_parameter = psim_parameter;
     evolvesteps = sim_parameter.evolvetime * 60; //60 Steps per Second (60Hz)
     iterationsteps = 0; generations = 0;
+
+	//Necessary for writing the in and ouputs of the agent in a file
+	datasetwritten = false;
 
     sim_parameter.topology = ptopology;
     sim_parameter.amount_of_weights = 0;
@@ -27,7 +29,7 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
 
     for (unsigned i = 0; i < sim_parameter.population_size; i++)
     {
-        population.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, i, ptopology));
+        population.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, i, ptopology, sim_parameter.nettype)));
     }
 
     best_fitnesses.push_back(0);
@@ -143,14 +145,12 @@ int evolutionary::evolve_simulatedannealing()
 
 int evolutionary::evolve_learn()  //TODO How manyLearningCycles?
 {
-
     iterationsteps++;
-
     if (iterationsteps >= evolvesteps) // 3000 = 1Min
     {
         iterationsteps = 0;
         save_bestAgent();
-        learn(10);
+        learn(1);
         generations++;
 
         return 1;  //Signal that Simulation must be Reset
@@ -286,10 +286,62 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
         result_vectors.push_back(population[i]->process(inputvals_vector[i]));
     }
 
+	if (generations > 0)
+	{
+		if (!datasetwritten)
+		{
+			save_vals(inputvals_vector, result_vectors);
+			datasetwritten = true;
+		}
+	}
+
     return result_vectors;
 
 }
 
+//Save actual in- and outputs of the agents in a file
+void evolutionary::save_vals(std::vector< std::vector<double> > inputvals_vector, std::vector< std::vector<double> > results_vector)
+{
+	std::vector<double> inputvals(2);
+	std::vector<double> resultvals(2);
+
+	std::string s;
+
+	s = "";
+
+	std::ofstream outfile("agent_vals.txt", std::ofstream::out);
+	if (outfile.is_open())
+	{
+		
+		for (int i = 0; i < inputvals_vector.size(); i++)
+		{
+			inputvals = inputvals_vector[i];
+			resultvals = results_vector[i];
+
+			s += "Agent: " + std::to_string(i) + " \nInputvals       Outputvals \n";
+
+			//to convert float to String
+
+			std::ostringstream floatstring;
+
+			floatstring.clear();
+
+			floatstring << inputvals[0] << ", " << inputvals[1] << " | " << resultvals[0] << ", " << resultvals[1] << "\n";
+			s += floatstring.str();
+			floatstring.clear();
+
+			s += "\n";
+		}
+	// write to outfile
+	outfile.write(s.c_str(), s.length());
+
+	outfile.close();
+	}
+	else
+	{
+		//	std::cerr << "Unable to open file to write stats!";
+	}
+}
 
 void evolutionary::save_bestFitness()
 {
@@ -416,8 +468,8 @@ std::vector<Agent*> evolutionary::crossover(Agent* mum, Agent* dad)
         }
     }
 
-    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, topology, kid1_neuronConnections));
-    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, topology, kid2_neuronConnections));
+    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, topology, sim_parameter.nettype, kid1_neuronConnections));
+    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, topology, sim_parameter.nettype, kid2_neuronConnections));
 
     return kids;
 }
