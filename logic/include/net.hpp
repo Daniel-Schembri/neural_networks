@@ -32,12 +32,12 @@ public:
     void feedForward(const vector<double> &inputVals);
 
     void getResults(vector<double> &resultVals) const;
-    void getConnections(vector<vector<vector<Connection> > > &results) const;
+    vector<vector<vector<Connection> > > getConnections() const;
 
-    void setConnections(vector<vector<vector<Connection> > > &connections);
+    void setConnections(const vector<vector<vector<Connection> > > &connections);
 
-protected:
     vector<Layer> m_layers;
+protected:
     bool m_bias;
 };
 

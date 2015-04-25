@@ -123,7 +123,6 @@ int main()
     //    └── trainingData.txt
     TrainingData trainData("./src/training/trainingData.txt");
 
-    // TODO: Use twiddle to find the optimal topology
     // e.g., { 3, 2, 1 }
     vector<unsigned> topology;
     trainData.getTopology(topology);
@@ -160,6 +159,16 @@ int main()
         // Report how well the training is working, average over recent samples:
         cout << "Net recent average error: " << myNet.getRecentAverageError() << endl;
     }
+
+        inputVals.clear();
+        inputVals.push_back(7.00000);
+        inputVals.push_back(3.00000);
+        showVectorVals(": Inputs:", inputVals);
+        myNet.feedForward(inputVals);
+
+        // Collect the net's actual output results:
+        myNet.getResults(resultVals);
+        showVectorVals("Outputs:", resultVals);
 
     cout << endl << "Done" << endl;
 }

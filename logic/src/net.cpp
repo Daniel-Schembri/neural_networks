@@ -41,9 +41,9 @@ void Net::feedForward(const std::vector<double> &inputVals)
 }
 
 
-void Net::getConnections(vector<vector<vector<Connection> > > &results) const
+vector<vector<vector<Connection> > > Net::getConnections() const
 {
-    results.clear();
+    vector<vector<vector<Connection> > > results;
 
     // Loop through the net
     unsigned nbLayersInNet = m_layers.size();
@@ -61,9 +61,11 @@ void Net::getConnections(vector<vector<vector<Connection> > > &results) const
             results[nbLayer].push_back(neuronConnections);
         }
     }
+
+    return results;
 }
 
-void Net::setConnections(vector<vector<vector<Connection> > > &connections)
+void Net::setConnections(const vector<vector<vector<Connection> > > &connections)
 {
     // Loop through the net
     unsigned nbLayersInNet = m_layers.size();
