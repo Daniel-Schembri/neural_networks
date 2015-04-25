@@ -20,7 +20,7 @@
 #define TEST_H
 
 #include <Box2D/Box2D.h>
-#include "Render.h"
+#include "render.h"
 
 #include <stdlib.h>
 

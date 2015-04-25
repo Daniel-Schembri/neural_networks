@@ -1,8 +1,19 @@
 #ifndef __EVOLUTONARY_HPP__
 #define __EVOLUTONARY_HPP__
 
+
+
+#include <stdlib.h>
 #include <time.h>		//For initialising the random_generator
 #include <vector>
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <string>
+#include <stdexcept>
+
 #include "agent.hpp"
 #include "commonDefs.hpp"
 
@@ -55,7 +66,8 @@ class evolutionary
         std::vector<Agent *> population;
 
     private:
-
+		
+		bool datasetwritten;
         //double max_delta; 
         std::vector< std::vector<float> > trainingdata;
         double revert_agent[100][100][100];
@@ -92,8 +104,9 @@ class evolutionary
         void hillclimber(Agent *Agent, bool revert);
         void simulated_annealing(Agent *Agent, bool revert);
         void learn(int plearn_cycles);
-
         std::vector<Agent*> crossover(Agent* mum, Agent* dad);
+
+		void save_vals(std::vector< std::vector<double> > inputvals_vector, std::vector< std::vector<double> > results_vector);
 };
 
 #endif /* __EVOLUTONARY_HPP__ */

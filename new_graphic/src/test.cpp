@@ -16,7 +16,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "Test.h"
+#include "test.h"
 #include <stdio.h>
 
 void DestructionListener::SayGoodbye(b2Joint* joint)
