@@ -362,7 +362,7 @@ std::vector<Agent*> evolutionary::crossover(Agent* mum, Agent* dad)
         kids.push_back(dad);
     }
 
-    int crossover_point = rand() % sim_parameter.amount_of_weights + 1;  //Range between 1 and amount_of_weights
+    unsigned crossover_point = rand() % sim_parameter.amount_of_weights + 1;  //Range between 1 and amount_of_weights
 
     vector<vector<vector<Connection> > > mum_weights = mum->mynet->getConnections();
     vector<vector<vector<Connection> > > dad_weights = mum->mynet->getConnections();
@@ -411,13 +411,13 @@ std::vector<Agent*> evolutionary::crossover(Agent* mum, Agent* dad)
                     // Mum genes
                     kid2_neuronConnections.push_back(mum_weights[nbLayer][nbNeuron][nbConnection]);
                 }
-                ++geneCount;
+                ++gene_count;
             }
         }
     }
 
-    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, topology, kid1_neuronConnections));
-    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, topology, kid2_neuronConnections));
+    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, kid1_weights));
+    kids.push_back(new Agent (100, rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, kid1_weights));
 
     return kids;
 }
@@ -430,25 +430,26 @@ int evolutionary::evolve_crossover()
         generations++;    
         save_bestAgent();
 
-        std::vector<unsigned int> roulette;
+        std::vector<unsigned> roulette;
 
-        for(unsigned int i=0;i<population.size();i++)
-            for(unsigned int j=0;j<population[j]->fitness;j++)
+        for(unsigned i=0;i<population.size();i++)
+            for(unsigned j=0;j<population[j]->fitness;j++)
                 roulette.push_back(i);
 
         // Add some elitism by copying the best agent n times
-        for(unsigned int i=0;i<amount_of_elite_copies;i++)
+        for(unsigned i=0;i < sim_parameter.amount_of_elite_copies; ++i)
             newPopulation.push_back(best_Agents[0]);
 
-        while(population_size != newPopulation.size())
+        while(sim_parameter.population_size != newPopulation.size())
         {
-            Agent* mum = roulette();
-            Agent* dad = roulette();
+            //TODO: implement roulette
+//             Agent* mum = roulette();
+//             Agent* dad = roulette();
 
             std::vector<Agent*> kids;
 
             // Create offspring
-            kids = crossover(mum, dad);
+//             kids = crossover(mum, dad);
 
             // Mutate offspring 
             // TODO: Implement mutate
