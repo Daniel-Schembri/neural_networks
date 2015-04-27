@@ -53,10 +53,8 @@ if __name__ == '__main__':
 
     file = open(fileName, 'w+')
     file.write('{}\n'.format(topology))
-    i = 1
-    print len(results)
+
     for r in results:
-        print r[0], i
-#         print r[0], i
-#i         file.write('in: {0} {1}\nout: {2} {3}\n'.format(r[0], r[1], r[2], r[3]))
+        if 0 < len(r):
+            file.write('in: {0} {1}\nout: {2} {3}\n'.format(r[0], r[1], r[2], r[3]))
     file.close;
