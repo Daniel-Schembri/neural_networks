@@ -726,6 +726,8 @@ void gui::Createevolution_win()
 		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Hillclimber");
 		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Simulated Annealing");
 		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Supervised Learning");
+		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Crossover");
+		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Script");
 
 		glui_createevolution->add_separator();
 
@@ -739,6 +741,7 @@ void gui::Createevolution_win()
 		GLUI_RadioGroup* nettype_radiogroup = glui_createevolution->add_radiogroup(&temp_sim_parameter.nettype);
 		glui_createevolution->add_radiobutton_to_group(nettype_radiogroup, "Feedforward");
 		glui_createevolution->add_radiobutton_to_group(nettype_radiogroup, "Simple Recurrent");
+		glui_createevolution->add_radiobutton_to_group(nettype_radiogroup, "Script");
 
 		glui_createevolution->add_separator();
 

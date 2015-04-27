@@ -14,6 +14,7 @@
 #define MODE_BESTAgentS 2
 
 #define M_PI 3.14159265359
+
 #define DEGTORAD (M_PI/180)
 #define AMOUNT_OF_Object 40
 
@@ -22,7 +23,7 @@
 #define TYPE_OBSTACLE 2
 
 #include "test.h"
-#include "agent.h"
+#include "agent.hpp"
 
 const b2Vec2 triangle[3] = {b2Vec2(0.0f, 2.0f), b2Vec2(-1.0f, -1.0f), b2Vec2(1.0f, -1.0f)}; // Triangle-shape
 

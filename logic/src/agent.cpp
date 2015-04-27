@@ -7,20 +7,25 @@ Agent::Agent()
 
 Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology, int pnet_type)
 {
-    fitness = 0; lastfitness = 0; id=pid;
+    fitness = 0; lastfitness = 0; id=pid; nettype = pnet_type;
 
     posx = pposx; posy = pposy;
     topology = ptopology;
 
+    mynet = NULL;
+    myscript = NULL;
+
 	switch(nettype)
 	{
-	case 0:
+	case NET_FEEDFORWARD:
 		mynet = new FeedForwardNet(topology, true);
 		break;
-	case 1:
+	case NET_SRN:
 		mynet = new srn(topology, true);
 		break;
-
+	case NET_SCRIPT:
+        myscript = new Script();
+		break;
 	default:
 		mynet = new FeedForwardNet(topology, true);
 		break;
@@ -32,29 +37,47 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
 {
     fitness = 0; lastfitness = 0; id=pid;
 
-    health = phealth; posx = pposx; posy = pposy;
+    posx = pposx; posy = pposy;
     topology = ptopology;
+	
+    mynet = NULL;
+    myscript = NULL;
 
-    switch(nettype)
+	switch(nettype)
 	{
-	case 0:
+	case NET_FEEDFORWARD:
 		mynet = new FeedForwardNet(topology, true);
 		break;
-	case 1:
+	case NET_SRN:
 		mynet = new srn(topology, true);
 		break;
-
+	case NET_SCRIPT:
+        myscript = new Script();
+		break;
 	default:
 		mynet = new FeedForwardNet(topology, true);
 		break;
-	};
+    };
 
-    mynet->setConnections(pweights);
+    if(NULL != mynet)
+    {
+        mynet->setConnections(pweights);
+    }
 }
 
 Agent::~Agent()
 {
-    delete mynet;
+    if(NULL != mynet)
+    {
+        delete mynet;
+        mynet = NULL;
+    }
+
+    if(NULL != myscript)
+    {
+        delete myscript;
+        myscript = NULL;
+    }
 }
 
 void Agent::learn(std::vector<double> ptrainingdata_output)
@@ -66,8 +89,15 @@ std::vector<double> Agent::process(std::vector<double> inputvals)
 {
     std::vector<double> resultvals;
 
-    mynet->feedForward(inputvals);
-    mynet->getResults(resultvals);
+    if (nettype < 2)
+    {
+        mynet->feedForward(inputvals);
+        mynet->getResults(resultvals);
+    }
+    else
+    {
+      resultvals = myscript->process(inputvals);
+    }
 
     return resultvals;
 }

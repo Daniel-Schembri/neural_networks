@@ -1,6 +1,6 @@
 SRCDIR         = src/
 INCDIR         = include/
-INCDIRLOGIC   = ../logic/include/
+INCDIRLOGIC    = ../logic/include/
 INCDIRBOX2D    = libs/Box2D_v2.3.0/Box2D/
 INCUSR         = /usr/local/include/
 BINDIR         = bin/
@@ -8,16 +8,19 @@ BINDIR         = bin/
 LDFLAGS = -lX11 -lGL -lGLU -lXxf86vm -L${BOX2Dlib} -L${GLUIlib} -lBox2D -lglui -lglut #-lGLU #-lopengl32 -lglu32 -lfreeglut
 
 BOX2Dlib = libs/Box2D_v2.3.0/Box2D/Build/Box2D/libBox2D.a
-BOX2D = libs/Box2D_v2.3.0/Box2D/
-GLUIlib = libs/Box2D_v2.3.0/Box2D/Build/glui/libglui.a
+BOX2D    = libs/Box2D_v2.3.0/Box2D/
+GLUIlib  = libs/Box2D_v2.3.0/Box2D/Build/glui/libglui.a
 
 CXX = g++
 
 #only in debug version
 CXXDEBUGFLAGS = -ggdb
 
+#Use c++11
+CXXFLAGS = -std=c++11
+
 #all warnings
-CXXFLAGS  = -Wall
+CXXFLAGS  += -Wall
 CXXFLAGS  += -Wextra
 
 #maximum optimization
@@ -27,14 +30,15 @@ CXXFLAGS  += -march=native
 CXXFLAGS  += -I$(INCDIR) -I$(INCDIRBOX2D) -I$(INCUSR) -I$(INCDIRLOGIC)
 
 
-SRCS = agent.cpp \
-     brain.cpp \
-     evolutionary.cpp \
+SRCS = brain.cpp \
      gui.cpp \
      main.cpp \
      neuralWorld.cpp \
      render.cpp \
      test.cpp \
+     ../logic/src/script.cpp \
+     ../logic/src/agent.cpp \
+     ../logic/src/evolutionary.cpp \
      ../logic/src/competitive.cpp \
      ../logic/src/competitiveNeuron.cpp \
      ../logic/src/feedForwardNet.cpp \
