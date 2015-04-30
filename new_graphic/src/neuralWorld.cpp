@@ -299,35 +299,46 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 
     for (unsigned int i = 0; i < population->size(); i++)
     {
+        b2Vec2 shortest_vec = b2Vec2(100.0f, 100.0f);
+        int nearest_object = -1; //No object detected!
+
         for (unsigned int j = 0; j < amount_Object; j++)
         {
             if (((*touches)[population->size() + i])[population->size() * 2 + j])       //Sensor touches Object?
             {
-                float x_translated = 0;
-                float y_translated = 0;
-                float x_tmp = 0;
-                float y_tmp = 0;
-                angle = correct_angle(Agentbody[i]->GetAngle()); 
+                b2Vec2 distance_object = Objectbody[j]->GetPosition() - Agentbody[i]->GetPosition(); 
 
-                //First translation of the x,y coordinates
-                x_translated = (Objectbody[j]->GetPosition().x - Agentbody[i]->GetPosition().x);
-                y_translated = (Objectbody[j]->GetPosition().y - Agentbody[i]->GetPosition().y);
-                //Rotation
-                x_tmp = (x_translated * cos(angle) + y_translated * sin(angle));
-                y_tmp = (-x_translated * sin(angle) + y_translated * cos(angle));
-
-                single_vector.push_back(x_tmp);
-                single_vector.push_back(y_tmp);
-                //		single_vector.push_back(angle);
-
-                input_vectors[i] = single_vector;
-                single_vector.clear();
-
-                break;
+                if(shortest_vec.Length() > distance_object.Length())
+                {
+                    shortest_vec = distance_object;
+                    nearest_object = j;
+                } 
             }
         }
+        if(nearest_object >= 0)
+        {
+            float x_translated = 0;
+            float y_translated = 0;
+            float x_tmp = 0;
+            float y_tmp = 0;
+            angle = correct_angle(Agentbody[i]->GetAngle()); 
+
+            //First translation of the x,y coordinates
+            x_translated = (Objectbody[nearest_object]->GetPosition().x - Agentbody[i]->GetPosition().x);
+            y_translated = (Objectbody[nearest_object]->GetPosition().y - Agentbody[i]->GetPosition().y);
+            //Rotation
+            x_tmp = (x_translated * cos(angle) + y_translated * sin(angle));
+            y_tmp = (-x_translated * sin(angle) + y_translated * cos(angle));
+
+            single_vector.push_back(x_tmp);
+            single_vector.push_back(y_tmp);
+            //		single_vector.push_back(angle);
+
+            input_vectors[i] = single_vector;
+            single_vector.clear();
+        }
     }
-    return input_vectors;
+return input_vectors;
 }
 
 void NeuralWorld::Step(Settings* settings)
@@ -357,15 +368,30 @@ void NeuralWorld::Step(Settings* settings)
                 m_debugDraw.DrawLine(Agentbody[j]->GetPosition(), Objectbody[i]->GetPosition(), b2Color(0.8f, 0.8f, 0.8f));
             }
         }
-        //Draw just the first object in the array detected by the sensor (This is the object necessary for tracking!)
-        for (unsigned int i = 0; i < amount_Object; i++)
+    }
+    //Draw the shortest Objectvector
+    for (unsigned int i = 0; i < population->size(); i++)
+    {
+        b2Vec2 shortest_vec = b2Vec2(100.0f, 100.0f);
+        int nearest_object = -1;
+
+        for (unsigned int j = 0; j < amount_Object; j++)
         {
-            if (((*touches)[population->size() + j])[population->size() * 2 + i])
+            if (((*touches)[population->size() + i])[population->size() * 2 + j])       //Sensor touches Object?
             {
-                m_debugDraw.DrawLine(Agentbody[j]->GetPosition(), Objectbody[i]->GetPosition(), b2Color(1.0f,0.0f,0.0f));
-                break;
+                b2Vec2 distance_object = Objectbody[j]->GetPosition() - Agentbody[i]->GetPosition(); 
+
+                if(shortest_vec.Length() > distance_object.Length())
+                {
+                   shortest_vec = distance_object;
+                   nearest_object = j;
+                } 
             }
         }
+        if(nearest_object >= 0)
+        {
+            m_debugDraw.DrawLine(Agentbody[i]->GetPosition(), Objectbody[nearest_object]->GetPosition(), b2Color(1.0f, 0.0f, 0.0f));
+        } 
     }
     Test::Step(settings);
 }
