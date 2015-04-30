@@ -1,0 +1,4 @@
+Agent: 0 
+Inputvals       Outputvals 
+0, 0 | 0.33, 0
+
