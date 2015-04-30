@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     i = 0
     for i in range(samples):
-        xCurr = random.uniform(-radius, radius)
+        xCurr = random.uniform(0.0, radius)
         yMax  = math.sqrt(radius**2 - xCurr**2)
         yCurr = random.uniform(0.0, yMax)
         
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 #        angle between vector and x-axis
 #        angle = math.asin(yCurr/hyp)
 #        angle from y-axis
-        angle = math.asin(yCurr/hyp)# - math.pi/2
+        angle = math.asin(yCurr/hyp) / math.pi/2.0
 
         results.append([xCurr, yCurr, hyp, angle])
 

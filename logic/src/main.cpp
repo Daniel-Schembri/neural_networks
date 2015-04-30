@@ -121,7 +121,7 @@ int main()
     //├── main.cpp
     //└── training
     //    └── trainingData.txt
-    TrainingData trainData("./src/training/trainingData.txt");
+    TrainingData trainData("./src/training/trainingDataV.txt");
 
     // e.g., { 3, 2, 1 }
     vector<unsigned> topology;

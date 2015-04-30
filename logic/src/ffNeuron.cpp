@@ -72,7 +72,7 @@ double ffNeuron::sumDOW(const Layer &nextLayer, const bool &bias) const
 double ffNeuron::transferFunctionDerivative(double x) const
 {
     // tanh derivative approximation. Actual derivative is 1 - tanh^2(x) 
-    return 1.0 - x * x;
+    return (1.0 - x * x);
 }
 
 void ffNeuron::updateInputWeights(const std::vector<Layer> &layers, const unsigned &myLayer)

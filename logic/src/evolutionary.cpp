@@ -1,4 +1,6 @@
 #include "evolutionary.hpp"
+#include "commonDefs.hpp"
+#include "math.h"
 
 evolutionary::evolutionary()
 {
@@ -309,13 +311,32 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
     {
         std::vector<double> agent_vals;
 
+        //TODO: hand over correct values
+        double x_value = inputvals_vector[i][0] / SIGHT_RADIUS;
+        double y_value = inputvals_vector[i][1] / SIGHT_RADIUS;
+
+        // Returns veloctiy in [0.0,1.0], no need for scalling
         agent_vals.push_back(population[i]->processV(inputvals_vector[i]));
-        agent_vals.push_back(population[i]->processA(inputvals_vector[i]));
+
+        // Return angle between vector and x-axis. Angle is element of [0.0,1.0], where 1.0 = pi/2
+        // Unscaled angle = pi/2 * Network output
+        // The control value for a agent is calculated using the angle between vector and y-axis
+        // Angle(vector, y-axis) = pi/2 - (Networkout * pi/2)
+        // The control value for a agent is +pi/2...0...-pi/2.
+        // The neural net is not aware of negative values -> sign(x) must be used to correct value
+        // Complete formula:
+        //                   steering = sign(x) * -(pi/2-(Network output - pi/2))
+        double angle_x_v = M_PI/2.0 * population[i]->processA(inputvals_vector[i]);
+        double angle_y_v = M_PI/2.0 - angle_x_v
+
+        double steering_angle = sgn(x_value) * -angle_y_v;
+
+        agent_vals.push_back(steering_angle);
 
         result_vectors.push_back(agent_vals);
 
-        std::cout << "Input: (" << inputvals_vector[i][0] << "," << inputvals_vector[i][1] << 
-                     ") Output:" << result_vectors[i][0] << "," << result_vectors[i][1] << ")\n";
+//        std::cout << "Input: (" << inputvals_vector[i][0] << "," << inputvals_vector[i][1] << 
+//                     ") Output:" << result_vectors[i][0] << "," << result_vectors[i][1] << ")\n";
     }
 
     if (!datasetwritten)

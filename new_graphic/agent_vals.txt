@@ -1,4 +1,40 @@
 Agent: 0 
 Inputvals       Outputvals 
+-6, 2 | 0.316228, 1.24905
+
+Agent: 1 
+Inputvals       Outputvals 
+6, 0 | 0.3, -1.5708
+
+Agent: 2 
+Inputvals       Outputvals 
+5, 0 | 0.25, -1.5708
+
+Agent: 3 
+Inputvals       Outputvals 
+8, 0 | 0.4, -1.5708
+
+Agent: 4 
+Inputvals       Outputvals 
 0, 0 | 0.33, 0
+
+Agent: 5 
+Inputvals       Outputvals 
+-8, 5 | 0.471699, 1.0122
+
+Agent: 6 
+Inputvals       Outputvals 
+6, 4 | 0.360555, -0.982794
+
+Agent: 7 
+Inputvals       Outputvals 
+3, 6 | 0.33541, -0.463648
+
+Agent: 8 
+Inputvals       Outputvals 
+-6, 0 | 0.3, 1.5708
+
+Agent: 9 
+Inputvals       Outputvals 
+-3, 0 | 0.2, 1.5708
 

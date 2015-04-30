@@ -5,6 +5,7 @@
 
 #define LEARNING_RATE (0.15)
 #define MOMENTUM (0.5)
+#define SIGHT_RADIUS (20.0)
 
 using std::vector;
 
@@ -20,5 +21,10 @@ struct Connection
 };
 
 typedef vector<vector<vector<Connection>>> WeightMatrix; 
+
+template <typename T> int sgn(T val)
+{
+        return (T(0) < val) - (val < T(0));
+}
 
 #endif /* COMMONDEFS_HPP */
