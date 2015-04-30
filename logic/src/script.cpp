@@ -24,20 +24,21 @@ std::vector<double> Script::process(std::vector<double> inputvals)
 
     float x = inputvals[0];
     float y = inputvals[1];
-    
+
 
     if(0 == x && 0 == y)
     {
-    resultvals.push_back(0);
-    resultvals.push_back(0);
-    return resultvals;
+        resultvals.push_back(0);
+        resultvals.push_back(0);
+        return resultvals;
     }
 
     hyp = sqrt(x*x + y*y);
-    
-    angle = asinf(y/hyp);
+
+    angle = atan2(y, x) - (M_PI/2.0f);
     velocity = hyp / radius;
 
+    std::cout << "Input: ("<< x << "," << y << ") Output: (" << velocity << "," << angle << ")\n";
     resultvals.push_back(velocity);
     resultvals.push_back(angle);
 

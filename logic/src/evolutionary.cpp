@@ -286,7 +286,7 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
         result_vectors.push_back(population[i]->process(inputvals_vector[i]));
     }
 
-	if (generations > 0)
+//	if (generations > 0)
 	{
 		if (!datasetwritten)
 		{
