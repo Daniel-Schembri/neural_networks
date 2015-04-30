@@ -183,8 +183,8 @@ void gui::matrix_plotting()
 
     //Get Animal amount of Layers and Neurons per layer.
     //Get the amount of neurons in the biggest layer
-    int columns = topology.size();
-    int rows = 0;
+    unsigned columns = topology.size();
+    unsigned rows = 0;
     
     b2Vec2 row_begin(0.0f, 0.0f);
     b2Vec2 row_end(0.0f, 0.0f);
@@ -201,7 +201,7 @@ void gui::matrix_plotting()
 
     oldCenter = settings.viewCenter_matrix;
 
-    for(int i=0;i<columns;++i)
+    for(unsigned i=0;i<columns;++i)
     {
         if (rows < topology[i]) 
         {
@@ -211,14 +211,14 @@ void gui::matrix_plotting()
 
     matrix_debugDraw.DrawString(20, 20, "columns: %d rows: %d",columns, rows);
 
-    for(int i=0;i<columns+1;++i)
+    for(unsigned i=0;i<columns+1;++i)
     {
         column_begin = b2Vec2(-5.0f + i*20.0f,-10.0f + 0.0f);
         column_end   = b2Vec2(-5.0f + i*20.0f, -10.0f + rows * 20.0f);
         matrix_debugDraw.DrawLine(column_begin,column_end, b2Color(0.0f, 0.0f, 0.0f));
     }
 
-    for(int j=0;j<rows+1;++j)
+    for(unsigned j=0;j<rows+1;++j)
     {
         row_begin = b2Vec2(-5.0f,-10.0f + j*20.0f);
         row_end = b2Vec2(-5.0f + 60.0f,-10.0f + j*20.0f);
@@ -628,7 +628,9 @@ void gui::Restart(int)
 
 	evolution_control = new evolutionary(sim_parameter, topology);
 	test = new NeuralWorld(&(evolution_control->population), sim_parameter.amount_of_Object, sim_parameter.field_size, sim_parameter.mode);
-	evolution_control->set_trainingdata(trainingdata);
+	
+	evolution_control->set_trainingdataV(trainingdataV);
+	evolution_control->set_trainingdataA(trainingdataA);
 	glui_createevolution->hide();
 	Resize(width, height);
 }
@@ -1057,22 +1059,25 @@ gui::gui(char * ptitle, int px, int py, int pwidth, int pheight, int argc, char*
 
 void gui::Start()
 {
-	load_trainingData(NULL);
+	load_trainingData();
 	setInstance(this);
 	glutMainLoop();
 }
 
-
-void gui::load_trainingData(const char * path)
+void gui::load_trainingData()
 {
-	//Load TrainingData
-	std::string line;
-	//std::ifstream myfile("N:\\Box2D_v2.3.0\\Box2D\\new_graphic_win\\trainingsData.txt");
-	std::ifstream myfile("trainingsData.txt");
+	// Line buffer
+	std::string line = "";
+    // Network topology
+    std::string topology = "";
 
-	if (myfile.is_open())
+	std::ifstream training_file_V("trainingsDataV.txt");
+
+	if (training_file_V.is_open())
 	{
-		while (getline(myfile, line))
+        getline(training_file_V, topology);
+
+		while (getline(training_file_V, line))
 		{
 			std::vector<float> single;
 			std::string tmpString = "";
@@ -1098,14 +1103,55 @@ void gui::load_trainingData(const char * path)
 			tmpString = line.substr(first, last);
 			single.push_back(atof(tmpString.c_str()));
 
-			trainingdata.push_back(single);
+			trainingdataV.push_back(single);
 		}
-		myfile.close();
+
+		training_file_V.close();
 	}
 	else
 	{
-		std::cerr << "Unable to open file";
+		std::cerr << "Unable to open velocity file";
 	}
 
+	std::ifstream training_file_A("trainingsDataA.txt");
+	if (training_file_A.is_open())
+	{
+        getline(training_file_A, topology);
+
+		while (getline(training_file_A, line))
+		{
+			std::vector<float> single;
+			std::string tmpString = "";
+
+			int first = 0;
+			int last = 0;
+
+			for (int i = 0; i<3; i++)
+			{
+				while (line[last] != ';')
+				{
+					last++;
+				}
+
+				tmpString = line.substr(first, last);
+				single.push_back(atof(tmpString.c_str()));
+
+				last++;
+				first = last;
+			}
+
+			last = line.length() - 1;
+			tmpString = line.substr(first, last);
+			single.push_back(atof(tmpString.c_str()));
+
+			trainingdataA.push_back(single);
+		}
+
+		training_file_A.close();
+	}
+	else
+	{
+		std::cerr << "Unable to open angle file";
+	}
 }
 

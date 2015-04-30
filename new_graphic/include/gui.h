@@ -65,7 +65,8 @@ private:
 	struct parameter sim_parameter;
 	struct parameter temp_sim_parameter;
 
-	std::vector< std::vector<float> > trainingdata;
+	std::vector< std::vector<float> > trainingdataV;
+	std::vector< std::vector<float> > trainingdataA;
 
 	//For Singleplayer Recording
 	std::vector< std::vector<double> > record_inputs;
@@ -142,17 +143,15 @@ public:
 	void Start();
 
 	//File Operations
-	void load_trainingData(const char * path);
+	void load_trainingData();
 	void load_Simulation(const char * path);
 	void refresh_Library();
 
-
-	//
 	void Createevolution_win();
 	void Create_Panel();
 	void Create_plotterwin();
 
-//Matrix_window
+    //Matrix_window
     void Create_matrixwin();
     void matrix_plotting();
     void matrix_Timer(int);

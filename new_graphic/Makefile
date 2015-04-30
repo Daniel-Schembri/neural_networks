@@ -30,8 +30,7 @@ CXXFLAGS  += -march=native
 CXXFLAGS  += -I$(INCDIR) -I$(INCDIRBOX2D) -I$(INCUSR) -I$(INCDIRLOGIC)
 
 
-SRCS = brain.cpp \
-     gui.cpp \
+SRCS = gui.cpp \
      main.cpp \
      neuralWorld.cpp \
      render.cpp \

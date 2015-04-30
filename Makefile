@@ -1,10 +1,10 @@
-DIRS = ./doc \
+DIRS = ./new_graphic \
 	   ./logic
 
 default:
 	@for dir in $(DIRS); \
 		do \
-		cd $$dir;make auto; \
+		cd $$dir;make; \
 		done
 
 .PHONY: clean

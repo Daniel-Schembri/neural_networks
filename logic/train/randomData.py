@@ -5,7 +5,10 @@ import os
 import random
 import sys
 
-fileName = "trainingData.txt"
+# Trainingsdata for the velocity net
+fileNameV = "trainingDataV.txt"
+# Trainingsdata for the angle net
+fileNameA = "trainingDataA.txt"
 
 if __name__ == '__main__':
     if 5 != len(sys.argv):
@@ -44,11 +47,13 @@ if __name__ == '__main__':
     # And another factor of randomness
     random.shuffle(results)
 
-    file = open(fileName, 'w+')
-    file.write('{}\n'.format(topology))
+    fileV = open(fileNameV, 'w+')
+    fileA = open(fileNameA, 'w+')
+    fileV.write('{}\n'.format(topology))
+    fileA.write('{}\n'.format(topology))
 
     for r in results:
         if [] != r:
-#            file.write('in: {0} {1}\nout: {2} {3}\n'.format(r[0], r[1], r[2], r[3]))
-            file.write('in: {0} {1}\nout: {2}\n'.format(r[0], r[1], r[3]))
+            fileV.write('in: {0} {1}\nout: {2}\n'.format(r[0], r[1], r[2]))
+            fileA.write('in: {0} {1}\nout: {2}\n'.format(r[0], r[1], r[3]))
     file.close;

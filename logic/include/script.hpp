@@ -15,7 +15,12 @@ class Script
         Script();
         ~Script();
 
-        vector<double> process(std::vector<double> inputvals);
+        double processV(std::vector<double> inputvals);
+        double processA(std::vector<double> inputvals);
+
+    private:
+        double   current_angle_;
+        unsigned idleness_count_;
 };
 
 #endif //SCRIPT_H 

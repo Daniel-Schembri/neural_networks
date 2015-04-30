@@ -1,4 +1,5 @@
 #include "agent.hpp"
+#include <assert.h>
 
 Agent::Agent()
 {
@@ -12,65 +13,79 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
     posx = pposx; posy = pposy;
     topology = ptopology;
 
-    mynet = NULL;
+    velocity_net = NULL;
+    angle_net    = NULL;
     myscript = NULL;
 
 	switch(nettype)
 	{
 	case NET_FEEDFORWARD:
-		mynet = new FeedForwardNet(topology, true);
+		velocity_net = new FeedForwardNet(topology, true);
+		angle_net    = new FeedForwardNet(topology, true);
 		break;
 	case NET_SRN:
-		mynet = new srn(topology, true);
+		velocity_net = new srn(topology, true);
+		angle_net    = new srn(topology, true);
 		break;
 	case NET_SCRIPT:
         myscript = new Script();
 		break;
 	default:
-		mynet = new FeedForwardNet(topology, true);
+		velocity_net = new FeedForwardNet(topology, true);
+		angle_net    = new FeedForwardNet(topology, true);
 		break;
 	};
 }
 
 Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology, int pnet_type,
-             vector<vector<vector<Connection> > > pweights)
+             WeightMatrix &pweights)
 {
     fitness = 0; lastfitness = 0; id=pid;
 
     posx = pposx; posy = pposy;
     topology = ptopology;
 	
-    mynet = NULL;
+    velocity_net = NULL;
+    angle_net    = NULL;
     myscript = NULL;
 
 	switch(nettype)
 	{
 	case NET_FEEDFORWARD:
-		mynet = new FeedForwardNet(topology, true);
+		velocity_net = new FeedForwardNet(topology, true);
+		angle_net    = new FeedForwardNet(topology, true);
 		break;
 	case NET_SRN:
-		mynet = new srn(topology, true);
+		velocity_net = new srn(topology, true);
+		angle_net    = new srn(topology, true);
 		break;
 	case NET_SCRIPT:
         myscript = new Script();
 		break;
 	default:
-		mynet = new FeedForwardNet(topology, true);
+		velocity_net = new FeedForwardNet(topology, true);
+		angle_net    = new FeedForwardNet(topology, true);
 		break;
     };
 
-    if(NULL != mynet)
+    if(NULL != velocity_net)
     {
-        mynet->setConnections(pweights);
+        velocity_net->setConnections(pweights);
     }
 }
 
 Agent::~Agent()
 {
-    if(NULL != mynet)
+    if(NULL != velocity_net)
     {
-        delete mynet;
-        mynet = NULL;
+        delete velocity_net;
+        velocity_net = NULL;
+    }
+
+    if(NULL != angle_net)
+    {
+        delete angle_net;
+        angle_net = NULL;
     }
 
     if(NULL != myscript)
@@ -80,32 +95,56 @@ Agent::~Agent()
     }
 }
 
-void Agent::learn(std::vector<double> ptrainingdata_output)
+void Agent::learnV(std::vector<double> ptrainingdata_output)
 {
-    mynet->learn(ptrainingdata_output);
+    velocity_net->learn(ptrainingdata_output);
 }
 
-std::vector<double> Agent::process(std::vector<double> inputvals)
+void Agent::learnA(std::vector<double> ptrainingdata_output)
 {
-    std::vector<double> resultvals;
+    angle_net->learn(ptrainingdata_output);
+}
+
+double Agent::processV(std::vector<double> inputvals)
+{
+    std::vector<double> result_vals;
 
     if (nettype < 2)
     {
-        mynet->feedForward(inputvals);
-        mynet->getResults(resultvals);
+        velocity_net->feedForward(inputvals);
+        velocity_net->getResults(result_vals);
     }
     else
     {
-      resultvals = myscript->process(inputvals);
+        result_vals.push_back(myscript->processV(inputvals));
     }
 
-    return resultvals;
+    assert(1 == result_vals.size());
+    return result_vals[0];
+}
+
+double Agent::processA(std::vector<double> inputvals)
+{
+    std::vector<double> result_vals;
+
+    if (nettype < 2)
+    {
+        angle_net->feedForward(inputvals);
+        angle_net->getResults(result_vals);
+    }
+    else
+    {
+        result_vals.push_back(myscript->processA(inputvals));
+    }
+
+    assert(1 == result_vals.size());
+    return result_vals[0];
 }
 
 bool Agent::operator== (const Agent &other) const
 {
-    WeightMatrix mine = mynet->getConnections();
-    WeightMatrix his  = other.mynet->getConnections();
+    WeightMatrix mine = angle_net->getConnections();
+    WeightMatrix his  = other.angle_net->getConnections();
 
     // Loop through the net
     unsigned nbLayersInNet = mine.size();

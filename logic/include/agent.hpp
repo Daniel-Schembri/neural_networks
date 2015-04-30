@@ -18,8 +18,9 @@ class Agent
 {
     //Attributes
     public:
-        Net* mynet;  //The Neural Net
-        Script* myscript; //Script to directly test functions
+        Net* velocity_net;        //The Neural Net used to compute the agent's velocity
+        Net* angle_net;           //The Neural Net used to compute the agent's angle
+        Script* myscript;         //Script to directly test functions
         int fitness, lastfitness; // bestfitness;
 
         //Output
@@ -30,21 +31,31 @@ class Agent
         std::vector<unsigned> topology;
 
         int id; int nettype; 
-        float posx, posy, angle;  //NU
+        float posx, posy, angle;
 
         //Methods
     public:
 
         Agent();
         ~Agent();
-        Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology, int pnet_type);
-        Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,  int pnet_type,
-              vector<vector<vector<Connection> > > pweights);
 
-        std::vector<double> process(std::vector<double> inputVals);  //Give input in the neural network and get output
+        Agent(float pposx, float pposy, int pid, 
+              std::vector<unsigned> ptopology, int pnet_type);
+        Agent(float pposx, float pposy, int pid, 
+              std::vector<unsigned> ptopology, int pnet_type, WeightMatrix &pweights);
 
-        void learn(std::vector<double> ptrainingdata_output);
+        //Obtain the agent's velocity from the current sensor values
+        double processV(std::vector<double> inputVals);
+
+        //Obtain the agent's angle from the current sensor values
+        double processA(std::vector<double> inputVals);
+
+        // Used to teach angle_net
+        void learnA(std::vector<double> ptrainingdata_output);
+        // Used to teach velocity_net
+        void learnV(std::vector<double> ptrainingdata_output);
 
         bool operator== (const Agent &other) const;
 };
+
 #endif
