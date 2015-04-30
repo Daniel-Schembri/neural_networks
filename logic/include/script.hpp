@@ -6,16 +6,16 @@
 #include <stdlib.h>
 #include <iostream>
 
+using std::vector;
+
 class Script
 {
 
     public:
         Script();
-        std::vector<double> process(std::vector<double> inputvals);
-         
-    private:
-        void function();
+        ~Script();
 
+        vector<double> process(std::vector<double> inputvals);
 };
 
 #endif //SCRIPT_H 

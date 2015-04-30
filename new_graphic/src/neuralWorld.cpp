@@ -344,15 +344,21 @@ return input_vectors;
 void NeuralWorld::Step(Settings* settings)
 {
     //DebugDraw Agent Angles
-    for(int i=0; i<population->size();++i)
-    {
-        m_debugDraw.DrawString(20, 100 + 40*i, "Agent %d Angle: %f \n", i, Agentbody[i]->GetAngle());
-    }
+//    for(int i=0; i<population->size();++i)
+//    {
+//        m_debugDraw.DrawString(20, 100 + 40*i, "Agent %d Angle: %f \n", i, Agentbody[i]->GetAngle());
+//    }
     //Deactivate Object if inactive
     for (unsigned int i = 0; i < amount_Object; i++)
     {
         if (!active[population->size() * 2 + i])
-            Objectbody[i]->SetActive(false);
+        {
+            //Objectbody[i]->SetActive(false);
+            //Respawn Object
+            active[population->size() * 2 + i] = true;
+            Objectbody[i]->SetTransform( b2Vec2( (-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10))),0.0f);
+        }
+            
     }
 
 

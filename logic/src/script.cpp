@@ -4,15 +4,12 @@
 
 Script::Script()
 {
-
 }
 
-void Script::function()
+Script::~Script()
 {
-
 }
 
-//TODO: Algorithm correct?
 std::vector<double> Script::process(std::vector<double> inputvals)
 {
     const float radius = 20.0f;
@@ -28,7 +25,7 @@ std::vector<double> Script::process(std::vector<double> inputvals)
 
     if(0 == x && 0 == y)
     {
-        resultvals.push_back(0);
+        resultvals.push_back(0.33f);
         resultvals.push_back(0);
         return resultvals;
     }
@@ -38,16 +35,13 @@ std::vector<double> Script::process(std::vector<double> inputvals)
     angle = atan2(y, x) - (M_PI/2.0f);
     velocity = hyp / radius;
 
-    std::cout << "Input: ("<< x << "," << y << ") Output: (" << velocity << "," << angle << ")\n";
+//    std::cout << "Input: (" << x << "," << y << ") Output: (" << velocity << "," << angle << ")\n";
+
+    if(0.2 > velocity)
+        velocity = 0.2f;
+
     resultvals.push_back(velocity);
     resultvals.push_back(angle);
 
-    std::cout << "velocity: " << velocity << std::endl; 
-    std::cout << "angle: " << angle << std::endl; 
-
-    //function();
-
     return resultvals;
 }
-
-
