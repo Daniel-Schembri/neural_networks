@@ -312,8 +312,7 @@ void evolutionary::save_vals(std::vector< std::vector<double> > inputvals_vector
 	std::ofstream outfile("agent_vals.txt", std::ofstream::out);
 	if (outfile.is_open())
 	{
-		
-		for (int i = 0; i < inputvals_vector.size(); i++)
+		for (unsigned i = 0; i < inputvals_vector.size(); i++)
 		{
 			inputvals = inputvals_vector[i];
 			resultvals = results_vector[i];
@@ -403,31 +402,34 @@ void evolutionary::set_trainingdata(std::vector< std::vector<float> > ptrainingd
     trainingdata = ptrainingdata;
 }
 
-std::vector<Agent*> evolutionary::crossover(Agent* mum, Agent* dad)
+
+vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
 {
-    std::vector<Agent *> kids;
+    // Crossover will only be done with a certain probability 
     float randval = (rand())/(RAND_MAX+1.0);
 
-    if ( (randval > sim_parameter.crossover_rate) || (mum == dad)) 
+    vector<Agent *> kids; 
+    if ((randval > sim_parameter.crossover_rate) || (mum == dad)) 
     {
-        kids.push_back(mum);
-        kids.push_back(dad);
+        // Simply return mum and dad, they will be copied into the next population
+        kids.push_back(&mum);
+        kids.push_back(&dad);
     }
 
     unsigned crossover_point = rand() % sim_parameter.amount_of_weights + 1;  //Range between 1 and amount_of_weights
 
-    vector<vector<vector<Connection> > > mum_weights = mum->mynet->getConnections();
-    vector<vector<vector<Connection> > > dad_weights = mum->mynet->getConnections();
+    WeightMatrix mum_weights = mum.mynet->getConnections();
+    WeightMatrix dad_weights = dad.mynet->getConnections();
 
-    vector<vector<vector<Connection> > > kid1_weights;
-    vector<vector<vector<Connection> > > kid2_weights;
+    WeightMatrix kid1_weights;
+    WeightMatrix kid2_weights;
  
     // To keep track of how many connections have been added
     unsigned gene_count = 0;
 
-    unsigned nbLayersInNet = dad_weights.size();
     // Child 1: mum|dad, child 2: dad|mum
-    // For each layer
+
+    unsigned nbLayersInNet = mum_weights.size();
     for(unsigned nbLayer = 0; nbLayer < nbLayersInNet ; ++nbLayer)
     {
         // All Connections of the respective layer
@@ -438,14 +440,12 @@ std::vector<Agent*> evolutionary::crossover(Agent* mum, Agent* dad)
         kid2_weights.push_back(kid2_layerConnections);
 
         unsigned nbNeuronsInLayer = dad_weights[nbLayer].size();
-        // For each neuron in the layer
         for (unsigned nbNeuron = 0; nbNeuron < nbNeuronsInLayer; ++nbNeuron) 
         {
             vector<Connection> kid1_neuronConnections;
             vector<Connection> kid2_neuronConnections;
 
             unsigned nbConnectionsOfNeuron = dad_weights[nbLayer][nbNeuron].size();
-            // For each connection of the respective neuron
             for (unsigned nbConnection = 0; nbConnection < nbConnectionsOfNeuron ; ++nbConnection) 
             {
                 // Determine whether this connection should be cloned from mum or dad
@@ -484,8 +484,10 @@ int evolutionary::evolve_crossover()
 
         std::vector<unsigned> roulette;
 
-        for(unsigned i=0;i<population.size();i++)
-            for(unsigned j=0;j<population[j]->fitness;j++)
+        // Created strcutre: [1][1][1][2][2][3][4]. Random number between 1 and length(array) will
+        // more likely choose an agent with a superior fitness
+        for(unsigned i=0; i < population.size(); ++i)
+            for(int j=0; j < population[j]->fitness; ++j)
                 roulette.push_back(i);
 
         // Add some elitism by copying the best agent n times
@@ -494,19 +496,16 @@ int evolutionary::evolve_crossover()
 
         while(sim_parameter.population_size != newPopulation.size())
         {
-            //TODO: implement roulette
-//             Agent* mum = roulette();
-//             Agent* dad = roulette();
+            int mum_id = rand() % (population.size()-1);
+            int dad_id = rand() % (population.size()-1);
+
+            Agent& mum = *population[mum_id];
+            Agent& dad = *population[dad_id];
 
             std::vector<Agent*> kids;
 
             // Create offspring
-//             kids = crossover(mum, dad);
-
-            // Mutate offspring 
-            // TODO: Implement mutate
-//             mutate(kids[0]);
-//             mutate(kids[1]);
+            kids = crossover(mum, dad);
 
             // Insert into the new population
             newPopulation.push_back(kids[0]);
@@ -516,4 +515,3 @@ int evolutionary::evolve_crossover()
     }
     return 0;
 }
-

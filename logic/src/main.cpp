@@ -160,16 +160,6 @@ int main()
         cout << "Net recent average error: " << myNet.getRecentAverageError() << endl;
     }
 
-        inputVals.clear();
-        inputVals.push_back(7.00000);
-        inputVals.push_back(3.00000);
-        showVectorVals(": Inputs:", inputVals);
-        myNet.feedForward(inputVals);
-
-        // Collect the net's actual output results:
-        myNet.getResults(resultVals);
-        showVectorVals("Outputs:", resultVals);
-
     cout << endl << "Done" << endl;
 }
 
