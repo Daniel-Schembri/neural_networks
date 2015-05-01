@@ -32,9 +32,9 @@ public:
     void feedForward(const vector<double> &inputVals);
 
     void getResults(vector<double> &resultVals) const;
-    vector<vector<vector<Connection> > > getConnections() const;
 
-    void setConnections(const vector<vector<vector<Connection> > > &connections);
+    WeightMatrix getConnections() const;
+    void setConnections(const WeightMatrix &weights);
 
     vector<Layer> m_layers;
 protected:

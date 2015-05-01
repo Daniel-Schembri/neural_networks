@@ -1,15 +1,14 @@
 #include "script.hpp"
+#include <math.h>
 
 #define M_PI 3.14159265358979323846
 
 Script::Script()
 {
-
 }
 
 void Script::function()
 {
-
 }
 
 //TODO: Algorithm correct?
@@ -24,18 +23,18 @@ std::vector<double> Script::process(std::vector<double> inputvals)
 
     float x = inputvals[0];
     float y = inputvals[1];
-    
+
 
     if(0 == x && 0 == y)
     {
-    resultvals.push_back(0);
-    resultvals.push_back(0);
-    return resultvals;
+        resultvals.push_back(0);
+        resultvals.push_back(0);
+        return resultvals;
     }
 
     hyp = sqrt(x*x + y*y);
-    
-    angle = asinf(y/hyp);
+
+    angle = atan2(x,y);
     velocity = hyp / radius;
 
     resultvals.push_back(velocity);
@@ -48,5 +47,3 @@ std::vector<double> Script::process(std::vector<double> inputvals)
 
     return resultvals;
 }
-
-

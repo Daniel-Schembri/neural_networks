@@ -14,7 +14,6 @@
 #define NET_SRN           1 
 #define NET_SCRIPT        2
 
-// This is used to test sensor shapes.
 class Agent
 {
     //Attributes
@@ -45,5 +44,7 @@ class Agent
         std::vector<double> process(std::vector<double> inputVals);  //Give input in the neural network and get output
 
         void learn(std::vector<double> ptrainingdata_output);
+
+        bool operator== (const Agent &other) const;
 };
 #endif

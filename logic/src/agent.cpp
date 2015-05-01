@@ -102,6 +102,33 @@ std::vector<double> Agent::process(std::vector<double> inputvals)
     return resultvals;
 }
 
+bool Agent::operator== (const Agent &other) const
+{
+    WeightMatrix mine = mynet->getConnections();
+    WeightMatrix his  = other.mynet->getConnections();
+
+    // Loop through the net
+    unsigned nbLayersInNet = mine.size();
+    for (unsigned nbLayer = 0; nbLayer < nbLayersInNet; ++nbLayer) 
+    {
+        unsigned nbNeuronsInLayer = mine[nbLayer].size();
+        for (unsigned nbNeuron = 0; nbNeuron < nbNeuronsInLayer; ++nbNeuron) 
+        {
+            unsigned nbConnectionsOfNeuron = mine[nbLayer][nbNeuron].size();
+            for (unsigned nbConnection = 0; nbConnection < nbConnectionsOfNeuron ; ++nbConnectionsOfNeuron) 
+            {
+                // Are the weights equal?
+                if(mine[nbLayer][nbNeuron][nbConnection].weight == his[nbLayer][nbNeuron][nbConnection].weight)
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
 /*
 float32 a = fabs(player->GetPosition().x - Object[i]->GetPosition().x);
 float32 b = fabs(player->GetPosition().y - Object[i]->GetPosition().y); //Fabs ist Betrag

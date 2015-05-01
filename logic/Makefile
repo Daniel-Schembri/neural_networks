@@ -4,8 +4,11 @@ BINDIR         = bin/
 
 TRAINDIR       = train/
 TRAINFILE      = trainingData.txt 
-TRAINSRC       = createData.py
-TOPOLOGY       = 2 4 2
+TRAINSRC_C     = calculatedData.py
+TRAINSRC_R     = randomData.py
+#default value in case no paramter is given
+SAMPLES        = 20000
+TOPOLOGY       = 2 8 1
 
 CXX = g++
 
@@ -61,10 +64,15 @@ $(TARGET): $(OBJS)
 #	$(CXX) -o $@ $(OBJS)
 #	mkdir -p $(BINDIR); mv *.o $(BINDIR)
 
-.PHONY: training
+.PHONY: training_c
 
-training:
-	cd $(TRAINDIR); ./$(TRAINSRC) $(TOPOLOGY); mv $(TRAINFILE) ../$(SRCDIR)/training
+training_c:
+	cd $(TRAINDIR); ./$(TRAINSRC_C) $(TOPOLOGY); mv $(TRAINFILE) ../$(SRCDIR)/training
+
+.PHONY: training_r
+
+training_r:
+	cd $(TRAINDIR); ./$(TRAINSRC_R) $(TOPOLOGY) $(SAMPLES); mv $(TRAINFILE) ../$(SRCDIR)/training
 
 .PHONY: clean
 

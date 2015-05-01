@@ -6,9 +6,11 @@
 #define LEARNING_RATE (0.15)
 #define MOMENTUM (0.5)
 
+using std::vector;
+
 class Neuron;
 
-typedef std::vector<Neuron*> Layer;
+typedef vector<Neuron*> Layer;
 
 //connection between neurons
 struct Connection
@@ -16,5 +18,7 @@ struct Connection
     double weight;
     double deltaWeight;
 };
+
+typedef vector<vector<vector<Connection>>> WeightMatrix; 
 
 #endif /* COMMONDEFS_HPP */

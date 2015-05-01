@@ -1,4 +1,5 @@
 #include "neuron.hpp"
+#include <math.h>
 
 Neuron::Neuron(double eta, unsigned myIndex):
     m_eta(eta),

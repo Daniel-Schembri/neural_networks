@@ -19,7 +19,7 @@ if __name__ == '__main__':
     for i in params:
         topology = topology + ' ' + str(i) 
 
-    radius = 20.0
+    radius = 1.0
     semicircle = {0.0 : 0.0}
 
     xTmp = 0.0
@@ -56,5 +56,6 @@ if __name__ == '__main__':
 
     for r in results:
         if 0 < len(r):
-            file.write('in: {0} {1}\nout: {2} {3}\n'.format(r[0], r[1], r[2], r[3]))
+#             file.write('in: {0} {1}\nout: {2} {3}\n'.format(r[0], r[1], r[2], r[3]))
+            file.write('in: {0} {1}\nout: {2}\n'.format(r[0], r[1], r[2]))
     file.close;

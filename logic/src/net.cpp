@@ -41,9 +41,9 @@ void Net::feedForward(const std::vector<double> &inputVals)
 }
 
 
-vector<vector<vector<Connection> > > Net::getConnections() const
+WeightMatrix Net::getConnections() const
 {
-    vector<vector<vector<Connection> > > results;
+    WeightMatrix results;
 
     // Loop through the net
     unsigned nbLayersInNet = m_layers.size();
@@ -65,7 +65,7 @@ vector<vector<vector<Connection> > > Net::getConnections() const
     return results;
 }
 
-void Net::setConnections(const vector<vector<vector<Connection> > > &connections)
+void Net::setConnections(const WeightMatrix &weights)
 {
     // Loop through the net
     unsigned nbLayersInNet = m_layers.size();
@@ -75,7 +75,7 @@ void Net::setConnections(const vector<vector<vector<Connection> > > &connections
         for (unsigned nbNeuron = 0; nbNeuron < nbNeuronsInLayer; ++nbNeuron) 
         {
             // Set the connections of the respective neuron
-            m_layers[nbLayer][nbNeuron]->m_outputWeights = connections[nbLayer][nbNeuron];
+            m_layers[nbLayer][nbNeuron]->m_outputWeights = weights[nbLayer][nbNeuron];
         }
     }
 }
