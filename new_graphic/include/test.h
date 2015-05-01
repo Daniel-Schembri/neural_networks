@@ -66,7 +66,6 @@ struct Settings
 	}
 
 	b2Vec2 viewCenter;
-	b2Vec2 viewCenter_plotter;
 	float32 hz;
 	int32 velocityIterations;
 	int32 positionIterations;
@@ -74,6 +73,8 @@ struct Settings
 	int32 singleStep;
 	//ds
 	bool turbo;
+	b2Vec2 viewCenter_plotter;
+	b2Vec2 viewCenter_matrix;
 };
 
 // This is called when a joint in the world is implicitly destroyed

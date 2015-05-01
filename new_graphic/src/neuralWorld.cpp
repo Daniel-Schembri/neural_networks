@@ -308,7 +308,7 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 				int x_tmp = 0;
 				int y_tmp = 0;
 				//angle correct?
-				angle = atan2(Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().y - Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().x, Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().x + Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().y);
+				angle = (0.5f * M_PI) - atan2(Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().y - Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().x, Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().x + Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().y);
 				angle = correct_angle((Agentbody[i]->GetAngle() - angle));
 
 				//First translation of the x,y coordinates
@@ -326,18 +326,6 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
 				single_vector.clear();
 
 				break;
-
-				//Old version: absolute coordinates
-				//single_vector.push_back( (Agentbody[i]->GetPosition().x - Objectbody[j]->GetPosition().x));
-				//single_vector.push_back((Agentbody[i]->GetPosition().y - Objectbody[j]->GetPosition().y));
-				//TODO Opitimization Speed of correction of the angle?
-				//angle = atan2(Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().y - Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().x, Agentbody[i]->GetPosition().x * Objectbody[j]->GetPosition().x + Agentbody[i]->GetPosition().y * Objectbody[j]->GetPosition().y);
-				//angle = correct_angle((Agentbody[i]->GetAngle() - angle));
-				
-				//single_vector.push_back(angle);
-				//input_vectors[i] = single_vector;
-				//single_vector.clear();
-				//break;   //The first detected Object is the input
 			}
 		}
 	}

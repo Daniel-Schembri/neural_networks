@@ -44,6 +44,12 @@ private:
 	int32 mainWindow;
 	int32 plotterWindow; //ds
 	int32 Createevolution_Window;
+    //Matrix_Window Paramters
+    int32 matrixWindow;
+    int mtx, mty, mtw, mth;
+	float32 viewZoom_matrix = 3.0f;
+
+
 	int ptx, pty, ptw, pth;
 	int reset_sim;
 	float settingsHz = 60.0;
@@ -55,6 +61,7 @@ private:
 	bool rMouseDown;
 	b2Vec2 lastp;
 	DebugDraw plot_debugDraw;
+	DebugDraw matrix_debugDraw;
 	struct parameter sim_parameter;
 	struct parameter temp_sim_parameter;
 
@@ -99,6 +106,12 @@ public:
 
 	static void Wrapper_glui_noclose();
 
+//Matrix_window
+
+    static void Wrapper_matrix_plotting();
+    static void Wrapper_matrix_Timer(int);
+    static void Wrapper_Resize_Matrix(int32 w, int32 h);
+
 	void KeyboardUp(unsigned char key, int x, int y);
 	void Mouse(int32 button, int32 state, int32 x, int32 y);
 	void MouseMotion(int32 x, int32 y);
@@ -138,6 +151,12 @@ public:
 	void Createevolution_win();
 	void Create_Panel();
 	void Create_plotterwin();
+
+//Matrix_window
+    void Create_matrixwin();
+    void matrix_plotting();
+    void matrix_Timer(int);
+    void Resize_Matrix(int32 w, int32 h);
 
 	gui();
 	gui(char * ptitle, int px, int py, int pwidth, int pheight, int argc, char** argv);
