@@ -10,25 +10,6 @@ void gui::setInstance(gui * pinstance)
 
 //Wrapper Methods
 
-//Matrix Window
-void gui::Wrapper_matrix_plotting()
-{
-    instance->matrix_plotting();
-
-}
-
-void gui::Wrapper_matrix_Timer(int)
-{
-    instance->matrix_Timer(0);
-}
-void gui::Wrapper_Resize_Matrix(int32 w, int32 h)
-{
-    instance->Resize_Matrix(w, h);
-}
-
-//Neural-Network Window
-
-
 void gui::Wrapper_KeyboardUp(unsigned char key, int x, int y)
 {
 	instance->KeyboardUp(key, x, y);
@@ -167,95 +148,6 @@ void gui::Timer2(int)
 	glutSetWindow(plotterWindow);
 	glutPostRedisplay();
 	glutTimerFunc(framePeriod, Wrapper_Timer2, 0);
-}
-
-//Matrix_window
-void gui::matrix_Timer(int)
-{
-	glutSetWindow(matrixWindow);
-	glutPostRedisplay();
-	glutTimerFunc(framePeriod, Wrapper_matrix_Timer, 0);
-}
-
-void gui::matrix_plotting()
-{
-//TODO: Topology: Care if temporary topology later gets changed by window!
-
-    //Get Animal amount of Layers and Neurons per layer.
-    //Get the amount of neurons in the biggest layer
-    unsigned columns = topology.size();
-    unsigned rows = 0;
-    
-    b2Vec2 row_begin(0.0f, 0.0f);
-    b2Vec2 row_end(0.0f, 0.0f);
-    b2Vec2 column_begin(0.0f, 0.0f);
-    b2Vec2 column_end(0.0f, 0.0f);
-
-
-    b2Vec2 oldCenter;
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    oldCenter = settings.viewCenter_matrix;
-
-    for(unsigned i=0;i<columns;++i)
-    {
-        if (rows < topology[i]) 
-        {
-            rows = topology[i];
-        }
-    }
-
-    matrix_debugDraw.DrawString(20, 20, "columns: %d rows: %d",columns, rows);
-
-    for(unsigned i=0;i<columns+1;++i)
-    {
-        column_begin = b2Vec2(-5.0f + i*20.0f,-10.0f + 0.0f);
-        column_end   = b2Vec2(-5.0f + i*20.0f, -10.0f + rows * 20.0f);
-        matrix_debugDraw.DrawLine(column_begin,column_end, b2Color(0.0f, 0.0f, 0.0f));
-    }
-
-    for(unsigned j=0;j<rows+1;++j)
-    {
-        row_begin = b2Vec2(-5.0f,-10.0f + j*20.0f);
-        row_end = b2Vec2(-5.0f + 60.0f,-10.0f + j*20.0f);
-        matrix_debugDraw.DrawLine(row_begin, row_end,b2Color(0.0f, 0.0f, 0.0f));
-    }
-
-	if (oldCenter.x != settings.viewCenter_matrix.x || oldCenter.y != settings.viewCenter_matrix.y)
-	{
-
-//TODO: Resize Matrix_width, height! Not main_window width, height!
-	    Resize_Matrix(width, height);
-	}
-    glutSwapBuffers();
-
-}
-
-void gui::Resize_Matrix(int32 w, int32 h)
-{
-    //TODO: BUG: Why resize main_Window width and height!?
-	width = w;
-	height = h;
-
-	GLUI_Master.get_viewport_area(&mtx, &mty, &mtw, &mth);
-	glViewport(mtx, mty, mtw, mth);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	float32 ratio = float32(mtw) / float32(mth);
-
-	b2Vec2 extents(ratio * 25.0f, 25.0f);
-	extents *= viewZoom_matrix;
-
-	b2Vec2 lower = settings.viewCenter_matrix - extents;
-	b2Vec2 upper = settings.viewCenter_matrix + extents;
-
-	// L/R/B/T
-	gluOrtho2D(lower.x, upper.x, lower.y, upper.y);
 }
 
  void gui::plotting() // function used by second window ds
@@ -932,34 +824,9 @@ void gui::Create_plotterwin()
 	glutTimerFunc(framePeriod, Wrapper_Timer2, 0);
 }
 
-void gui::Create_matrixwin()
-{
-	//TODO: Set Focus on Subwindow that under Freeglut (Win) it gets Keyboard-callback
-	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(300, 300);
-	matrixWindow = glutCreateWindow("Weight Matrix");
-
-	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
-
-	//Clear GLUT-Window
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glutSwapBuffers();
-
-	glutDisplayFunc(Wrapper_matrix_plotting);
-	glutTimerFunc(framePeriod, Wrapper_matrix_Timer, 0);
-	glutReshapeFunc(Wrapper_Resize_Matrix);
-}
-
 
 void gui::init()
 {
-    //Matrix
-    settings.viewCenter_matrix = b2Vec2(0.0f, 0.0f);
-    mtx = 0; mty = 0; mtw = 0; mth = 0;
-    matrixWindow = NULL;
-
 	created = false;
 	glui = NULL;
 	glui_createevolution = NULL;
@@ -1050,8 +917,6 @@ gui::gui(char * ptitle, int px, int py, int pwidth, int pheight, int argc, char*
 	Create_Panel();
 	Create_plotterwin();
 
-    //Matrix_window
-    Create_matrixwin();
 
 	//Clear 1st GLUT-Window
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

@@ -330,8 +330,17 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
             x_tmp = (x_translated * cos(angle) + y_translated * sin(angle));
             y_tmp = (-x_translated * sin(angle) + y_translated * cos(angle));
 
+            //negativ y-values arent allowed (out of range of the sensor)
+            if(y_tmp < 0.0f)
+            {
+            single_vector.push_back(0.0f);
+            single_vector.push_back(0.0f);
+            }
+            else
+            {
             single_vector.push_back(x_tmp);
             single_vector.push_back(y_tmp);
+            }
             //		single_vector.push_back(angle);
 
             input_vectors[i] = single_vector;
