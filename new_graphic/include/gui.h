@@ -65,8 +65,8 @@ private:
 	struct parameter sim_parameter;
 	struct parameter temp_sim_parameter;
 
-	std::vector< std::vector<float> > trainingdataV;
-	std::vector< std::vector<float> > trainingdataA;
+	std::vector< std::vector<double> > trainingdataV;
+	std::vector< std::vector<double> > trainingdataA;
 
 	//For Singleplayer Recording
 	std::vector< std::vector<double> > record_inputs;

@@ -257,8 +257,8 @@ void evolutionary::learn()
         //Learn with the trainings set
         std::vector<double> trainingdata_input;
         std::vector<double> trainingdata_output;
-        std::vector< std::vector<float> >::iterator row;
-        std::vector<float>::iterator col;
+        std::vector< std::vector<double> >::iterator row;
+        std::vector<double>::iterator col;
         for (row = trainingdataV.begin(); row != trainingdataV.end(); row++)
         {
             col = row->begin();
@@ -283,8 +283,8 @@ void evolutionary::learn()
         //Learn with the trainings set
         std::vector<double> trainingdata_input;
         std::vector<double> trainingdata_output;
-        std::vector< std::vector<float> >::iterator row;
-        std::vector<float>::iterator col;
+        std::vector< std::vector<double> >::iterator row;
+        std::vector<double>::iterator col;
         for (row = trainingdataA.begin(); row != trainingdataA.end(); row++)
         {
             col = row->begin();
@@ -327,7 +327,7 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
         // Complete formula:
         //                   steering = sign(x) * -(pi/2-(Network output - pi/2))
         double angle_x_v = M_PI/2.0 * population[i]->processA(inputvals_vector[i]);
-        double angle_y_v = M_PI/2.0 - angle_x_v
+        double angle_y_v = M_PI/2.0 - angle_x_v;
 
         double steering_angle = sgn(x_value) * -angle_y_v;
 
@@ -447,12 +447,12 @@ void evolutionary::save_bestAgent()
 
 }
 
-void evolutionary::set_trainingdataV(std::vector< std::vector<float> > ptrainingdata)
+void evolutionary::set_trainingdataV(std::vector< std::vector<double> > ptrainingdata)
 {
     trainingdataV = ptrainingdata;
 }
 
-void evolutionary::set_trainingdataA(std::vector< std::vector<float> > ptrainingdata)
+void evolutionary::set_trainingdataA(std::vector< std::vector<double> > ptrainingdata)
 {
     trainingdataA = ptrainingdata;
 }

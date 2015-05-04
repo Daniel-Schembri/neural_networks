@@ -1009,9 +1009,12 @@ void gui::init()
 
 	//TODO: Choose in new_evolution window!
 	//Evolution
-	topology.push_back(3); //Input-Layer
-	topology.push_back(4); //Hidden-Layer
-	topology.push_back(2); //Output-Layer
+    load_trainingData();
+
+//	topology.push_back(3); //Input-Layer
+//	topology.push_back(4); //Hidden-Layer
+//	topology.push_back(2); //Output-Layer
+
 }
 
 gui::gui(char * ptitle, int px, int py, int pwidth, int pheight, int argc, char** argv)
@@ -1059,7 +1062,6 @@ gui::gui(char * ptitle, int px, int py, int pwidth, int pheight, int argc, char*
 
 void gui::Start()
 {
-	load_trainingData();
 	setInstance(this);
 	glutMainLoop();
 }
@@ -1069,89 +1071,145 @@ void gui::load_trainingData()
 	// Line buffer
 	std::string line = "";
     // Network topology
-    std::string topology = "";
+    std::string topology_string = "";
 
-	std::ifstream training_file_V("trainingsDataV.txt");
+	std::ifstream training_file_V("trainingDataV.txt");
+	std::ifstream training_file_A("trainingDataA.txt");
+
+    //Load topology from the first line
 
 	if (training_file_V.is_open())
 	{
-        getline(training_file_V, topology);
+        //Load topology from the first line
+        getline(training_file_V, topology_string);
+        int first = 0;
+        int last = 0;
 
-		while (getline(training_file_V, line))
-		{
-			std::vector<float> single;
+        //Skip the description till space
+        while (' ' != topology_string[first])
+            first++;
+        first++;
+        last = first;
+    
+        for(int i=0; i<3;++i)
+        {   
 			std::string tmpString = "";
+            while (' ' != topology_string[last])
+            {
+                last++;
+            }   
+            last--;
 
-			int first = 0;
-			int last = 0;
+			tmpString = topology_string.substr(first, last);
+			topology.push_back(atoi(tmpString.c_str()));
+            last += 2;
+            first = last;
+        }
+		while (getline(training_file_V, line))
+        {
+            first = 0; last = 0;
+            std::vector<double> single;
+            //Skip the description till space
+            while (' ' != line[first])
+                first++;
+            first++;
+            last = first;
+            //2 Input-Vals
+            for(int i=0; i<2;++i)
+            {   
+                std::string tmpString = "";
+                while (' ' != line[last] && '\0' != line[last])
+                {
+                    last++;
+                }   
 
-			for (int i = 0; i<3; i++)
-			{
-				while (line[last] != ';')
-				{
-					last++;
-				}
+                tmpString = line.substr(first, last-first); //substr(pos, length)
+                single.push_back(atof(tmpString.c_str()));
+                last ++;
+                first = last;
+            }
+            //1 Outputval
+    		getline(training_file_V, line);
+            first = 0; last = 0;
+            //Skip the description till space
+            while (' ' != line[first])
+                first++;
+            first++;
+            last = first;
+                std::string tmpString = "";
+                while (' ' != line[last] && '\0' != line[last])
+                {
+                    last++;
+                }   
 
-				tmpString = line.substr(first, last);
-				single.push_back(atof(tmpString.c_str()));
+                tmpString = line.substr(first, last-first);
+                single.push_back(atof(tmpString.c_str()));
 
-				last++;
-				first = last;
-			}
-
-			last = line.length() - 1;
-			tmpString = line.substr(first, last);
-			single.push_back(atof(tmpString.c_str()));
-
-			trainingdataV.push_back(single);
-		}
-
-		training_file_V.close();
+            trainingdataV.push_back(single);
+        }
+	training_file_V.close();
 	}
 	else
 	{
 		std::cerr << "Unable to open velocity file";
 	}
 
-	std::ifstream training_file_A("trainingsDataA.txt");
 	if (training_file_A.is_open())
 	{
-        getline(training_file_A, topology);
-
+        //Skip the topology, because we already got it
+        getline(training_file_A, line);
+        
+        int first = 0;
+        int last = 0;
 		while (getline(training_file_A, line))
-		{
-			std::vector<float> single;
-			std::string tmpString = "";
+        {
+            first = 0; last = 0;
+            std::vector<double> single;
+            //Skip the description till space
+            while (' ' != line[first])
+                first++;
+            first++;
+            last = first;
+            //2 Input-Vals
+            for(int i=0; i<2;++i)
+            {   
+                std::string tmpString = "";
+                while (' ' != line[last] && '\0' != line[last])
+                {
+                    last++;
+                }   
 
-			int first = 0;
-			int last = 0;
+                tmpString = line.substr(first, last-first); //substr(pos, length)
+                single.push_back(atof(tmpString.c_str()));
+                last ++;
+                first = last;
+            }
+            //1 Outputval
+    		getline(training_file_A, line);
+            first = 0; last = 0;
+            //Skip the description till space
+            while (' ' != line[first])
+                first++;
+            first++;
+            last = first;
+                std::string tmpString = "";
+                while (' ' != line[last] && '\0' != line[last])
+                {
+                    last++;
+                }   
 
-			for (int i = 0; i<3; i++)
-			{
-				while (line[last] != ';')
-				{
-					last++;
-				}
+                tmpString = line.substr(first, last-first);
+                single.push_back(atof(tmpString.c_str()));
 
-				tmpString = line.substr(first, last);
-				single.push_back(atof(tmpString.c_str()));
-
-				last++;
-				first = last;
-			}
-
-			last = line.length() - 1;
-			tmpString = line.substr(first, last);
-			single.push_back(atof(tmpString.c_str()));
-
-			trainingdataA.push_back(single);
-		}
-
-		training_file_A.close();
+            trainingdataA.push_back(single);
+        }
+	training_file_A.close();
 	}
 	else
 	{
 		std::cerr << "Unable to open angle file";
 	}
+
+
 }
 
