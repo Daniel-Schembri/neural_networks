@@ -31,7 +31,6 @@ struct parameter
     int annealing_rate;
     int evolve_algorithm;
     int mode;
-    int random;
     int nettype;    
     std::vector<unsigned> topology;
     int amount_of_weights;
@@ -69,8 +68,8 @@ class evolutionary
 		
 		bool datasetwritten;
         //double max_delta; 
-        std::vector< std::vector<float> > trainingdataV;
-        std::vector< std::vector<float> > trainingdataA;
+        std::vector< std::vector<double> > trainingdataV;
+        std::vector< std::vector<double> > trainingdataA;
 
         double revert_agent[100][100][100];
 
@@ -93,8 +92,8 @@ class evolutionary
 
         int get_bestFitness_overall();
 
-        void set_trainingdataV(std::vector< std::vector<float> > ptrainingdata);
-        void set_trainingdataA(std::vector< std::vector<float> > ptrainingdata);
+        void set_trainingdataV(std::vector< std::vector<double> > ptrainingdata);
+        void set_trainingdataA(std::vector< std::vector<double> > ptrainingdata);
 
     private:
 
