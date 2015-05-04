@@ -31,7 +31,6 @@ struct parameter
     int annealing_rate;
     int evolve_algorithm;
     int mode;
-    int random;
     int nettype;    
     std::vector<unsigned> topology;
     int amount_of_weights;

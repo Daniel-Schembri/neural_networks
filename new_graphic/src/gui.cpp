@@ -751,11 +751,6 @@ void gui::Createevolution_win()
 
 		glui_createevolution->add_separator();
 
-		GLUI_RadioGroup* random_radiogroup = glui_createevolution->add_radiogroup(&temp_sim_parameter.random);
-		glui_createevolution->add_radiobutton_to_group(random_radiogroup, "Zero Initialized Weights");
-		glui_createevolution->add_radiobutton_to_group(random_radiogroup, "Random Initialized Weights");
-
-
 		glui_createevolution->add_button("OK", 0, Wrapper_new_evolution);
 
 		glui_createevolution->add_button("Cancel", 0, Wrapper_glui_create_hide);
@@ -860,7 +855,6 @@ void gui::init()
 	sim_parameter.mode = 0;
 	sim_parameter.mutation_rate = 0.0f;
 	sim_parameter.annealing_rate = 0;
-	sim_parameter.random = 0;
 	sim_parameter.nettype = 0; //Feedforward
 
 	temp_sim_parameter.amount_of_Object = 40;
@@ -871,7 +865,6 @@ void gui::init()
 	temp_sim_parameter.mutation_rate = 0.3f;
 	temp_sim_parameter.annealing_rate = 300;
 	temp_sim_parameter.population_size = 10;
-	temp_sim_parameter.random = 1;
 	temp_sim_parameter.nettype = 0; //Feedforward
 
 	//TODO: Choose in new_evolution window!
