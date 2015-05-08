@@ -138,7 +138,7 @@
 %listing settings
 \lstset
 { 
-    language=C,                
+    language=C++,                
     basicstyle=\footnotesize\ttfamily,           
     numbers=left,
     stepnumber=5,    
@@ -235,13 +235,16 @@ An agent is a programm that interacts self-sufficent depending on the actual sta
 \section{Applications}
 
 \chapter{Optimization with evolutionary algorithms}
+
+
+
 Optimization is widely used, for example in information technology, engineering,
 economics, etc. Applications are the routing of circuits, the optimal usage of machinery,
 the traveling-salesman-problem and much more. It is often difficult to create a mathematical
 model of such optimization problems. Therefore in the last decades were developed methods who
 uses principles of the evolution.
-The simples method is the selection-method. In this model a dateset will be generated and randomly
-changes, called mutations, are made. The best datasets, chosen by the best fitness, will be kept.
+The simplest method is the selection-method. In this model a dateset will be generated and randomly
+changes, called mutations, are made. The best datasets, chosen by the best fitness, will be kept. The fitness depends on the modelisation of the problem.
 Each dateset is called an individual. A set of individuals is called a population. The individuals
 of a population can be recombined. Mostly the best individuals are recombined with randomly chosen
 ones. This method is more effective than the selection-method. This and other methods are  called
@@ -344,7 +347,14 @@ At the beginning a big T tends to equalize the probability of all chromosomes. F
 
 \subsection{Threshold accepting}
 
+\section{Recombination}
+
+
+
 \section{Applications}
+The use of a specific algorithm depends on the problem and its modelisation. In general all optimization-methods are equal in effectivity, if we look over all posible optimization-problems in one set (No-free-Lunch-Theorem Source). Astonishingly a purely random search isn't less effective.
+Some of the given methods are better in special cases than others. Also a good understanding of the problems topic is essentially. Evolutinary algortihms take advantage of reducing the set of problems and a good modelisation.
+Simulated annealing is suitable for functions with many local optima.
 
 % \section{Genetic algorithms - An artifical duck}
 
@@ -402,6 +412,8 @@ Scalable World:
 
 Buttons, Modes
 
+Optical Design of the gui
+
 Weight-Matrix
 
 Neural Network Activation
@@ -443,16 +455,32 @@ multiplied with the maximum rotationspeed of 0.075
 %To minimize  that the agents are missing
 
 \section{OpenGL}
+Used to accelerate the simulation.
+
 
 GLUT, Windows Substitute Freeglut and GLUI. (used because Box2D Testbed used it)
 
+\subsection{Rendering system}
 
-\section{The Box2D-Physicsengine}
+\subsection{ViewPort}
 
-    AnimalFixtureDef[i].isSensor = false;
-    AnimalFixtureDef[i].friction = 1.0f;
-    AnimalBodydef[i].linearDamping = 1.0f;
-    AnimalBodydef[i].angularDamping = 2.0f;
+\subsection{MainLoop}
+
+Concept
+
+\subsection{ViewPort}
+
+\section{Box2D}
+
+Call the Step-multiple times instead of changing the timestepvalue
+
+Care that the fixture shapes center is at (0,0) (The body's center). Can be problem at rotation if shape is not centered.
+
+Coordinate system transformation for each agent.
+
+Sensor as semicircle (Source: iforce2D Radarsensor)
+
+Detection of food: atan2-function
 
 \section{Tools}
 Make, CMake
@@ -467,6 +495,272 @@ Neural Network
 
 
 % \subsection{Neural networks}
+
+
+
+\chapter{The Box2D-Physicsengine}
+Box2D is 2-dimensional physics engine, created by Erin Catto. It is licensed under the zlib-license, hence it is noncommercial and open source. The Box2D library is written platform-independent in C++. It is used mainly for gamedevelopment. There exist many portations to other programming languages, like java and C\#. \\
+(source jbox2d)
+To setup Box2D look at:
+(source http://www.iforce2d.net/b2dtut/setup-linux)
+
+Box2D is used by the project to simulate a realistic physical environment, proving the agents behaviour. \\
+
+Erin Catto wrote a testing gui, using the opengl-framework GLUT, respectively freeglut for windows. the testbed.
+
+The project-structure is based on the testbed-program.
+
+
+\section{Core concepts}
+In this section the main concepts of Box2D are explained.
+
+
+\subsection{Bodies}
+Bodies are the main objects, affected by physics-simulation.
+
+The body contains the following values: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item \textbf{2D position vector}
+			\item \textbf{Angle}
+			\item \textbf{Velocity}
+			\item \textbf{Angular velocity}
+			\item \textbf{rotational inertia}
+			\item \textbf{mass}
+			\item \textbf{1 or more fixtures}
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+A body contains one or more fixtures, containing the shape and more properties of the body.
+
+If a body is moved, also the fixtures are moved.
+
+\subsubsection*{Bodydefinitions}
+To create a body, a bodydefinition has to be created first. It's holding the bodytype, linear- and angular damping values, among other things.
+The bodydefinition can also be used to set the start- position and angle of the body.
+
+\subsubsection*{Body types}
+There are three types of bodies:
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item \textbf{Static body}
+			\item \textbf{Kinematic body}
+			\item \textbf{Dynamic body}
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+A \textbf{static body} is excluded from the simulation. Static bodies are used as world-borders for example. \\
+
+A \textbf{kinematic body} \\
+
+The \textbf{dynamic body} is the commonly used bodytype in Box2D-simulations. It is fully simulated and can be moved by the user or by forces, as its usual way.
+
+\subsubsection*{Damping, friction and gravity scale}
+Damping reduces the velocity (linear and angular) of the body.
+Friction reduces the velocity of a body at collision with other bodies.
+
+The damping parameter can be zero for no damping and infinite for full damping. In general al value between 0 and 0.1 is used.
+
+The Gravity scale is a factor that determines how much the worlds gravity influences the body. 0 determines no influence.
+
+\subsubsection*{Activation and Sleeping}
+A body can be set asleep.
+A body can be completely excluded from simulation by setting it inactive.
+Instead of just setting it asleep it will not woke up.
+
+\subsubsection*{Methods}
+
+\begin{lstlisting}[caption={Setting body definitions},label=lst:bodydef]
+ b2BodyDef myBodyDef;
+ myBodyDef.type = b2_dynamicBody;
+ myBodyDef.position.Set(0, 20); //set start position
+ myBodyDef.angle = 0; //set start angle
+\end{lstlisting}
+
+
+Transforming a body
+Set Velocity
+Set Angular velocity
+
+\subsection{Fixtures}
+Fixtures give bodies a shape and additional properties. A body can have multiple fixtures, with their positions relativly to the body's origin.
+
+The following properties are part of a fixture:
+
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item \textbf{A shape}
+			\item \textbf{Broad-phase proxies}
+			\item \textbf{Density}
+			\item \textbf{Friction}
+			\item \textbf{Restitution}
+			\item \textbf{Collision filtering flags}
+			\item \textbf{Pointer to the affiliated body}
+			\item \textbf{User data}
+			\item \textbf{Sensor flag}
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+A single \textbf{shape} is contained by the fixture. The shape can be a rect, a polygon or a circle. Shapes aren't linked to the body directly, because they may be used independly of the simulation. Therefore the fixture is interposed between body and shape. In Box2D the maximum amount of vertices is defaultly set to eight. A polygon can be created with a minimum of two position-vectors
+\\
+
+\textbf{Broad-phase proxies} are used internally by Box2D to accelerate collision detection. Therefore a dynamic tree containing the collision-pairs are used. \\
+ 
+The \textbf{densitiy} is used for computation of the body's mass.\\
+
+The \textbf{friction} of two fixtures is multiplied at collision. \\
+
+\textbf{Restitution} makes a fixture elastic. Usually this value is set between 0 und 1. \\
+
+\textbf{Collision filtering flags} can be used to just allow specified groups of fixtures two collide. \\
+
+A \textbf{pointer to the affiliated body} is stored in the fixture.\\
+
+\textbf{User data} is used as a 'hook' to identify a fixture by an id or add it some self-defined properties. User data is a 'void *'-pointer. It can contain any datatype. \\
+
+The \textbf{sensor flag} defines if a fixture doesn't interact with other fixtures, except by detecting collisions. \\
+
+
+
+A fixture is created by initializing a fixture definition and passing its address to the body:
+
+\begin{lstlisting}[caption={Creation of a fixture (source Box2D manual)},label=lst:fixture-create]
+b2FixtureDef fixtureDef;
+fixtureDef.shape = &myShape;
+fixtureDef.density = 1.0f;
+b2Fixture* myFixture = myBody->CreateFixture(&fixtureDef);
+\end{lstlisting}
+
+
+\subsubsection*{Sensors}
+A Sensor is used to detect collisions, without interact physically with other fixtures. A fixture can be defined as sensor by its 'isSensor'-flag.
+
+\subsection{World}
+A world is a simulation-environment. The world contains all bodies and joints and manages all aspects to simulate.
+
+The world represents a factory pattern, because it can create bodies.
+
+\subsubsection*{Simulation parameters}
+The physics-simulation is controlled by three parameters: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item \textbf{timeStep} (float32) (Recommended: 1.0f /60.0f corrosponds to 60Hz)
+			\item \textbf{velocityIterations} (int32) (Recommended: 8)
+			\item \textbf{positionIterations} (int32) (Recommended: 3)
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+These parameters are used by the Step-Method of the world in which the simulationstep is processed. \\
+
+The \textbf{timeStep} parameter defines the frequency on which the simulation will update the environment. A higher timestep improve the quality of the simulation, but on costs of performance. A lower timestep increases the performance, but the simulation can be inaccurate on too low values.
+The default value is 60Hz. The author of Box2D suggests not to use values lower than 30Hz. As set, the timestep should not be changed. For a faster simulation the Step-method should just called multiple times. \\
+
+
+\textbf{Velocityiterations} is the resolution of computing impulses to move bodies precisly. The default value is 8. \\
+
+\textbf{Positioniterations} defines the resolution of overlapping bodies. This is important for a correct collision detection of bodies. The default value is 3. \\
+
+
+source: www.iforce2d.net/b2dtut/worlds
+source: box2d.org/manual.pdf
+
+\subsubsection*{Methods}
+\begin{lstlisting}[caption={World creates a body},label=lst:world-body]
+b2Body* m_body = m_world->CreateBody(&myBodyDef);
+\end{lstlisting}
+
+\section{Collision detection}
+In Box2D collisions are computed between two fixtures.
+
+The collision detects
+
+source: iforce2D
+
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\textwidth,scale=1.0]{files/aabbs-crossing.png}  
+		\caption{Two AABBs colliding (source iForce2D) \cite{box2d-iforce}.}
+		\label{fig:aabbs}
+	\end{figure}
+\end{center}
+
+
+Sometimes, fast moving bodies misses collisions. Therefore it is possible to define the body as a bullet. Before creation of the body, by the body's definition instance:
+
+\begin{lstlisting}[caption={Define fixture as bullet before creation},label=lst:fixture-bullet-before]
+bodyDef.bullet = true;
+\end{lstlisting}
+
+After the creation of a body by the following method:
+
+\begin{lstlisting}[caption={Define fixture as bullet after creation},label=lst:fixture-bullet-after]
+body->SetBullet(true);
+\end{lstlisting}
+
+The following figure shows the processing of a collision:
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,scale=1.0]{files/fixtures-overlap.png}
+		\caption{Two fixtures are overlapping (source iForce2D) \cite{box2d-iforce}.}
+		\label{fig:fixture-overlap}
+	\end{figure}
+\end{center}
+
+A fast moving body would skip the second and third step.
+
+\begin{lstlisting}[caption={Begin Contact method},label=lst:collision-bcontact]
+
+\end{lstlisting}
+
+Bullet bodies
+
+Presolve and postsolve
+
+Begin Contact and End Contact
+
+\subsection{Contact listener}
+
+\subsection{filtering}
+categoryBits
+maskBits
+
+
+\section{DebugDraw}
+
+
+\section{Structure of a Box2D-Project}
+
+
+
+
+\section{Testbed}
+
+
+    AnimalFixtureDef[i].isSensor = false;
+    AnimalFixtureDef[i].friction = 1.0f;
+    AnimalBodydef[i].linearDamping = 1.0f;
+    AnimalBodydef[i].angularDamping = 2.0f;
+
 
 \chapter{Results of the simulation}
 
