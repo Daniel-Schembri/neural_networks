@@ -647,6 +647,9 @@ b2Fixture* myFixture = myBody->CreateFixture(&fixtureDef);
 \subsubsection*{Sensors}
 A Sensor is used to detect collisions, without interact physically with other fixtures. A fixture can be defined as sensor by its 'isSensor'-flag.
 
+\section{Joints}
+
+
 \subsection{World}
 A world is a simulation-environment. The world contains all bodies and joints and manages all aspects to simulate.
 
@@ -693,15 +696,17 @@ The collision detects
 source: iforce2D
 
 
+An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is used for fast performance of computing geometrical operations. (source: wikipedia)
+
 \begin{center}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.8\textwidth,scale=1.0]{files/aabbs-crossing.png}  
-		\caption{Two AABBs colliding (source iForce2D) \cite{box2d-iforce}.}
+		\caption{Two AABBs are overlapping. (source iForce2D) \cite{box2d-iforce}.}
 		\label{fig:aabbs}
 	\end{figure}
 \end{center}
-
+If two AABBs are overlapping, a contact between the two fixtures is created, but the isTouching()-method returns 'False', because the shapes aren't overlapping.
 
 Sometimes, fast moving bodies misses collisions. Therefore it is possible to define the body as a bullet. Before creation of the body, by the body's definition instance:
 
@@ -728,10 +733,6 @@ The following figure shows the processing of a collision:
 
 A fast moving body would skip the second and third step.
 
-\begin{lstlisting}[caption={Begin Contact method},label=lst:collision-bcontact]
-
-\end{lstlisting}
-
 Bullet bodies
 
 Presolve and postsolve
@@ -739,6 +740,27 @@ Presolve and postsolve
 Begin Contact and End Contact
 
 \subsection{Contact listener}
+Contacts are used to manage collisions between two fixtures.
+
+To access the contact and the two colliding fixture a contact listener should be used.
+
+
+
+
+\begin{lstlisting}[caption={Begin Contact and End-Contact method},label=lst:collision-contact]
+ //b2ContactListener
+ // Called when two fixtures begin to touch
+ virtual void BeginContact(b2Contact* contact);
+
+ // Called when two fixtures cease to touch
+ virtual void EndContact(b2Contact* contact);
+\end{lstlisting}
+
+
+\subsubsection*{Presolve}
+
+\subsubsection*{Postsolve}
+
 
 \subsection{filtering}
 categoryBits
