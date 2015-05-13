@@ -12,6 +12,9 @@
 %utf8
 \usepackage[utf8]{inputenc}
 
+%Multicolumn lists
+\usepackage{multicol}
+
 %pseudo-code
 \usepackage[boxruled,vlined]{algorithm2e}
 
@@ -358,16 +361,16 @@ Simulated annealing is suitable for functions with many local optima.
 
 % \section{Genetic algorithms - An artifical duck}
 
-\chapter{Alternative algorithms}
-In this chapter other intelligent algorithms are presented.
-These algortihms are for comparing the neural network to simpler
-methods.
+%\chapter{Alternative algorithms}
+%In this chapter other intelligent algorithms are presented.
+%These algortihms are for comparing the neural network to %simpler
+%methods.
 
-\section{The greedy algorithm}
+%\section{The greedy algorithm}
 
-\subsection{Weaknesses}
+%\subsection{Weaknesses}
 
-\section{Applications}
+%\section{Applications}
 
 
 
@@ -397,7 +400,8 @@ The body contains the following values: \\
 
 \fbox{
 	\begin{minipage}{15cm}
-		\begin{itemize} 
+		\begin{multicols}{2}
+			\begin{itemize}
 			\item \textbf{2D position vector}
 			\item \textbf{Angle}
 			\item \textbf{Velocity}
@@ -405,10 +409,13 @@ The body contains the following values: \\
 			\item \textbf{rotational inertia}
 			\item \textbf{mass}
 			\item \textbf{1 or more fixtures}
-		\end{itemize}
+			\end{itemize}
+		\end{multicols}
 	\end{minipage}
 }   \\
 \\
+
+
 
 A body contains one or more fixtures, containing the shape and more properties of the body.
 
@@ -475,6 +482,7 @@ The following properties are part of a fixture:
 
 \fbox{
 	\begin{minipage}{15cm}
+	\begin{multicols}{2}
 		\begin{itemize} 
 			\item \textbf{A shape}
 			\item \textbf{Broad-phase proxies}
@@ -486,6 +494,7 @@ The following properties are part of a fixture:
 			\item \textbf{User data}
 			\item \textbf{Sensor flag}
 		\end{itemize}
+	  \end{multicols}
 	\end{minipage}
 }   \\
 \\
@@ -521,9 +530,8 @@ b2Fixture* myFixture = myBody->CreateFixture(&fixtureDef);
 \end{lstlisting}
 
 
-\section{Joints}
-Joints are used to connect two or more bodies.
-TODO
+\subsection{Joints}
+Joints are used to connect two or more bodies. For more detailed information read the Box2D manual Chapter 8.
 
 \subsection{World}
 A world is the simulation-environment. It contains all bodies and joints and manages all aspects for simulation. It is the main entity.
@@ -684,7 +692,7 @@ www.sgi.com/tech/opengl/?/
 
 
 \section{The OpenGL Utility Toolkit (GLUT)}
-The OpenGL Utility Toolkit (GLUT) was developed by Mark Kilgard. It is used to extend OpenGL-Applications by window-management.
+The OpenGL Utility Toolkit (GLUT) was developed by Mark Kilgard. It is used to extend OpenGL-Applications by window-management. GLUT is used for small- and medium sized OpenGL-applications.
 
 source: www.codeproject.com/Articles/19760/GLUT-Window-Template
 
@@ -695,11 +703,85 @@ Freeglut is developed by Pawel W. Olszta and is an alternative to GLUT. It is al
 
 source: freeglut.sourceforge.net/
 
+\subsection{Program structure}
+
+\begin{lstlisting}[caption={Initialization of a GLUT-program},label=lst:glut-init]
+int mainWindow;
+
+int main(int argc, char* argv[])
+{
+  // Glut initialitation
+  glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+  glutInitWindowPosition(0, 0); 
+  glutInitWindowSize(1024, 768);
+  
+  mainWindow = glutCreateWindow("Title");
+  
+  //Register function callbacks
+  glutDisplayFunc(Display);
+  glutKeyboardFunc(Keyhandler);
+  glutReshapeFunc(Resizehandler);
+  //Enter glut main loop, usually no return from this function!
+  glutMainLoop(); 
+  return 0;
+}
+\end{lstlisting}
+
+In the first lines glut is initialised, a window with specified position, size and a title is created.
+The variable 'mainWindow' is of type int. It stores the adress of the window-structure.
+
+In the second part of the codesnippet the handler-functions are set. The handler functions have to be static functions, because .
+At the end the glut main loop is entered. Usually this function never returns. In Freeglut there exist functions to leave and re-enter the main loop.
+
+The following Codesnippet shows the drawing of a simple triangle:
+
+\begin{lstlisting}[caption={Drawing some graphics},label=lst:glut-draw]
+static void Display()
+{
+  //Set the color to white
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  //Clear the Scene with selected color
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  //Load the position in the scene
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  //Do some drawing into the buffer
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  glBegin(GL_TRIANGLES);
+  glVertex3f(-0.5f, 0.5f, -5.0f);
+  glVertex3f(-1.0f, 1.5f, -5.0f);
+  glVertex3f(-1.5f, 0.5f, -5.0f);
+  glEnd();
+  //Finally draw the scene on screen
+  glutSwapBuffers();
+}
+\end{lstlisting}
+
+The first line sets the draw-color to white and with no transparency. The color is formatted in RGBA. The first three parameters represents the colors red, green and blue. The last parameter is alpha, the transparency of the figure. 0.0f means no quantity of the according parameter and 1.0f as the full quantity.
+ This is used by the second line to clear the scene.
+Then the viewmode is set, the position of the camera is loaded.
+With 'glBegin' the drawing of an object is started. In this example a triangle is drawn. Therefore the three vertices of the triangle has to OpenGl. This is done by. Each object has to finished with the 'glEnd'-command.
+At the end the buffer is swapped and the drawn scene is displayed at the screen.
+
+\begin{lstlisting}[caption={Resize window on user resize},label=lst:glut-resize]
+static void Resize()
+{
+glViewport(0, 0, w, h);
+glMatrixMode(GL_PROJECTION); //Switch to setting the camera perspective
+//Set the camera perspective
+glLoadIdentity(); //Reset the camera
+Set camera angle, width-to-height ratio, near z and far z clipping coordinate
+gluPerspective(45.0f, (double)w / (double)h, 1.0f, 200.0f);
+}
+\end{lstlisting}
 
 \section{The OpenGL User Interface Library(GLUI)}
 The OpenGL User Inteface Library (GLUI) is a GLUT-based user interface library developed by Paul Rademacher. It is written in C++ and usable for multiple platforms.
 
 GLUI is used to implement GUI controls, like buttons, labels, listboxes, etc.
+
+The following figure shows some components of GLUI:
 
 \begin{center}
 	\begin{figure}[H]
