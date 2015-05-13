@@ -432,6 +432,19 @@ int evolutionary::get_bestFitness_overall()
     return best_fitness;
 }
 
+float evolutionary::get_best_average_Fitness_overall()
+{
+    float best_average_fitness = 0.0f;
+
+    for(unsigned int i=0;i<average_fitnesses.size();i++)
+    {    
+        if (average_fitnesses[i] > best_average_fitness)
+        {
+            best_average_fitness = average_fitnesses[i];
+        }
+    }
+    return best_average_fitness;
+}
 
 void evolutionary::save_bestAgent()
 {

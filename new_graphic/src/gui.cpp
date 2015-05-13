@@ -165,11 +165,27 @@ void gui::Timer2(int)
 			 oldCenter = settings.viewCenter_plotter;
 
 			 //Plot BestFitness-Graph
-			 for (unsigned int i = 1; i < evolution_control->best_fitnesses.size(); i++)
-				 plot_debugDraw.DrawLine(b2Vec2(((i - 1) / 1.0f) - 30.0f, evolution_control->best_fitnesses[i - 1]), b2Vec2((i / 1.0f) - 30.0f, evolution_control->best_fitnesses[i]), b2Color(1.0f, 0.0f, 0.0f));
+             float best_xmax = evolution_control->best_fitnesses.size();
+             float best_ymax = evolution_control->get_bestFitness_overall();
+             if (0 == best_xmax)
+                 best_xmax = 1;
+             if (0 == best_ymax)
+                 best_ymax = 1;
+
+			 for (unsigned int i = 1; i < best_xmax; ++i)
+             {
+                b2Vec2 V1 = b2Vec2(float( (i-1) / best_xmax)*40.0f - 30.0f, float(evolution_control->best_fitnesses[i-1] / best_ymax)*40.0f - 30.0f);
+                b2Vec2 V2 = b2Vec2(float( (i) / best_xmax)*40.0f - 30.0f, float(evolution_control->best_fitnesses[i] / best_ymax)*40.0f - 30.0f);
+			    plot_debugDraw.DrawLine(V1, V2, b2Color(1.0f, 0.0f, 0.0f));
+             }
+             //use xmax and ymax also for average fitness to get the same scale
 			 //Plot AverageFitness-Graph
-			 for (unsigned int i = 1; i < evolution_control->average_fitnesses.size(); i++)
-				 plot_debugDraw.DrawLine(b2Vec2(((i - 1) / 1.0f) - 30.0f, evolution_control->average_fitnesses[i - 1]), b2Vec2((i / 1.0f) - 30.0f, evolution_control->average_fitnesses[i]), b2Color(0.0f, 0.0f, 0.0f));
+			 for (unsigned int i = 1; i < evolution_control->average_fitnesses.size(); ++i)
+             {
+                b2Vec2 V1 = b2Vec2(float( (i-1) / best_xmax)*40.0f - 30.0f, float(evolution_control->average_fitnesses[i-1] / best_ymax)*40.0f - 30.0f);
+                b2Vec2 V2 = b2Vec2(float( (i) / best_xmax)*40.0f - 30.0f, float(evolution_control->average_fitnesses[i] / best_ymax)*40.0f - 30.0f);
+			    plot_debugDraw.DrawLine(V1, V2, b2Color(0.0f, 0.0f, 0.0f));
+             }
 
 			 //Plot Statistics
 			 plot_debugDraw.DrawString(5, 20, "Mode: %d", sim_parameter.mode);

@@ -91,7 +91,7 @@ class evolutionary
         void save_bestAgent();
 
         int get_bestFitness_overall();
-
+        float get_best_average_Fitness_overall();
         void set_trainingdataV(std::vector< std::vector<double> > ptrainingdata);
         void set_trainingdataA(std::vector< std::vector<double> > ptrainingdata);
 
