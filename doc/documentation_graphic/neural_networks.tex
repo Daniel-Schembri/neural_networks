@@ -222,7 +222,7 @@ intelligents.
 \subsection{The concept of agents}
 An agent is a programm that interacts self-sufficent depending on the actual state. It has sensors, a processing logic and actuators to interact with its environment. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the 
 
-
+TODO: Types of environment: Stochastic, deterministic, discrete, etc.
 
 \begin{center}
 	\begin{figure}[H]
@@ -657,17 +657,49 @@ The presolve callback is executed after detection of a collision, but before com
 \subsubsection*{Postsolve}
 The postsolve callback is executed after computation and applying the contactimpulses of the collision. It contains a pointer to the contact and also the computed impulsedata.
 
-\subsection{filtering}
-categoryBits
-maskBits
+\subsection{Collision filtering}
+The default behaviour is that all fixtures can collide with each other. If you want to specify which groups of fixtures can collide and which pass through each other, you can use category- and mask bits to manage 16 groups of fixtures. If you need more precise behaviour you can use group indizes or define own rules by overriding the 'ShouldCollide'-method.
+
+\subsubsection*{Category- and maskbits}
+
+These bits are 16-Bit wide and therefore 16 groups are supported.
+Category bits declare on which groups a fixture belongs. A fixture has to belong to minimal one and maximal 16 groups.
+The mask bit defines with what group of fixtures this fixture can collide. The default values are 0x0001 for category bits and 0xFFFF for mask bits, meaning every fixture can collide with each other.
+
+\subsubsection*{Group indizes}
+Group indizes can be used to get a more specified behaviour as only with category- and maskbits.
+The standard value of the group index for a fixture is zero, means group index isn't used, instead the category- and maskbits are used. The value otherwise can be positive or negative.
+
+For a value nonzero the following rules are applied at collision: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item if both groupindizes are different, use the category/mask rules as described above
+			\item if both groupindizes are equal and positive, collide
+			\item if both groupindizes are equal and negative, don't collide
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+\subsubsection*{Contact filter}
+For an own specification of collision behaviour the following virtual method can be overwritten: \\
+\begin{lstlisting}[caption={The contact filter method},label=lst:box2d-contactfiler]
+bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB);
+\end{lstlisting}
 
 
 \section{DebugDraw}
+The debugdraw class is used as a debugging feature to display the physics simulation of Box2D. It uses OpenGL.
+As the debugdraw offers basic shapes it is used by the simulator.
 
+To use the debug-draw its important to call 'DrawDebugData()'. This draws every shape in the list of the world.
 
 \section{Structure of a Box2D-Project}
 
 
+Important: In BeginContact and EndContact no change of active-flag and some other values of a body/fixture
 
 
 \section{Testbed}
@@ -690,6 +722,12 @@ The Box2D-Testbed uses GLUT respectively Freeglut and GLUI. Thererefore theses l
 source: www.opengl.org
 www.sgi.com/tech/opengl/?/
 
+\section{Basics}
+
+\subsection{Cameras}
+
+Model Matrix
+Projection Matrix
 
 \section{The OpenGL Utility Toolkit (GLUT)}
 The OpenGL Utility Toolkit (GLUT) was developed by Mark Kilgard. It is used to extend OpenGL-Applications by window-management. GLUT is used for small- and medium sized OpenGL-applications.
@@ -699,14 +737,18 @@ source: www.codeproject.com/Articles/19760/GLUT-Window-Template
 www.opengl.org/resources/libraries/glut/
 
 \subsection{Freeglut}
-Freeglut is developed by Pawel W. Olszta and is an alternative to GLUT. It is also a windows substitute.
+Freeglut is developed by Pawel W. Olszta and is an alternative to GLUT. It is also a Windows substitute. Freeglut is still maintained. Freeglut is used, because the originally GLUT-library is deprecated and not maintained anymore.
 
 source: freeglut.sourceforge.net/
 
 \subsection{Program structure}
+In this section the basic structure of a freeglut-program is explained.
+The following code shows the initialization and creation of a window:
 
-\begin{lstlisting}[caption={Initialization of a GLUT-program},label=lst:glut-init]
-int mainWindow;
+\begin{lstlisting}[caption={Initialization a GLUT-program},label=lst:glut-init]
+#include "glut.h"
+
+int mainWindow;  //Window handler
 
 int main(int argc, char* argv[])
 {
@@ -722,7 +764,10 @@ int main(int argc, char* argv[])
   glutDisplayFunc(Display);
   glutKeyboardFunc(Keyhandler);
   glutReshapeFunc(Resizehandler);
-  //Enter glut main loop, usually no return from this function!
+  
+  //Here optionally a GLUI-window can be included, see Chapter 4.3
+  
+  //Enter glut main loop, usually no return from this function
   glutMainLoop(); 
   return 0;
 }
@@ -743,11 +788,12 @@ static void Display()
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   //Clear the Scene with selected color
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  //Load the position in the scene
+  //Switch to Modelview Matrix
   glMatrixMode(GL_MODELVIEW);
+  //Replace the current matrix by the identity matrix
   glLoadIdentity();
-  //Do some drawing into the buffer
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  //Draw a blue triangle into the buffer
+  glColor3f(0.0f, 0.0f, 1.0f);
   glBegin(GL_TRIANGLES);
   glVertex3f(-0.5f, 0.5f, -5.0f);
   glVertex3f(-1.0f, 1.5f, -5.0f);
@@ -764,17 +810,24 @@ Then the viewmode is set, the position of the camera is loaded.
 With 'glBegin' the drawing of an object is started. In this example a triangle is drawn. Therefore the three vertices of the triangle has to OpenGl. This is done by. Each object has to finished with the 'glEnd'-command.
 At the end the buffer is swapped and the drawn scene is displayed at the screen.
 
-\begin{lstlisting}[caption={Resize window on user resize},label=lst:glut-resize]
-static void Resize()
+\begin{lstlisting}[caption={Resize camera perspective on window resize},label=lst:glut-resize]
+static void Resize(int w, int h)
 {
+//Set the viewport of the camera
 glViewport(0, 0, w, h);
-glMatrixMode(GL_PROJECTION); //Switch to setting the camera perspective
-//Set the camera perspective
-glLoadIdentity(); //Reset the camera
-Set camera angle, width-to-height ratio, near z and far z clipping coordinate
+//Switch to the camera perspective matrix
+glMatrixMode(GL_PROJECTION); 
+//Reset the camera matrix
+glLoadIdentity();
+//Set camera angle, width-to-height ratio, near z and far z clipping coordinate
 gluPerspective(45.0f, (double)w / (double)h, 1.0f, 200.0f);
 }
 \end{lstlisting}
+
+The first line sets the viewports position and size. The following operations should than applied on the projection-matrix. Therefore the Matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered then.
+TODO: Figure of the camera perspective
+
+TODO: More Callbacks of GLUT: Idle, etc.
 
 \section{The OpenGL User Interface Library(GLUI)}
 The OpenGL User Inteface Library (GLUI) is a GLUT-based user interface library developed by Paul Rademacher. It is written in C++ and usable for multiple platforms.
@@ -795,6 +848,45 @@ The following figure shows some components of GLUI:
 source: www.codeproject.com/Articles/20286/GLUI-Window-Template
 
 glui.sourceforge.net/
+
+
+\subsection{GLUI-Program}
+
+Here is described how a GLUI-window is set up.
+The following code is included after the creation of a GLUT-window and before entering the glut main loop (see listing 4.1):
+
+
+\begin{lstlisting}[caption={Creating a GLUI-window},label=lst:glui-create]
+#include "glui.h"
+//GLUI window instance
+GLUI *glui;
+
+int main(int argc, char* argv[])
+{
+ ...
+ //after creation of glut-window
+ glui = GLUI_Master.create_glui("GLUI", 0);
+ //Add some components
+ glui->add_statictext( "Simple GLUI Example" );
+ glui->add_separator();
+ glui->add_checkbox( "Wireframe", &wireframe, 1, control_cb );
+ GLUI_Spinner *segment_spinner =
+ glui->add_spinner( "Segments:",GLUI_SPINNER_INT, &segments );
+ segment_spinner->set_int_limits( 3, 60, GLUI_LIMIT_WRAP );
+ GLUI_EditText *edittext =
+ glui->add_edittext( "Text:", GLUI_EDITTEXT_TEXT, text );
+ //Set the main gfx window
+ glui->set_main_gfx_window(main_window);
+ //Register the Idle callback with GLUI (instead of with GLUT)
+ GLUI_Master.set_glutIdleFunc(GlutIdle);
+}
+\end{lstlisting}
+
+First the glui-instance is initialized. In the following lines gui-components are added. Some components need a variable to point on. This is necessary to store input values from the user. The components can be dimensionized, e.g. the spinners minimum and maximum value is set.
+At the end the corrosponding glut window has to be registered in the glui-window.
+Callbacks are now defined. This has to be static functions, like in GLUT.
+
+'GLUI\_Master' is a global GLUI-object used to register callbacks, as glui-windows use for example the idle-callback extensively to control components status.
 
 \chapter{Development of a simulator for virtual agents}
 
