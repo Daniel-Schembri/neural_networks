@@ -9,12 +9,14 @@
 
 %British English
 \usepackage[UKenglish]{babel}
+\usepackage[tbtags]{amsmath}
 %utf8
 \usepackage[utf8]{inputenc}
 
 %pseudo-code
 \usepackage[boxruled,vlined]{algorithm2e}
 
+\usepackage{scrhack}
 %for source code listings
 \usepackage{listings}
 
@@ -24,6 +26,9 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows,positioning,fit}
 
+
+%male and female symbol
+\usepackage{wasysym}
 %plots
 \usepackage{pgfplots}
 
@@ -41,7 +46,7 @@
 \usepackage{subfigure}
 
 %prevent figure from floating pictures
-\usepackage{float}
+%\usepackage{float}
 
 %footer & header
 \usepackage{fancyhdr}
@@ -62,7 +67,6 @@
 \usepackage{gensymb}
 
 %maths
-\usepackage[tbtags]{amsmath}
 \usepackage{amssymb} 
 \usepackage{dsfont}
 
@@ -88,7 +92,7 @@
 	
 \title
 {
-     A comparison of neural network types and learning techniques with an application in STOCA\cite{DANIEL}.
+     A comparison of neural network types and learning techniques with an application in artificial life.
 }
 
 \author
@@ -103,8 +107,8 @@
 
 \publishers
 {
-    Examiner: Prof Dr Richard Alznauer\\
-    Supervisor: Dr Christoph Ußfeller
+    Examiner: Prof. Dr. Richard Alznauer\\
+    Supervisor: Dr. Christoph Ußfeller
 }
 
 
@@ -206,9 +210,10 @@
     \acro{$H$}{The set of hidden layers of a neural network}
     \acro{$L$}{The set of layers of a neural network}
     \acro{$ML$}{Machine learning}
+    \acro{$MLN$}{Multi layer network}
     \acro{$n_j$}{Neuron (also unit) $j$}
     \acro{$W$}{The connection matrix}
-    \acro{$w_{ij}$}{Weight on the connection link between neuros $n_i$ and $n_j$}
+    \acro{$w_{ij}$}{Weight on the connection link between neurons $n_i$ and $n_j$}
 %    \acro{$\Delta w_{ij}$}{Weight change  on the connection link between unit $i$ and $j$}
 %    \acro{$\overrightarrow{x}$}{The input vector of a neural network}
 %    \acro{$\overrightarrow{y}$}{The output vector of a neural network}
@@ -269,10 +274,10 @@ Given the definition of $\varphi$ in equation \eqref{eq:step}, activity levels a
 a_j = \varphi(\sum_{i}^{} a_{i}), \quad a_i \in \{0, 1\}
 \end{equation}
 
-Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed in \cite{MATHNEURON}. This model has later been named \textbf{McCulloch-Pitts neuron}. 
+Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed in \cite{NEURONMATH}. This model has later been named \textbf{McCulloch-Pitts neuron}. 
 
 
-\begin{figure}[H]
+\begin{figure}
 \centering
 
 \begin{tikzpicture}
@@ -321,16 +326,26 @@ This proposal is of particular importance for the theory of ANN and inspired sig
 \chapter{Artificial neural networks}
 \section{Overview}
 
-Scientists have proposed a multitude of different network structures since the advent of reasearch in ANN through their first formalisation. A lot of which have been designed with various motivations, stemming from the differnent perception of neural networks across disciblines. Categorisation can be achieved by distinguishing several parameters, e.g. the number of layers, acceptance of input types or usage of learning techniques. Figure \ref{fig:class} illustrates a possible categorisation\cite{NNGER}. The direction of signal flow serves as a first level of distinction, as it substantially characterises the networks structure, complexity and so on. Both types of signal flow mandate the propagation of network input further into the network. Feedforward network prohibit the usage of non-straightforward signal flow, i.e. connections may only emerge between subsequent neurons. Any connections to predecessors are forbidden. This constraint has allowed for a quick development of learning techniques, empowering ANN to learn from data. 
+Scientists have proposed a multitude of different network structures since the advent of research in ANN through their first formalisation. 
+A lot of which have been designed with various motivations, stemming from the different perception of neural networks across disciplines.
+Categorisation can be achieved by distinguishing several parameters, e.g. the number of layers, acceptance of input types or usage of learning techniques.
+Figure \ref{fig:class} illustrates a possible categorisation\cite{NNGER}.
+The direction of signal flow serves as a first level of distinction, as it substantially characterises the networks structure, complexity and so on.
+Both types of signal flow mandate the propagation of network input further into the network.
+Feed-forward network prohibit the usage of non-straightforward signal flow, i.e. connections may only emerge between subsequent neurons.
+Any connections to predecessors are forbidden. This constraint has allowed for a quick development of learning techniques, empowering ANN to learn from data. 
 
-As distinct from feed-forward networs, recurrent (or feedback) networks allow bidirectional signal flow. As links from one neuron may be formed with any other neuron in the network, recurrent network are often categorised by increased complexity. As the current state of a neuron may be continously changing, recurrent networks demand advanced learning algorithms. Due to their dynamic nature, they allow for the modelling of advanced techniques, such as long and short term memory.
+As distinct from feed-forward networks, recurrent (or feedback) networks allow bidirectional signal flow. 
+As links from one neuron may be formed with any other neuron in the network, recurrent network are often categorised by increased complexity.
+Since the current state of a neuron may be continuously changing, recurrent networks demand advanced learning algorithms. \textbf{we?} We show an algorithm for training of recurrent network in section \ref{sec:btt}.
+Due to their dynamic nature, they allow for the modelling of advanced techniques, such as long and short term memory.
 
-\begin{figure}[H]
+\begin{figure}
 \centering
 
 \fbox{
 \begin{tikzpicture}
-\node [align=center] (L1) at (3,10) {feed forward}; 
+\node [align=center] (L1) at (3,10) {feed-forward}; 
 
 \node [align=center] (R1) at (10,10) {recurrent}; 
 
@@ -397,7 +412,7 @@ The amount of neurons within a layer is equal to the elements of the respective 
 
 The first network layer $L_1$, is referred to as the the input layer. It receives the input vector $\overrightarrow{x} \in \mathds{R}^{|L_1|}$ and passes it onto the next layer. Likewise, $L_n$ is the output layer of the network, whose neurons are called the output units. $\overrightarrow{y} \in \mathds{R}^{|L_n|}$ is the output vector of an ANN. A computer application will later utilise the neural network as a black box, being only interested in the transformation from $\overrightarrow{x}$ to $\overrightarrow{y}$. Figure \ref{fig:layer} shows this. 
 
-\begin{figure}[H]
+\begin{figure}
 \centering
 
 \begin{tikzpicture}
@@ -468,6 +483,7 @@ H \subseteq L; H = \{L_i|1<i<n\}
 \end{equation}
 
 \subsection{Units}
+\label{subsec:weights}
 
 A first improvement to McCulloch and Pitt's model was the concept of weights on the connecting links. Inspired by the function of the synaptic terminals, a weight $w_{ij}$ between two neurons $n_i$ and $n_j$, models the magnitude of influence. Weights may be both positive and negative, exhibatory or inhibatory. A magnitude of zero stands for a cut-off signal flow. The entirety of connection weights wihin a network is often sored in a matrix, which allows for performant manipulation. The manipulation of connections weight may be used to alter the network's behaviour. $W$ is called the connection matrix, which fully represnts the structure of a feed-forward network with $i$ layers:
 \begin{equation}
@@ -480,28 +496,28 @@ w_{1j} & \cdots & w_{ij} \\
 \end{equation}
 
 In addition, the concept of bias neurons has proven itself useful. Bias units are non-receptive, both in feed-forward and recurrent networks. Hence their activity level is steady, usually $+1$. Links between bias and normal neurons are to be treated normally, the influence of a bias can therefore be altered. They are often used to keep units with little weighted input active, by shifting their activation function $\varphi$ they don't receive significant input. In contrast, a negative link may be used to keep a neuron in an inactive state.
-\begin{figure}[H]
+\begin{figure}
 \centering
 
 \begin{tikzpicture}
-\node [draw=black, align=center, circle] (i) at (0,0) {$n_0$}; 
+    \node [draw=black, align=center, circle] (i) at (0,0) {$n_0$}; 
+    \node [draw=black, align=center, circle] (o) at (4,0) {$n_1$}; 
 
-\node [draw=black, align=center, circle] (o) at (4,0) {$n_1$}; 
+    \draw[arrow]	(i) -- (o);
 
-\draw[arrow]	(i) -- (o);
-
-\node[] (dw) at (2,0.3){$w_{ij}$};
-\node[] (di) at (0,0.6){Input: $x$};
-\node[] (do) at (4,0.6){Output};
-\node[] (df) at (2.1,-0.7){$\varphi = sig(w_{01}\cdot x)$};
+    \node[] (dw) at (2,0.3){$w_{ij}$};
+    \node[] (di) at (0,0.6){Input: $x$};
+    \node[] (do) at (4,0.6){Output};
+    \node[] (df) at (2.1,-0.7){$\varphi = sig(w_{01}\cdot x)$};
 \end{tikzpicture}
+
 \caption{A single input-output network}
 \label{fig:1on1}
 \end{figure}
 
 Consider the network shown in figure \ref{fig:1on1}. The activation function of the output neuron is chosen to be the sigmoid function. Figure \ref{fig:sigmoid-scale} shows the output for several values of $w$. It can seen that $w$ changes the steepness of the sigmoid function. 
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.65\textwidth,scale=1]{files/sigmoid-scale.png}  
     \caption{The output of unit $n_1$ in figure \ref{fig:1on1}}
@@ -511,28 +527,28 @@ Consider the network shown in figure \ref{fig:1on1}. The activation function of 
 
 Figure \ref{fig:2on1} shows the same network with an additional bias neuron. This allows us to shift the activation function according to the weight of the connection link $w_{12}$ as shown in figure \ref{fig:sigmoid-shift}.
 
-\begin{figure}[H]
+\begin{figure}
 \centering
-\begin{tikzpicture}
-\node [draw=black, align=center, circle] (i2) at (0,2) {$n_0$}; 
-\node [draw=black, align=center, circle] (i1) at (0,0) {$n_1$}; 
-\node [draw=black, align=center, circle] (o) at (4,1)  {$n_2$}; 
+    \begin{tikzpicture}
+    \node [draw=black, align=center, circle] (i2) at (0,2) {$n_0$}; 
+    \node [draw=black, align=center, circle] (i1) at (0,0) {$n_1$}; 
+    \node [draw=black, align=center, circle] (o) at (4,1)  {$n_2$}; 
 
-\draw[arrow]	(i2) -- (o);
-\draw[arrow]	(i1) -- (o);
+    \draw[arrow]	(i2) -- (o);
+    \draw[arrow]	(i1) -- (o);
 
-\node[] (dw) at (2,1.8){$w_{02}$};
-\node[] (dw) at (2,0.8){$w_{12}$};
-\node[] (di) at (0,0.6){Bias: $1.0$};
-\node[] (di) at (0,2.6){Input: $x$};
-\node[] (do) at (4,1.6){Output};
-\node[] (df) at (2.1,-0.7){$\varphi = sig(w_{02}\cdot x + w_{12}\cdot 1.0)$};
-\end{tikzpicture}
+    \node[] (dw) at (2,1.8){$w_{02}$};
+    \node[] (dw) at (2,0.8){$w_{12}$};
+    \node[] (di) at (0,0.6){Bias: $1.0$};
+    \node[] (di) at (0,2.6){Input: $x$};
+    \node[] (do) at (4,1.6){Output};
+    \node[] (df) at (2.1,-0.7){$\varphi = sig(w_{02}\cdot x + w_{12}\cdot 1.0)$};
+    \end{tikzpicture}
 \caption{A single input-output network}
 \label{fig:2on1}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.65\textwidth,scale=1]{files/sigmoid-shift.png}  
     \caption{The output of unit $n_1$ in figure \ref{fig:2on1}}
@@ -554,11 +570,11 @@ Both the logistic function as well as the hyperbolic tangent function $\tanh()$ 
 \begin{itemize}
 \item In contrast with the linear function (without a threshold), the activity level of the function is limited in both the positive and the negative. This means that activity in the network can not spill over unintentionally, which can be caused by recurrent connections.
 \item Differentiability
-As distinct from the binary step function, it is differntiable at all parts, which as an example, is a requirement of the gradient descent, used by the backpropagation algorithm (about to be introduced in section \ref{sec:learning}
+As distinct from the binary step function, it is differntiable at all parts, which as an example, is a requirement of the gradient descent, used by the Backpropagation algorithm (about to be introduced in section \ref{sec:learning}
 \end{itemize}
 
 
-\begin{figure}[H]
+\begin{figure}
 \centering
 \subfigure[]
 {
@@ -637,15 +653,20 @@ Until today, neural networks have been successfully applied to several problems 
     \item Function approximation including time series prediction
 \end{itemize}
 
-The following sections will give a brief notion of some 'classical' applications where ANNs have found better solutions in quicker time in comparison with other techniques.
+The following sections will give a brief notion of some 'classical' applications where ANNs have found better solutions in shorter time in comparison with other techniques.
 \subsection{Recognition of hand-writing}
-The automated interpretation of hand-written is of great interest for a number of purposes. The destination address of letters and parcels are nowadays processed by computers which use real-time images to recognise letters. The typesetting system \LaTeX allows its users to write complex formulas using certain commands that are later being replaced by symbols such as the existential quantifier $\exists$. One would now wish for a system that can take in a hand written representation of the symbol and output the command by which the symbol can later be written in a document. In \cite{MARTIN} artificial neural networks are used to classify such symbols. The user is then presented a choice of matching symbols and their commands associated with a probability measure of their correctness. The website is available under \url{write-math.com}.
+The automated interpretation of hand-written is of great interest for a number of purposes. The destination address of letters and parcels are nowadays processed by computers which use real-time image processing system to recognize handwriting on letters. The typesetting system \LaTeX  allows its users to phrase complex formulas using certain commands which are later being replaced by symbols such as the existential quantifier $\exists$. 
+One would now wish for a system that can take in a hand written representation of the symbol and output the command by which the symbol can later be written in a document. In \cite{MARTIN} artificial neural networks are used to classify such symbols. After drawing the sought symbol, the user is presented a choice of matching symbols along with an associated probability measure of their correctness. The website is available under \url{write-math.com}.
 \\
 
-The challenge for such systems is the great deviation between different styles of hand writing. This makes it virtually infeasible for other conventional methods to reliably classify hand-writing. The network model RCE - Restricted Coulomb Energy Network has been devised by Nobel price winner Leon Cooper. It overcomes the limitations of the Perceptron as it is capable of detecting geometrical figures (therefore also handwritten text) of any size. Cooper's company Nestor, has successfully used this model to develop a system which can detect characters of the Japanese alphabet Kanji. The Kanji alphabet stems from the Chinese language, contains approximately 3000 different symbols and is extremly complex. Examples are \begin{CJK}{UTF8}{min}輸\end{CJK} - transport or \begin{CJK}{UTF8}{min}熊\end{CJK} - bear. It is nowadays extensively used on mobile devises that allow to write text messages by drawing each individual character instead of choosing symbols from a massive dictionary. Complex sentences formulated by simultaneously using three different alphabets, such as \begin{CJK}{UTF8}{min}世界はコンピュータ技術の登場以来、劇的に変化した。\end{CJK} - \textit{The world has changed dramatically since the advent of computer technology} can now be written in a fairly short amount of time.
+The challenge for such systems is the great deviation of styles in hand-written text. This makes it virtually infeasible for conventional methods to reliably classify hand-writing. 
+The network model RCE(Restricted Coulomb Energy Network) has been devised by Nobel price winner Leon Cooper. It overcomes the limitations of the Perceptron as it is capable of detecting geometrical figures (therefore also handwritten text) of any size. 
+Cooper's company Nestor, has successfully used this model to develop a system which can detect characters of the Japanese alphabet Kanji. The Kanji alphabet stems from the Chinese language, contains approximately 3000 different symbols and is extremely complex. 
+Examples are \begin{CJK}{UTF8}{min}輸\end{CJK} - transport or \begin{CJK}{UTF8}{min}熊\end{CJK} - bear. It is nowadays extensively used on mobile devises that allow to write text messages by drawing each individual character instead of choosing symbols from a massive dictionary. 
+Complex sentences formulated by simultaneously using three different alphabets, such as \begin{CJK}{UTF8}{min}世界はコンピュータ技術の登場以来、劇的に変化した。\end{CJK} - \textit{The world has changed dramatically since the advent of computer technology} can now be written in a fairly short amount of time.
 
 \subsection{The Travelling-Salesman-Problem}
-Given a set of cities and the distances between each pair of cities, what is the shortest path that, after visiting each city exactly once, leads to the origin of the route? This task, called the Travelling-Salesman-Problem (short: TSP) is an optimisation task which is often encountered in practice (Energy and water supply, microchip design). The TSP can be modelled as a graph: All $n$ cities are represented as vertices, the connections between the cities as edges. Since all cities are connected with each other, the graph is complete. A complete graph is called $K_n$. The cost (travel time) between each pair of vertices $i$ and $j$ is associated with a weight $w(i,j) \geq 0$. A tour that visits each city once and return back to the origin is a Hamilton-circle. As the graph is complete, there are several Hamilton-circles (each of which is a possible solution of the problem). Each permutation of the nodes is a Hamilton-circle, thus there are $n!$ circles. Sought is the Hamilton-circle with the least overall cost, i.e. a permutation $\pi(1),\dots,\pi(n)$ with minimal weight
+Given a set of cities and the distances between each pair of cities, what is the shortest path that, after visiting each city exactly once, leads to the origin of the route? This task, called the Travelling-Salesman-Problem (often abbreviated as TSP) is an optimisation task which is often encountered in practice (Energy and water supply, microchip design). The TSP can be modelled as a graph: All $n$ cities are represented as vertices, the connections between the cities as edges. Since all cities are connected with each other, the graph is complete. A complete graph is called $K_n$. The cost (travel time) between each pair of vertices $i$ and $j$ is associated with a weight $w(i,j) \geq 0$. A tour that visits each city once and return back to the origin is a Hamilton-circle. As the graph is complete, there are several Hamilton-circles (each of which is a possible solution of the problem). Each permutation of the nodes is a Hamilton-circle, thus there are $n!$ circles. Sought is the Hamilton-circle with the least overall cost, i.e. a permutation $\pi(1),\dots,\pi(n)$ with minimal weight
 \begin{equation}
     \sum\limits_{i=1}^n w(\pi(i),\pi(i+1)), 
 \end{equation}
@@ -654,12 +675,7 @@ where $\pi(n+1)$ is set to $\pi(1)$.\cite{MATHINF}\\
 
 It is of high importance to theoretical computer science, as it is known to be $NP$-complete. In the field of complexity analysis, the class of decision problems for which there is a deterministic Turing-Machine able to solve it in time $\mathcal{O}(n^k)$ is called $P$ (polynomial). An example is the sorting problem. Class $P$ contains problems with running times like $\mathcal{O}(n)$ and $\mathcal{O}(log(n))$ but also those with time $\mathcal{O}(n^{5000})$. In addition to the deterministic Turing machine, complexity analysis also defines the non-deterministic Turing machine. At each time step, there are several possible ways of continuing computation, setting it in contrast with todays computers. The class of Problems $NP$ is solvable by a non-deterministic Turing Machine in polynomial time. $NP$ contains a number of relevant problems, such as the graph isomorphism (Can two graphs be drawn identically?). Problems in $P$ can also be solved by this theoretical model, so $P \subseteq NP$. In other words, a problem is in the class of NP if there is an algorithm (executed by a Turing machine) that can guess a solution and verify whether the guess was correct in polynomial time. In case of omniscient guessing or given a number of processors equal to the number of solutions, trying out all possibilities at the same time one would always get the correct solution. Thus, $NP$ problems would become $P$ problems. 
 
-Nevertheless, computationally feasible approximation techniques have been found which allow to find a good, although not always the best, solution. Hopfield and Tank (1985) proposed an approach using ANNs which allows to find a good, often even the best solution for the TSP. It suggests a single-layer network with $n$ neurons, where $n$ equals the number of cities in the graph, called Hopfield-network. This can be thought of as a square with an edge length of $n$The output of each individual neuron equals the time step at which the city is visited. 
-
-
-
-
-
+Nevertheless, computationally feasible approximation techniques have been found which allow to find a good, although not always the best, solution. Hopfield and Tank (1985) proposed an approach using ANNs which allows to find a good, often even the best solution for the TSP. It suggests a single-layer network with $n$ neurons, where $n$ equals the number of cities in the graph, called Hopfield-network. This can be thought of as a square with an edge length of $n$. The output of each individual neuron equals the time step at which the city is visited. Furthermore, genetic algorithms have also been applied to find an approximate solution for the problem %\cite{GENTSP}.
 
 
 \chapter{Learning}\label{sec:learning}
@@ -709,7 +725,7 @@ The deltas learning rule equation \eqref{eq:delta2} covers all three possibiliti
 
 The simplicity of this learning rules also comes at great cost: The comparison only allows us to adjust connections which connect to the rightmost layer in the network. This fact restricts the application of this method from networks with a hidden layer. 
 
-\section{Backpropargation}
+\section{Backpropagation}
 
 \subsection{Gradient descent}
 
@@ -728,11 +744,11 @@ The gradient of a differentiable function $f: D \subseteq \mathds{R}^n$ $\righta
 
 Starting with guess $x_0$ for a local minimum, and iteratively calculating an $x_{i+1}$ according to equation \eqref{eq:graddes}, we will obtain $x_0, ..., x_i$ so that $F(x_0) \geq F(x_1) \geq ... \geq F(x_{n-1}) \geq F(x_n)$. The parameters $\theta$ and $n$ are  used as an ending criteria for the algorithm. Algorithm \ref{alg:GD} shows the complete algorithm.
 
-\begin{algorithm}[H]
+\begin{algorithm}
 \LinesNumbered
 \DontPrintSemicolon
 \BlankLine
-\Ein{A differentiable function $F(x)$, stepsize $\gamma$, tolerance $\theta$, point $x_0$}
+\Ein{A differentiable function $F(x)$, step size $\gamma$, tolerance $\theta$, point $x_0$}
 \Aus{A local minimum at $x_i$}
 \BlankLine
 \Begin
@@ -748,40 +764,41 @@ Starting with guess $x_0$ for a local minimum, and iteratively calculating an $x
 
 Gradient descent may be imagined as the effort of a wanderer to reach the bottom of valley as quick as possible, therefore always seeking to climb down as the point of steepest descent. This is illustrated in Figure \ref{fig:grad}
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.3\textwidth,scale=1]{files/graddes.png}  
     \caption{Illustration of gradient descent.\cite{GRADFIG}}
     \label{fig:grad}
 \end{figure}
 
-\subsection{The backpropagation algorithm}
+\subsection{The Backpropagation algorithm}
 
-The backpropargation algorithm is yet another learning rule for supervised networks, but in comparison to the hebbian and delta rules, it can also be applied for networks with $n$ numbers of hidden layers. There are certain problems that cannot be solved by networks without at least one hidden layer, the XOR-Gate being an famous example for such problems. It was first devised by Paul Werbos in 1975 \cite{BACK} and consists of three stages:
+The Backpropagation algorithm is yet another learning rule for supervised networks, but in comparison to the Hebbian and delta rules, it can also be applied for networks with $n$ numbers of hidden layers. There are certain problems that cannot be solved by networks without at least one hidden layer, the XOR-Gate being a famous example. 
+It was developed by several scientists simultaneously \cite{BACK1}\cite{BACK2}\cite{BACK3} and consists of three stages:
 \begin{itemize}
 \item[1.] \textbf{The forward-pass}:
-A pattern is presented to the input layer and further propargated into the network.
+A pattern is presented to the input layer and further propagated into the network.
 \item[2.] \textbf{Error-determination}:\\
-The observed output is compared to targeted result and an error $E$ is determined by a derivale error-function $\varphi$ shown in equation \eqref{eq:backerror}. The factor of $\frac{1}{2}$ is used to simplify the derivation by cancelling the exponent.
+The observed output is compared to targeted result and an error $E$ is determined by a derivable error-function $\varphi$ shown in equation \eqref{eq:backerror}. The factor of $\frac{1}{2}$ is used to simplify the derivation by cancelling the exponent.
 
 \begin{equation}
 \varphi = \frac{1}{2} (t-o)^2
 \label{eq:backerror}
 \end{equation}
 \item[3.] \textbf{Backward-pass}:\\
-The error is propargated from the back of the network to the front, hence the name \textbf{Backpropargation}. The connection are updated independent from their influence to $E$, which guarantees a result $o$ that is closer to $t$, provided the same output is presented to the input layer.
+The error is propagated from the back of the network to the front, hence the name \textbf{Backpropagation}. The connection are updated independent from their influence to $E$, which guarantees a result $o$ that is closer to $t$, provided the same output is presented to the input layer.
 \end{itemize}
 
-A first approach on finding a method to changing all weights in a weight that will minimize the error is to find $E$ for all possible combinations of weights $W$. The combination $W_{min}$ with the smallest $E$ would be the perfect solution, an abolute minimum of the error. The problem of this approach is that the computitional effort to finding this solution is way to high, since $W_{min}$ would have to be found in a $n$-dimensonial  hyperplane (given the number of neurons $n$).\\
+A first approach on finding a method to changing all weights in a weight that will minimize the error is to find $E$ for all possible combinations of weights $W$. The combination $W_{min}$ with the smallest $E$ would be the perfect solution, an absolute minimum of the error. The problem of this approach is that the computational effort to finding this solution is way to high, since $W_{min}$ would have to be found in a $n$-dimensonial  hyperplane (given the number of neurons $n$).\\
 
-Instead, the weights are adjusted using the gradient descent, which does not need to know the complete hyperplane\marginpar{\textit{gradient descent}}. It starts with a random combination of weights for which the gradient is determinded. The gradient is the function of a scalar field which shows the rate of change and the direction of the greatest change in the form of a vector field. After the gradient is determined it will be stepped down at a given rate - the learning rate, meaning that the weights are adjusted. For this new combination of weights, the gradient is again determined and stepped down until a local (or global minimum) is found or a maximum amount of repetitions is reached.\\
+Instead, the weights are adjusted using the gradient descent, which does not need to know the complete hyperplane\marginpar{\textit{gradient descent}}. It starts with a random combination of weights for which the gradient is determined. The gradient is the function of a scalar field which shows the rate of change and the direction of the greatest change in the form of a vector field. After the gradient is determined it will be stepped down at a given rate - the learning rate, meaning that the weights are adjusted. For this new combination of weights, the gradient is again determined and stepped down until a local (or global minimum) is found or a maximum amount of repetitions is reached.\\
 
 The amount of change between neurons $i$ and $j$ $\delta w_{ij}$ is calculated as shown in \eqref{eq:backrule}.
 \begin{equation}
 \Delta w_{ij} = -\eta \frac{\partial E}{\partial w_{ij}} = \eta \cdot \delta_j \cdot a_i
 \label{eq:backrule}
 \end{equation}
-As distinct form the delta rule, the backpropargation rule differs two cases, shown in equation \eqref{eq:backcases}. $k$ is the index of the neurons in the subsequent layer.
+As distinct form the delta rule, the Backpropagation rule differs two cases, shown in equation \eqref{eq:backcases}. $k$ is the index of the neurons in the subsequent layer.
 \begin{equation}
    \delta_j =
    \begin{cases}
@@ -791,347 +808,271 @@ As distinct form the delta rule, the backpropargation rule differs two cases, sh
 \label{eq:backcases}
 \end{equation}
 
-Eventually, the weights are changed acording to equation \eqref{eq:backweight}.
+Eventually, the weights are changed according to equation \eqref{eq:backweight}.
 
 \begin{equation}
    w_{ij}^{new} = w_{ij}^{old} + \Delta w_{ij}
 \label{eq:backweight}
 \end{equation}
 
-\section{Backpropargation through time}
-\section{Competitive learning}
-%...
-\chapter{Network types}\label{chap:nets}
-At the moment there are three generations of neural networks. 
-The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
-In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
-The newest generation uses spikes, an encoding through time.
+\section{Backpropagation through time}
 
-\subsection{First generation}
-The first generation of neural networks have binary in- and outputs.
-
-\subsubsection{McCulloch-Pitts neuron}
-The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
-developed by Warren McCulloch and Walter Pitts in 1943.
-They wanted to realise a simple, realistic neuron-modell of operations in the brain and find out if the brain could compute turing computability functions.
-McCulloch-Pitts-neuron has binary in- and outputs.
-A real threshold can be defined, which reached, let the neuron fire an one, otherwise zero.
-Its possible to add absolute suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs. The use of such absolute supressing inputs is for the most cases doubtfull.
-
-
-Neural networks of this type of neuron can just learn by changing topology of the network, that is laborious.
-
-At the following a figure of a single neuron:
-
-\begin{figure}[H]  % [H] erzwingt Position an der Stelle im Text
-	\centering
-	\begin{tikzpicture}
-	\node [align=center] (dummy1) at (-0.25,3.5) {$x_{1}$}; 
-	\node [align=center] (dummy2) at (-0.25,2.5) {$x_{n}$}; 
-	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
-	\node [align=center] (dummy3) at (3,3) {f($x_{1}$,..,$x_{n}$)}; 
-	\draw[arrow]	(dummy1) -- (f1);
-	\draw[arrow]	(dummy2) -- (f1);
-	\draw[arrow]	(f1) -- (dummy3);
-	\draw[dotted] (dummy1) -- (dummy2);
-	
-	\end{tikzpicture}
-	\caption{A McCulloch-Pitts-neuron}
-	\label{fig:pitts1}
-\end{figure}
-The neuroninput is computed by:
+The Backpropagation through time (BTT) algorithm constitutes a learning rule for recurrent networks. 
+Recurrent networks constitute an architecture that allows bi-directional signal flow within the network. While outputs of feed-forward networks are restricted to be only connected to 
+a neuron in the preceding layer, connections can now be formed across arbitrary layers. Figure \ref{fig:feedback} shows a recurrent network. As the neuron is connected with
+itself, it forms a feedback structure. The output of the neuron at time step $t$ serves as a weighted (by weight $g$) input of itself in the next time step.
+Thus, the output of the network can be computed as follows:
 
 \begin{equation}
-	neuroninput = \sum_{i=1}^{n} x_{n} \quad  x \in \{0, 1\}
+    y(t+1) = \varphi(w\cdot x(t) + g\cdot y(t))
+\label{eq:btt}
 \end{equation}
 
+BTT was independently developed by several researchers.%\cite{BTT1}\cite{BTT2}\cite{BTT3}
+Back
 
-A function composition:
 
-\begin{figure}[H]
+\begin{figure}
+\centering
+    \begin{tikzpicture}
+    \node [align=center] (l1) at (0,0) {}; 
+    \node [align=center] (x2) at (0.0,0.3) {$x(t)$}; 
+    \node [align=center] (x1) at (0.75,0.3) {$w$}; 
+    \node [draw=black, align=center, circle] (n) at (1.5,0) {}; 
+    \node [align=center] (x2) at (2.95,0.3) {$y(t+1)$}; 
+    \node [align=center] (x3) at (1.6,-0.7) {$g$}; 
+    \node [align=center] (l2) at (3,0) {}; 
+
+    \draw[arrow]	(l1) -- (n);
+    \draw[arrow]	(n) -- (l2);
+    \draw[arrow] (n) to [out=330,in=250,looseness=8] (n);
+    \end{tikzpicture}
+\caption{A feedback structure in a recurrent neural network.}
+\label{fig:feedback}
+\end{figure}
+
+\begin{figure}
+\centering
+    \begin{tikzpicture}
+    \node [align=center] (n0) at (0,0) {}; 
+    \node [] (y0) at (0.75,0.3) {$y(0)$}; 
+
+    \node [] (g1) at (0.75,-0.2) {$g$}; 
+    \node [] (w1) at (1.50,0.7) {$w$}; 
+    \node [] (x1) at (1.0,1.3) {$x(0)$}; 
+    \node [] (t1) at (1.5,-0.7) {$t-1$}; 
+    \node [] (y1) at (2.25,0.3) {$y(1)$}; 
+    \node [draw=black, align=center, circle] (n1) at (1.5,0) {}; 
+
+    \node [] (g2) at (2.25,-0.2) {$g$}; 
+    \node [] (w2) at (3.00,0.7) {$w$}; 
+    \node [] (x2) at (2.5,1.3) {$x(1)$}; 
+    \node [] (t2) at (3,-0.7) {$t-2$}; 
+    \node [] (y2) at (3.75,0.3) {$y(2)$}; 
+    \node [draw=black, align=center, circle] (n2) at (3,0) {}; 
+
+    \node [] (g3) at (3.75,-0.2) {$g$}; 
+    \node [] (w3) at (4.50,0.7) {$w$}; 
+    \node [] (x3) at (4.0,1.3) {$x(2)$}; 
+    \node [] (t3) at (4.5,-0.7) {$t-3$}; 
+    \node [] (y3) at (5.25,0.3) {$y(3)$}; 
+    \node [draw=black, align=center, circle] (n3) at (4.5,0) {}; 
+
+    \node [] (g4) at (5.25,-0.2) {$g$}; 
+    \node [] (w4) at (6.00,0.7) {$w$}; 
+    \node [] (x4) at (5.5,1.3) {$x(3)$}; 
+    \node [] (t4) at (6.0,-0.7) {$t-4$}; 
+    \node [] (y4) at (6.75,0.3) {$y(4)$}; 
+    \node [draw=black, align=center, circle] (n4) at (6,0) {}; 
+
+    \node [] (g5) at (6.75,-0.2) {$g$}; 
+    \node [] (w5) at (7.50,0.7) {$w$}; 
+    \node [] (x5) at (7.0,1.3) {$x(4)$}; 
+    \node [] (t5) at (7.5,-0.7) {$t-5$}; 
+    \node [] (y5) at (8.25,0.3) {$y(5)$}; 
+    \node [draw=black, align=center, circle] (n5) at (7.5,0) {}; 
+
+    \node [align=center] (n6) at (9,0) {}; 
+
+    \draw[arrow]	(n0) -- (n1);
+    \draw[arrow]	(x1) -- (n1);
+    \draw[arrow]	(n1) -- (n2);
+    \draw[arrow]	(x2) -- (n2);
+    \draw[arrow]	(n2) -- (n3);
+    \draw[arrow]	(x3) -- (n3);
+    \draw[arrow]	(n3) -- (n4);
+    \draw[arrow]	(x4) -- (n4);
+    \draw[arrow]	(n4) -- (n5);
+    \draw[arrow]	(x5) -- (n5);
+    \draw[arrow]	(n5) -- (n6);
+    \end{tikzpicture}
+    \caption{The recurrent network shown in figure \ref{fig:feedback} during unfolding with depth $t=5$.}
+\label{fig:unrolled}
+\end{figure}
+
+\begin{algorithm}
+\LinesNumbered
+\DontPrintSemicolon
+\BlankLine
+\Ein{Input $x(t)$ at time $t$, depth $k$}
+\Aus{Output $y(t)$}
+\BlankLine
+\Begin
+{
+    Unfold network to contain $k$ instances.\\
+    $y(0) \leftarrow \text{zero-magnitude vector} \overrightarrow{0}$.
+    
+    \For{$\forall t \in [0,n-1]: t \in \mathbb{N}_0$}
+    {
+        \tcp{Done for each }
+        Set network inputs $y(0), x(1), x(2), x(3)$\\
+        Forward-propagate.\\ 
+        Error $e = y(t+k) - t;$ $t:$ target error\\
+        Backpropagate the error across the whole unfolded network.\\
+        Update all the weights in the network according to standard Backpropagation.\\
+        $y(0) \leftarrow f(x)$
+
+    
+    }
+}
+\caption{The Backpropagation through time algorithm.}
+\label{alg:GD}
+\end{algorithm}
+
+\section{Genetic algorithms}
+\textit{Since this project builds off of Schembri's work, we assume knowledge about the hill-climbing approach in unsupervised learning used in \cite{DANIEL}. Readers not
+familiar with hill-climbing and artificial evolution are advised to refer to the original paper before further reading.} 
+
+\subsection{Crossover}
+The unsupervised training of neural networks is greatly inspired by evolution. The notion of natural selection was first presented by Charles Darwin in his book “\textit{On the origin of species by means of natural selection}”\cite{DARWIN}. 
+As a comprehensive discussion of Darwin's ideas lies out of the range of this paper, \textbf{we?} we will from here on refer to evolution as the following definitions\cite{OXFORD}:
+
+\begin{center}
+\textit{“Change in the genetic composition of a population during successive generations, often resulting in the development of new species. The mechanisms of evolution include natural selection acting on the genetic variation among individuals, mutation, migration, and genetic drift.”}\\
+\end{center}
+
+and
+
+\begin{center}
+\textit{“A gradual process in which something changes into a different and usually more complex or better form.”}\\ 
+\end{center}
+
+In particular, we are especially interested in a change or modification which results in a new entity (neural network) better accustomed to the respective demands of the environment.
+We rate an ANN as better accustomed when its performance measure (i.e. the fitness function) has become higher. The hill-climbing algorithms tries to achieve this by modifications which continuously alter
+the weights of the respective network so as to maximise performance. However, this method may not reach a global maximum in case of local minima or flat parts of the respective fitness function.
+
+Crossover spins the idea of artificial evolution further, still. Instead of merely keeping the best individual of each population and modifying its weights slightly in hope for better 
+results, crossover implements the idea of artificial reproduction. Reproduction is implemented by a combination of the weights of two chosen networks according to specific criteria. The Crossover
+algorithm is usually used alongside hill-climbing to overcome the pitfall of local minima. We will refer to this combination of as \textit{augmented genetic algorithm}.
+
+Figure \ref{fig:ag} shows the principle structure of the augmented genetic algorithm. A thorough explanation is also given in \cite{CROSSOVER}.
+After a population has been applied in an environment, the fitness of each individual is ranked according to their performance.  In addition, a selection process choses certain networks according to a selection function. Individuals are either selected for reproduction or direct mutation. Direct mutation is
+often used to clone the best-performing networks of the current population (sometimes called elitism). In case of direct mutation, the augmented genetic algorithm does not differ from the standard hill-climbing approach.
+
+If two individuals are chosen for reproduction, they create a certain amount of children according to the rule of genetic combination. 
+As an analogy to human reproduction, the selected networks will be referred to as the male and female part. Figure \ref{fig:repro} illustrates this process. One-Point Crossover is an example of a combination rule for two children.
+During the mating process, a random integer, called crossover point ($CP$), is chosen. It determines the ratio of male and female genes in the offspring. Given that number, the genetic combination can finally take place.
+When we talk about genes in the context of ANN, we usually mean the weights of the respective network. The crossover point simply states the number connection weights which are cloned from each parent to form the offspring.
+The total number of weights in an ANN is equal to the number of elements in the weight matrix $W$ (see \ref{subsec:weights}) and can be calculated as follows: $|W| = \sum^{n-1}_{i=1} L_i \cdot L_{i+1}$.
+$CP$ is then equal to the number of weights taken from the first parent, while $|W|-CP$ states the amount from the second parent. 
+
+Other crossover rules are two point crossover, uniform crossover where genes are copied at random %\cite{UNIFORMCROSSOVER} and selective crossover\cite{SELECTCROSSOVER}.
+
+\begin{figure}
 	\centering
 	\begin{tikzpicture}
-	\node [align=center] (dummy1) at (-0.25,3.5) {$x_{1}$}; 
-	\node [align=center] (dummy2) at (-0.25,2.5) {$x_{n}$}; 
-	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
-	\node [draw=black, fill=white, align=center, circle] (g1) at (2.5,3) {g}; 
-	\node [align=center] (dummy3) at (4.5,3) {f(g($x_{1}$,..,$x_{n}$)}; 
-	\draw[arrow]	(dummy1) -- (f1);
-	\draw[arrow]	(dummy2) -- (f1);
-	\draw[arrow]	(f1) -- (g1);
-	\draw[arrow]	(g1) -- (dummy3);
-	\draw[dotted] (dummy1) -- (dummy2);
+	\node [draw=black, fill=white, align=center] (g) at (2,0) {Generation of initial individuals};
+	\node [draw=black, fill=white, align=center] (e) at (2,-1) {Application};
+	\node [draw=black, fill=white, align=center] (r) at (2,-2) {Fitness ranking};
+	\node [draw=black, fill=white, align=center] (s) at (2,-3) {Selection};
+	\node [draw=black, fill=white, align=center] (c) at (0,-4) {Crossover};
+	\node [draw=black, fill=white, align=center] (m) at (4,-4) {Mutation};
+
+	\draw[arrow]	(g) -- (e);
+	\draw[arrow]	(e) -- (r);
+	\draw[arrow]	(r) -- (s);
+	\draw[arrow]	(s) -- (c);
+	\draw[arrow]	(s) -- (m);
+	\draw[arrow]	(c) -- (m);
+    \draw[arrow]    (c) to[out=-180,in=-180] (e);
+    \draw[arrow]    (m) to[out=0,in=0] (e);
 	
 	\end{tikzpicture}
-	\caption{Function composition of two McCulloch-Pitts-neurons}
-	\label{fig:pitts2}
+    \caption{The principle structure of the augmented genetic algorithm.\cite{CROSSOVER}}
+	\label{fig:ag}
 \end{figure}
 
-A recursive neuron:
-
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\begin{tikzpicture}
-	\node [align=center] (dummy1) at (-0.25,3) {$x_{t}$}; 
-	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
-	\node [align=center] (dummy2) at (4,3) {f($x_{t}$,f($x_{t-1}$,f($x_{t-2}$,...)))}; 
-	\draw[arrow]	(dummy1) -- (f1);
-	\draw[arrow]	(f1) -- (dummy2);
-	\draw[arrow]	(f1) -- (f1);
-	\draw[->] (1.35,3) .. controls (1.3,2.15) and (0.6,2.2) .. (0.65, 3);
-	\end{tikzpicture}
-	\caption{Recursive McCulloch-Pitts-neuron}
-	\label{fig:pitts3}
-\end{figure}
+	\node [] (label) at (-2,0) {Parents};
+	\node [draw=black, fill=white, align=center, circle] (m) at (0,0) {\mars};
+	\node [draw=black, fill=white, align=center, circle] (f) at (3,0) {\female};
 
-The output is given after a fixed timestep t.
+    \node [draw=black, fill=white, align=center] (co) at (1.5,-1) {Crossover};
 
-\paragraph{Applications}
-The McCulloch-Pitts-neuron is biologically not plausible, because learning
-can just happen by changing the threshold and the network topology. This
-needs complex algorithms.
-But this neuron type can realise AND-, OR- and NOT-Gates.
-Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. You can simulate finite state machines, too.
-You may think if its better to have real or at least integer values to transmit more information instead of just binary signals. This depends on the applicationtype. Binary values are easier to realize, both in electrical and biological systems and mcculloch-pitts-networks are equivalent to other kind of networks with more signalstates. Though you get a more complex networktopology, if you use binary neurons.
+	\node [] (label) at (-2,-2) {Children};
+	\node [draw=black, fill=white, align=center, circle] (c1) at (0,-2) {1};
+	\node [draw=white, fill=white, align=center] (c2) at (1.5,-2) {\dots};
+	\node [draw=black, fill=white, align=center, circle] (c3) at (3,-2) {n};
 
-It was the first mathematical model of artifical neural networks.\cite{NEURONMATH}
-
-
-\subsubsection{Perceptron}
-The classical perceptron was published by Frank Rosenblatt in 1958.
-It has an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
-the perceptron has real weights. The advantage is that learning-algorithms has just to change the weights
-instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero(neutral) weights.
-
-\paragraph{Linear seperability}
-A classical perceptron can only seperate linear datasets. This is due to only two layers. For seperating non-linear datasets read \ref{sec:mlp}.
-An widely known example is the xor-problem.
-
-\begin{figure}[H]
-	\centering
-%	\subfigure[]
-%	{
-\begin{tabular}{|l|l|l|}
-	\hline
-	x1 & x2 & f6\\
-	\hline
-	0 & 0 & 0 \\
-	\hline
-	0 & 1 & 1 \\
-	\hline
-	1 & 0 & 1 \\
-	\hline
-	1 & 1 & 0 \\
-	\hline
-\end{tabular}
-%}
-	\caption{XOR-Function: Not linear seperable}
-	\label{fig:linsep1}
+	\draw[arrow]	(m) -- (co);
+	\draw[arrow]	(f) -- (co);
+	\draw[arrow]	(co) -- (c1);
+	\draw[arrow]	(co) -- (c2);
+	\draw[arrow]	(co) -- (c3);
 	
-		\subfigure[]
-		{
-			\begin{tikzpicture}
-			\begin{axis}[
-			width=4cm, height=4cm,     % size of the image
-			grid = major,
-			grid style={dashed, grey!30},
-			xmax=1,        
-			ymin=-1,
-			ymax=1,
-			axis background/.style={fill=white},
-			ylabel=$a_{j}$,
-			xlabel=$in_{j}$]
-			
-			\addplot[black]{-0.5*x+0.5};
-		%	\addplot[black]{-2*x-1.5};
-			\end{axis}
-			\end{tikzpicture}
-			\label{fig:sepplot1}
-		}
-		
+	\end{tikzpicture}
+	\caption{An illustration of the crossover reproduction model. Two parent networks are unified two create offspring.}
+	\label{fig:repro}
 \end{figure}
 
-\paragraph{Applications}
-The perceptron can be used as pattern associator to categorise an inputpattern to a class, competitive network. Also linear seperable data can be categorised.
-It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{sec:learning})
+\begin{figure}
+    \begin{center}
+        $
+        W_{\mars} = 
+        \begin{pmatrix}
+        \textcolor{blue}{w_{11}} & \textcolor{blue}{w_{21}} & \textcolor{blue}{w_{31}} \\
+        \textcolor{blue}{w_{12}} & \textcolor{blue}{w_{22}} & \textcolor{blue}{w_{32}} \\
+        \textcolor{blue}{w_{13}} & \textcolor{blue}{w_{23}} & \textcolor{blue}{w_{33}} \\
+        \end{pmatrix}
+        W_{\female} = 
+        \begin{pmatrix}
+        \textcolor{red}{w_{11}} & \textcolor{red}{w_{21}} & \textcolor{red}{w_{31}} \\
+        \textcolor{red}{w_{12}} & \textcolor{red}{w_{22}} & \textcolor{red}{w_{32}} \\
+        \textcolor{red}{w_{13}} & \textcolor{red}{w_{23}} & \textcolor{red}{w_{33}} \\
+        \end{pmatrix}
+        $
+            
+        \end{center}
 
-\begin{center}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.8\textwidth,scale=1]{files/neuron.jpg}  
-		\caption{A singlelayer perceptron \cite{PERSIN}.}
-		\label{fig:neuron}
-	\end{figure}
-\end{center}
+        \begin{center}
+        $
+        W_{\text{Child 1}} = 
+        \begin{pmatrix}
+        \textcolor{blue}{w_{11}} & \textcolor{blue}{w_{21}} & \textcolor{blue}{w_{31}} \\
+        \textcolor{blue}{w_{12}} & \textcolor{blue}{w_{22}} & \textcolor{red}{w_{32}} \\
+        \textcolor{red}{w_{13}} & \textcolor{red}{w_{23}} & \textcolor{red}{w_{33}} \\
+        \end{pmatrix}
+        W_{\text{Child 2}} = 
+        \begin{pmatrix}
+        \textcolor{red}{w_{11}} & \textcolor{red}{w_{21}} & \textcolor{red}{w_{31}} \\
+        \textcolor{red}{w_{12}} & \textcolor{red}{w_{22}} & \textcolor{blue}{w_{32}} \\
+        \textcolor{blue}{w_{13}} & \textcolor{blue}{w_{23}} & \textcolor{blue}{w_{33}} \\
+        \end{pmatrix}
+        $
+    \end{center}
 
-\subsection{Second generation}
-The idea of the second generation of neural networks is born in the 90s. The firerate of a neuron encodes the transmitted signal. In this case now real values are used for in- and outputs.
-
-\subsubsection{Multi layer perceptron (MLP)} \label{sec:mlp}
-The multilayer perceptron was intruduced by Minsky and Papert in . It has an input-, an output- and
-one or multiple hiddenlayers. In contrast to the singlelayerperceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
-
-
-\subsubsection{Radial basis function} %Oder paragraph?
-
-
-\subsubsection{Kohonen networks / Selforganizing maps (SOM)}
-Kohonen-networks are inventioned by the finnish engineer Teuvo Kohonen in 1982. They have two layers. An inputlayer and a n-dimensional outputlayer.
-Kohonen-networks usually don't have hidden layers.
-The inputspace 
-Data-mining, unsupervised learning, clusteranalysis, computergraphics. 
-
-\subsection{Combination of networkmodels}
-
-\subsubsection{MLP and SOM} %look at neuronale netze im klartext chapter 6.3
-
-\subsection{Third generation}
-In the third generation of artifical neural networks the signal is additionally encoded in time. These called spikes are
-
-\subsubsection{Spiking neural networks}
-
-
-%\subsection{Feed Forward}
-\subsection{Recurrent}
-
-%...
-%\subsection{Pattern recognition}
-
-%\subsection{Traveling salesman problem}
-
-%\subsection{Aproximation of functions}
-%...
-
-\chapter{Optimization with evolutionary algorithms}
-Optimization is widely used, for example in information technology, engineering,
-economics, etc. Applications are the routing of circuits, the optimal usage of machinery,
-the traveling-salesman-problem and much more. It is often difficult to create a mathematical
-model of such optimization problems. Therefore in the last decades were developed methods who
-uses principles of the evolution.
-The simples method is the selection-method. In this model a dateset will be generated and randomly
-changes, called mutations, are made. The best datasets, chosen by the best fitness, will be kept.
-Each dateset is called an individual. A set of individuals is called a population. The individuals
-of a population can be recombined. Mostly the best individuals are recombined with randomly chosen
-ones. This method is more effective than the selection-method. This and other methods are  called
-evolutionary algorithms. To use an evolutionary algorithm, the problem must not be in a defined form;
-therefore it hasn't to be linear or differentiable. \\
-
-In this project evolutionary algortihms are used to find the best 
-(unsupervised) neural network to controll one creature. The idea is to use the amount of food a creature collect over a defined time as fitnessvalue.
-
-\section{The creepy random search method or hill climber method}
-The creepy random search method is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973. % 1973 correct?? look at literaturesource in kinnebruck
-Parameters of a system are randomly changed till a minimum or maximum of a targetfunction is reached. The value of the parameterchanges per iterationstep are limited. \\
-
-\textbf{The main algorithm is:}
-
-\fbox{
-\begin{minipage}{15cm}
-	\begin{enumerate} 
-		\item Generate a randomly initialized chromosome.
-		\item Change the chromosome parameter by limited random delta-values. 
-		\item Prove if the chromosome has a better fitness than the old one and replace it. Otherwise forget the new chromosome.
-		\item If the optimization-condition is reached abort, otherwise go to step 2.
-	\end{enumerate}
-\end{minipage}
-} \\
-
-The algorihm can be imagined as a blind hillclimber. The hillclimber makes a random step. If he gets higher, he makes the next step. Otherwise he takes back his last step and makes another random step. The big problem is, that this algorithm mostly converges in a local optimum. \\
-
-\textbf{Reasons to use this kind of algorithm:}
-
-\fbox{
-	\begin{minipage}{15cm}
-		\begin{itemize} 
-			\item For many nonlinear problems there are no alternative solution approaches.
-			\item Implementing this method is easy.
-		\end{itemize}
-	\end{minipage}
-}   \\
-
-
-
-\begin{center}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.6\textwidth,scale=1]{files/Hill_climb.png}  
-		\caption{A convex function. Ideal for the hillclimbing method \cite{wiki-hill}.}
-		\label{fig:hill}
-	\end{figure}
-\end{center}
-
-\begin{center}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.6\textwidth,scale=1]{files/Local_maximum.png}  
-		\caption{A function with two optima. Hillclimbing could end in the worse optimum if it starts at a bad coordinate. \cite{wiki-hill}.}
-		\label{fig:hill2}
-	\end{figure}
-\end{center}
-
-
-\subsection{Constraints} %Bedingungen und Nebenbedingungen
-The main condition is the fitness-function. Second conditions
-can be the
-
-%\subsection{Efficency} %Optional chapter to test the efficency between mathematical methods and evolutionary methods. For example zero of a function.
-
-\section{Variants of the creepy random search method}
-In the main-method of the creepy random search you just accept better fitness values after an iteration-step and reject worse ones.
-The problem is, that with this algorithm you will mostly get stuck on a local optimum, instead of finding the global one.
-To solve this problem you should allow temporal low fitness-values. It should be possible to leave a local optimum to find a better one.
-To realise this, there have been developed some extended versions of this method: \\
-
-\fbox{
-	\begin{minipage}{15cm}
-		\begin{itemize} 
-			\item A stagnation of the fitness is allowed by a specified probability (Simulated annealing)
-			\item A stagnation of the fitness is allowed till a maximal deterioration. (Threshold accepting, deluge method)
-		\end{itemize}
-	\end{minipage}
-} \\
-
-
-\subsection{Simulated annealing}
-Simulated annealing is a probabilistic optimization method.
-It is inspired by the annealing of fluid materia to a solid aggregate states in metallurgy. While cooling down a material the thermodynamic free energy has to get as minimal as possible to get a clear crystalline structure. Therefore its suggested to cool down to material slowly for a better probability of getting a clear solid body.
-
-Analog in optimization you start with a high temperature T, means a big delta, to make wide jumps in the problemphase-space. So jumps between more maxima are possible. At the beginning each chromosome has the same probability to get selected. With each iteration the temperature is reduced and the jumps are getting shorter. Selecting better chromosomes is now more probalistic.
-Towards the end the algorithm commutes in a optimum and behaves like the standard hillclimbing-algorithm.
-
-Slowly reducing the temperature increases the chance to find the global optimum. Cooling to fast leads to commuting early into a local optimum instead.
-
-The following formula shows the probability of selecting a chromosome with lower fitness:
-
-\begin{equation}
-p(r) = \frac{1}{1+exp(-r/T)}
-\end{equation} 
-
-The probability to select a worse chromosome should be small.
-At the beginning a big T tends to equalize the probability of all chromosomes. For $T \to \infty$ all chromosomes have the same chance to get selected. Lowering T gives good chromosomes priority. For T = 0.1
-
-\subsection{Threshold accepting}
-
-\section{Genetic algorithms - An artifical duck}
-
-\section{}
-
-\chapter{Other 'intelligent' algorithms}
-In this chapter other intelligent algorithms are presented.
-These algortihms are for comparing the neural network to simpler
-methods.
-
-\section{The greedy algorithm}
-
-\subsection{Weaknesses}
+	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
+neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
+red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
+	\label{fig:pitts1}
+\end{figure}
 
 \chapter{Evaluation}
 \chapter{Related work}
 \chapter{Conclusion}
 \chapter{Future work}
-
-
-
 
 \KOMAoptions{listof=leveldown}
 
@@ -1153,4 +1094,4 @@ methods.
 %dictionary source
 \bibliography{./files/bibdb}
 
-\end{document}
+computationalend{document}
