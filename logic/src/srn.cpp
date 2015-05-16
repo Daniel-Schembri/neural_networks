@@ -1,14 +1,14 @@
 #include <cassert>
-#include <random.h>
+#include <random>
 
 #include "srn.hpp"
 #include "srnNeuron.hpp"
 
-srn::srn(const std::vector<unsigned> &topology, const bool &bias):
-    m_bias(bias)
+srn::srn(const std::vector<unsigned> &topology, const bool &bias)
 {
     unsigned numLayers = topology.size();
 
+    m_bias                         = bias;
     m_recentAverageSmoothingFactor = 100.0; // Number of training samples to average over
     m_initialX                     = 0.0; 
     m_inputNeurons                 = topology[0];
@@ -41,12 +41,12 @@ srn::srn(const std::vector<unsigned> &topology, const bool &bias):
     }
 }
 
-srn(const std::vector<unsigned> &topology, const size_t &timeHorizon, const bool &bias):
-    m_bias(bias),
+srn::srn(const std::vector<unsigned> &topology, const size_t &timeHorizon, const bool &bias):
     m_timeHorizon(timeHorizon)
 {
     unsigned numLayers = topology.size();
 
+    m_bias                         = bias;
     m_recentAverageSmoothingFactor = 100.0; // Number of training samples to average over
     m_initialX                     = 0.0; 
     m_inputNeurons                 = topology[0];
@@ -113,7 +113,7 @@ void srn::feedForward(const std::vector<double> &inputVals)
         double   currentNeuronInput = 0.0;
         for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
         {
-            currentNeuronInput = m_layers[nbLayer][n]->getInput(m_layers, nbLayer);
+            currentNeuronInput = dynamic_cast<srnNeuron*>(m_layers[nbLayer][n])->getInput(m_layers, nbLayer);
             m_recentInputs[n].push(currentNeuronInput);
         }
     }
@@ -121,7 +121,7 @@ void srn::feedForward(const std::vector<double> &inputVals)
     if (m_timeHorizon > m_iterations + 1) 
         unroll(++m_iterations);
     else
-        unroll(m_timeHorizon);
+        unroll(m_iterations);
 
     // forward propagate
     for (unsigned nbLayer = 1; nbLayer < m_layers.size(); ++nbLayer) 
@@ -135,7 +135,6 @@ void srn::feedForward(const std::vector<double> &inputVals)
 void srn::learn(const std::vector<double> &targetVals)
 {
     // Calculate overall net error (RMS of output neuron errors)
-
     Layer &outputLayer = m_layers.back();
     m_error = 0.0;
     unsigned nbOutputNeurons;
@@ -185,6 +184,9 @@ void srn::learn(const std::vector<double> &targetVals)
         for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
             m_layers[nbLayer][n]->updateInputWeights(m_layers, nbLayer);
     }
+
+    // Rollup the network
+    rollup(m_iterations);
 }
 
 void srn::unroll(const size_t &times)
@@ -192,9 +194,9 @@ void srn::unroll(const size_t &times)
     std::vector<Layer>::iterator it = (m_layers.end()) - 1;
 
     // Unfolding does not include the bias neuron
-    unsigned neuronsToAdd = it.size() - (1*m_bias);;
+    unsigned neuronsToAdd = it->size() - (1*m_bias);;
 
-    for (int i = 0; i < times; ++i)
+    for (unsigned i = 0; i < times; ++i)
     {
         // Create a new layer for the respective time step, set iterator to newly created layer.
         m_layers.insert(it--, Layer());
@@ -223,17 +225,20 @@ void srn::unroll(const size_t &times)
             if ((0 != n) || (times != m_timeHorizon)) 
             {
                 // In case of an unfilled queue or time step < time horizon, we want to keep the input
-                double x_T = m_recentInputs[n].pop();
+                double x_T = m_recentInputs[n].front();
+                m_recentInputs[n].pop()
                 newQueue.push(x_T);
+
+                it->back()->setOutputVal(x_T);
             }
             else
             {
                 // Input of the least recent time step is not used anymore if queue has reached its
                 // max. size
-                double x_T = m_recentInputs[n].pop();
+                double x_T = m_recentInputs[n].front()
+                m_recentInputs[n].pop()
+                it->back()->setOutputVal(x_T);
             }
-
-            it->back()->setOutputVal(x_T);
 
             // w value
             dynamic_cast<srnNeuron*>(it->back())->singleConnection(n, 1.0, 0.0);

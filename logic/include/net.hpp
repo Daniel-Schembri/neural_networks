@@ -9,8 +9,6 @@
 #include "commonDefs.hpp"
 #include "neuron.hpp"
 
-using std::vector;
-
 // Abstract class
 class Net
 {
@@ -18,15 +16,15 @@ public:
     Net();
     virtual ~Net();
 
-    virtual void learn(const vector<double> &targetVals) = 0;
-    void feedForward(const vector<double> &inputVals);
+    virtual void learn(const std::vector<double> &targetVals) = 0;
+    void feedForward(const std::vector<double> &inputVals);
 
-    void getResults(vector<double> &resultVals) const;
+    void getResults(std::vector<double> &resultVals) const;
 
     WeightMatrix getConnections() const;
     void setConnections(const WeightMatrix &weights);
 
-    vector<Layer> m_layers;
+    std::vector<Layer> m_layers;
 protected:
     bool m_bias;
 };
