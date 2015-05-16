@@ -2,6 +2,7 @@
 #define COMMONDEFS_HPP 
 
 #include<vector>
+#include<memory>
 
 #define LEARNING_RATE (0.15)
 #define MOMENTUM (0.5)
@@ -9,7 +10,7 @@
 
 class Neuron;
 
-typedef std::vector<Neuron*> Layer;
+typedef std::vector<std::unique_ptr<Neuron>> Layer;
 
 //connection between neurons
 struct Connection

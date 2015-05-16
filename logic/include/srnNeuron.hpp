@@ -8,6 +8,7 @@ class SRNNeuron : public Neuron
 {
 public:
     SRNNeuron(unsigned numOutputs, unsigned myIndex,double alpha, double eta);
+    SRNNeuron(const SRNNeuron &rhs);
     virtual ~SRNNeuron();
 
     double getGradient() const;

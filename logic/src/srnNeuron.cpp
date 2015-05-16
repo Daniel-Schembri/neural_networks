@@ -15,6 +15,12 @@ SRNNeuron::SRNNeuron(unsigned numOutputs, unsigned myIndex, double alpha, double
     }
 }
 
+SRNNeuron::SRNNeuron(const SRNNeuron &rhs):
+    Neuron(rhs)
+{
+    *this = rhs;
+}
+
 SRNNeuron::~SRNNeuron()
 {
 }
@@ -78,7 +84,7 @@ double SRNNeuron::sumDOW(const Layer &nextLayer, const bool &bias) const
 
     // Sum our contributions of the errors at the nodes we feed.
     for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
-        sum += m_outputWeights[n].weight * dynamic_cast<SRNNeuron*>(nextLayer[n])->m_gradient;
+        sum += m_outputWeights[n].weight * dynamic_cast<SRNNeuron*>(nextLayer[n].get())->m_gradient;
 
     return sum;
 }
@@ -96,7 +102,7 @@ void SRNNeuron::updateInputWeights(const std::vector<Layer> &layers, const unsig
     
     for (unsigned n = 0; n < layers[myLayer - 1].size(); ++n) 
     {
-        Neuron *neuron = layers[myLayer - 1][n];
+        Neuron *neuron = layers[myLayer - 1][n].get();
 
         //the old weight from it to us
         double oldDeltaWeight = neuron->m_outputWeights[m_myIndex].deltaWeight;

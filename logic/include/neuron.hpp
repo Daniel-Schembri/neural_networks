@@ -13,6 +13,7 @@ class Neuron
 {
 public:
     Neuron(double eta, unsigned myIndex);
+    Neuron(const Neuron& rhs);
     virtual ~Neuron();
 
     void setOutputVal(const double val) {m_outputVal = val;}

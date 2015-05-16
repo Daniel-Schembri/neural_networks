@@ -64,7 +64,7 @@ double ffNeuron::sumDOW(const Layer &nextLayer, const bool &bias) const
 
     // Sum our contributions of the errors at the nodes we feed.
     for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
-        sum += m_outputWeights[n].weight * dynamic_cast<ffNeuron*>(nextLayer[n])->getGradient();
+        sum += m_outputWeights[n].weight * dynamic_cast<ffNeuron*>(nextLayer[n].get())->getGradient();
 
     return sum;
 }
@@ -82,7 +82,7 @@ void ffNeuron::updateInputWeights(const std::vector<Layer> &layers, const unsign
     
     for (unsigned n = 0; n < layers[myLayer - 1].size(); ++n) 
     {
-        Neuron* neuron = layers[myLayer - 1][n];
+        Neuron* neuron = layers[myLayer - 1][n].get();
 
         //the old weight from it to us
         double oldDeltaWeight = neuron->m_outputWeights[m_myIndex].deltaWeight;
