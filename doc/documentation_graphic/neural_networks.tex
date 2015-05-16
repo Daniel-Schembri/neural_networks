@@ -12,6 +12,9 @@
 %utf8
 \usepackage[utf8]{inputenc}
 
+%Multicolumn lists
+\usepackage{multicol}
+
 %pseudo-code
 \usepackage[boxruled,vlined]{algorithm2e}
 
@@ -204,7 +207,7 @@ to find out basically, how an intelligent system can be created by simple algori
 
 In this project neural networks of the second type are used, because the main interest lies in finding a good mathematical solution.
 
-
+2-dimensional because its easier to see.
 
 \section{State of the art}
 
@@ -219,7 +222,7 @@ intelligents.
 \subsection{The concept of agents}
 An agent is a programm that interacts self-sufficent depending on the actual state. It has sensors, a processing logic and actuators to interact with its environment. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the 
 
-
+TODO: Types of environment: Stochastic, deterministic, discrete, etc.
 
 \begin{center}
 	\begin{figure}[H]
@@ -358,16 +361,16 @@ Simulated annealing is suitable for functions with many local optima.
 
 % \section{Genetic algorithms - An artifical duck}
 
-\chapter{Alternative algorithms}
-In this chapter other intelligent algorithms are presented.
-These algortihms are for comparing the neural network to simpler
-methods.
+%\chapter{Alternative algorithms}
+%In this chapter other intelligent algorithms are presented.
+%These algortihms are for comparing the neural network to %simpler
+%methods.
 
-\section{The greedy algorithm}
+%\section{The greedy algorithm}
 
-\subsection{Weaknesses}
+%\subsection{Weaknesses}
 
-\section{Applications}
+%\section{Applications}
 
 
 
@@ -397,7 +400,8 @@ The body contains the following values: \\
 
 \fbox{
 	\begin{minipage}{15cm}
-		\begin{itemize} 
+		\begin{multicols}{2}
+			\begin{itemize}
 			\item \textbf{2D position vector}
 			\item \textbf{Angle}
 			\item \textbf{Velocity}
@@ -405,10 +409,13 @@ The body contains the following values: \\
 			\item \textbf{rotational inertia}
 			\item \textbf{mass}
 			\item \textbf{1 or more fixtures}
-		\end{itemize}
+			\end{itemize}
+		\end{multicols}
 	\end{minipage}
 }   \\
 \\
+
+
 
 A body contains one or more fixtures, containing the shape and more properties of the body.
 
@@ -475,6 +482,7 @@ The following properties are part of a fixture:
 
 \fbox{
 	\begin{minipage}{15cm}
+	\begin{multicols}{2}
 		\begin{itemize} 
 			\item \textbf{A shape}
 			\item \textbf{Broad-phase proxies}
@@ -486,6 +494,7 @@ The following properties are part of a fixture:
 			\item \textbf{User data}
 			\item \textbf{Sensor flag}
 		\end{itemize}
+	  \end{multicols}
 	\end{minipage}
 }   \\
 \\
@@ -521,9 +530,8 @@ b2Fixture* myFixture = myBody->CreateFixture(&fixtureDef);
 \end{lstlisting}
 
 
-\section{Joints}
-Joints are used to connect two or more bodies.
-TODO
+\subsection{Joints}
+Joints are used to connect two or more bodies. For more detailed information read the Box2D manual Chapter 8.
 
 \subsection{World}
 A world is the simulation-environment. It contains all bodies and joints and manages all aspects for simulation. It is the main entity.
@@ -649,17 +657,75 @@ The presolve callback is executed after detection of a collision, but before com
 \subsubsection*{Postsolve}
 The postsolve callback is executed after computation and applying the contactimpulses of the collision. It contains a pointer to the contact and also the computed impulsedata.
 
-\subsection{filtering}
-categoryBits
-maskBits
+\subsection{Collision filtering}
+The default behaviour is that all fixtures can collide with each other. If you want to specify which groups of fixtures can collide and which pass through each other, you can use category- and mask bits to manage 16 groups of fixtures. If you need more precise behaviour you can use group indizes or define own rules by overriding the 'ShouldCollide'-method.
+
+\subsubsection*{Category- and maskbits}
+
+These bits are 16-Bit wide and therefore 16 groups are supported.
+Category bits declare on which groups a fixture belongs. A fixture has to belong to minimal one and maximal 16 groups.
+The mask bit defines with what group of fixtures this fixture can collide. The default values are 0x0001 for category bits and 0xFFFF for mask bits, meaning every fixture can collide with each other.
+
+\subsubsection*{Group indizes}
+Group indizes can be used to get a more specified behaviour as only with category- and maskbits.
+The standard value of the group index for a fixture is zero, means group index isn't used, instead the category- and maskbits are used. The value otherwise can be positive or negative.
+
+For a value nonzero the following rules are applied at collision: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item if both groupindizes are different, use the category/mask rules as described above
+			\item if both groupindizes are equal and positive, collide
+			\item if both groupindizes are equal and negative, don't collide
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+\subsubsection*{Contact filter}
+For an own specification of collision behaviour the following virtual method can be overwritten: \\
+\begin{lstlisting}[caption={The contact filter method},label=lst:box2d-contactfiler]
+bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB);
+\end{lstlisting}
 
 
 \section{DebugDraw}
+The debugdraw class is used as a debugging feature to display the physics simulation of Box2D. It uses OpenGL. Debugdraw can draw the shapes, contact points, contact normals, the AABBs, etc.
+As the debugdraw offers all wanted basic shapes it is used by the simulator.
 
+To use the debug-draw first the debugdraw object hast to instanciate and linked to the world by: \\
+
+\begin{lstlisting}[caption={Linking debugdraw instance to the world instance},label=lst:box2d-ddrawset]
+m_world->setDebugDraw(&m_debugDraw);
+\end{lstlisting}
+
+Setting the flags to determine what has to be drawn:
+
+\begin{lstlisting}[caption={Initializing DebugDraw},label=lst:box2d-ddrawinit]
+uint32 flags = 0;
+
+flags += b2Draw::e_shapeBit; //Enable drawing shapes
+flags += b2Draw::e_jointBit; //Enable drawing joints
+flags += b2Draw::e_aabbBit; //Enable drawing AABBs
+flags += b2Draw::e_centerOfMassBit; //Enable drawing center of masses
+
+m_debugDraw.SetFlags(flags);
+\end{lstlisting}
+
+
+After each calling of the Step-method the following method has to be called: \\
+
+\begin{lstlisting}[caption={Using debugdraw after each step},label=lst:box2d-ddraw]
+m_world->DrawDebugData();
+\end{lstlisting}
+ 
+This draws every shape in the bodylist of the world.
 
 \section{Structure of a Box2D-Project}
 
 
+Important: In BeginContact and EndContact no change of active-flag and some other values of a body/fixture
 
 
 \section{Testbed}
@@ -682,24 +748,119 @@ The Box2D-Testbed uses GLUT respectively Freeglut and GLUI. Thererefore theses l
 source: www.opengl.org
 www.sgi.com/tech/opengl/?/
 
+\section{Basics}
+
+\subsection{Cameras}
+
+Model Matrix
+Projection Matrix
 
 \section{The OpenGL Utility Toolkit (GLUT)}
-The OpenGL Utility Toolkit (GLUT) was developed by Mark Kilgard. It is used to extend OpenGL-Applications by window-management.
+The OpenGL Utility Toolkit (GLUT) was developed by Mark Kilgard. It is used to extend OpenGL-Applications by window-management. GLUT is used for small- and medium sized OpenGL-applications.
 
 source: www.codeproject.com/Articles/19760/GLUT-Window-Template
 
 www.opengl.org/resources/libraries/glut/
 
 \subsection{Freeglut}
-Freeglut is developed by Pawel W. Olszta and is an alternative to GLUT. It is also a windows substitute.
+Freeglut is developed by Pawel W. Olszta and is an alternative to GLUT. It is also a Windows substitute. Freeglut is still maintained. Freeglut is used, because the originally GLUT-library is deprecated and not maintained anymore.
 
 source: freeglut.sourceforge.net/
 
+\subsection{Program structure}
+In this section the basic structure of a freeglut-program is explained.
+The following code shows the initialization and creation of a window:
+
+\begin{lstlisting}[caption={Initialization a GLUT-program},label=lst:glut-init]
+#include "glut.h"
+
+int mainWindow;  //Window handler
+
+int main(int argc, char* argv[])
+{
+  // Glut initialitation
+  glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+  glutInitWindowPosition(0, 0); 
+  glutInitWindowSize(1024, 768);
+  
+  mainWindow = glutCreateWindow("Title");
+  
+  //Register function callbacks
+  glutDisplayFunc(Display);
+  glutKeyboardFunc(Keyhandler);
+  glutReshapeFunc(Resizehandler);
+  
+  //Here optionally a GLUI-window can be included, see Chapter 4.3
+  
+  //Enter glut main loop, usually no return from this function
+  glutMainLoop(); 
+  return 0;
+}
+\end{lstlisting}
+
+In the first lines glut is initialised, a window with specified position, size and a title is created.
+The variable 'mainWindow' is of type int. It stores the adress of the window-structure.
+
+In the second part of the codesnippet the handler-functions are set. The handler functions have to be static functions, because .
+At the end the glut main loop is entered. Usually this function never returns. In Freeglut there exist functions to leave and re-enter the main loop.
+
+The following Codesnippet shows the drawing of a simple triangle:
+
+\begin{lstlisting}[caption={Drawing some graphics},label=lst:glut-draw]
+static void Display()
+{
+  //Set the color to white
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  //Clear the Scene with selected color
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  //Switch to Modelview Matrix
+  glMatrixMode(GL_MODELVIEW);
+  //Replace the current matrix by the identity matrix
+  glLoadIdentity();
+  //Draw a blue triangle into the buffer
+  glColor3f(0.0f, 0.0f, 1.0f);
+  glBegin(GL_TRIANGLES);
+  glVertex3f(-0.5f, 0.5f, -5.0f);
+  glVertex3f(-1.0f, 1.5f, -5.0f);
+  glVertex3f(-1.5f, 0.5f, -5.0f);
+  glEnd();
+  //Finally draw the scene on screen
+  glutSwapBuffers();
+}
+\end{lstlisting}
+
+The first line sets the draw-color to white and with no transparency. The color is formatted in RGBA. The first three parameters represents the colors red, green and blue. The last parameter is alpha, the transparency of the figure. 0.0f means no quantity of the according parameter and 1.0f as the full quantity.
+ This is used by the second line to clear the scene.
+Then the viewmode is set, the position of the camera is loaded.
+With 'glBegin' the drawing of an object is started. In this example a triangle is drawn. Therefore the three vertices of the triangle has to OpenGl. This is done by. Each object has to finished with the 'glEnd'-command.
+At the end the buffer is swapped and the drawn scene is displayed at the screen.
+
+\begin{lstlisting}[caption={Resize camera perspective on window resize},label=lst:glut-resize]
+static void Resize(int w, int h)
+{
+//Set the viewport of the camera
+glViewport(0, 0, w, h);
+//Switch to the camera perspective matrix
+glMatrixMode(GL_PROJECTION); 
+//Reset the camera matrix
+glLoadIdentity();
+//Set camera angle, width-to-height ratio, near z and far z clipping coordinate
+gluPerspective(45.0f, (double)w / (double)h, 1.0f, 200.0f);
+}
+\end{lstlisting}
+
+The first line sets the viewports position and size. The following operations should than applied on the projection-matrix. Therefore the Matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered then.
+TODO: Figure of the camera perspective
+
+TODO: More Callbacks of GLUT: Idle, etc.
 
 \section{The OpenGL User Interface Library(GLUI)}
 The OpenGL User Inteface Library (GLUI) is a GLUT-based user interface library developed by Paul Rademacher. It is written in C++ and usable for multiple platforms.
 
 GLUI is used to implement GUI controls, like buttons, labels, listboxes, etc.
+
+The following figure shows some components of GLUI:
 
 \begin{center}
 	\begin{figure}[H]
@@ -713,6 +874,45 @@ GLUI is used to implement GUI controls, like buttons, labels, listboxes, etc.
 source: www.codeproject.com/Articles/20286/GLUI-Window-Template
 
 glui.sourceforge.net/
+
+
+\subsection{GLUI-Program}
+
+Here is described how a GLUI-window is set up.
+The following code is included after the creation of a GLUT-window and before entering the glut main loop (see listing 4.1):
+
+
+\begin{lstlisting}[caption={Creating a GLUI-window},label=lst:glui-create]
+#include "glui.h"
+//GLUI window instance
+GLUI *glui;
+
+int main(int argc, char* argv[])
+{
+ ...
+ //after creation of glut-window
+ glui = GLUI_Master.create_glui("GLUI", 0);
+ //Add some components
+ glui->add_statictext( "Simple GLUI Example" );
+ glui->add_separator();
+ glui->add_checkbox( "Wireframe", &wireframe, 1, control_cb );
+ GLUI_Spinner *segment_spinner =
+ glui->add_spinner( "Segments:",GLUI_SPINNER_INT, &segments );
+ segment_spinner->set_int_limits( 3, 60, GLUI_LIMIT_WRAP );
+ GLUI_EditText *edittext =
+ glui->add_edittext( "Text:", GLUI_EDITTEXT_TEXT, text );
+ //Set the main gfx window
+ glui->set_main_gfx_window(main_window);
+ //Register the Idle callback with GLUI (instead of with GLUT)
+ GLUI_Master.set_glutIdleFunc(GlutIdle);
+}
+\end{lstlisting}
+
+First the glui-instance is initialized. In the following lines gui-components are added. Some components need a variable to point on. This is necessary to store input values from the user. The components can be dimensionized, e.g. the spinners minimum and maximum value is set.
+At the end the corrosponding glut window has to be registered in the glui-window.
+Callbacks are now defined. This has to be static functions, like in GLUT.
+
+'GLUI\_Master' is a global GLUI-object used to register callbacks, as glui-windows use for example the idle-callback extensively to control components status.
 
 \chapter{Development of a simulator for virtual agents}
 
