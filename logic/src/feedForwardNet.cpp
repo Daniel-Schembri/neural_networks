@@ -21,12 +21,12 @@ FeedForwardNet::FeedForwardNet(const std::vector<unsigned> &topology, const bool
 
         // We have a new layer, now fill it with neurons
         for (neuronNum = 0; neuronNum < topology[nbLayer]; ++neuronNum) 
-            m_layers.back().push_back(new ffNeuron(numOutputs, neuronNum, MOMENTUM, LEARNING_RATE));
+            m_layers.back().push_back(std::unique_ptr<Neuron>(new ffNeuron(numOutputs, neuronNum, MOMENTUM, LEARNING_RATE)));
 
         // Create bias neurons if requested
         if(false != bias)
         {
-            m_layers.back().push_back(new ffNeuron(numOutputs, ++neuronNum, MOMENTUM, LEARNING_RATE));
+            m_layers.back().push_back(std::unique_ptr<ffNeuron>(new ffNeuron(numOutputs, ++neuronNum, MOMENTUM, LEARNING_RATE)));
             // Force the bias node's output to 1.0 (it was the last recent neuron pushed in this layer):
             m_layers.back().back()->setOutputVal(1.0);
         }
@@ -35,9 +35,6 @@ FeedForwardNet::FeedForwardNet(const std::vector<unsigned> &topology, const bool
 
 FeedForwardNet::~FeedForwardNet()
 {
-    for (unsigned i = 0; i < m_layers.size(); ++i)
-        for (unsigned j = 0; j < m_layers[i].size(); ++j)
-            delete m_layers[i][j];
 }
 
 double FeedForwardNet::getRecentAverageError() const 
@@ -73,7 +70,7 @@ void FeedForwardNet::learn(const std::vector<double> &targetVals)
     // Calculate output layer gradients
     for (unsigned n = 0; n < nbOutputNeurons; ++n) 
     {
-        (dynamic_cast<ffNeuron*>(outputLayer[n]))->calcOutputGradients(targetVals[n]);    
+        (dynamic_cast<ffNeuron*>(outputLayer[n].get()))->calcOutputGradients(targetVals[n]);    
     }
 
     // Calculate hidden layer gradients, start at rightmost hidden layer
@@ -83,7 +80,7 @@ void FeedForwardNet::learn(const std::vector<double> &targetVals)
         Layer &nextLayer = m_layers[nbLayer + 1];
 
         for (unsigned n = 0; n < hiddenLayer.size(); ++n) 
-            (dynamic_cast<ffNeuron*>(hiddenLayer[n]))->calcHiddenGradients(nextLayer, m_bias);
+            (dynamic_cast<ffNeuron*>(hiddenLayer[n].get()))->calcHiddenGradients(nextLayer, m_bias);
     }
 
     // For all layers from outputs to first hidden layer,
@@ -93,6 +90,6 @@ void FeedForwardNet::learn(const std::vector<double> &targetVals)
         unsigned nbNeuronsToUpdate = m_layers[nbLayer].size() - (m_bias*1);
 
         for (unsigned n = 0; n < nbNeuronsToUpdate; ++n) 
-            (dynamic_cast<ffNeuron*>(m_layers[nbLayer][n]))->updateInputWeights(m_layers, nbLayer);            
+            (dynamic_cast<ffNeuron*>(m_layers[nbLayer][n].get()))->updateInputWeights(m_layers, nbLayer);            
     }
 }

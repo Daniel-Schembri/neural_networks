@@ -9,12 +9,12 @@
 #include <vector>
 
 // Abstract class
-class srn : public Net
+class SRN : public Net
 {
 public:
-    srn(const std::vector<unsigned> &topology, const bool &bias);
-    srn(const std::vector<unsigned> &topology, const size_t &timeHorizon, const bool &bias);
-    virtual ~srn();
+    SRN(const std::vector<unsigned> &topology, const bool &bias);
+    SRN(const std::vector<unsigned> &topology, const size_t &timeHorizon, const bool &bias);
+    virtual ~SRN();
 
     double getRecentAverageError() const { return m_recentAverageError; }
 

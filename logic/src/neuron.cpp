@@ -7,6 +7,11 @@ Neuron::Neuron(double eta, unsigned myIndex):
 {
 }
 
+Neuron::Neuron(const Neuron& rhs)
+{
+    *this = rhs;
+}
+
 Neuron::~Neuron()
 {
 }

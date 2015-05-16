@@ -43,14 +43,14 @@ WeightMatrix Net::getConnections() const
     for (unsigned nbLayer = 0; nbLayer < nbLayersInNet; ++nbLayer) 
     {
         // All Connections of the respective layer
-        vector<vector<Connection> > layerConnections;
+        std::vector<std::vector<Connection> > layerConnections;
         results.push_back(layerConnections);
 
         unsigned nbNeuronsInLayer = m_layers[nbLayer].size();
         for (unsigned nbNeuron = 0; nbNeuron < nbNeuronsInLayer; ++nbNeuron) 
         {
             // All Connections of the respective neuron
-            vector<Connection> neuronConnections = m_layers[nbLayer][nbNeuron]->m_outputWeights;
+            std::vector<Connection> neuronConnections = m_layers[nbLayer][nbNeuron]->m_outputWeights;
             results[nbLayer].push_back(neuronConnections);
         }
     }

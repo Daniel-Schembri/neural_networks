@@ -377,9 +377,7 @@ void evolutionary::save_vals(std::vector< std::vector<double> > inputvals_vector
 	std::vector<double> inputvals(2);
 	std::vector<double> resultvals(2);
 
-	std::string s;
-
-	s = "";
+	std::string s = "";
 
 	std::ofstream outfile("agent_vals.txt", std::ofstream::out);
 	if (outfile.is_open())
