@@ -207,7 +207,7 @@ to find out basically, how an intelligent system can be created by simple algori
 
 In this project neural networks of the second type are used, because the main interest lies in finding a good mathematical solution.
 
-
+2-dimensional because its easier to see.
 
 \section{State of the art}
 
@@ -691,10 +691,36 @@ bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB);
 
 
 \section{DebugDraw}
-The debugdraw class is used as a debugging feature to display the physics simulation of Box2D. It uses OpenGL.
-As the debugdraw offers basic shapes it is used by the simulator.
+The debugdraw class is used as a debugging feature to display the physics simulation of Box2D. It uses OpenGL. Debugdraw can draw the shapes, contact points, contact normals, the AABBs, etc.
+As the debugdraw offers all wanted basic shapes it is used by the simulator.
 
-To use the debug-draw its important to call 'DrawDebugData()'. This draws every shape in the list of the world.
+To use the debug-draw first the debugdraw object hast to instanciate and linked to the world by: \\
+
+\begin{lstlisting}[caption={Linking debugdraw instance to the world instance},label=lst:box2d-ddrawset]
+m_world->setDebugDraw(&m_debugDraw);
+\end{lstlisting}
+
+Setting the flags to determine what has to be drawn:
+
+\begin{lstlisting}[caption={Initializing DebugDraw},label=lst:box2d-ddrawinit]
+uint32 flags = 0;
+
+flags += b2Draw::e_shapeBit; //Enable drawing shapes
+flags += b2Draw::e_jointBit; //Enable drawing joints
+flags += b2Draw::e_aabbBit; //Enable drawing AABBs
+flags += b2Draw::e_centerOfMassBit; //Enable drawing center of masses
+
+m_debugDraw.SetFlags(flags);
+\end{lstlisting}
+
+
+After each calling of the Step-method the following method has to be called: \\
+
+\begin{lstlisting}[caption={Using debugdraw after each step},label=lst:box2d-ddraw]
+m_world->DrawDebugData();
+\end{lstlisting}
+ 
+This draws every shape in the bodylist of the world.
 
 \section{Structure of a Box2D-Project}
 
