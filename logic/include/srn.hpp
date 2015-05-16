@@ -1,10 +1,3 @@
-//------------------------------------------------------
-//Author             : Jonathan Schwarz
-//University         : Pforzheim University
-//Date of last edit  : Mon, 15 Sep 2014 16:29:12 +0200
-//Filename           : srn.hpp
-//------------------------------------------------------
-
 #ifndef SRN_HPP
 #define SRN_HPP
 
@@ -13,6 +6,7 @@
 #include "neuron.hpp"
 
 #include <queue>
+#include <vector>
 
 // Abstract class
 class srn : public Net
@@ -32,11 +26,12 @@ public:
 protected:
     double m_error;
     double m_initialX; 
+    unsigned m_inputNeurons; 
     size_t m_iterations; // Keeps track of the learning iteration,
-                        // slightly different treatment for m_iterations < m_timeHorizon;
+                         // slightly different treatment for m_iterations < m_timeHorizon;
     double m_recentAverageError;
     double m_recentAverageSmoothingFactor;
-    std::vector<std::queue<double> m_recentInputs;
+    std::vector<std::queue<double>> m_recentInputs;
     std::vector<double> m_recurrentWeights;
     std::vector<double> m_recurrentDeltaWeights;
     size_t m_timeHorizon;

@@ -1,10 +1,3 @@
-//------------------------------------------------------
-//Author             : Jonathan Schwarz
-//University         : Pforzheim University
-//Date of last edit  : Mon, 15 Sep 2014 16:32:09 +0200
-//Filename           : competitive.cpp
-//------------------------------------------------------
-
 #include "competitive.hpp"
 #include "competitiveNeuron.hpp"
 

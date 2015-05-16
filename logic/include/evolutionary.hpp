@@ -1,8 +1,6 @@
 #ifndef __EVOLUTONARY_HPP__
 #define __EVOLUTONARY_HPP__
 
-
-
 #include <stdlib.h>
 #include <time.h>		//For initialising the random_generator
 #include <vector>
