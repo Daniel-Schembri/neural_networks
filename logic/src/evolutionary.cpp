@@ -45,7 +45,8 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
         {
             for (unsigned int w = 0; w < 100; w++)
             {
-                revert_agent[i][j][w] = 0;
+                revert_agent_a[i][j][w] = 0;
+                revert_agent_v[i][j][w] = 0;
             }
         }
     }
@@ -131,10 +132,10 @@ int evolutionary::evolve_simulatedannealing()
             p = 1 / (1 + exp(-r / T));
             if(randomval > p) 	//with probality p, keep the changes
             {
-                simulated_annealing(population[i], true); //Otherwise revert simulated annealing step
+                hillclimber(population[i], true); //Otherwise revert simulated annealing step
             }
             population[i]->lastfitness = population[i]->fitness; //Save Last fitness to revert if worse fitness
-            simulated_annealing(population[i], false);
+            hillclimber(population[i], false);
         }
         generations++;
         // Cool down annealing rate
@@ -145,7 +146,7 @@ int evolutionary::evolve_simulatedannealing()
     return 0;
 }
 
-int evolutionary::evolve_learn()  //TODO How manyLearningCycles?
+int evolutionary::evolve_learn()  //
 {
     iterationsteps++;
     if (iterationsteps >= evolvesteps) // 3000 = 1Min
@@ -160,94 +161,115 @@ int evolutionary::evolve_learn()  //TODO How manyLearningCycles?
     return 0;
 }
 
-//Evolutionary Algorithms
-void evolutionary::hillclimber(Agent *Agent, bool revert)
+void evolutionary::do_or_save_revert(Agent *agent, bool revert)
 {
-    double delta = 0.0f;
-    double randomval = 0.0f;
-
-
-    for (unsigned int i=0; i<Agent->angle_net->m_layers.size();i++)  //Amount of Layers
+//Do or save Angle Net
+    for (unsigned int i=0; i<agent->angle_net->m_layers.size();i++)  //Amount of Layers
     {
-        for(unsigned int j=0;j<Agent->angle_net->m_layers[i].size();j++)    //Amount of Neurons
+        for(unsigned int j=0;j<agent->angle_net->m_layers[i].size();j++)    //Amount of Neurons
         {
-            if (!revert)
+            if (revert)
             {
-                for (unsigned int w = 0; w < Agent->angle_net->m_layers[i][j]->m_outputWeights.size(); w++)
+                for (unsigned int w = 0; w < agent->angle_net->m_layers[i][j]->m_outputWeights.size(); w++)
                 {
-                    revert_agent[i][j][w] = Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight;
+                    agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight = revert_agent_a[i][j][w];
                 }
             }
-
-            for(unsigned int w=0;w<Agent->angle_net->m_layers[i][j]->m_outputWeights.size();w++)
+            else
             {
+                for (unsigned int w = 0; w < agent->angle_net->m_layers[i][j]->m_outputWeights.size(); w++)
+                {
+                    revert_agent_a[i][j][w] = agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight;
+                }
+            }
+        }
+    }
 
-                delta = (((((double) rand() / double(RAND_MAX)) / 5.0f) -0.1f)*(int) 1000) / (1000.0f);  //Range -0.1f to +0.1f //resolution 0.001f
-                randomval = (double) rand() / double(RAND_MAX); //
-                if (revert)
-                {       
-                    Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight = revert_agent[i][j][w];
-                }
-                else
+//Do or save Velocity Net
+    for (unsigned int i=0; i<agent->velocity_net->m_layers.size();i++)  //Amount of Layers
+    {
+        for(unsigned int j=0;j<agent->velocity_net->m_layers[i].size();j++)    //Amount of Neurons
+        {
+            if (revert)
+            {
+                for (unsigned int w = 0; w < agent->velocity_net->m_layers[i][j]->m_outputWeights.size(); w++)
                 {
-                    if (randomval < sim_parameter.weight_mutation_rate)
-                    {
-                        Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight += delta;
-                    }
+                    agent->velocity_net->m_layers[i][j]->m_outputWeights[w].weight = revert_agent_v[i][j][w];
                 }
-                if (Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight > 1.0f)
+            }
+            else
+            {
+                for (unsigned int w = 0; w < agent->velocity_net->m_layers[i][j]->m_outputWeights.size(); w++)
                 {
-                    Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight = 1.0f;
+                    revert_agent_v[i][j][w] = agent->velocity_net->m_layers[i][j]->m_outputWeights[w].weight;
                 }
-                if (Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight < -1.0f)
+            }
+        }
+    }
+
+
+}
+
+
+
+void evolutionary::proove_net_maxvals(Net *net)
+{
+    for (unsigned int i=0; i<net->m_layers.size();i++)  //Amount of Layers
+    {
+        for(unsigned int j=0;j<net->m_layers[i].size();j++)    //Amount of Neurons
+        {
+            for(unsigned int w=0;w<net->m_layers[i][j]->m_outputWeights.size();w++)
+            {
+                if (net->m_layers[i][j]->m_outputWeights[w].weight > 1.0f)
                 {
-                    Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight = -1.0f;
+                    net->m_layers[i][j]->m_outputWeights[w].weight = 1.0f;
+                }
+                if (net->m_layers[i][j]->m_outputWeights[w].weight < -1.0f)
+                {
+                    net->m_layers[i][j]->m_outputWeights[w].weight = -1.0f;
                 }
             }
         }
     }
 }
 
-void evolutionary::simulated_annealing(Agent * Agent, bool revert)
+void evolutionary::mutate_net(Net *net)
 {
     double delta = 0.0f;
     double randomval = 0.0f;
 
-    for (unsigned int i=0; i<Agent->angle_net->m_layers.size();i++)  //Amount of Layers
+    for (unsigned int i=0; i<net->m_layers.size();i++)  //Amount of Layers
     {
-        for(unsigned int j=0;j<Agent->angle_net->m_layers[i].size();j++)    //Amount of Neurons
+        for(unsigned int j=0;j<net->m_layers[i].size();j++)    //Amount of Neurons
         {
-            if (!revert)
+            for(unsigned int w=0;w<net->m_layers[i][j]->m_outputWeights.size();w++)
             {
-                for (unsigned int w = 0; w < Agent->angle_net->m_layers[i][j]->m_outputWeights.size(); w++)
-                {
-                    revert_agent[i][j][w] = Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight;
-                }
-            }
-
-            for(unsigned int w=0;w<Agent->angle_net->m_layers[i][j]->m_outputWeights.size();w++)
-            {
-                delta = (((((double) rand() / double(RAND_MAX)) / 5.0f)-0.1f)*(int) 1000) / (1000.0f);  //Range -0.1f to +0.1f //resolution 0.001f
-                if (delta > 1.0f) delta = 1.0f;
-                if (delta < -1.0f) delta = -1.0f;
+                delta = (((((double) rand() / double(RAND_MAX)) / 5.0f) -0.1f)*(int) 1000) / (1000.0f);  //Range -0.1f to +0.1f //resolution 0.001f
                 randomval = (double) rand() / double(RAND_MAX); //
                 if (randomval < sim_parameter.weight_mutation_rate)
                 {
-                    Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight += delta;
-                }
-
-                if (Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight > 1.0f)
-                {
-                    Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight = 1.0f;
-                }
-                if (Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight < -1.0f)
-                {
-                    Agent->angle_net->m_layers[i][j]->m_outputWeights[w].weight = -1.0f;
+                    net->m_layers[i][j]->m_outputWeights[w].weight += delta;
                 }
             }
         }
     }
+    proove_net_maxvals(net);
 }
+
+
+//Evolutionary Algorithms
+void evolutionary::hillclimber(Agent *Agent, bool revert)
+{
+    do_or_save_revert(Agent, revert);
+
+    if(!revert)
+    {
+        mutate_net(Agent->angle_net);
+        mutate_net(Agent->velocity_net);
+    }
+    
+}
+
 
 void evolutionary::learn()
 {
@@ -430,6 +452,19 @@ int evolutionary::get_bestFitness_overall()
     return best_fitness;
 }
 
+float evolutionary::get_best_average_Fitness_overall()
+{
+    float best_average_fitness = 0.0f;
+
+    for(unsigned int i=0;i<average_fitnesses.size();i++)
+    {    
+        if (average_fitnesses[i] > best_average_fitness)
+        {
+            best_average_fitness = average_fitnesses[i];
+        }
+    }
+    return best_average_fitness;
+}
 
 void evolutionary::save_bestAgent()
 {

@@ -12,6 +12,9 @@
 %utf8
 \usepackage[utf8]{inputenc}
 
+%Multicolumn lists
+\usepackage{multicol}
+
 %pseudo-code
 \usepackage[boxruled,vlined]{algorithm2e}
 
@@ -138,7 +141,7 @@
 %listing settings
 \lstset
 { 
-    language=C,                
+    language=C++,                
     basicstyle=\footnotesize\ttfamily,           
     numbers=left,
     stepnumber=5,    
@@ -204,7 +207,7 @@ to find out basically, how an intelligent system can be created by simple algori
 
 In this project neural networks of the second type are used, because the main interest lies in finding a good mathematical solution.
 
-
+2-dimensional because its easier to see.
 
 \section{State of the art}
 
@@ -219,7 +222,7 @@ intelligents.
 \subsection{The concept of agents}
 An agent is a programm that interacts self-sufficent depending on the actual state. It has sensors, a processing logic and actuators to interact with its environment. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the 
 
-
+TODO: Types of environment: Stochastic, deterministic, discrete, etc.
 
 \begin{center}
 	\begin{figure}[H]
@@ -235,13 +238,16 @@ An agent is a programm that interacts self-sufficent depending on the actual sta
 \section{Applications}
 
 \chapter{Optimization with evolutionary algorithms}
+
+
+
 Optimization is widely used, for example in information technology, engineering,
 economics, etc. Applications are the routing of circuits, the optimal usage of machinery,
 the traveling-salesman-problem and much more. It is often difficult to create a mathematical
 model of such optimization problems. Therefore in the last decades were developed methods who
 uses principles of the evolution.
-The simples method is the selection-method. In this model a dateset will be generated and randomly
-changes, called mutations, are made. The best datasets, chosen by the best fitness, will be kept.
+The simplest method is the selection-method. In this model a dateset will be generated and randomly
+changes, called mutations, are made. The best datasets, chosen by the best fitness, will be kept. The fitness depends on the modelisation of the problem.
 Each dateset is called an individual. A set of individuals is called a population. The individuals
 of a population can be recombined. Mostly the best individuals are recombined with randomly chosen
 ones. This method is more effective than the selection-method. This and other methods are  called
@@ -344,24 +350,569 @@ At the beginning a big T tends to equalize the probability of all chromosomes. F
 
 \subsection{Threshold accepting}
 
+\section{Recombination}
+
+
+
 \section{Applications}
+The use of a specific algorithm depends on the problem and its modelisation. In general all optimization-methods are equal in effectivity, if we look over all posible optimization-problems in one set (No-free-Lunch-Theorem Source). Astonishingly a purely random search isn't less effective.
+Some of the given methods are better in special cases than others. Also a good understanding of the problems topic is essentially. Evolutinary algortihms take advantage of reducing the set of problems and a good modelisation.
+Simulated annealing is suitable for functions with many local optima.
 
 % \section{Genetic algorithms - An artifical duck}
 
-\chapter{Alternative algorithms}
-In this chapter other intelligent algorithms are presented.
-These algortihms are for comparing the neural network to simpler
-methods.
+%\chapter{Alternative algorithms}
+%In this chapter other intelligent algorithms are presented.
+%These algortihms are for comparing the neural network to %simpler
+%methods.
 
-\section{The greedy algorithm}
+%\section{The greedy algorithm}
 
-\subsection{Weaknesses}
+%\subsection{Weaknesses}
 
-\section{Applications}
-
-
+%\section{Applications}
 
 
+
+
+
+\chapter{The Box2D-Physicsengine}
+Box2D is 2-dimensional physics engine, created by Erin Catto. It is licensed under the zlib-license, hence it is noncommercial and open source. The Box2D library is written platform-independently in C++. It is used mainly for gamedevelopment. There exist many portations to other programming languages, like Java and C\#. \\
+(source jbox2d)
+To setup Box2D look at:
+(source http://www.iforce2d.net/b2dtut/setup-linux)
+
+Box2D is used by the project to simulate a realistic physical environment, proving the agents behaviour. \\
+
+Erin Catto wrote a testing gui, called Testbed, using the opengl-framework GLUT, respectively freeglut for windows.
+
+The project-structure is based on the testbed-program.
+
+
+\section{Core concepts}
+In this section the main concepts of Box2D are explained.
+
+
+\subsection{Bodies}
+Bodies are the main objects, affected by physics-simulation.
+
+The body contains the following values: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{multicols}{2}
+			\begin{itemize}
+			\item \textbf{2D position vector}
+			\item \textbf{Angle}
+			\item \textbf{Velocity}
+			\item \textbf{Angular velocity}
+			\item \textbf{rotational inertia}
+			\item \textbf{mass}
+			\item \textbf{1 or more fixtures}
+			\end{itemize}
+		\end{multicols}
+	\end{minipage}
+}   \\
+\\
+
+
+
+A body contains one or more fixtures, containing the shape and more properties of the body.
+
+If a body is moved, also the fixtures are moved.
+
+\subsubsection*{Bodydefinitions}
+To create a body, a bodydefinition has to be created first. It's holding the bodytype, linear- and angular damping values, among other things.
+The bodydefinition can also be used to set the start- position and angle of the body. This can increase start-up performance.
+
+\subsubsection*{Body types}
+There are three types of bodies:
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item \textbf{Static body}
+			\item \textbf{Kinematic body}
+			\item \textbf{Dynamic body}
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+A \textbf{static body} is excluded from the simulation. It also doesn't move. Static bodies are used as world-borders for example. Static bodies doesn't collide with other static- or kinematic bodies. \\
+
+A \textbf{kinematic body} can move by setting its velocity, but isn't influenced by forces.
+Kinematic bodies doesn't collide with other static- or kinematic bodies.\\
+
+The \textbf{dynamic body} is the commonly used bodytype in Box2D-simulations. It is fully simulated and can be moved by the user or by forces, as its usual way.
+
+\subsubsection*{Damping, friction and gravity scale}
+Damping reduces the velocity (linear and angular) of the body.
+Friction reduces the velocity of a body at collision with other bodies.
+
+The damping parameter can be zero for no damping and infinite for full damping. In general a value between 0 and 0.1 is used.
+
+The gravity scale is a factor that determines how much the worlds gravity influences the body. 0 determines no influence.
+
+\subsubsection*{Activation and Sleeping}
+A body can be set asleep. Sleeping is used to save cpu-time. The body will be woken up, if an other body collides with it.
+A body can be completely excluded from simulation by setting it inactive instead.
+Instead of the sleeping-mode it will not be woken up.
+
+\subsubsection*{Methods}
+TODO
+
+\begin{lstlisting}[caption={Setting body definitions},label=lst:bodydef]
+b2BodyDef myBodyDef;
+myBodyDef.type = b2_dynamicBody;
+myBodyDef.position.Set(0, 20); //set start position
+myBodyDef.angle = 0; //set start angle
+\end{lstlisting}
+
+
+Transforming a body
+Set Velocity
+Set Angular velocity
+
+\subsection{Fixtures}
+Fixtures give bodies a shape and additional properties. A body can have multiple fixtures, with their positions relativly to the body's origin.
+
+The following properties are part of a fixture:
+
+
+\fbox{
+	\begin{minipage}{15cm}
+	\begin{multicols}{2}
+		\begin{itemize} 
+			\item \textbf{A shape}
+			\item \textbf{Broad-phase proxies}
+			\item \textbf{Density}
+			\item \textbf{Friction}
+			\item \textbf{Restitution}
+			\item \textbf{Collision filtering flags}
+			\item \textbf{Pointer to the affiliated body}
+			\item \textbf{User data}
+			\item \textbf{Sensor flag}
+		\end{itemize}
+	  \end{multicols}
+	\end{minipage}
+}   \\
+\\
+
+A single \textbf{shape} is contained by the fixture. The shape can be a rect, a polygon or a circle. Shapes aren't linked to the body directly, because they may be used independly of the simulation. Therefore the fixture is interposed between body and shape. In Box2D the maximum amount of vertices is defaultly set to eight. A vertex defines the position-vector of an body's edge. A polygon therefore can be created with a minimum of three position-vectors and maximally with eight.
+\\
+
+\textbf{Broad-phase proxies} are used internally by Box2D to accelerate collision detection. Therefore a dynamic tree containing the collision-pairs in form of AABB's(footnote) are used. In the most cases it isn't necessary for the user to use proxies. \\
+
+The \textbf{densitiy} is used for computation of the body's mass.\\
+
+The \textbf{friction} of two fixtures is multiplied at collision. \\
+
+\textbf{Restitution} makes a fixture elastic. Usually this value is set between 0 und 1. \\
+
+\textbf{Collision filtering flags} can be used to just allow specified groups of fixtures to collide. \\
+
+A \textbf{pointer to the affiliated body} is stored in the fixture.\\
+
+\textbf{User data} is used as a 'hook' to identify a fixture by an id or add it some self-defined properties. User data is a 'void *'-pointer. Therefore it can contain any datatype. \\
+
+The \textbf{sensor flag} defines that a fixture doesn't interact physically with other fixtures, except by detecting collisions. \\
+
+
+
+A fixture is created by initializing a fixture definition and passing its address to the body:
+
+\begin{lstlisting}[caption={Creation of a fixture (source Box2D manual)},label=lst:fixture-create]
+b2FixtureDef fixtureDef;
+fixtureDef.shape = &myShape;
+fixtureDef.density = 1.0f;
+b2Fixture* myFixture = myBody->CreateFixture(&fixtureDef);
+\end{lstlisting}
+
+
+\subsection{Joints}
+Joints are used to connect two or more bodies. For more detailed information read the Box2D manual Chapter 8.
+
+\subsection{World}
+A world is the simulation-environment. It contains all bodies and joints and manages all aspects for simulation. It is the main entity.
+
+The world represents a factory pattern, because it can create and detroy bodies and joints.
+
+\subsubsection*{Simulation parameters}
+The physics-simulation is controlled by three parameters: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item \textbf{timeStep} (float32) (Recommended: 1.0f /60.0f respectively 60Hz)
+			\item \textbf{velocityIterations} (int32) (Recommended: 8)
+			\item \textbf{positionIterations} (int32) (Recommended: 3)
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+These parameters are used by the Step-Method of the world in which one single simulationstep is processed. \\
+
+The \textbf{timeStep} parameter defines the time-resolution on which the simulation will update the environment. A lower timestep improves the quality of the simulation, but on costs of performance. A higher timestep increases the performance, but the simulation can be inaccurate on too low values.
+The default value is 60Hz. The author of Box2D suggests not to use values lower than 30Hz. As set, the timestep should not be changed as it could cause unwanted behaviour. For a faster simulation the step-method should just called multiple times. \\
+
+
+\textbf{Velocityiterations} is the resolution of computing impulses to move bodies precisly. The default value is 8. \\
+
+\textbf{Positioniterations} defines the resolution of overlapping bodies. This is important for a correct collision detection of bodies. The default value is 3. \\
+
+
+source: www.iforce2d.net/b2dtut/worlds
+source: box2d.org/manual.pdf
+
+\subsubsection*{Methods}
+TODO
+\begin{lstlisting}[caption={World creates a body},label=lst:world-body]
+b2Body* m_body = m_world->CreateBody(&myBodyDef);
+\end{lstlisting}
+
+\section{Collision detection}
+In Box2D collisions are computed between two fixtures. If a collision happens a contact object, containing information about collision coordinates, normals and impulse among ohter things, is created. A contact object can be used to manage a collision.
+
+The collision-computation processes four phases:
+TODO: Flowchart of a collision-process:
+
+
+source: iforce2D
+
+
+An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is used for fast performance of computing geometrical operations. (source: wikipedia)
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\textwidth,scale=1.0]{files/aabbs-crossing.png}  
+		\caption{Two AABBs are overlapping. (source iForce2D) \cite{box2d-iforce}.}
+		\label{fig:aabbs}
+	\end{figure}
+\end{center}
+If two AABBs are overlapping, a contact between the two fixtures is created, but the isTouching()-method returns 'False', because the shapes aren't overlapping.
+
+Sometimes, fast moving bodies misses collisions. Therefore it is possible to define the body as a bullet.
+This can be accomplished at creation of the body, by the body's definition instance:
+
+\begin{lstlisting}[caption={Define fixture as bullet before creation},label=lst:fixture-bullet-before]
+bodyDef.bullet = true;
+\end{lstlisting}
+
+Or after the creation of a body by the following method:
+
+\begin{lstlisting}[caption={Define fixture as bullet after creation},label=lst:fixture-bullet-after]
+body->SetBullet(true);
+\end{lstlisting}
+
+The following figure shows the processing of a collision:
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,scale=1.0]{files/fixtures-overlap.png}
+		\caption{Two fixtures are overlapping (source iForce2D) \cite{box2d-iforce}.}
+		\label{fig:fixture-overlap}
+	\end{figure}
+\end{center}
+
+In the first picture, a contact is created, because the AABBs of the two object are overlapping.
+The second picture shows non-bullet bodies overlapping. A bullet-body takes more cpu-time to compute but would get picture three as result.
+
+Bullet bodies
+
+\subsection{Contact listener}
+The contact listener calls callback-methods if the events 'Begin contact' and 'End contact' are triggered.
+On a collision a contact object is created containing information about the fixtures collision.
+Contacts are used to manage collisions between two fixtures.
+
+To access the contact and the two colliding fixture a contact listener should be used.
+
+TODO: accessing contacts, 
+
+
+\begin{lstlisting}[caption={Contact listener methods},label=lst:collision-contact]
+/b2ContactListener
+// Called when two fixtures begin to touch
+virtual void BeginContact(b2Contact* contact);
+// Called when two fixtures cease to touch
+virtual void EndContact(b2Contact* contact);
+// Called after collision is detected
+virtual void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
+// Called after computing the results of the collision
+virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+\end{lstlisting}
+
+\subsubsection*{Begin contact}
+This callback is executed when two fixtures begin touching.
+
+\subsubsection*{End contact}
+The end contact callback is called when the two colliding fixtures cease touching.
+
+\subsubsection*{Presolve}
+The presolve callback is executed after detection of a collision, but before computing the resulting impulses. It contains a pointer to the contact.
+
+\subsubsection*{Postsolve}
+The postsolve callback is executed after computation and applying the contactimpulses of the collision. It contains a pointer to the contact and also the computed impulsedata.
+
+\subsection{Collision filtering}
+The default behaviour is that all fixtures can collide with each other. If you want to specify which groups of fixtures can collide and which pass through each other, you can use category- and mask bits to manage 16 groups of fixtures. If you need more precise behaviour you can use group indizes or define own rules by overriding the 'ShouldCollide'-method.
+
+\subsubsection*{Category- and maskbits}
+
+These bits are 16-Bit wide and therefore 16 groups are supported.
+Category bits declare on which groups a fixture belongs. A fixture has to belong to minimal one and maximal 16 groups.
+The mask bit defines with what group of fixtures this fixture can collide. The default values are 0x0001 for category bits and 0xFFFF for mask bits, meaning every fixture can collide with each other.
+
+\subsubsection*{Group indizes}
+Group indizes can be used to get a more specified behaviour as only with category- and maskbits.
+The standard value of the group index for a fixture is zero, means group index isn't used, instead the category- and maskbits are used. The value otherwise can be positive or negative.
+
+For a value nonzero the following rules are applied at collision: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item if both groupindizes are different, use the category/mask rules as described above
+			\item if both groupindizes are equal and positive, collide
+			\item if both groupindizes are equal and negative, don't collide
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+\subsubsection*{Contact filter}
+For an own specification of collision behaviour the following virtual method can be overwritten: \\
+\begin{lstlisting}[caption={The contact filter method},label=lst:box2d-contactfiler]
+bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB);
+\end{lstlisting}
+
+
+\section{DebugDraw}
+The debugdraw class is used as a debugging feature to display the physics simulation of Box2D. It uses OpenGL. Debugdraw can draw the shapes, contact points, contact normals, the AABBs, etc.
+As the debugdraw offers all wanted basic shapes it is used by the simulator.
+
+To use the debug-draw first the debugdraw object hast to instanciate and linked to the world by: \\
+
+\begin{lstlisting}[caption={Linking debugdraw instance to the world instance},label=lst:box2d-ddrawset]
+m_world->setDebugDraw(&m_debugDraw);
+\end{lstlisting}
+
+Setting the flags to determine what has to be drawn:
+
+\begin{lstlisting}[caption={Initializing DebugDraw},label=lst:box2d-ddrawinit]
+uint32 flags = 0;
+
+flags += b2Draw::e_shapeBit; //Enable drawing shapes
+flags += b2Draw::e_jointBit; //Enable drawing joints
+flags += b2Draw::e_aabbBit; //Enable drawing AABBs
+flags += b2Draw::e_centerOfMassBit; //Enable drawing center of masses
+
+m_debugDraw.SetFlags(flags);
+\end{lstlisting}
+
+
+After each calling of the Step-method the following method has to be called: \\
+
+\begin{lstlisting}[caption={Using debugdraw after each step},label=lst:box2d-ddraw]
+m_world->DrawDebugData();
+\end{lstlisting}
+ 
+This draws every shape in the bodylist of the world.
+
+\section{Structure of a Box2D-Project}
+
+
+Important: In BeginContact and EndContact no change of active-flag and some other values of a body/fixture
+
+
+\section{Testbed}
+
+
+AnimalFixtureDef[i].isSensor = false;
+AnimalFixtureDef[i].friction = 1.0f;
+AnimalBodydef[i].linearDamping = 1.0f;
+AnimalBodydef[i].angularDamping = 2.0f;
+
+\chapter{The OpenGL graphics library}
+OpenGL stands for Open Graphics Library. It is a widely used for developing graphics applications and was published in 1992 by Silicon Graphics. Since 2006 it is maintained by the Khronos Group. It is licensed under a open source license. The logo and the trademark are licensed under a trademark-license.
+OpenGL is platform-independent.
+
+
+It is used by the project to accelerrate the simulator.
+
+The Box2D-Testbed uses GLUT respectively Freeglut and GLUI. Thererefore theses libraries are also used in this project.
+
+source: www.opengl.org
+www.sgi.com/tech/opengl/?/
+
+\section{Basics}
+
+\subsection{Cameras}
+
+Model Matrix
+Projection Matrix
+
+\section{The OpenGL Utility Toolkit (GLUT)}
+The OpenGL Utility Toolkit (GLUT) was developed by Mark Kilgard. It is used to extend OpenGL-Applications by window-management. GLUT is used for small- and medium sized OpenGL-applications.
+
+source: www.codeproject.com/Articles/19760/GLUT-Window-Template
+
+www.opengl.org/resources/libraries/glut/
+
+\subsection{Freeglut}
+Freeglut is developed by Pawel W. Olszta and is an alternative to GLUT. It is also a Windows substitute. Freeglut is still maintained. Freeglut is used, because the originally GLUT-library is deprecated and not maintained anymore.
+
+source: freeglut.sourceforge.net/
+
+\subsection{Program structure}
+In this section the basic structure of a freeglut-program is explained.
+The following code shows the initialization and creation of a window:
+
+\begin{lstlisting}[caption={Initialization a GLUT-program},label=lst:glut-init]
+#include "glut.h"
+
+int mainWindow;  //Window handler
+
+int main(int argc, char* argv[])
+{
+  // Glut initialitation
+  glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+  glutInitWindowPosition(0, 0); 
+  glutInitWindowSize(1024, 768);
+  
+  mainWindow = glutCreateWindow("Title");
+  
+  //Register function callbacks
+  glutDisplayFunc(Display);
+  glutKeyboardFunc(Keyhandler);
+  glutReshapeFunc(Resizehandler);
+  
+  //Here optionally a GLUI-window can be included, see Chapter 4.3
+  
+  //Enter glut main loop, usually no return from this function
+  glutMainLoop(); 
+  return 0;
+}
+\end{lstlisting}
+
+In the first lines glut is initialised, a window with specified position, size and a title is created.
+The variable 'mainWindow' is of type int. It stores the adress of the window-structure.
+
+In the second part of the codesnippet the handler-functions are set. The handler functions have to be static functions, because .
+At the end the glut main loop is entered. Usually this function never returns. In Freeglut there exist functions to leave and re-enter the main loop.
+
+The following Codesnippet shows the drawing of a simple triangle:
+
+\begin{lstlisting}[caption={Drawing some graphics},label=lst:glut-draw]
+static void Display()
+{
+  //Set the color to white
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  //Clear the Scene with selected color
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  //Switch to Modelview Matrix
+  glMatrixMode(GL_MODELVIEW);
+  //Replace the current matrix by the identity matrix
+  glLoadIdentity();
+  //Draw a blue triangle into the buffer
+  glColor3f(0.0f, 0.0f, 1.0f);
+  glBegin(GL_TRIANGLES);
+  glVertex3f(-0.5f, 0.5f, -5.0f);
+  glVertex3f(-1.0f, 1.5f, -5.0f);
+  glVertex3f(-1.5f, 0.5f, -5.0f);
+  glEnd();
+  //Finally draw the scene on screen
+  glutSwapBuffers();
+}
+\end{lstlisting}
+
+The first line sets the draw-color to white and with no transparency. The color is formatted in RGBA. The first three parameters represents the colors red, green and blue. The last parameter is alpha, the transparency of the figure. 0.0f means no quantity of the according parameter and 1.0f as the full quantity.
+ This is used by the second line to clear the scene.
+Then the viewmode is set, the position of the camera is loaded.
+With 'glBegin' the drawing of an object is started. In this example a triangle is drawn. Therefore the three vertices of the triangle has to OpenGl. This is done by. Each object has to finished with the 'glEnd'-command.
+At the end the buffer is swapped and the drawn scene is displayed at the screen.
+
+\begin{lstlisting}[caption={Resize camera perspective on window resize},label=lst:glut-resize]
+static void Resize(int w, int h)
+{
+//Set the viewport of the camera
+glViewport(0, 0, w, h);
+//Switch to the camera perspective matrix
+glMatrixMode(GL_PROJECTION); 
+//Reset the camera matrix
+glLoadIdentity();
+//Set camera angle, width-to-height ratio, near z and far z clipping coordinate
+gluPerspective(45.0f, (double)w / (double)h, 1.0f, 200.0f);
+}
+\end{lstlisting}
+
+The first line sets the viewports position and size. The following operations should than applied on the projection-matrix. Therefore the Matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered then.
+TODO: Figure of the camera perspective
+
+TODO: More Callbacks of GLUT: Idle, etc.
+
+\section{The OpenGL User Interface Library(GLUI)}
+The OpenGL User Inteface Library (GLUI) is a GLUT-based user interface library developed by Paul Rademacher. It is written in C++ and usable for multiple platforms.
+
+GLUI is used to implement GUI controls, like buttons, labels, listboxes, etc.
+
+The following figure shows some components of GLUI:
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\textwidth,scale=1.0]{files/glui.png}  
+		\caption{Some GLUI Components (source www.cs.unc.edu/~rademach/glui/) \cite{ogl-glui}.}
+		\label{fig:ogl-glui}
+	\end{figure}
+\end{center}
+
+source: www.codeproject.com/Articles/20286/GLUI-Window-Template
+
+glui.sourceforge.net/
+
+
+\subsection{GLUI-Program}
+
+Here is described how a GLUI-window is set up.
+The following code is included after the creation of a GLUT-window and before entering the glut main loop (see listing 4.1):
+
+
+\begin{lstlisting}[caption={Creating a GLUI-window},label=lst:glui-create]
+#include "glui.h"
+//GLUI window instance
+GLUI *glui;
+
+int main(int argc, char* argv[])
+{
+ ...
+ //after creation of glut-window
+ glui = GLUI_Master.create_glui("GLUI", 0);
+ //Add some components
+ glui->add_statictext( "Simple GLUI Example" );
+ glui->add_separator();
+ glui->add_checkbox( "Wireframe", &wireframe, 1, control_cb );
+ GLUI_Spinner *segment_spinner =
+ glui->add_spinner( "Segments:",GLUI_SPINNER_INT, &segments );
+ segment_spinner->set_int_limits( 3, 60, GLUI_LIMIT_WRAP );
+ GLUI_EditText *edittext =
+ glui->add_edittext( "Text:", GLUI_EDITTEXT_TEXT, text );
+ //Set the main gfx window
+ glui->set_main_gfx_window(main_window);
+ //Register the Idle callback with GLUI (instead of with GLUT)
+ GLUI_Master.set_glutIdleFunc(GlutIdle);
+}
+\end{lstlisting}
+
+First the glui-instance is initialized. In the following lines gui-components are added. Some components need a variable to point on. This is necessary to store input values from the user. The components can be dimensionized, e.g. the spinners minimum and maximum value is set.
+At the end the corrosponding glut window has to be registered in the glui-window.
+Callbacks are now defined. This has to be static functions, like in GLUT.
+
+'GLUI\_Master' is a global GLUI-object used to register callbacks, as glui-windows use for example the idle-callback extensively to control components status.
 
 \chapter{Development of a simulator for virtual agents}
 
@@ -402,6 +953,8 @@ Scalable World:
 
 Buttons, Modes
 
+Optical Design of the gui
+
 Weight-Matrix
 
 Neural Network Activation
@@ -439,20 +992,40 @@ Rotation by angle the agent: [-1.0, 1.0] (with a resolution of 0.001)
 multiplied with the maximum rotationspeed of 0.075
 
 
+\subsection{File saving and loading}
+
+TODO Parser diagram loading the data.
+
 %The
 %To minimize  that the agents are missing
 
 \section{OpenGL}
+Used to accelerate the simulation.
+
 
 GLUT, Windows Substitute Freeglut and GLUI. (used because Box2D Testbed used it)
 
+\subsection{Rendering system}
 
-\section{The Box2D-Physicsengine}
+\subsection{ViewPort}
 
-    AnimalFixtureDef[i].isSensor = false;
-    AnimalFixtureDef[i].friction = 1.0f;
-    AnimalBodydef[i].linearDamping = 1.0f;
-    AnimalBodydef[i].angularDamping = 2.0f;
+\subsection{MainLoop}
+
+Concept
+
+\subsection{ViewPort}
+
+\section{Box2D}
+
+Call the Step-multiple times instead of changing the timestepvalue
+
+Care that the fixture shapes center is at (0,0) (The body's center). Can be problem at rotation if shape is not centered.
+
+Coordinate system transformation for each agent.
+
+Sensor as semicircle (Source: iforce2D Radarsensor)
+
+Detection of food: atan2-function
 
 \section{Tools}
 Make, CMake
@@ -467,6 +1040,9 @@ Neural Network
 
 
 % \subsection{Neural networks}
+
+
+
 
 \chapter{Results of the simulation}
 
