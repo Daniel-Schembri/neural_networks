@@ -69,7 +69,8 @@ class evolutionary
         std::vector< std::vector<double> > trainingdataV;
         std::vector< std::vector<double> > trainingdataA;
 
-        double revert_agent[100][100][100];
+        double revert_agent_a[100][100][100];
+        double revert_agent_v[100][100][100];
 
         //Methods
 
@@ -95,6 +96,10 @@ class evolutionary
 
     private:
 
+        void do_or_save_revert(Agent *agent, bool revert);
+        void mutate_net(Net *net);
+        void proove_net_maxvals(Net *net);
+
         int evolve_crossover();
         int evolve_hillclimber();
         int evolve_learn();
@@ -103,7 +108,6 @@ class evolutionary
         vector<Agent*> crossover(Agent& mum, Agent& dad);
         void hillclimber(Agent *Agent, bool revert);
         void learn();
-        void simulated_annealing(Agent *Agent, bool revert);
 
 		void save_vals(std::vector< std::vector<double> > inputvals_vector, std::vector< std::vector<double> > results_vector);
 };
