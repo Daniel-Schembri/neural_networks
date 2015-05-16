@@ -4,11 +4,11 @@
 #include "commonDefs.hpp"
 #include "neuron.hpp"
 
-class srnNeuron : public Neuron
+class SRNNeuron : public Neuron
 {
 public:
-    srnNeuron(unsigned numOutputs, unsigned myIndex,double alpha, double eta);
-    virtual ~srnNeuron();
+    SRNNeuron(unsigned numOutputs, unsigned myIndex,double alpha, double eta);
+    virtual ~SRNNeuron();
 
     double getGradient() const;
     double getInput() const {return m_input;}

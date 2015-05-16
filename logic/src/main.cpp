@@ -19,25 +19,25 @@ using namespace std;
 class TrainingData
 {
 public:
-    TrainingData(const string filename);
+    TrainingData(const std::string filename);
     bool isEof() {return m_trainingDataFile.eof();}
-    void getTopology(vector<unsigned> &topology);
+    void getTopology(std::vector<unsigned> &topology);
 
     // Returns the number of input values read from the file:
-    unsigned getNextInputs(vector<double> &inputVals);
-    unsigned getTargetOutputs(vector<double> &targetOutputVals);
+    unsigned getNextInputs(std::vector<double> &inputVals);
+    unsigned getTargetOutputs(std::vector<double> &targetOutputVals);
 
 private:
     ifstream m_trainingDataFile;
 };
 
-void TrainingData::getTopology(vector<unsigned> &topology)
+void TrainingData::getTopology(std::vector<unsigned> &topology)
 {
-    string line;
-    string label;
+    std::string line;
+    std::string label;
 
     getline(m_trainingDataFile, line);
-    stringstream ss(line);
+    std::stringstream ss(line);
 
     ss >> label;
     if (this->isEof() || label.compare("topology:") != 0)
@@ -53,7 +53,7 @@ void TrainingData::getTopology(vector<unsigned> &topology)
     return;
 }
 
-TrainingData::TrainingData(const string filename)
+TrainingData::TrainingData(const std::string filename)
 {
     m_trainingDataFile.open(filename.c_str());
     if (m_trainingDataFile.fail())
@@ -63,15 +63,15 @@ TrainingData::TrainingData(const string filename)
     }
 }
 
-unsigned TrainingData::getNextInputs(vector<double> &inputVals)
+unsigned TrainingData::getNextInputs(std::vector<double> &inputVals)
 {
     inputVals.clear();
 
-    string line;
+    std::string line;
     getline(m_trainingDataFile, line);
-    stringstream ss(line);
+    std::stringstream ss(line);
 
-    string label;
+    std::string label;
     ss >> label;
     if (label.compare("in:") == 0) 
     {
@@ -83,15 +83,15 @@ unsigned TrainingData::getNextInputs(vector<double> &inputVals)
     return inputVals.size();
 }
 
-unsigned TrainingData::getTargetOutputs(vector<double> &targetOutputVals)
+unsigned TrainingData::getTargetOutputs(std::vector<double> &targetOutputVals)
 {
     targetOutputVals.clear();
 
-    string line;
+    std::string line;
     getline(m_trainingDataFile, line);
-    stringstream ss(line);
+    std::stringstream ss(line);
 
-    string label;
+    std::string label;
     ss >> label;
     if (label.compare("out:") == 0) 
     {
@@ -103,7 +103,7 @@ unsigned TrainingData::getTargetOutputs(vector<double> &targetOutputVals)
     return targetOutputVals.size();
 }
 
-void showVectorVals(string label, vector<double> &v)
+void showVectorVals(std::string label, std::vector<double> &v)
 {
     cout << label << " ";
     for (unsigned i = 0; i < v.size(); ++i) 
@@ -122,13 +122,13 @@ int main()
     TrainingData trainData("./src/training/trainingDataV.txt");
 
     // e.g., { 3, 2, 1 }
-    vector<unsigned> topology;
+    std::vector<unsigned> topology;
     trainData.getTopology(topology);
 
     // use bias neurons
-    FeedForwardNet myNet(topology, true);
+    SRN myNet(topology, 5, false);
 
-    vector<double> inputVals, targetVals, resultVals;
+    std::vector<double> inputVals, targetVals, resultVals;
     int trainingPass = 0;
 
     while (!trainData.isEof()) 

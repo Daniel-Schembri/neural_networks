@@ -39,23 +39,23 @@ SRCS   = script.cpp \
 	     net.cpp \
 	     feedForwardNet.cpp \
 	     srn.cpp \
-	     competitive.cpp \
-		 selfOrganizingMap.cpp \
          neuron.cpp \
 		 ffNeuron.cpp \
 		 srnNeuron.cpp \
-		 somNeuron.cpp \
-		 competitiveNeuron.cpp \
 		 agent.cpp \
 		 evolutionary.cpp \
 	     main.cpp 
+#	     competitive.cpp \
+#		 selfOrganizingMap.cpp \
+#		 somNeuron.cpp \
+#		 competitiveNeuron.cpp \
 
 OBJS   = ${SRCS:%.cpp=%.o}
 
 TARGET = neural_network
 
 %.o:$(SRCDIR)%.cpp
-	$(CXX) -c -o $@ $(CXXFLAGS) $< #$(CXXDEBUGFLAGS) $<
+	$(CXX) -c -o $@ $(CXXFLAGS) $(CXXDEBUGFLAGS) $<
 
 default: $(TARGET)
 

@@ -24,8 +24,8 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
 		angle_net    = new FeedForwardNet(topology, true);
 		break;
 	case NET_SRN:
-		velocity_net = new srn(topology, true);
-		angle_net    = new srn(topology, true);
+		velocity_net = new SRN(topology, 5, true);
+		angle_net    = new SRN(topology, 5, true);
 		break;
 	case NET_SCRIPT:
         myscript = new Script();
@@ -56,8 +56,8 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
 		angle_net    = new FeedForwardNet(topology, true);
 		break;
 	case NET_SRN:
-		velocity_net = new srn(topology, true);
-		angle_net    = new srn(topology, true);
+		velocity_net = new SRN(topology, 5, true);
+		angle_net    = new SRN(topology, 5, true);
 		break;
 	case NET_SCRIPT:
         myscript = new Script();

@@ -7,11 +7,9 @@
 #define MOMENTUM (0.5)
 #define SIGHT_RADIUS (20.0)
 
-using std::vector;
-
 class Neuron;
 
-typedef vector<Neuron*> Layer;
+typedef std::vector<Neuron*> Layer;
 
 //connection between neurons
 struct Connection
@@ -20,7 +18,7 @@ struct Connection
     double deltaWeight;
 };
 
-typedef vector<vector<vector<Connection>>> WeightMatrix; 
+typedef std::vector<std::vector<std::vector<Connection>>> WeightMatrix; 
 
 template <typename T> int sgn(T val)
 {
