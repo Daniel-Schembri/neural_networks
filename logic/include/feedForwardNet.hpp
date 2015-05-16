@@ -1,10 +1,3 @@
-//------------------------------------------------------
-//Author             : Jonathan Schwarz
-//University         : Pforzheim University
-//Date of last edit  : Mon, 15 Sep 2014 16:25:34 +0200
-//Filename           : feedForwardNet.hpp
-//------------------------------------------------------
-
 #ifndef FEED_FORWARD_NET_HPP
 #define FEED_FORWARD_NET_HPP
 

@@ -1,5 +1,3 @@
-// neural-net-tutorial.cpp
-
 #include <vector>
 #include <iostream>
 #include <cstdlib>

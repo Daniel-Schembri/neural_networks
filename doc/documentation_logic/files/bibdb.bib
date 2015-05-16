@@ -2,6 +2,14 @@
 % Encoding: UTF-8
 
 
+@Electronic{OXFORD,
+  Title                    = {Definition of evolution.},
+  Author                   = {The free dictionary},
+  Url                      = {http://www.thefreedictionary.com/evolution},
+
+  Timestamp                = {2015.05.14}
+}
+
 @Book{MLDEF2,
   Title                    = {Pattern Recognition and Machine Learning},
   Author                   = {C. M. Bishop},
@@ -19,13 +27,37 @@
   Volume                   = {3}
 }
 
+@Electronic{BACK1,
+  Title                    = {Optimal programming problems with inequality constraints. I: Necessary conditions for extremal solutions.},
+  Author                   = {Bryson, A.E. and W.F. Denham and S.E. Dreyfus},
+  HowPublished             = {AIAA J. 1, 11},
+  Year                     = {1963}
+}
+
+@Electronic{BACK2,
+  Title                    = {Applied optimal control: optimization, estimation, and control.},
+  Author                   = {Arthur E. Bryson and Yu-Chi Ho},
+  HowPublished             = {Blaisdell Publishing Company or Xerox College Publishing.},
+  Year                     = {1969}
+}
+
+@Electronic{UNIFORMCROSSOVER,
+  Title                    = {Explaining Optimization In Genetic Algorithms with Uniform Crossover},
+  Author                   = {Keki M Burjorjee},
+  Organization             = {Zite, Inc.},
+  Url                      = {http://s3.amazonaws.com/burjorjee/www/foga010-burjorjee.pdf},
+  Year                     = {2013},
+
+  Abstract                 = {Hyperclimbing is an intuitive, general-purpose, global optimization heuristic applicable to discrete product spaces with rugged or stochastic cost functions. The strength of this heuristic lies in its insusceptibility to local optima when the cost function is deterministic, and its tolerance for noise when the cost function is stochastic. Hyperclimbing works by decimating a search space, i.e., by iteratively fixing the values of small numbers of variables. The hyperclimbing hypothesis posits that genetic algorithms with uniform crossover (UGAs) perform optimization by implementing efficient hyperclimbing. Proof of concept for the hyperclimbing hypothesis comes from the use of an analytic technique that exploits algorithmic symmetry. By way of validation, we present experimental results showing that a simple tweak inspired by the hyperclimbing hypothesis dramatically improves the performance of a UGA on large, random instances of MAX-3SAT and the Sherrington Kirkpatrick Spin Glasses problem. An exciting corollary of the hyperclimbing hypothesis is that a form of implicit parallelism more powerful than the kind described by Holland underlies optimization in UGAs. The implications of the hyperclimbing hypothesis for Evolutionary Computation and Artificial Intelligence are discussed.},
+  Timestamp                = {2015.05.15}
+}
+
 @Book{callan,
   Title                    = {Neuronale Netze im Klartext},
   Author                   = {Robert Callan},
   Publisher                = {Pearson},
   Year                     = {2003},
 
-  Owner                    = {Daniel},
   Timestamp                = {2014.10.09}
 }
 
@@ -38,14 +70,10 @@
   Url                      = {http://bio3520.nicerweb.com/Locked/chap/ch03/neuron.html}
 }
 
-@Book{NNGER,
-  Title                    = {Neuronale Netzwerkte: Einführung, Überblick und Anwendungsmöglichkeiten},
-  Author                   = {Eberhard Schöneburg, Nikolaus Hansen, Andreas Gawelczyk},
-  Publisher                = {Markt \& Technik},
-  Year                     = {1990},
-
-  Owner                    = {srd-sj},
-  Timestamp                = {2015.03.04}
+@Book{DARWIN,
+  Title                    = {On the origin of species by means of natural selection.},
+  Author                   = {Charles Darwin},
+  Year                     = {1859}
 }
 
 @InProceedings{XIXU96,
@@ -65,18 +93,7 @@
   Year                     = {2013},
   Volume                   = {1},
 
-  Owner                    = {jona},
   Timestamp                = {2015.04.12}
-}
-
-@Article{NURING,
-  Title                    = {Turing compability with neural nets},
-  Author                   = {Hava T. Siegelmann, Eduardo D. Sontag},
-  Journal                  = {Appl. Math. Lett.},
-  Year                     = {1991},
-
-  Owner                    = {srd-sj},
-  Timestamp                = {2015.03.05}
 }
 
 @Book{HEBB,
@@ -84,16 +101,6 @@
   Author                   = {D. O. Hebb},
   Publisher                = {Erlbaum Books},
   Year                     = {1949}
-}
-
-@Book{NEUINF,
-  Title                    = {Neuronale Netze: Eine Einführung in die Neuroinformatik selbstorganisierender Netzwerke},
-  Author                   = {Helge Ritter, Thomas Martinetz, Klaus Schulten},
-  Publisher                = {Addison-Wesley},
-  Year                     = {1991},
-
-  Owner                    = {srd-sj},
-  Timestamp                = {2015.03.05}
 }
 
 @Article{KLASS,
@@ -104,26 +111,76 @@
 
   Month                    = {December},
 
-  Owner                    = {Daniel},
   Timestamp                = {2014.10.07},
   Url                      = {http://kcode.de/wordpress/wp-content/uploads/2010/10/Paper_NN3Gen.pdf}
 }
 
-@Booklet{MINGW,
-  Title                    = {Minimalist GNU for Windows (MinGW)},
-  Author                   = {MinGW-Team},
+@MastersThesis{CROSSOVER,
+  Title                    = {Combining Genetic Algorithms and Neural Networks: The Encoding Problem},
+  Author                   = {Philipp Koehn},
+  School                   = {The University of Tennessee},
+  Year                     = {1994},
 
-  LastChecked              = {17.05.2013},
-  Url                      = {http://www.mingw.org/}
+  Abstract                 = {Neural networks and genetic algorithms demonstrate powerful problem solving ability. They are based on quite simple principles, but take advantage of their mathematical nature: non-linear iteration. Neural networks with backpropagation learning showed results by searching for various kinds of functions. However, the choice of the basic parameter (network topology, learning rate, initial weights) often already determines the success of the training process. The selection of these parameter follow in practical use rules of thumb, but their value is at most arguable. Genetic algorithms are global search methods, that are based on principles like selection, crossover and mutation. This thesis examines how genetic algorithms can be used to optimize the network topology etc. of neural networks. It investigates, how various encoding strategies influence the GA/NN synergy. They are evaluated according to their performance on academic and practical problems of different complexity. A research tool has been implemented, using the programming language C++. Its basic properties are described.}
+}
+
+@InBook{MLDEF1,
+  Title                    = {Machine Learning},
+  Author                   = {Ron Kovahi and Foster Provost},
+  Chapter                  = {Glossary of terms},
+  Pages                    = {271-274},
+  Publisher                = {Springer},
+  Year                     = {1998},
+  Volume                   = {30}
+}
+
+@Electronic{GENTSP,
+  Title                    = {Genetic Algorithms for the Travelling Salesman Problem: A Review of Representations and Operators},
+  Author                   = {P. Larranaga and C.M.H. Kuijpers and R.H. Murga and I. Inza and S. Dizdarevi},
+  Organization             = {University of the Basque Country},
+  Url                      = {http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=ABBB67004BF6EC99532E2697D5AE416B?doi=10.1.1.35.8882&rep=rep1&type=pdf},
+  Year                     = {1999},
+
+  Abstract                 = {This paper is the result of a literature study arried out by the authors. It is a review of the dierent attempts made to solve the Travelling Salesman Problem with Geneti Algorithms. We present rossover and mutation operators, developed to takle the Travelling Salesman Problem with Geneti Algorithms with dierent representations suh as: binary representation, path representation, adjaeny representation, ordinal representation and matrix representation. Likewise, we show the experimental results obtained with dierent standard examples using ombination of rossover and mutation operators in relation with path representation.},
+  Timestamp                = {2015.05.15}
 }
 
 @Book{NEURONMATH,
   Title                    = {A logical calculus of the ideas immanent in nervous activity.},
-  Author                   = {W. McCulloch; W. Pitts},
+  Author                   = {W. McCulloch and W. Pitts},
   Publisher                = {Bulletin of Mathematical Biophysics},
   Year                     = {1943},
 
   Pages                    = {115-533}
+}
+
+@Electronic{BTT2,
+  Title                    = {A Focused Backpropagation Algorithm for Temporal Pattern Recognition.},
+
+  Address                  = {Hillsdale, NJ},
+  Author                   = {M. C. Mozer and Y. Chauvin and D. Rumelhart},
+  HowPublished             = {Lawrence Erlbaum Associates},
+  Year                     = {1995},
+
+  Timestamp                = {2015.05.15}
+}
+
+@Book{NEUINF,
+  Title                    = {Neuronale Netze: Eine Einführung in die Neuroinformatik selbstorganisierender Netzwerke},
+  Author                   = {Helge Ritter and Thomas Martinetz and Klaus Schulten},
+  Publisher                = {Addison-Wesley},
+  Year                     = {1991},
+
+  Timestamp                = {2015.03.05}
+}
+
+@TechReport{BTT3,
+  Title                    = {The utility driven dynamic error propagation network},
+  Author                   = {A. J. Robinson and F. Fallside},
+  Institution              = {Cambridge University, Engineering Department},
+  Year                     = {1987},
+
+  Timestamp                = {2015.05.15}
 }
 
 @Book{rojas,
@@ -132,28 +189,34 @@
   Publisher                = {Springer},
   Year                     = {1996},
 
-  Owner                    = {Daniel},
   Timestamp                = {2014.10.09}
 }
 
-@InBook{MLDEF1,
-  Title                    = {Machine Learning},
-  Author                   = {Ron Kovahi, Foster Provost},
-  Chapter                  = {Glossary of terms},
-  Pages                    = {271-274},
-  Publisher                = {Springer},
-  Year                     = {1998},
-  Volume                   = {30}
-}
-
-@TechReport{DANIEL,
+@Article{DANIEL,
   Title                    = {Simulation and evolutionary training of object collecting agents},
   Author                   = {Daniel Schembri},
-  Institution              = {Pforzheim University, School of Engineering},
   Year                     = {2015},
 
-  Owner                    = {srd-sj},
+  Institution              = {Pforzheim University, School of Engineering},
   Timestamp                = {2015.03.12}
+}
+
+@Book{NNGER,
+  Title                    = {Neuronale Netzwerkte: Einführung, Überblick und Anwendungsmöglichkeiten},
+  Author                   = {Eberhard Schöneburg and Nikolaus Hansen and Andreas Gawelczyk},
+  Publisher                = {Markt \& Technik},
+  Year                     = {1990},
+
+  Timestamp                = {2015.03.04}
+}
+
+@Article{NURING,
+  Title                    = {Turing compability with neural nets},
+  Author                   = {Hava T. Siegelmann and Eduardo D. Sontag},
+  Journal                  = {Appl. Math. Lett.},
+  Year                     = {1991},
+
+  Timestamp                = {2015.03.05}
 }
 
 @Book{GRADDESC,
@@ -171,7 +234,8 @@
   Url                      = {http://martin-thoma.com/pdf/bsthesis-thoma-2014-11-07.pdf},
   Year                     = {2014},
 
-  Abstract                 = {Finding the name of an unknown symbol is often hard, but writing the symbol is easy. This bachelor’s thesis presents multiple systems that use the pen trajectory to classify handwritten symbols. Five preprocessing steps, one data multiplication algorithm, five features and five variants for multilayer Perceptron training were evaluated using 166 898 recordings which were collected with two crowdsourcing projects. The evaluation results of these 21 experiments were used to create an optimized recognizer which has a TOP1 error of less than 17.5 % and a TOP3 error of 4.0 %. This is improvement of 18.5 % for the TOP1 error and 29.7 % for the TOP3 error.}
+  Abstract                 = {Finding the name of an unknown symbol is often hard, but writing the symbol is easy. This bachelor’s thesis presents multiple systems that use the pen trajectory to classify handwritten symbols. Five preprocessing steps, one data multiplication algorithm, five features and five variants for multilayer Perceptron training were evaluated using 166 898 recordings which were collected with two crowdsourcing projects. The evaluation results of these 21 experiments were used to create an optimized recognizer which has a TOP1 error of less than 17.5 % and a TOP3 error of 4.0 %. This is improvement of 18.5 % for the TOP1 error and 29.7 % for the TOP3 error.},
+  Timestamp                = {2015.05.15}
 }
 
 @Electronic{GRADFIG,
@@ -180,7 +244,9 @@
   Month                    = {May},
   Organization             = {FU Berlin},
   Url                      = {http://ipvs.informatik.uni-stuttgart.de/mlr/marc/notes/gradientDescent.pdf},
-  Year                     = {2012}
+  Year                     = {2012},
+
+  Timestamp                = {2015.05.15}
 }
 
 @PhdThesis{CU2012,
@@ -189,6 +255,33 @@
   School                   = {Technische Universität Ilmenau},
   Year                     = {2012},
   Type                     = {Dissertation}
+}
+
+@Electronic{SELECTCROSSOVER,
+  Title                    = {Selective Crossover in Genetic Algorithms: An Empirical Study},
+  Author                   = {Kanta Vekaria and Chris Clack},
+  Organization             = {University College London},
+  Url                      = {http://www0.cs.ucl.ac.uk/staff/C.Clack/PPSN98.pdf},
+  Year                     = {1998},
+
+  Abstract                 = {The performance of a genetic algorithm (GA) is dependent on many factors: the type of crossover operator, the rate of crossover, the rate of mutation, population size, and the encoding used are just a few examples. Currently, GA practitioners pick and choose GA parameters empirically until they achieve adequate performance for a given problem. In this paper we have isolated one such parameter: the crossover operator. The motivation for this study is to provide an adaptive crossover operator that gives best overall performance on a large set of problems. A new adaptive crossover operator “selective crossover” is proposed and is compared with two-point and uniform crossover on a problem generator where epistasis can be varied and on trap functions where deception can be varied. We provide empirical results which show that selective crossover is more efficient than two-point and uniform crossover across a representative set of search problems containing epistasis.},
+  Timestamp                = {2015.05.15}
+}
+
+@Electronic{BTT1,
+  Title                    = {Backpropagation Through Time: What It Does and How to Do It},
+  Author                   = {Paul J. Werbos},
+  Url                      = {http://deeplearning.cs.cmu.edu/pdfs/Werbos.backprop.pdf},
+  Year                     = {1990},
+
+  Timestamp                = {2015.05.15}
+}
+
+@PhdThesis{BACK3,
+  Title                    = {Beyond Regression: New Tools for Prediction and Analysis in the Behavioral Sciences.},
+  Author                   = {Paul J. Werbos},
+  School                   = {Harvard University},
+  Year                     = {1974}
 }
 
 @comment{jabref-meta: selector_publisher:}

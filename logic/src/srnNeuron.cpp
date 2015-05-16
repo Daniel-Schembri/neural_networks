@@ -31,6 +31,20 @@ void srnNeuron::calcOutputGradients(double targetVal)
     m_gradient = delta * srnNeuron::transferFunctionDerivative(m_outputVal);
 }
 
+double srnNeuron::getInput(const std::vector<Layer> &layers, const unsigned &myLayer)
+{
+    double sum = 0.0;
+
+    unsigned nbNeuronsInLayer = layers[myLayer - 1].size();
+    
+    // Sums up everything including bias, if existent
+    for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
+        sum += layers[myLayer - 1][n]->getOutputVal() *
+               layers[myLayer - 1][n]->m_outputWeights[m_myIndex].weight;
+
+    return sum;
+}
+
 void srnNeuron::feedForward(const std::vector<Layer> &layers, const unsigned &myLayer)
 {
     double sum = 0.0;
@@ -101,7 +115,7 @@ void srnNeuron::updateInputWeights(const std::vector<Layer> &layers, const unsig
     }
 }
 
-void srnNeuron::singleConnection(const unsigned &index, const unsigned &weight)
+void srnNeuron::singleConnection(const unsigned &index, const double &weight, const double &deltaWeight) 
 {
     unsigned size = m_outputWeights.size();
 
@@ -112,7 +126,7 @@ void srnNeuron::singleConnection(const unsigned &index, const unsigned &weight)
         m_outputWeights.back().weight = 0.0;
     }
 
-    for(unsigned i=0;i<m_outputWeights.size();i++)
+    for(unsigned i=0; i<m_outputWeights.size(); ++i)
     {
         if(index != i)
         {
@@ -122,6 +136,7 @@ void srnNeuron::singleConnection(const unsigned &index, const unsigned &weight)
         else
         {
             m_outputWeights[i].weight = weight;
+            m_outputWeights[i].deltaWeight = deltaWeight;
         }
     }
 }

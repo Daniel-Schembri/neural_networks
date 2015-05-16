@@ -1,10 +1,3 @@
-//------------------------------------------------------
-//Author             : Jonathan Schwarz
-//University         : Pforzheim University
-//Date of last edit  : Mon, 15 Sep 2014 16:29:12 +0200
-//Filename           : competitive.hpp
-//------------------------------------------------------
-
 #ifndef COMPETITIVE_HPP
 #define COMPETITIVE_HPP
 

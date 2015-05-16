@@ -1,10 +1,3 @@
-//------------------------------------------------------
-//Author             : Jonathan Schwarz
-//University         : Pforzheim University
-//Date of last edit  : Wed, 24 Sep 2014 07:59:00 +0200
-//Filename           : selfOrganizingMap.hpp
-//------------------------------------------------------
-
 #ifndef SELF_ORGANIZING_MAP_HPP
 #define SELF_ORGANIZING_MAP_HPP
 

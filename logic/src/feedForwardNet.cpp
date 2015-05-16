@@ -1,10 +1,3 @@
-//------------------------------------------------------
-//Author             : Jonathan Schwarz
-//University         : Pforzheim University
-//Date of last edit  : Mon, 15 Sep 2014 16:32:09 +0200
-//Filename           : feedForwardNet.cpp
-//------------------------------------------------------
-
 #include "feedForwardNet.hpp"
 
 FeedForwardNet::FeedForwardNet(const std::vector<unsigned> &topology, const bool &bias)

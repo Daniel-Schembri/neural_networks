@@ -1,10 +1,3 @@
-//------------------------------------------------------
-//Author             : Jonathan Schwarz
-//University         : Pforzheim University
-//Date of last edit  : Mon, 08 Sep 2014 11:10:32 +0200
-//Filename           : net.cpp
-//------------------------------------------------------
-
 #include "net.hpp"
 
 Net::Net()
