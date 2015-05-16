@@ -25,6 +25,7 @@ public:
 protected:
     double m_error;
     double m_initialX; 
+    unsigned m_inputNeurons; 
     size_t m_iterations; // Keeps track of the learning iteration,
                         // slightly different treatment for m_iterations < m_timeHorizon;
     double m_recentAverageError;

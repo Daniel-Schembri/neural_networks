@@ -1,3 +1,4 @@
+#include <cassert>
 #include <random.h>
 
 #include "srn.hpp"
@@ -10,8 +11,8 @@ srn::srn(const std::vector<unsigned> &topology, const bool &bias):
 
     m_recentAverageSmoothingFactor = 100.0; // Number of training samples to average over
     m_initialX                     = 0.0; 
+    m_inputNeurons                 = topology[0];
     m_iterations                   = 0;
-
 
     for (unsigned nbLayer = 0; nbLayer < numLayers; ++nbLayer) 
     {
@@ -42,13 +43,14 @@ srn::srn(const std::vector<unsigned> &topology, const bool &bias):
 
 srn(const std::vector<unsigned> &topology, const size_t &timeHorizon, const bool &bias):
     m_bias(bias),
-    m_timeHorizon = m_timeHorizon
+    m_timeHorizon(timeHorizon)
 {
     unsigned numLayers = topology.size();
 
     m_recentAverageSmoothingFactor = 100.0; // Number of training samples to average over
-    m_initialX   = 0.0; 
-    m_iterations = 0;
+    m_initialX                     = 0.0; 
+    m_inputNeurons                 = topology[0];
+    m_iterations                   = 0;
 
     for (unsigned nbLayer = 0; nbLayer < numLayers; ++nbLayer) 
     {
@@ -63,7 +65,6 @@ srn(const std::vector<unsigned> &topology, const size_t &timeHorizon, const bool
            // The number of outputs is equal to the number of neurons in the next layer
            numOutputs = topology[nbLayer + 1];
 
-
         // We have a new layer, now fill it with neurons
         for (neuronNum = 0; neuronNum < topology[nbLayer]; ++neuronNum) 
         {
@@ -71,6 +72,9 @@ srn(const std::vector<unsigned> &topology, const size_t &timeHorizon, const bool
             if((topology.size() - 1 != nbLayer) && (0 != nbLayer))
             {
                 // Hidden layer, create input queues for function unrolling
+                m_recentInputs.push_back(std::queue<double>());
+
+                // Create random initialized recurrent weights
                 m_recurrentWeights.push_back(rand() / double(RAND_MAX));
                 m_recurrentDeltaWeights.push_back(0.0);
             }
@@ -100,7 +104,9 @@ void srn::feedForward(const std::vector<double> &inputVals)
     for (unsigned i = 0; i < inputVals.size(); ++i) 
         m_layers[0][i]->setOutputVal(inputVals[i]);
 
-    // Save current input for the hidden layer
+    assert(m_layers.size() <= 3);
+
+    // Save current input of each hidden layer
     for (unsigned nbLayer = 1; nbLayer < m_layers.size()-1; ++nbLayer) 
     {
         unsigned nbNeuronsInLayer = m_layers[nbLayer].size() - (1*m_bias);
@@ -108,13 +114,12 @@ void srn::feedForward(const std::vector<double> &inputVals)
         for (unsigned n = 0; n < nbNeuronsInLayer; ++n) 
         {
             currentNeuronInput = m_layers[nbLayer][n]->getInput(m_layers, nbLayer);
-            m_recentInputs[0].push(currentNeuronInput);
+            m_recentInputs[n].push(currentNeuronInput);
         }
     }
 
-    m_iterations++;
-    if (m_timeHorizon > m_iterations) 
-        unroll(m_iterations);
+    if (m_timeHorizon > m_iterations + 1) 
+        unroll(++m_iterations);
     else
         unroll(m_timeHorizon);
 
@@ -201,11 +206,10 @@ void srn::unroll(const size_t &times)
         {
             // Neurons created during unfolding only have one connection to themselves 
             // in the next time step
-            it->push_back(new srnNeuron(0, neuronNum, MOMENTUM, LEARNING_RATE));
+            it->push_back(new srnNeuron(1, neuronNum, MOMENTUM, LEARNING_RATE));
 
-            // Weight of the feedback connection
-            it->back().m_outputWeights[0].weight      = m_recurrentWeights[neuronNum];
-            it->back().m_outputWeights[0].deltaWeight = m_recurrentDeltaWeights[neuronNum];
+            // g value = weight of the feedback connection
+            dynamic_cast<srnNeuron*>(it->back())->singleConnection(neuronNum, m_recurrentWeights[neuronNum],  m_recurrentDeltaWeights[neuronNum]);
         }
 
         // Input x(t) will be added by creating a constant neuron in the preceding layer.
@@ -218,23 +222,103 @@ void srn::unroll(const size_t &times)
             
             if ((0 != n) || (times != m_timeHorizon)) 
             {
-                double x_T = m_recentInputs[0].pop();
+                // In case of an unfilled queue or time step < time horizon, we want to keep the input
+                double x_T = m_recentInputs[n].pop();
                 newQueue.push(x_T);
             }
             else
-                double x_T = m_recentInputs[0].pop();
+            {
+                // Input of the least recent time step is not used anymore if queue has reached its
+                // max. size
+                double x_T = m_recentInputs[n].pop();
+            }
 
             it->back()->setOutputVal(x_T);
 
             // w value
             dynamic_cast<srnNeuron*>(it->back())->singleConnection(n, 1.0, 0.0);
 
-            m_recentInputs[0] = newQueue;
+            m_recentInputs[n] = newQueue;
         }
+    }
 
+    it = m_layers.begin();
+    unsigned neuronNum  = it.size();
+    it++;
+    unsigned numOutputs = it.size()/2;
+    it--;
+    
+    // Add initial y(0) in input layer, provide input for all unfolded neurons, ignore
+    // constant neurons which provide respective x(t) (i.e. size/2)
+    it.push_back(new srnNeuron(numOutputs, neuronNum, MOMENTUM, LEARNING_RATE));
+
+    // Set y(0), zero magnitude vector in the first iteration
+    unsigned connections = it.back().m_outputWeights.size();
+    for (int c = 0; c < connections ; ++c) 
+    {
+        it.back().m_outputWeights[c].weight = m_initialX;
+        it.back().m_outputWeights[c].deltaWeight = 0.0;
     }
 }
 
 void srn::rollup(const size_t &times)
 {
+    std::vector<Layer>::iterator it = (m_layers.begin()) + 1;
+
+    // n doubles with value 0.0
+    std::vector<double> weightSum(times, 0.0);
+    std::vector<double> deltaWeightsSum(times, 0.0);
+
+    // Get all weights
+    for (int i = 0; i < times; ++i)
+    {
+        unsigned copiedNeurons = it->size()/2;
+        for (int j = 0; j < copiedNeurons; ++j)
+        {
+            // TODO: true?
+            assert(0.0 != it[j].m_outputweights[0].weight);
+            weightSum[j] += it[j].m_outputweights[0].weight;
+            deltaWeightSum[j] += it[j].m_outputweights[0].deltaWeight;
+        }
+
+        it++;
+    }
+
+    // Clean up input layer 
+    std::vector<Layer>::iterator input_it = m_layers.begin();
+    assert(0 != m_inputNeurons);
+
+    // Number of neurons in the input which serve as initial y(0)
+    unsigned nbYZero = it.size()/2;
+
+    for (int i = 0; i < nbYerzo; ++i) 
+        delete input_it[m_inputNeurons + i];
+
+    assert(input_it.size() == m_inputNeurons);
+
+    // Clean up unfolded layers (all layers before the rightmost hidden layer)
+    while(it != m_layers.end - 2)
+    {
+        for (int i = 0; i < c_it->size(); ++i)
+        {
+            // Delete all the neurons in the unfolded layers
+            delete it[i];
+        }
+
+        // Delete the unfolded layer itself
+        m_layers.erase(it);
+    }
+
+    assert(m_layers.size() == 3);
+
+    // Calculate average weight
+    unsigned size = weightSum.size();
+    for (int i = 0; i < size; ++i) 
+    {
+        weightSum[i] /= times;
+        deltaWeightSum[i] /= times;
+
+        m_reccurentWeights[i] = weightSum[i];
+        m_reccurentDeltaWeights[i] = deltaWeightSum[i];
+    }
 }
