@@ -1,5 +1,5 @@
-#ifndef SCRIPT_H 
-#define SCRIPT_H
+#ifndef SCRIPT_HPP
+#define SCRIPT_HPP
 
 #include <vector>
 #include <cmath>
@@ -10,7 +10,6 @@ using std::vector;
 
 class Script
 {
-
     public:
         Script();
         ~Script();
@@ -23,5 +22,5 @@ class Script
         unsigned idleness_count_;
 };
 
-#endif //SCRIPT_H 
+#endif /* SCRIPT_HPP */
 

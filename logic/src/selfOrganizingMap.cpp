@@ -1,10 +1,3 @@
-//------------------------------------------------------
-//Author             : Jonathan Schwarz
-//University         : Pforzheim University
-//Date of last edit  : Wed, 24 Sep 2014 08:04:44 +0200
-//Filename           : selfOrganizingMap.cpp
-//------------------------------------------------------
-
 #include "selfOrganizingMap.hpp"
 #include "somNeuron.hpp"
 

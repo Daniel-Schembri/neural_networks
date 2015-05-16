@@ -1,18 +1,11 @@
-//------------------------------------------------------
-//Author             : Jonathan Schwarz
-//University         : Pforzheim University
-//Date of last edit  : Mon, 15 Sep 2014 16:31:35 +0200
-//Filename           : srn.cpp
-//------------------------------------------------------
-
 #include <random.h>
 
 #include "srn.hpp"
 #include "srnNeuron.hpp"
 
-srn::srn(const std::vector<unsigned> &topology, const bool &bias)
+srn::srn(const std::vector<unsigned> &topology, const bool &bias):
+    m_bias(bias)
 {
-    m_bias = bias;
     unsigned numLayers = topology.size();
 
     m_recentAverageSmoothingFactor = 100.0; // Number of training samples to average over
@@ -47,11 +40,10 @@ srn::srn(const std::vector<unsigned> &topology, const bool &bias)
     }
 }
 
-srn(const std::vector<unsigned> &topology, const size_t &timeHorizon, const bool &bias)
+srn(const std::vector<unsigned> &topology, const size_t &timeHorizon, const bool &bias):
+    m_bias(bias),
+    m_timeHorizon = m_timeHorizon
 {
-    m_bias = bias;
-    m_timeHorizon = m_timeHorizon;
-
     unsigned numLayers = topology.size();
 
     m_recentAverageSmoothingFactor = 100.0; // Number of training samples to average over
