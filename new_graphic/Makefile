@@ -42,12 +42,12 @@ SRCS = gui.cpp \
      ../logic/src/ffNeuron.cpp \
      ../logic/src/net.cpp \
      ../logic/src/neuron.cpp \
-     ../logic/src/srn.cpp \
-     ../logic/src/srnNeuron.cpp 
 #     ../logic/src/competitive.cpp \
 #     ../logic/src/competitiveNeuron.cpp 
 #     ../logic/src/selfOrganizingMap.cpp 
 #     ../logic/src/somNeuron.cpp 
+#     ../logic/src/srn.cpp \
+#     ../logic/src/srnNeuron.cpp 
 
 OBJS   = ${SRCS:%.cpp=%.o} 
 

@@ -1,4 +1,0 @@
-Agent: 0 
-Inputvals       Outputvals 
--2, 3 | 0.2, 0.647164
-
