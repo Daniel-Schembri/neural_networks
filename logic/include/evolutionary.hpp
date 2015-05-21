@@ -63,7 +63,7 @@ class evolutionary
         std::vector<Agent *> population;
 
     private:
-		
+        bool net_learned;    
 		bool datasetwritten;
         //double max_delta; 
         std::vector< std::vector<double> > trainingdataV;
@@ -78,6 +78,8 @@ class evolutionary
 
         evolutionary();
         evolutionary(struct parameter psim_parameter, std::vector<unsigned> ptopology);
+
+        ~evolutionary();
 
         int evolve(int id_algo);
 

@@ -1,9 +1,12 @@
+#include <cassert>
+
 #include "evolutionary.hpp"
 #include "commonDefs.hpp"
 #include "math.h"
 
 evolutionary::evolutionary()
 {
+    
 }
 
 evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned> ptopology)
@@ -15,6 +18,8 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
 
 	//Necessary for writing the in and ouputs of the agent in a file
 	datasetwritten = false;
+    //Supervised learning
+    net_learned = false;
 
     sim_parameter.topology = ptopology;
     sim_parameter.amount_of_weights = 0;
@@ -51,6 +56,48 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
         }
     }
 
+}
+
+evolutionary::~evolutionary()
+{
+    /*
+    if(!best_Agents.empty())
+    {
+        for(unsigned i=0; i<best_Agents.size();++i)
+        {
+            if(NULL != best_Agents[i])
+            {
+                delete best_Agents[i];
+                best_Agents[i] = NULL;
+            }
+        }
+        best_Agents.clear();
+    }
+    if(!population.empty())
+    {
+        for(unsigned i=0; i<population.size();++i)
+        {
+            if(NULL != population[i])
+            {
+                delete population[i];
+                population[i] = NULL;
+            }
+        }
+        population.clear();
+    }
+    if(!newPopulation.empty())
+    {
+        for(unsigned i=0; i<newPopulation.size();++i)
+        {
+            if(NULL != newPopulation[i])
+            {
+                delete newPopulation[i];
+                newPopulation[i] = NULL;
+            }
+        }
+        newPopulation.clear();
+    }
+    */
 }
 
 
@@ -148,15 +195,10 @@ int evolutionary::evolve_simulatedannealing()
 
 int evolutionary::evolve_learn()  //
 {
-    iterationsteps++;
-    if (iterationsteps >= evolvesteps) // 3000 = 1Min
+    if(!net_learned)
     {
-        iterationsteps = 0;
-        save_bestAgent();
         learn();
-        generations++;
-
-        return 1;  //Signal that Simulation must be Reset
+        net_learned = true;
     }
     return 0;
 }
@@ -350,15 +392,25 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
         //                   steering = sign(x) * -(pi/2-(Network output - pi/2))
         double angle_x_v = M_PI/2.0 * population[i]->processA(inputvals_vector[i]);
         double angle_y_v = M_PI/2.0 - angle_x_v;
+        
+        if (0 == inputvals_vector[i][0] && 0 == inputvals_vector[i][1] && angle_x_v == M_PI/2.0 * 1.03f)
+        {
+            x_value = 1;
+        }
 
         double steering_angle = sgn(x_value) * -angle_y_v;
 
         agent_vals.push_back(steering_angle);
 
+    //    agent_vals[0] = 0;
+   //     agent_vals[1] = 0;
+
         result_vectors.push_back(agent_vals);
 
-//        std::cout << "Input: (" << inputvals_vector[i][0] << "," << inputvals_vector[i][1] << 
-//                     ") Output:" << result_vectors[i][0] << "," << result_vectors[i][1] << ")\n";
+        std::cout << "Input: (" << inputvals_vector[i][0] << "," << inputvals_vector[i][1] << 
+                     ") Output:" << result_vectors[i][0] << "," << result_vectors[i][1] << ")\n";
+        //std::cout << "angle_x_v :" << angle_x_v << ", angle_y_v: " << angle_y_v << ", steering_angle: " << steering_angle << "\n"; 
+
     }
 
     if (!datasetwritten)
@@ -494,16 +546,22 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
 {
     // Crossover will only be done with a certain probability 
     float randval = (rand())/(RAND_MAX+1.0);
+    assert(randval >= 0.0 && randval <= 1.0);
 
-    vector<Agent *> kids; 
+    vector<Agent*> kids; 
+
     if ((randval > sim_parameter.crossover_rate) || (mum == dad)) 
     {
         // Simply return mum and dad, they will be copied into the next population
         kids.push_back(&mum);
         kids.push_back(&dad);
+
+        return kids;
     }
 
     unsigned crossover_point = rand() % sim_parameter.amount_of_weights + 1;  //Range between 1 and amount_of_weights
+
+    assert(crossover_point >= 1 && crossover_point <= sim_parameter.amount_of_weights);
 
     WeightMatrix mum_weights = mum.angle_net->getConnections();
     WeightMatrix dad_weights = dad.angle_net->getConnections();
@@ -515,7 +573,6 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
     unsigned gene_count = 0;
 
     // Child 1: mum|dad, child 2: dad|mum
-
     unsigned nbLayersInNet = mum_weights.size();
     for(unsigned nbLayer = 0; nbLayer < nbLayersInNet ; ++nbLayer)
     {
@@ -556,7 +613,7 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
     }
 
     kids.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid1_weights));
-    kids.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid1_weights));
+    kids.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid2_weights));
 
     return kids;
 }
@@ -579,20 +636,28 @@ int evolutionary::evolve_crossover()
 
         // Add some elitism by copying the best agent n times
         for(unsigned i=0;i < sim_parameter.amount_of_elite_copies; ++i)
+        {
+            mutate_net(best_Agents[0]->angle_net);
             newPopulation.push_back(best_Agents[0]);
+        }
 
         while(sim_parameter.population_size != newPopulation.size())
         {
             int mum_id = rand() % (population.size()-1);
             int dad_id = rand() % (population.size()-1);
 
-            Agent& mum = *population[mum_id];
-            Agent& dad = *population[dad_id];
+            assert(0 <= mum_id && (population.size()-1) >= mum_id);
+
+            Agent& mum = *(population[mum_id]);
+            Agent& dad = *(population[dad_id]);
 
             std::vector<Agent*> kids;
 
             // Create offspring
             kids = crossover(mum, dad);
+
+            mutate_net(kids[0]->angle_net);
+            mutate_net(kids[1]->angle_net);
 
             // Insert into the new population
             newPopulation.push_back(kids[0]);
