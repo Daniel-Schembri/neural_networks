@@ -84,7 +84,7 @@
 	
 \title
 {
-    Simulation and evolutionary training of object collectiong agents (STOCA)\\
+    Simulation and evolutionary training of object collecting agents\\
 }
 
 \author
@@ -694,7 +694,7 @@ bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB);
 The debugdraw class is used as a debugging feature to display the physics simulation of Box2D. It uses OpenGL. Debugdraw can draw the shapes, contact points, contact normals, the AABBs, etc.
 As the debugdraw offers all wanted basic shapes it is used by the simulator.
 
-To use the debug-draw first the debugdraw object hast to instanciate and linked to the world by: \\
+To use the debug-draw first the debugdraw object hast to be instanciated and linked to the world by: \\
 
 \begin{lstlisting}[caption={Linking debugdraw instance to the world instance},label=lst:box2d-ddrawset]
 m_world->setDebugDraw(&m_debugDraw);
@@ -723,6 +723,17 @@ m_world->DrawDebugData();
 This draws every shape in the bodylist of the world.
 
 \section{Structure of a Box2D-Project}
+
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.4\textwidth,scale=0.5]{files/Box2D-structure.png}
+		\caption{The general structure of a Box2D-application} \cite{box2d-structure}
+		\label{fig:box2d-structure}
+	\end{figure}
+\end{center}
+
 
 
 Important: In BeginContact and EndContact no change of active-flag and some other values of a body/fixture
