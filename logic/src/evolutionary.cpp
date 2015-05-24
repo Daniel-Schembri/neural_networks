@@ -615,6 +615,66 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
     kids.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid1_weights));
     kids.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid2_weights));
 
+
+
+
+	//Second crossover_point_V for velocity_net
+    unsigned crossover_point_V = rand() % sim_parameter.amount_of_weights + 1;  //Range between 1 and amount_of_weights
+
+    assert(crossover_point_V >= 1 && crossover_point_V <= sim_parameter.amount_of_weights);
+
+    WeightMatrix mum_weights_V = mum.velocity_net->getConnections();
+    WeightMatrix dad_weights_V = dad.velocity_net->getConnections();
+
+    WeightMatrix kid1_weights_V;
+    WeightMatrix kid2_weights_V;
+ 
+    // To keep track of how many connections have been added
+    unsigned gene_count_V = 0;
+
+    // Child 1: mum|dad, child 2: dad|mum
+    unsigned nbLayersInNet_V = mum_weights_V.size();
+    for(unsigned nbLayer_V = 0; nbLayer_V < nbLayersInNet_V ; ++nbLayer_V)
+    {
+        // All Connections of the respective layer
+        vector<vector<Connection> > kid1_layerConnections_V;
+        kid1_weights_V.push_back(kid1_layerConnections_V);
+
+        vector<vector<Connection> > kid2_layerConnections_V;
+        kid2_weights_V.push_back(kid2_layerConnections_V);
+
+        unsigned nbNeuronsInLayer_V = dad_weights_V[nbLayer_V].size();
+        for (unsigned nbNeuron_V = 0; nbNeuron_V < nbNeuronsInLayer_V; ++nbNeuron_V) 
+        {
+            vector<Connection> kid1_neuronConnections_V;
+            vector<Connection> kid2_neuronConnections_V;
+
+            unsigned nbConnectionsOfNeuron_V = dad_weights_V[nbLayer_V][nbNeuron_V].size();
+            for (unsigned nbConnection_V = 0; nbConnection_V < nbConnectionsOfNeuron_V ; ++nbConnection_V) 
+            {
+                // Determine whether this connection should be cloned from mum or dad
+                if(gene_count_V < crossover_point_V)
+                {
+                    // Mum genes
+                    kid1_neuronConnections_V.push_back(mum_weights_V[nbLayer_V][nbNeuron_V][nbConnection_V]);
+                    // Dad genes
+                    kid2_neuronConnections_V.push_back(dad_weights_V[nbLayer_V][nbNeuron_V][nbConnection_V]);
+                }
+                else
+                {
+                    // Dad genes
+                    kid1_neuronConnections_V.push_back(dad_weights_V[nbLayer_V][nbNeuron_V][nbConnection_V]);
+                    // Mum genes
+                    kid2_neuronConnections_V.push_back(mum_weights_V[nbLayer_V][nbNeuron_V][nbConnection_V]);
+                }
+                ++gene_count_V;
+            }
+        }
+	}
+
+	kids[0]->velocity_net->setConnection(kid1_weights_V);
+    kids[1]->velocity_net->setConnection(kid2_weights_V);
+
     return kids;
 }
 
@@ -640,6 +700,7 @@ int evolutionary::evolve_crossover()
         for(unsigned i=0;i < sim_parameter.amount_of_elite_copies; ++i)
         {
             mutate_net(best_Agents[0]->angle_net);
+			mutate_net(best_Agents[0]->velocity_net);
             newPopulation.push_back(best_Agents[0]);
         }
 
@@ -659,8 +720,11 @@ int evolutionary::evolve_crossover()
             kids = crossover(mum, dad);
 
             mutate_net(kids[0]->angle_net);
-            mutate_net(kids[1]->angle_net);
+            mutate_net(kids[0]->velocity_net);
 
+			mutate_net(kids[1]->angle_net);
+			mutate_net(kids[1]->velocity_net);		
+			
             // Insert into the new population
             newPopulation.push_back(kids[0]);
             newPopulation.push_back(kids[1]);
