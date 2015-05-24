@@ -620,6 +620,8 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
 
 int evolutionary::evolve_crossover()
 {
+    iterationsteps++;
+
     if (iterationsteps >= evolvesteps) // 3000 = 1Min
     {
         iterationsteps = 0;
