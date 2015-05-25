@@ -25,7 +25,7 @@
 %tikz
 \usepackage{tikz}
 \usetikzlibrary{arrows,positioning,fit}
-
+\usepackage[top=1in,bottom=1in,right=1in,left=1in]{geometry}
 
 %male and female symbol
 \usepackage{wasysym}
@@ -68,6 +68,8 @@
 
 %maths
 \usepackage{amssymb} 
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
 \usepackage{dsfont}
 
 %japanese
@@ -209,17 +211,16 @@
     \acro{$a_j(t)$}{Activity of unit $n_j$ at time $t$}
     \acro{$H$}{The set of hidden layers of a neural network}
     \acro{$L$}{The set of layers of a neural network}
-    \acro{$ML$}{Machine learning}
-    \acro{$MLN$}{Multi layer network}
+    \acro{$MLN$}{A multi-layer network}
     \acro{$n_j$}{Neuron (also unit) $j$}
     \acro{$W$}{The connection matrix}
-    \acro{$w_{ij}$}{Weight on the connection link between neurons $n_i$ and $n_j$}
-%    \acro{$\Delta w_{ij}$}{Weight change  on the connection link between unit $i$ and $j$}
-%    \acro{$\overrightarrow{x}$}{The input vector of a neural network}
-%    \acro{$\overrightarrow{y}$}{The output vector of a neural network}
-%    \acro{$\varphi$}{Activation (transfer) function of a neuron}
-%    \acro{$\eta$}{Learning rate of a network}
-%    \acro{$\nabla F(a)$}{Gradient of the multivariable function $F(x)$ at point $a$}
+%    \acro{weight}[$w_{ij}$}{Weight on the connection link between neurons $n_i$ and $n_j$}
+    \acro{deltaweight}[$\Delta w_{ij}$]{Weight change  on the connection link between unit $i$ and $j$}
+    \acro{ivec}[$\protect \overrightarrow{x}$]{The input vector of a neural network}
+    \acro{ovec}[$\protect \overrightarrow{y}$]{The output vector of a neural network}
+    \acro{act}[$\varphi$]{Activation (transfer) function of a neuron}
+    \acro{eta}[$\eta$]{Learning rate of a network}
+    \acro{grad}[$\nabla F(a)$]{Gradient of the multivariable function $F(x)$ at point $a$}
 \end{acronym}
 
 \newpage
@@ -337,7 +338,7 @@ Any connections to predecessors are forbidden. This constraint has allowed for a
 
 As distinct from feed-forward networks, recurrent (or feedback) networks allow bidirectional signal flow. 
 As links from one neuron may be formed with any other neuron in the network, recurrent network are often categorised by increased complexity.
-Since the current state of a neuron may be continuously changing, recurrent networks demand advanced learning algorithms. \textbf{we?} We show an algorithm for training of recurrent network in section \ref{sec:btt}.
+Since the current state of a neuron may be continuously changing, recurrent networks demand advanced learning algorithms.
 Due to their dynamic nature, they allow for the modelling of advanced techniques, such as long and short term memory.
 
 \begin{figure}
@@ -477,10 +478,13 @@ The first network layer $L_1$, is referred to as the the input layer. It receive
 \label{fig:layer}
 \end{figure}
 
-Praticular significance is drawn to the layers in between input and output layer. Those layers are optional, but needed to solve certain problems. We will discuss the importance of hidden layers for problem solution in chapter \ref{chap:nets}. We denote the set of hidden layers as $H$. It is described as follows:
+Praticular significance is drawn to the layers in between input and output layer. Those layers are optional, but needed to approximate cetain functions such as the XOR-Gate. 
+We denote the set of hidden layers as $H$. It is described as follows:
 \begin{equation}
 H \subseteq L; H = \{L_i|1<i<n\}
-\end{equation}
+\end{equation} 
+
+A network where $H \neq \oldemptyset$ is called a multi-layer network (MLN). 
 
 \subsection{Units}
 \label{subsec:weights}
@@ -656,7 +660,7 @@ Until today, neural networks have been successfully applied to several problems 
 The following sections will give a brief notion of some 'classical' applications where ANNs have found better solutions in shorter time in comparison with other techniques.
 \subsection{Recognition of hand-writing}
 The automated interpretation of hand-written is of great interest for a number of purposes. The destination address of letters and parcels are nowadays processed by computers which use real-time image processing system to recognize handwriting on letters. The typesetting system \LaTeX  allows its users to phrase complex formulas using certain commands which are later being replaced by symbols such as the existential quantifier $\exists$. 
-One would now wish for a system that can take in a hand written representation of the symbol and output the command by which the symbol can later be written in a document. In \cite{MARTIN} artificial neural networks are used to classify such symbols. After drawing the sought symbol, the user is presented a choice of matching symbols along with an associated probability measure of their correctness. The website is available under \url{write-math.com}.
+One would now wish for a system that can take in a hand written representation of the symbol and output the command by which the symbol can later be written in a document. In %\cite{MARTIN} artificial neural networks are used to classify such symbols. After drawing the sought symbol, the user is presented a choice of matching symbols along with an associated probability measure of their correctness. The website is available under \url{write-math.com}.
 \\
 
 The challenge for such systems is the great deviation of styles in hand-written text. This makes it virtually infeasible for conventional methods to reliably classify hand-writing. 
@@ -767,14 +771,14 @@ Gradient descent may be imagined as the effort of a wanderer to reach the bottom
 \begin{figure}
     \centering
     \includegraphics[width=0.3\textwidth,scale=1]{files/graddes.png}  
-    \caption{Illustration of gradient descent.\cite{GRADFIG}}
+    \caption{Illustration of gradient descent.}%\cite{GRADFIG}}
     \label{fig:grad}
 \end{figure}
 
 \subsection{The Backpropagation algorithm}
 
 The Backpropagation algorithm is yet another learning rule for supervised networks, but in comparison to the Hebbian and delta rules, it can also be applied for networks with $n$ numbers of hidden layers. There are certain problems that cannot be solved by networks without at least one hidden layer, the XOR-Gate being a famous example. 
-It was developed by several scientists simultaneously \cite{BACK1}\cite{BACK2}\cite{BACK3} and consists of three stages:
+It was developed by several scientists simultaneously %\cite{BACK1}\cite{BACK2}\cite{BACK3} and consists of three stages:
 \begin{itemize}
 \item[1.] \textbf{The forward-pass}:
 A pattern is presented to the input layer and further propagated into the network.
@@ -945,7 +949,7 @@ familiar with hill-climbing and artificial evolution are advised to refer to the
 
 \subsection{Crossover}
 The unsupervised training of neural networks is greatly inspired by evolution. The notion of natural selection was first presented by Charles Darwin in his book “\textit{On the origin of species by means of natural selection}”\cite{DARWIN}. 
-As a comprehensive discussion of Darwin's ideas lies out of the range of this paper, \textbf{we?} we will from here on refer to evolution as the following definitions\cite{OXFORD}:
+As a comprehensive discussion of Darwin's ideas lies out of the range of this paper, \textbf{we?} we will from here on refer to evolution as the following definitions%\cite{OXFORD}:
 
 \begin{center}
 \textit{“Change in the genetic composition of a population during successive generations, often resulting in the development of new species. The mechanisms of evolution include natural selection acting on the genetic variation among individuals, mutation, migration, and genetic drift.”}\\
@@ -1069,6 +1073,124 @@ red weights originate from the mother network. The segmentation index has been c
 	\label{fig:pitts1}
 \end{figure}
 
+\begin{figure}
+\begin{tikzpicture}[scale=5.3,cap=round,>=latex,rotate=90]
+    % draw the coordinates
+    \draw[->] (0cm,1.5cm) -- (0cm,-1.5cm) node[right,fill=white] {$x$};
+    \draw[->] (0cm,0cm) -- (1.5cm,0cm) node[above,fill=white] {$y$};
+    
+    % draw the unit circle
+    \draw [black,thick,domain=0:90] plot ({cos(\x)}, {sin(\x)});
+    \draw [black,thick,domain=-90:0] plot ({cos(\x)}, {sin(\x)});
+    
+    \foreach \x in {-90,-60,...,90} {
+            % lines from center to point
+            \draw[gray] (0cm,0cm) -- (\x:1cm);
+            % dots at each point
+            \filldraw[black] (\x:1cm) circle(0.4pt);
+            % draw each angle in degrees
+            \draw (\x:0.6cm) node[fill=white] {$\x^\circ$};
+    }
+    
+    % draw each angle in radians
+    \foreach \x/\xtext in {
+        -90/\frac{-\pi}{2},
+        -60/\frac{-\pi}{3},
+        -30/\frac{-\pi}{6},
+        0/\frac{0}{0},
+        30/\frac{\pi}{6},
+        60/\frac{\pi}{3},
+        90/\frac{\pi}{2}
+    }
+    \draw (\x:0.85cm) node[fill=white] {$\xtext$};
+    
+    % draw the horizontal and vertical coordinates
+    % the placement is better this way
+    \draw (0cm,-1.25cm) node[above=1pt] {$(1,0)$}
+          (1.25cm,0cm)  node[above=1pt] {$(0,1)$}
+          (0cm,1.25cm)  node[above=1pt] {$(-1,0)$};
+    
+    % origin
+    \draw[fill=black] (0,0) circle(.013);
+
+\end{tikzpicture}
+	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
+neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
+red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
+	\label{fig:pitts1}
+\end{figure}
+
+\begin{figure}
+\begin{tikzpicture}[scale=5.3,cap=round,>=latex]
+    % draw the coordinates
+    \draw[step=0.1,black!20,thin] (-1cm,0) grid (1cm,1cm);
+    
+    \node[] (origin) at (0,0) {}; 
+    \draw[] (-0.6cm,0.3cm) node[blue] {};
+    \draw[blue] (-0.6cm,0.35cm) node[] {$ v_1 = (\frac{-3r}{5}\ \frac{3r}{10})$};
+    \draw[blue, ->] (origin) -- (-0.6cm,0.3cm);
+    
+    \draw[] (0.2cm,0.8cm) node[red] {};
+    \draw[red] (0.2cm,0.85cm) node[] {$ v_2 = (\frac{r}{5}\ \frac{4r}{5})$};
+    \draw[red, ->] (origin) -- (0.2cm, 0.8cm);
+    
+    \draw[->] (-1cm,0cm) -- (1cm,0cm) node[right,fill=white] {$x$};
+    \draw[->] (0cm,0cm) -- (0cm,1cm) node[above,fill=white] {$y$};
+    
+    % draw the unit circle
+    \draw [black,thick,domain=0:90] plot ({cos(\x)}, {sin(\x)});
+    \draw [black,thick,domain=180:90] plot ({cos(\x)}, {sin(\x)});
+    
+    % draw the horizontal and vertical coordinates
+    % the placement is better this way
+    \draw (-1.15cm,0cm) node[above=1pt] {$(-r,0)$}
+          (1.15cm,0cm)  node[above=1pt] {$(r,0)$}
+          (0cm,1.15cm)  node[fill=white] {$(0,r)$};
+    
+    
+    % origin
+    \draw[fill=black] (0,0) circle(.013);
+
+\end{tikzpicture}
+	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
+neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
+red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
+	\label{fig:pitts1}
+\end{figure}
+
+\begin{figure}
+\begin{tikzpicture}[scale=5.3,cap=round,>=latex]
+    % draw the coordinates
+    \draw[step=0.1,black!20,thin] (0,0) grid (1cm,1cm);
+    
+    \node[] (origin) at (0,0) {}; 
+    \draw[] (0.6cm,0.3cm) node[blue] {};
+    \draw[blue] (0.6cm,0.35cm) node[] {$ v_1' = (\frac{3r}{5}\ \frac{3r}{10})$};
+    \draw[blue, ->] (origin) -- (0.6cm,0.3cm);
+    \draw[blue] (0.2cm,0.0cm) arc (0:40:0.13);
+    \node[blue] (alpha) at (0.15,0.04) {$\alpha$}; 
+    
+    \draw[->] (0cm,0cm) -- (1cm,0cm) node[right,fill=white] {$x$};
+    \draw[->] (0cm,0cm) -- (0cm,1cm) node[above,fill=white] {$y$};
+    
+    % draw the unit circle
+    \draw [black,thick,domain=0:90] plot ({cos(\x)}, {sin(\x)});
+    
+    % draw the horizontal and vertical coordinates
+    % the placement is better this way
+    \draw (1.15cm,0cm)  node[above=1pt] {$(r,0)$}
+          (0cm,1.15cm)  node[fill=white] {$(0,r)$};
+    
+    % origin
+    \draw[fill=black] (0,0) circle(.013);
+
+\end{tikzpicture}
+	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
+neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
+red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
+	\label{fig:pitts1}
+\end{figure}
+
 \chapter{Evaluation}
 \chapter{Related work}
 \chapter{Conclusion}
@@ -1085,8 +1207,6 @@ red weights originate from the mother network. The segmentation index has been c
 \listofalgorithms
 \lstlistoflistings
 
-\newpage
-
 %=========================================DICTIONARY====================================
 
 %dictiary style
@@ -1094,4 +1214,4 @@ red weights originate from the mother network. The segmentation index has been c
 %dictionary source
 \bibliography{./files/bibdb}
 
-computationalend{document}
+\end{document}

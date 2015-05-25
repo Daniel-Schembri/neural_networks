@@ -23,11 +23,11 @@ public:
     virtual void updateInputWeights(const std::vector<Layer> &layers, const unsigned &myLayer) = 0;
 
     std::vector<Connection> m_outputWeights;
+    double m_outputVal;
 
 protected:
     double m_eta;   // [0.0..1.0] overall net training rate
     unsigned m_myIndex;
-    double m_outputVal;
 
     static double randomWeight() {return rand() / double(RAND_MAX);}
     static double transferFunction(double x);

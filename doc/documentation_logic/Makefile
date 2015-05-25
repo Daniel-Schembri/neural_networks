@@ -1,4 +1,4 @@
-LFLAGS  = -interaction=errorstopmode -halt-on-error
+#LFLAGS  = -interaction=errorstopmode -halt-on-error
 PROJECT = neural_networks
 SRC     = $(PROJECT).tex
 TARGET  = $(PROJECT).pdf
@@ -30,9 +30,9 @@ default:
 
 auto:
 	pdflatex $(LFLAGS) $(SRC)
-	bibtex $(PROJECT)
-	pdflatex $(LFLAGS) $(SRC)
-	pdflatex $(LFLAGS) $(SRC)
+#	bibtex $(PROJECT)
+#	pdflatex $(LFLAGS) $(SRC)
+#	pdflatex $(LFLAGS) $(SRC)
 
 .PHONY: clean
 
