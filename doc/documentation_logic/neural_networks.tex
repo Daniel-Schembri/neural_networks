@@ -20,12 +20,17 @@
 %for source code listings
 \usepackage{listings}
 
+%tables
 \usepackage[table]{xcolor}
+%figures alongside tables
+\usepackage{floatrow}
+\newfloatcommand{capbtabbox}{table}[][]
 
 %tikz
-\usepackage{tikz}
-\usetikzlibrary{arrows,positioning,fit}
-\usepackage[top=1in,bottom=1in,right=1in,left=1in]{geometry}
+\usepackage{tikz,pgf}
+\usetikzlibrary{arrows, positioning, shapes, fit}
+%\usepackage[top=1in,bottom=1in,right=1in,left=1in]{geometry}
+\usepackage{pgf-pie}
 
 %male and female symbol
 \usepackage{wasysym}
@@ -39,14 +44,14 @@
 
 %<,> in tikz-uml
 \usepackage[T1]{fontenc}
-\usepackage{tikz-uml}
+% \usepackage{tikz-uml}
 
 %subfigure
 \usepackage{graphicx}
 \usepackage{subfigure}
 
 %prevent figure from floating pictures
-%\usepackage{float}
+\usepackage{float}
 
 %footer & header
 \usepackage{fancyhdr}
@@ -226,15 +231,58 @@
 \newpage
 
 \chapter{Introduction}
-\section{Neural networks}
-Neural networks may be looked at and described from widely different angles. Their models serve neuroscience for the understanding of biological processes in the human brain, while a psychologist verifies learning- and memory theories using those models. A physicist regards them as a physical structure, which can be described by their energy functions and probabilistic regularities. From a computer scientific point of view, neural networks (NN) are massive parallelised, adaptive and partially self-organised information processing systems. \cite{NNGER}
-Within this project, NN are regarded as a sub-section of artificial intelligence, which aims on reproducing human intelligence with artificial neural networks. Nevertheless, a brief explanation of their biological inspiration promotes the understanding of their structure while their mathematical definition allows their representation in a computing machine.
-\section{Motivation}
-One of the reasons of the popularity of (artificial) neural networks is their structure. As different from classical computers, their operation is based on our current understanding of the human brain.  Humans handle extremely complex tasks with ease, such as recognising a face or processing several signals like images and voice simultaneously. Their brain-like structure therefore simplifies their application in tasks like learning and abstraction from examples, pattern recognition and completion. Because of their ability to learn from examples, artificial neural networks do not need to be trained like a traditional computer anymore, but can rather be taught through examples. Also, they have been successfully used in data science, recognising patterns in big datasets. Their parallel structure allows their implementation and operation on multi-core machines or distributed systems. 
+In \cite{DANIEL}, Schembri proposes the application of machine learning algorithms for training of object collecting agents. 
+Such agents dwell in a simulated, confined, two-dimensional space, where objects are dropped at random. Without any previous knowledge of 
+their environment, agents are placed in the world and are to reason that their aim is to collect objects. The performance or fitness of each 
+individual is rated by the amount of objects collected in a given time period. Thus, this fitness ranking serves as a quality measure for the 
+chosen approaches.
 
-ANN are an equivalent model to the Turing machine in terms of calculability.\cite{NURING}
+In particular, Schembri is interested in using artificial neural networks to devise a control policy for each agent at any point in time. 
+Unsupervised learning with genetic algorithms is chosen as the means to achieve satisfactory behaviour. Its principle is to alter 
+an agents behaviour and evaluate whether this amendment improved or lowered the agents performance. In case of a successful change, the changes
+will be accepted, whereas they are reverted if the change was not. By gradual application of this technique, Schembri tries to increase
+the performance so as to achieve intelligent behaviour.
+This project builds off of Schembri's work and both extends the unsupervised approach and also shows that successful learning can be 
+achieved by means of previous training. The basic rationale behind this supervised approach is that an agent is presented a set of correct 
+policies from given input to output data. It is then to learn from this given data and mimic the underlying control policy and apply it to
+previously unseen data. In addition to the learning approach, alterations in the neural network structure can also have significant influence
+to the agents performance. Hence, different structures will be proposed and empirically evaluated.
+
+Both approaches will be tested in the very same simulation environment as in the original paper. A critical evaluation of both learning approaches
+in combination with different network structures is given.
+
+\paragraph{Structure of this project}
+%TODO: Really exposed?
+In chapter \ref{ch:basics} a brief introduction to the very basics of artificial neural networks is given. We investigate their biological counterpart
+and show a mathematical formalisation of their structure. We dive more into the details of artificial neural networks in chapter \ref{ch:ANN} where
+we talk about different models and network structure. Different learning algorithms are presented in chapter \label{ch:learning}. We show both
+supervised and unsupervised algorithms and expose their limitations. The application and evaluation of presented algorithms is shown in
+chapter \label{ch:eval}, where we critically analyse the performance gain in comparison to Schembri's work. A final conclusion is drawn in 
+\label{ch:conclusion} and further ideas of how to improve the performance are given in chapter \label{ch:future}.
 
 \chapter{Basics}
+\label{ch:basics}
+\section{Neural networks}
+The operation of artificial neural networks (ANNs) is based on and modeled after the understanding of the human brain. 
+Our brain is an astonishingly powerful information processing system. It is capable of solving extremely complex tasks such as recognising a face, or
+processing vision and audio signals simultaneously at ease. In contrast, programming a computer to do so turns out to be rather difficult.
+A distinctive feature is their ability to learn and abstract from examples. As distinct from computers, ANNs do not have to be programmed to solve 
+a certain task. This feature makes them particularly interesting for tasks where no solution or at least no efficient algorithm
+exist. Further examples of successful applications of neural networks are given in section \ref{sec:exp}.
+In terms of computability ANNs are an equivalent model to the Turing machine.\cite{NURING}
+
+Neural networks may be looked at from widely different angles. Their models serve neuroscience for the understanding of biological processes 
+in the human brain, while a psychologist verifies learning- and memory theories using those models. A physicist regards them as a physical structure,
+which can be described by their energy functions and probabilistic regularities. From a computer scientific point of view, neural networks
+are massive parallelized, adaptive and partially self-organised information processing systems. \cite{NNGER}
+Within this project, neural network (or rather artificial ones) are regarded as a machine learning algorithm. 
+Machine learning itself may be understood as a sub field or means to an end of artificial intelligence.
+We are particularly interested in using them to define a decision policy for intelligent agents. Such a decision policy uses knowledge of the agent's
+environment, obtained by sensors, to manipulate it using its actuators. This is done in a way to maximise the expected future reward (collecting as
+many objects as possible). Nevertheless, a brief explanation of their biological inspiration promotes the understanding of their structure and is 
+therefore given in the following sections. In addition, we show how they have been described mathematically, which allows their representation 
+in a computer program.
+
 \section{Biological background}
 From all the other organs, the human brain has a special significance. It is the only organ that does not process any metabolic products, but a ‘substance’ which became the target of scientific investigation during the last century: Information. It was mainly through the works of \textit{Golgi} and \textit{Ramón y Cajal}, that science began to perceive it as a complex net of interconnected cells.  Contemporary concepts of the operation of the brain suggests, that mental activity consists primarily of electrochemical activity in large networks of nerve cells, or neurons. 
 Figure \ref{fig:neuron} introduces the different parts of the neuron. Branching out from the cell body or soma, several fibers called dendrites summarise the input of the cell body from up to 100,000 connected neurons. In case this electric potential exceeds a threshold, the cell body will produce a quick spike, which is transmitted by the axon. The axon is a single long fiber, typically with a length of 1 cm, what is roughly 100 times the diameter of the cell body. As a matter of fact, it can a reach a length of up to several metres. As the axon branches out, it transmits this signal to other neurons. The synaptic terminals, are contacts of the axon. The electric potential of the signal causes the release of chemicals called neurotransmitter, which lead to a potential change. This change can be either excitatory or inhibitory, amplifying or reducing the signal. This signal amendment defines the behavior of the network on two levels: 
@@ -315,7 +363,7 @@ Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed 
 \draw[arrow]	(output) -- (o2);
 %\draw[arrow]	(output) -- (o3);
 
-\node[draw=black,fit=(dummy1) (function) (dummy2) ,ellipse] (tmp) {};
+\node[draw=black, fit=(dummy1) (function) (dummy2), ellipse] (tmp) {};
 
 \end{tikzpicture}
 \caption{A mathematical model of a neuron $j$}
@@ -325,6 +373,7 @@ Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed 
 This proposal is of particular importance for the theory of ANN and inspired significant researchers like John von Neumann or Nobert Wiener, who developed cybernetics. However, the McCulloch-Pitts neurons are limited by their inability to learn, resulting from their fixed structure. They also lack the surprising robustness of biological nerve networks, since they rely on a flawless operation of all components. Nevertheless, they still have significance in electrical engineering, where they are used to realise binary functions, due to their increased efficiency in contrast to gates. 
 
 \chapter{Artificial neural networks}
+\label{ch:ann}
 \section{Overview}
 
 Scientists have proposed a multitude of different network structures since the advent of research in ANN through their first formalisation. 
@@ -395,23 +444,23 @@ Due to their dynamic nature, they allow for the modelling of advanced techniques
     \draw (\s) -- (\t);
 
 \end{tikzpicture}}
-\caption{A categorisation of neural network types. BPG = Bachpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
+\caption{A categorisation of neural network types. BPG = Backpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
 
 \label{fig:class}
 \end{figure}
-A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced. Within this chapter, I will give an introduction of the terminology and mathematical models used to represent a neural network on a computing machine. An appraisal of advantages and detriments of the presented models is rather difficult, as their performance hugly depends on the specific application. Regarding machine learning, and thereforea also ANN, the term performancedemands for a new definition. Machine learning is a scientific discipline that explores the construction and study of algorithms that can learn from data.\cite{MLDEF1} Such algorithms operate by building a model from example inputs and using that to make predictions or decisions.\cite{MLDEF2} As distict from other algorithms, there can never be absolute certainity of the correctness of a machine learning model. This stems from their usage of the probability of statistics applied to real world problems. Algorithmic measures, such as optimality and completeness cannot be utilised to assess the usefulness of a machine learning technique. A performance evaluation can therefore only be conducted given a specific problem and the according data. After all, the selection and appropriate usage of neural network structures requires extensive experience and/or thorough testing. 
+A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced. Within this chapter, we will give an introduction of the terminology and mathematical models used to represent a neural network on a computing machine. An appraisal of advantages and detriments of the presented models is rather difficult, as their performance hugly depends on the specific application. Regarding machine learning, and thereforea also ANN, the term performancedemands for a new definition. Machine learning is a scientific discipline that explores the construction and study of algorithms that can learn from data.\cite{MLDEF1} Such algorithms operate by building a model from example inputs and using that to make predictions or decisions.\cite{MLDEF2} As distict from other algorithms, there can never be absolute certainity of the correctness of a machine learning model. This stems from their usage of the probability of statistics applied to real world problems. Algorithmic measures, such as optimality and completeness cannot be utilised to assess the usefulness of a machine learning technique. A performance evaluation can therefore only be conducted given a specific problem and the according data. After all, the selection and appropriate usage of neural network structures requires extensive experience and/or thorough testing. 
 
 \section{Network structure}
 \subsection{Layers}
-The units within a network are categorised into several layers according to their position. This allows for an accurate describtion of the network and the function of each respective unit within the network. The set of layers of a ANN will be denoted as $L$, where an artificial neural network of size n, written as $\text{ANN}^n$ is the union of the n layers in the network:
+The units within a network are categorised into several layers according to their position. This allows for an accurate description of the network and the function of each respective unit within the network. The set of layers of a ANN will be denoted as $L$, where an artificial neural network of size n, written as $\text{ANN}^n$ is the union of the n layers in the network:
 
 \begin{equation}
     \text{ANN}^n = \bigcup_{N}^{i=1}{L_i}
 \end{equation}
 
-The amount of neurons within a layer is equal to the elements of the respective set. The total number of neurons in an ANN is $\sum_{i=1}^{n}{|L_i|}$. The tuple $(|L_1|,...,|L_n|)$ is called the \textbf{network topolgy} and fully describes the stucture (with exclution of the connections) of a feed-forward network. Recurrent networks need and additional describtion.
+The amount of neurons within a layer is equal to the elements of the respective set. The total number of neurons in an ANN is $\sum_{i=1}^{n}{|L_i|}$. The tuple $(|L_1|,...,|L_n|)$ is called the \textbf{network topolgy} and fully describes the structure (with exclusion of the connections) of a feed-forward network. Recurrent networks need and additional description.
 
-The first network layer $L_1$, is referred to as the the input layer. It receives the input vector $\overrightarrow{x} \in \mathds{R}^{|L_1|}$ and passes it onto the next layer. Likewise, $L_n$ is the output layer of the network, whose neurons are called the output units. $\overrightarrow{y} \in \mathds{R}^{|L_n|}$ is the output vector of an ANN. A computer application will later utilise the neural network as a black box, being only interested in the transformation from $\overrightarrow{x}$ to $\overrightarrow{y}$. Figure \ref{fig:layer} shows this. 
+The first network layer $L_1$, is referred to as the input layer. It receives the input vector $\overrightarrow{x} \in \mathds{R}^{|L_1|}$ and passes it onto the next layer. Likewise, $L_n$ is the output layer of the network, whose neurons are called the output units. $\overrightarrow{y} \in \mathds{R}^{|L_n|}$ is the output vector of an ANN. A computer application will later utilise the neural network as a black box, being only interested in the transformation from $\overrightarrow{x}$ to $\overrightarrow{y}$. Figure \ref{fig:layer} shows this. 
 
 \begin{figure}
 \centering
@@ -458,10 +507,10 @@ The first network layer $L_1$, is referred to as the the input layer. It receive
 \draw[arrow]	(h3) -- (o1);
 \draw[arrow]	(h3) -- (o2);
 
-\node[draw=black,fit=(i1) (i2) (i3) (i4),ellipse] (inputLayer) {};
-\node[draw=black,fit=(h01) (h02) (h03) ,ellipse] (hiddenLayer) {};
-\node[draw=black,fit=(h1) (h2) (h3) ,ellipse] (hiddenLayer) {};
-\node[draw=black,fit=(o1) (o2) ,ellipse] (outputLayer) {};
+\node[draw=black,fit=(i1) (i2) (i3) (i4), ellipse] (inputLayer) {};
+\node[draw=black,fit=(h01) (h02) (h03), ellipse] (hiddenLayer) {};
+\node[draw=black,fit=(h1) (h2) (h3), ellipse] (hiddenLayer) {};
+\node[draw=black,fit=(o1) (o2), ellipse] (outputLayer) {};
 
 \node [align=center] (x) at (-1,1.5) {$\overrightarrow{x}$};
 
@@ -489,7 +538,12 @@ A network where $H \neq \oldemptyset$ is called a multi-layer network (MLN).
 \subsection{Units}
 \label{subsec:weights}
 
-A first improvement to McCulloch and Pitt's model was the concept of weights on the connecting links. Inspired by the function of the synaptic terminals, a weight $w_{ij}$ between two neurons $n_i$ and $n_j$, models the magnitude of influence. Weights may be both positive and negative, exhibatory or inhibatory. A magnitude of zero stands for a cut-off signal flow. The entirety of connection weights wihin a network is often sored in a matrix, which allows for performant manipulation. The manipulation of connections weight may be used to alter the network's behaviour. $W$ is called the connection matrix, which fully represnts the structure of a feed-forward network with $i$ layers:
+A first improvement to McCulloch and Pitt's model was the concept of weights on the connecting links. Inspired by the function of the synaptic 
+terminals, a weight $w_{ij}$ between two neurons $n_i$ and $n_j$, models the magnitude of influence. Weights may be both positive and negative, 
+exhibatory or inhibatory. A magnitude of zero stands for a cut-off signal flow. The entirety of connection weights within a network is often stored 
+in a matrix, which allows for cheap manipulation of the weights. 
+The manipulation of connections weight may be used to alter the network's behaviour. $W$ is called the connection matrix, which fully represents 
+the structure of a feed-forward network with $i$ layers:
 \begin{equation}
 W = 
 \begin{pmatrix}
@@ -564,8 +618,6 @@ Figure \ref{fig:2on1} shows the same network with an additional bias neuron. Thi
 As discussed before, the weights of the connections between the neurons represent the 'Intelligence' of the network. The bigger the absolute value of the weight, the greater the influence of a neuron to another. This value can be both positive and negative, as well as neutral \textit{(0)}, meaning that there is currently no influence between the neurons, although there is still a link connecting them. A weight of 0 can be understood as a logical pinch of the link, preventing it from transmitting signals.
 
 
-
-
 The connection between the input values and the activity level of the neuron is made by the activity function $\varphi$. Different models are obtained depending on the choice of the activity or transfer function. Amongst the most common choices are the linear, binary step and sigmoid function as illustrated in Figure \ref{fig:plots}. The linear function has a threshold $t$, which can be used to avoid low network input (e.g. noise) to be further propagated into the network. The binary step function represents the firing of a pulse down the axon if positive $1$), while $0$ represents no firing. The step function is sometimes defined to jump from $-1$ to $1$. 
 
 Sigmoid functions are widely used amongst network which are to represent cognitive processes such as perception, recognition, problem solving, etc. .
@@ -574,7 +626,7 @@ Both the logistic function as well as the hyperbolic tangent function $\tanh()$ 
 \begin{itemize}
 \item In contrast with the linear function (without a threshold), the activity level of the function is limited in both the positive and the negative. This means that activity in the network can not spill over unintentionally, which can be caused by recurrent connections.
 \item Differentiability
-As distinct from the binary step function, it is differntiable at all parts, which as an example, is a requirement of the gradient descent, used by the Backpropagation algorithm (about to be introduced in section \ref{sec:learning}
+As distinct from the binary step function, it is differentiable at all parts, which as an example, is a requirement of the gradient descent, used by the Backpropagation algorithm (about to be introduced in chapter \ref{ch:learning}
 \end{itemize}
 
 
@@ -647,6 +699,7 @@ As distinct from the binary step function, it is differntiable at all parts, whi
 In order to teach neural networks and enable them to apply learned behavior in following scenarios, the work with them is divided in a training- and test phase. During the training, the network learns certain behavior by feeding repetitive input to the first layer and observing the output of the network. This can be done in a supervised and unsupervised way. In a supervised training phase, the targeted output of the network is already known and is presented to the network as a \textit{teaching factor}. The network produces output depending on the current weights on its connections and adjusts them according to the margin between the targeted and produced output. Unsupervised learning is necessary in situations, where no reasonable teaching factors are available or the observant is more interested on the performance. Similarity between input incentives and connection weights is the factor, according to which weight adjustment is done in such models.
 
 \section{Applications}
+\label{sec:exp}
 Until today, neural networks have been successfully applied to several problems in a variety of scientific and industrial applications. Although of greatly different nature, almost all of those applications can be reduced to either pattern/shape recognition or logical filter tasks. Examples are:\\
 \begin{itemize}
     \item On-line recognition of handwritten text
@@ -677,12 +730,21 @@ Given a set of cities and the distances between each pair of cities, what is the
 
 where $\pi(n+1)$ is set to $\pi(1)$.\cite{MATHINF}\\
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\textwidth,scale=1]{files/tsp.png}  
+    \caption{An example graph. We are are interested in finding the cheapest tour\cite{MATHINF}.}
+    \label{fig:tsp}
+\end{figure}
+
+An example graph for the TSP is given in \ref{fig:tsp}. $4!$ possible tours exit, which is the amount of permutations of the vertecies.
+We find the cheapest tour $(1, 3, 4, 2, 1)$ with costs of $w(1, 3) + w(3, 4) + w(4, 2) + w(2, 1) = 11$.
+
 It is of high importance to theoretical computer science, as it is known to be $NP$-complete. In the field of complexity analysis, the class of decision problems for which there is a deterministic Turing-Machine able to solve it in time $\mathcal{O}(n^k)$ is called $P$ (polynomial). An example is the sorting problem. Class $P$ contains problems with running times like $\mathcal{O}(n)$ and $\mathcal{O}(log(n))$ but also those with time $\mathcal{O}(n^{5000})$. In addition to the deterministic Turing machine, complexity analysis also defines the non-deterministic Turing machine. At each time step, there are several possible ways of continuing computation, setting it in contrast with todays computers. The class of Problems $NP$ is solvable by a non-deterministic Turing Machine in polynomial time. $NP$ contains a number of relevant problems, such as the graph isomorphism (Can two graphs be drawn identically?). Problems in $P$ can also be solved by this theoretical model, so $P \subseteq NP$. In other words, a problem is in the class of NP if there is an algorithm (executed by a Turing machine) that can guess a solution and verify whether the guess was correct in polynomial time. In case of omniscient guessing or given a number of processors equal to the number of solutions, trying out all possibilities at the same time one would always get the correct solution. Thus, $NP$ problems would become $P$ problems. 
 
 Nevertheless, computationally feasible approximation techniques have been found which allow to find a good, although not always the best, solution. Hopfield and Tank (1985) proposed an approach using ANNs which allows to find a good, often even the best solution for the TSP. It suggests a single-layer network with $n$ neurons, where $n$ equals the number of cities in the graph, called Hopfield-network. This can be thought of as a square with an edge length of $n$. The output of each individual neuron equals the time step at which the city is visited. Furthermore, genetic algorithms have also been applied to find an approximate solution for the problem %\cite{GENTSP}.
 
-
-\chapter{Learning}\label{sec:learning}
+\chapter{Learning}\label{ch:learning}
 \section{Hebbian learning rule}
 The psychologist Donald Olding Hebb proposed on the easiest learning rules with high biological plausibility in \cite{HEBB}:\\
 
@@ -819,137 +881,137 @@ Eventually, the weights are changed according to equation \eqref{eq:backweight}.
 \label{eq:backweight}
 \end{equation}
 
-\section{Backpropagation through time}
-
-The Backpropagation through time (BTT) algorithm constitutes a learning rule for recurrent networks. 
-Recurrent networks constitute an architecture that allows bi-directional signal flow within the network. While outputs of feed-forward networks are restricted to be only connected to 
-a neuron in the preceding layer, connections can now be formed across arbitrary layers. Figure \ref{fig:feedback} shows a recurrent network. As the neuron is connected with
-itself, it forms a feedback structure. The output of the neuron at time step $t$ serves as a weighted (by weight $g$) input of itself in the next time step.
-Thus, the output of the network can be computed as follows:
-
-\begin{equation}
-    y(t+1) = \varphi(w\cdot x(t) + g\cdot y(t))
-\label{eq:btt}
-\end{equation}
-
-BTT was independently developed by several researchers.%\cite{BTT1}\cite{BTT2}\cite{BTT3}
-Back
-
-
-\begin{figure}
-\centering
-    \begin{tikzpicture}
-    \node [align=center] (l1) at (0,0) {}; 
-    \node [align=center] (x2) at (0.0,0.3) {$x(t)$}; 
-    \node [align=center] (x1) at (0.75,0.3) {$w$}; 
-    \node [draw=black, align=center, circle] (n) at (1.5,0) {}; 
-    \node [align=center] (x2) at (2.95,0.3) {$y(t+1)$}; 
-    \node [align=center] (x3) at (1.6,-0.7) {$g$}; 
-    \node [align=center] (l2) at (3,0) {}; 
-
-    \draw[arrow]	(l1) -- (n);
-    \draw[arrow]	(n) -- (l2);
-    \draw[arrow] (n) to [out=330,in=250,looseness=8] (n);
-    \end{tikzpicture}
-\caption{A feedback structure in a recurrent neural network.}
-\label{fig:feedback}
-\end{figure}
-
-\begin{figure}
-\centering
-    \begin{tikzpicture}
-    \node [align=center] (n0) at (0,0) {}; 
-    \node [] (y0) at (0.75,0.3) {$y(0)$}; 
-
-    \node [] (g1) at (0.75,-0.2) {$g$}; 
-    \node [] (w1) at (1.50,0.7) {$w$}; 
-    \node [] (x1) at (1.0,1.3) {$x(0)$}; 
-    \node [] (t1) at (1.5,-0.7) {$t-1$}; 
-    \node [] (y1) at (2.25,0.3) {$y(1)$}; 
-    \node [draw=black, align=center, circle] (n1) at (1.5,0) {}; 
-
-    \node [] (g2) at (2.25,-0.2) {$g$}; 
-    \node [] (w2) at (3.00,0.7) {$w$}; 
-    \node [] (x2) at (2.5,1.3) {$x(1)$}; 
-    \node [] (t2) at (3,-0.7) {$t-2$}; 
-    \node [] (y2) at (3.75,0.3) {$y(2)$}; 
-    \node [draw=black, align=center, circle] (n2) at (3,0) {}; 
-
-    \node [] (g3) at (3.75,-0.2) {$g$}; 
-    \node [] (w3) at (4.50,0.7) {$w$}; 
-    \node [] (x3) at (4.0,1.3) {$x(2)$}; 
-    \node [] (t3) at (4.5,-0.7) {$t-3$}; 
-    \node [] (y3) at (5.25,0.3) {$y(3)$}; 
-    \node [draw=black, align=center, circle] (n3) at (4.5,0) {}; 
-
-    \node [] (g4) at (5.25,-0.2) {$g$}; 
-    \node [] (w4) at (6.00,0.7) {$w$}; 
-    \node [] (x4) at (5.5,1.3) {$x(3)$}; 
-    \node [] (t4) at (6.0,-0.7) {$t-4$}; 
-    \node [] (y4) at (6.75,0.3) {$y(4)$}; 
-    \node [draw=black, align=center, circle] (n4) at (6,0) {}; 
-
-    \node [] (g5) at (6.75,-0.2) {$g$}; 
-    \node [] (w5) at (7.50,0.7) {$w$}; 
-    \node [] (x5) at (7.0,1.3) {$x(4)$}; 
-    \node [] (t5) at (7.5,-0.7) {$t-5$}; 
-    \node [] (y5) at (8.25,0.3) {$y(5)$}; 
-    \node [draw=black, align=center, circle] (n5) at (7.5,0) {}; 
-
-    \node [align=center] (n6) at (9,0) {}; 
-
-    \draw[arrow]	(n0) -- (n1);
-    \draw[arrow]	(x1) -- (n1);
-    \draw[arrow]	(n1) -- (n2);
-    \draw[arrow]	(x2) -- (n2);
-    \draw[arrow]	(n2) -- (n3);
-    \draw[arrow]	(x3) -- (n3);
-    \draw[arrow]	(n3) -- (n4);
-    \draw[arrow]	(x4) -- (n4);
-    \draw[arrow]	(n4) -- (n5);
-    \draw[arrow]	(x5) -- (n5);
-    \draw[arrow]	(n5) -- (n6);
-    \end{tikzpicture}
-    \caption{The recurrent network shown in figure \ref{fig:feedback} during unfolding with depth $t=5$.}
-\label{fig:unrolled}
-\end{figure}
-
-\begin{algorithm}
-\LinesNumbered
-\DontPrintSemicolon
-\BlankLine
-\Ein{Input $x(t)$ at time $t$, depth $k$}
-\Aus{Output $y(t)$}
-\BlankLine
-\Begin
-{
-    Unfold network to contain $k$ instances.\\
-    $y(0) \leftarrow \text{zero-magnitude vector} \overrightarrow{0}$.
-    
-    \For{$\forall t \in [0,n-1]: t \in \mathbb{N}_0$}
-    {
-        \tcp{Done for each }
-        Set network inputs $y(0), x(1), x(2), x(3)$\\
-        Forward-propagate.\\ 
-        Error $e = y(t+k) - t;$ $t:$ target error\\
-        Backpropagate the error across the whole unfolded network.\\
-        Update all the weights in the network according to standard Backpropagation.\\
-        $y(0) \leftarrow f(x)$
-
-    
-    }
-}
-\caption{The Backpropagation through time algorithm.}
-\label{alg:GD}
-\end{algorithm}
-
+% \section{Backpropagation through time}
+% 
+% The Backpropagation through time (BTT) algorithm constitutes a learning rule for recurrent networks. 
+% Recurrent networks constitute an architecture that allows bi-directional signal flow within the network. While outputs of feed-forward networks are restricted to be only connected to 
+% a neuron in the preceding layer, connections can now be formed across arbitrary layers. Figure \ref{fig:feedback} shows a recurrent network. As the neuron is connected with
+% itself, it forms a feedback structure. The output of the neuron at time step $t$ serves as a weighted (by weight $g$) input of itself in the next time step.
+% Thus, the output of the network can be computed as follows:
+% 
+% \begin{equation}
+%     y(t+1) = \varphi(w\cdot x(t) + g\cdot y(t))
+% \label{eq:btt}
+% \end{equation}
+% 
+% BTT was independently developed by several researchers.%\cite{BTT1}\cite{BTT2}\cite{BTT3}
+% Back
+% 
+% 
+% \begin{figure}
+% \centering
+%     \begin{tikzpicture}
+%     \node [align=center] (l1) at (0,0) {}; 
+%     \node [align=center] (x2) at (0.0,0.3) {$x(t)$}; 
+%     \node [align=center] (x1) at (0.75,0.3) {$w$}; 
+%     \node [draw=black, align=center, circle] (n) at (1.5,0) {}; 
+%     \node [align=center] (x2) at (2.95,0.3) {$y(t+1)$}; 
+%     \node [align=center] (x3) at (1.6,-0.7) {$g$}; 
+%     \node [align=center] (l2) at (3,0) {}; 
+% 
+%     \draw[arrow]	(l1) -- (n);
+%     \draw[arrow]	(n) -- (l2);
+%     \draw[arrow] (n) to [out=330,in=250,looseness=8] (n);
+%     \end{tikzpicture}
+% \caption{A feedback structure in a recurrent neural network.}
+% \label{fig:feedback}
+% \end{figure}
+% 
+% \begin{figure}
+% \centering
+%     \begin{tikzpicture}
+%     \node [align=center] (n0) at (0,0) {}; 
+%     \node [] (y0) at (0.75,0.3) {$y(0)$}; 
+% 
+%     \node [] (g1) at (0.75,-0.2) {$g$}; 
+%     \node [] (w1) at (1.50,0.7) {$w$}; 
+%     \node [] (x1) at (1.0,1.3) {$x(0)$}; 
+%     \node [] (t1) at (1.5,-0.7) {$t-1$}; 
+%     \node [] (y1) at (2.25,0.3) {$y(1)$}; 
+%     \node [draw=black, align=center, circle] (n1) at (1.5,0) {}; 
+% 
+%     \node [] (g2) at (2.25,-0.2) {$g$}; 
+%     \node [] (w2) at (3.00,0.7) {$w$}; 
+%     \node [] (x2) at (2.5,1.3) {$x(1)$}; 
+%     \node [] (t2) at (3,-0.7) {$t-2$}; 
+%     \node [] (y2) at (3.75,0.3) {$y(2)$}; 
+%     \node [draw=black, align=center, circle] (n2) at (3,0) {}; 
+% 
+%     \node [] (g3) at (3.75,-0.2) {$g$}; 
+%     \node [] (w3) at (4.50,0.7) {$w$}; 
+%     \node [] (x3) at (4.0,1.3) {$x(2)$}; 
+%     \node [] (t3) at (4.5,-0.7) {$t-3$}; 
+%     \node [] (y3) at (5.25,0.3) {$y(3)$}; 
+%     \node [draw=black, align=center, circle] (n3) at (4.5,0) {}; 
+% 
+%     \node [] (g4) at (5.25,-0.2) {$g$}; 
+%     \node [] (w4) at (6.00,0.7) {$w$}; 
+%     \node [] (x4) at (5.5,1.3) {$x(3)$}; 
+%     \node [] (t4) at (6.0,-0.7) {$t-4$}; 
+%     \node [] (y4) at (6.75,0.3) {$y(4)$}; 
+%     \node [draw=black, align=center, circle] (n4) at (6,0) {}; 
+% 
+%     \node [] (g5) at (6.75,-0.2) {$g$}; 
+%     \node [] (w5) at (7.50,0.7) {$w$}; 
+%     \node [] (x5) at (7.0,1.3) {$x(4)$}; 
+%     \node [] (t5) at (7.5,-0.7) {$t-5$}; 
+%     \node [] (y5) at (8.25,0.3) {$y(5)$}; 
+%     \node [draw=black, align=center, circle] (n5) at (7.5,0) {}; 
+% 
+%     \node [align=center] (n6) at (9,0) {}; 
+% 
+%     \draw[arrow]	(n0) -- (n1);
+%     \draw[arrow]	(x1) -- (n1);
+%     \draw[arrow]	(n1) -- (n2);
+%     \draw[arrow]	(x2) -- (n2);
+%     \draw[arrow]	(n2) -- (n3);
+%     \draw[arrow]	(x3) -- (n3);
+%     \draw[arrow]	(n3) -- (n4);
+%     \draw[arrow]	(x4) -- (n4);
+%     \draw[arrow]	(n4) -- (n5);
+%     \draw[arrow]	(x5) -- (n5);
+%     \draw[arrow]	(n5) -- (n6);
+%     \end{tikzpicture}
+%     \caption{The recurrent network shown in figure \ref{fig:feedback} during unfolding with depth $t=5$.}
+% \label{fig:unrolled}
+% \end{figure}
+% 
+% \begin{algorithm}
+% \LinesNumbered
+% \DontPrintSemicolon
+% \BlankLine
+% \Ein{Input $x(t)$ at time $t$, depth $k$}
+% \Aus{Output $y(t)$}
+% \BlankLine
+% \Begin
+% {
+%     Unfold network to contain $k$ instances.\\
+%     $y(0) \leftarrow \text{zero-magnitude vector} \overrightarrow{0}$.
+%     
+%     \For{$\forall t \in [0,n-1]: t \in \mathbb{N}_0$}
+%     {
+%         \tcp{Done for each }
+%         Set network inputs $y(0), x(1), x(2), x(3)$\\
+%         Forward-propagate.\\ 
+%         Error $e = y(t+k) - t;$ $t:$ target error\\
+%         Backpropagate the error across the whole unfolded network.\\
+%         Update all the weights in the network according to standard Backpropagation.\\
+%         $y(0) \leftarrow f(x)$
+% 
+%     
+%     }
+% }
+% \caption{The Backpropagation through time algorithm.}
+% \label{alg:GD}
+% \end{algorithm}
+% 
 \section{Genetic algorithms}
-\textit{Since this project builds off of Schembri's work, we assume knowledge about the hill-climbing approach in unsupervised learning used in \cite{DANIEL}. Readers not
+\textit{Since this project builds off of Schembri's work, we assume knowledge about the hill-climbing approach in unsupervised learning described in \cite{DANIEL}. Readers not
 familiar with hill-climbing and artificial evolution are advised to refer to the original paper before further reading.} 
 
 \subsection{Crossover}
 The unsupervised training of neural networks is greatly inspired by evolution. The notion of natural selection was first presented by Charles Darwin in his book “\textit{On the origin of species by means of natural selection}”\cite{DARWIN}. 
-As a comprehensive discussion of Darwin's ideas lies out of the range of this paper, \textbf{we?} we will from here on refer to evolution as the following definitions%\cite{OXFORD}:
+As a comprehensive discussion of Darwin's ideas lies out of the range of this paper, we will from here on refer to evolution as the following definitions \cite{OXFORD}:
 
 \begin{center}
 \textit{“Change in the genetic composition of a population during successive generations, often resulting in the development of new species. The mechanisms of evolution include natural selection acting on the genetic variation among individuals, mutation, migration, and genetic drift.”}\\
@@ -961,27 +1023,34 @@ and
 \textit{“A gradual process in which something changes into a different and usually more complex or better form.”}\\ 
 \end{center}
 
-In particular, we are especially interested in a change or modification which results in a new entity (neural network) better accustomed to the respective demands of the environment.
-We rate an ANN as better accustomed when its performance measure (i.e. the fitness function) has become higher. The hill-climbing algorithms tries to achieve this by modifications which continuously alter
-the weights of the respective network so as to maximise performance. However, this method may not reach a global maximum in case of local minima or flat parts of the respective fitness function.
+In particular, we are especially interested in a change or modification which results in a new entity (neural network) better accustomed to the 
+respective demands of the environment.  We rate an ANN as better accustomed when its performance measure (i.e. the fitness function) has become 
+higher. The hill-climbing algorithms tries to achieve this by modifications which continuously alter the weights of the respective network so 
+as to maximise performance. However, this method may not reach a global maximum in case of local minima or flat parts of the respective fitness 
+function.
 
-Crossover spins the idea of artificial evolution further, still. Instead of merely keeping the best individual of each population and modifying its weights slightly in hope for better 
-results, crossover implements the idea of artificial reproduction. Reproduction is implemented by a combination of the weights of two chosen networks according to specific criteria. The Crossover
-algorithm is usually used alongside hill-climbing to overcome the pitfall of local minima. We will refer to this combination of as \textit{augmented genetic algorithm}.
+Crossover spins the idea of artificial evolution further, still. Instead of merely keeping the best individual of each population and modifying 
+its weights slightly in hope for better results, crossover implements the idea of artificial reproduction. Reproduction is implemented by a 
+combination of the weights of two chosen networks according to specific criteria. The Crossover algorithm is usually used alongside hill-climbing 
+to overcome the pitfall of local minima. We will refer to this combination of as \textit{augmented genetic algorithm}.
 
 Figure \ref{fig:ag} shows the principle structure of the augmented genetic algorithm. A thorough explanation is also given in \cite{CROSSOVER}.
-After a population has been applied in an environment, the fitness of each individual is ranked according to their performance.  In addition, a selection process choses certain networks according to a selection function. Individuals are either selected for reproduction or direct mutation. Direct mutation is
-often used to clone the best-performing networks of the current population (sometimes called elitism). In case of direct mutation, the augmented genetic algorithm does not differ from the standard hill-climbing approach.
+After a population has been applied in an environment, the fitness of each individual is ranked according to their performance.  
+In addition, a selection process choses certain networks according to a selection function. Individuals are either selected for reproduction 
+or direct mutation. Direct mutation is often used to clone the best-performing networks of the current population (sometimes called elitism). 
+In case of direct mutation, the augmented genetic algorithm does not differ from the standard hill-climbing approach.
 
-If two individuals are chosen for reproduction, they create a certain amount of children according to the rule of genetic combination. 
-As an analogy to human reproduction, the selected networks will be referred to as the male and female part. Figure \ref{fig:repro} illustrates this process. One-Point Crossover is an example of a combination rule for two children.
-During the mating process, a random integer, called crossover point ($CP$), is chosen. It determines the ratio of male and female genes in the offspring. Given that number, the genetic combination can finally take place.
-When we talk about genes in the context of ANN, we usually mean the weights of the respective network. The crossover point simply states the number connection weights which are cloned from each parent to form the offspring.
-The total number of weights in an ANN is equal to the number of elements in the weight matrix $W$ (see \ref{subsec:weights}) and can be calculated as follows: $|W| = \sum^{n-1}_{i=1} L_i \cdot L_{i+1}$.
-$CP$ is then equal to the number of weights taken from the first parent, while $|W|-CP$ states the amount from the second parent. 
-
-Other crossover rules are two point crossover, uniform crossover where genes are copied at random %\cite{UNIFORMCROSSOVER} and selective crossover\cite{SELECTCROSSOVER}.
-
+\paragraph{Selection}
+In selection, one might be inclined to presume that only well-performing agents ought to be taken into consideration for mating. However, creating
+offspring from both a well and a poorly performing agents can help to increase their fitness \cite{KIKLAR}. This is why none
+of the networks must be excluded from the selection process. However, a bias towards better fitness is still desirable. This is implemented by 
+increasing the chances of picking better agents. One might think of the selection process of a game of roulette, where the sizes of the
+fields vary. Each field stands for a network of the previous population, their size corresponds to their fitness. As in standard-roulette, each
+field may be chosen, some with a higher probability than others. An example of the selection process is given in figure \ref{fig:roul}. After the 
+application of a 5-agent population, each one is ranked (as shown in table \ref{tab:rank} according to the amount of collected objects. Subsequently,
+a random number $\in (0,1)$ is chosen. As each slice itself is an interval, the slice containing the random number marks an entity chosen for 
+reproduction. The genes of the corresponding agent are then modified in reproduction to create offspring. \textbf{}.
+  
 \begin{figure}
 	\centering
 	\begin{tikzpicture}
@@ -1002,9 +1071,44 @@ Other crossover rules are two point crossover, uniform crossover where genes are
     \draw[arrow]    (m) to[out=0,in=0] (e);
 	
 	\end{tikzpicture}
-    \caption{The principle structure of the augmented genetic algorithm.\cite{CROSSOVER}}
-	\label{fig:ag}
+\caption{The principle structure of the augmented genetic algorithm.\cite{CROSSOVER}}
+\label{fig:ag}
 \end{figure}
+
+\begin{figure}
+\begin{floatrow}
+\ffigbox
+{%
+    \begin{tikzpicture}[scale=0.5]
+        \pie[color={black!10, black!15, black!20, black!25, black!30}, after number=]
+        {5/E , 15/D , 15/C , 25/B, 40/A}
+    \end{tikzpicture}
+}
+{%
+  \label{fig:roul}%
+  \caption{The probability distribution during the selection process. The size of each slice corresponds
+           to the score (as written inside each slice) of the corresponding agent.}%
+}
+\capbtabbox{%
+  \begin{tabular}{|c|c|} \hline
+     Agent & Score \\ \hline
+     A & 40 \\ \hline
+     B & 25 \\ \hline
+     C & 15 \\ \hline
+     D & 15 \\ \hline
+     E & 5  \\ \hline
+  \end{tabular}
+}{%
+  \label{tab:rank}%
+  \caption{An example fitness ranking of 5-Agent population. The score corresponds to the objects found.}%
+}
+\end{floatrow}
+\end{figure}
+
+\paragraph{Reproduction}
+If two individuals are chosen for reproduction, they create a certain amount of children according to the rule of genetic combination. 
+As an analogy to human reproduction, the selected networks will be referred to as the male and female part. Figure \ref{fig:repro} illustrates 
+this process. 
 
 \begin{figure}
 	\centering
@@ -1030,6 +1134,16 @@ Other crossover rules are two point crossover, uniform crossover where genes are
 	\caption{An illustration of the crossover reproduction model. Two parent networks are unified two create offspring.}
 	\label{fig:repro}
 \end{figure}
+
+One-Point Crossover is an example of a combination rule for two children.
+During the mating process, a random integer, called crossover point ($CP$), is chosen. It determines the ratio of male and female genes in the offspring. 
+Given that number, the genetic combination can finally take place. When we talk about genes in the context of ANN, we usually mean the weights 
+of the respective network. The crossover point simply states the number of connection weights cloned from each parent to form the offspring.
+The total number of weights in an ANN is equal to the number of elements in the weight matrix $W$ (see \ref{subsec:weights}) and can be calculated 
+as follows: $|W| = \sum^{n-1}_{i=1} L_i \cdot L_{i+1}$. For the first of the two children, $CP$ is equal to the number of weights taken from the first parent, 
+while $|W|-CP$ states the amount from the second parent. Conversely, $CP$ equals the weights taken from the second parent, while $|W|-CP$ states the amount from the first parent.
+Figure \ref{fig:matrixcross} shows an example of one-point crossover for an ANN of topology (3,3). The crossover point has been chosen to be $5$ in this example.
+Other crossover rules are two point crossover, uniform crossover where genes are copied at random \cite{UNIFORMCROSSOVER} and selective crossover\cite{SELECTCROSSOVER}.
 
 \begin{figure}
     \begin{center}
@@ -1069,9 +1183,11 @@ Other crossover rules are two point crossover, uniform crossover where genes are
 
 	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
 neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
-red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
-	\label{fig:pitts1}
+red weights originate from the mother network.}
+	\label{fig:matrixcross}
 \end{figure}
+
+\chapter{Design}
 
 \begin{figure}
 \begin{tikzpicture}[scale=5.3,cap=round,>=latex,rotate=90]
@@ -1192,9 +1308,11 @@ red weights originate from the mother network. The segmentation index has been c
 \end{figure}
 
 \chapter{Evaluation}
-\chapter{Related work}
+\label{ch:eval}
 \chapter{Conclusion}
+\label{ch:conclusion}
 \chapter{Future work}
+\label{ch:future}
 
 \KOMAoptions{listof=leveldown}
 
