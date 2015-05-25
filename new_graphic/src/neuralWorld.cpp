@@ -218,6 +218,7 @@ void NeuralWorld::Init()
 
 void NeuralWorld::Reset()
 {
+
     for(unsigned int i=0; i<population->size(); i++)
     {
         (*population)[i]->fitness = 0;
@@ -235,6 +236,11 @@ void NeuralWorld::Reset()
             }
         }
         Agentbody[i]->SetTransform(b2Vec2(Agentposition.x, Agentposition.y), 0.0f);
+        //Reset angular and velocity force
+        Agentbody[i]->SetLinearVelocity(b2Vec2(0,0));
+        Agentbody[i]->SetAngularVelocity(0);
+
+
     }
 
     for (int i = 0; i < amount_of_all_objects; i++)
@@ -251,6 +257,8 @@ void NeuralWorld::Reset()
         active[population->size() * 2 + i] = true;
         Objectbody[i]->SetActive(true);
         Objectbody[i]->SetTransform( b2Vec2( (-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10))),0.0f);
+        Objectbody[i]->SetLinearVelocity(b2Vec2(0,0));
+        Objectbody[i]->SetAngularVelocity(0);
     }
 
 }
@@ -267,6 +275,7 @@ void NeuralWorld::move_bodies(std::vector< std::vector<double> > output_vectors)
     {
         //Rotate Agent
         Agentbody[i]->SetTransform(Agentbody[i]->GetPosition(), Agentbody[i]->GetAngle() + 0.075f*(output_vectors[i][1]));
+      //  Agentbody[i]->SetTransform(Agentbody[i]->GetPosition(), Agentbody[i]->GetAngle() - (M_PI/2) *(output_vectors[i][1]));
         //Accelerate Agent
         Agentbody[i]->ApplyForce(b2Vec2(-sin(Agentbody[i]->GetAngle())*0.075f * 500 * (output_vectors[i][0]), cos(Agentbody[i]->GetAngle())*0.075f * 500 * (output_vectors[i][0])), Agentbody[i]->GetWorldCenter(), true);
     }
