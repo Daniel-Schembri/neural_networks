@@ -672,8 +672,8 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
         }
 	}
 
-	kids[0]->velocity_net->setConnection(kid1_weights_V);
-    kids[1]->velocity_net->setConnection(kid2_weights_V);
+	kids[0]->velocity_net->setConnections(kid1_weights_V);
+    kids[1]->velocity_net->setConnections(kid2_weights_V);
 
     return kids;
 }
