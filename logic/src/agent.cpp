@@ -116,12 +116,13 @@ double Agent::processV(std::vector<double> inputvals)
     {
         velocity_net->feedForward(inputvals);
         velocity_net->getResults(result_vals);
-
+        //For driving the agent if no food detected
+/*
         if (idleness_count >= 19)
         {
             result_vals[0] = 0.2f;
         }
-
+*/
     }
     else
     {
@@ -140,7 +141,9 @@ double Agent::processA(std::vector<double> inputvals)
     {
         angle_net->feedForward(inputvals);
         angle_net->getResults(result_vals);
-
+    
+        //For driving the agent if no food detected
+        /*
         if(0 == inputvals[0] && 0 == inputvals[1])
         {
             idleness_count++;
@@ -154,6 +157,7 @@ double Agent::processA(std::vector<double> inputvals)
         {
             result_vals[0] = 1.03f;
         }
+        */
     }
     else
     {

@@ -43,7 +43,7 @@ double Script::processV(std::vector<double> inputvals)
     velocity = hyp / radius;
     // So as to just compute it once
     current_angle_ = atan2(y, x) - (M_PI/2.0f);
-
+    std::cout << "script current_angle: " << current_angle_ << "\n";
     // Let's make sure we won't get too slow
     if(0.2 > velocity)
         velocity = 0.2f;
