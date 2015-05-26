@@ -20,12 +20,17 @@
 %for source code listings
 \usepackage{listings}
 
+%tables
 \usepackage[table]{xcolor}
+%figures alongside tables
+\usepackage{floatrow}
+\newfloatcommand{capbtabbox}{table}[][]
 
 %tikz
-\usepackage{tikz}
-\usetikzlibrary{arrows, positioning, fit}
-
+\usepackage{tikz,pgf}
+\usetikzlibrary{arrows, positioning, shapes, fit}
+%\usepackage[top=1in,bottom=1in,right=1in,left=1in]{geometry}
+\usepackage{pgf-pie}
 
 %male and female symbol
 \usepackage{wasysym}
@@ -46,7 +51,7 @@
 \usepackage{subfigure}
 
 %prevent figure from floating pictures
-%\usepackage{float}
+\usepackage{float}
 
 %footer & header
 \usepackage{fancyhdr}
@@ -68,6 +73,8 @@
 
 %maths
 \usepackage{amssymb} 
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
 \usepackage{dsfont}
 
 %japanese
@@ -209,17 +216,16 @@
     \acro{$a_j(t)$}{Activity of unit $n_j$ at time $t$}
     \acro{$H$}{The set of hidden layers of a neural network}
     \acro{$L$}{The set of layers of a neural network}
-    \acro{$ML$}{Machine learning}
-    \acro{$MLN$}{Multi layer network}
+    \acro{$MLN$}{A multi-layer network}
     \acro{$n_j$}{Neuron (also unit) $j$}
     \acro{$W$}{The connection matrix}
-    \acro{$w_{ij}$}{Weight on the connection link between neurons $n_i$ and $n_j$}
-%    \acro{$\Delta w_{ij}$}{Weight change  on the connection link between unit $i$ and $j$}
-%    \acro{$\overrightarrow{x}$}{The input vector of a neural network}
-%    \acro{$\overrightarrow{y}$}{The output vector of a neural network}
-%    \acro{$\varphi$}{Activation (transfer) function of a neuron}
-%    \acro{$\eta$}{Learning rate of a network}
-%    \acro{$\nabla F(a)$}{Gradient of the multivariable function $F(x)$ at point $a$}
+%    \acro{weight}[$w_{ij}$}{Weight on the connection link between neurons $n_i$ and $n_j$}
+    \acro{deltaweight}[$\Delta w_{ij}$]{Weight change  on the connection link between unit $i$ and $j$}
+    \acro{ivec}[$\protect \overrightarrow{x}$]{The input vector of a neural network}
+    \acro{ovec}[$\protect \overrightarrow{y}$]{The output vector of a neural network}
+    \acro{act}[$\varphi$]{Activation (transfer) function of a neuron}
+    \acro{eta}[$\eta$]{Learning rate of a network}
+    \acro{grad}[$\nabla F(a)$]{Gradient of the multivariable function $F(x)$ at point $a$}
 \end{acronym}
 
 \newpage
@@ -381,7 +387,7 @@ Any connections to predecessors are forbidden. This constraint has allowed for a
 
 As distinct from feed-forward networks, recurrent (or feedback) networks allow bidirectional signal flow. 
 As links from one neuron may be formed with any other neuron in the network, recurrent network are often categorised by increased complexity.
-Since the current state of a neuron may be continuously changing, recurrent networks demand advanced learning algorithms. \textbf{we?} We show an algorithm for training of recurrent network in section \ref{sec:btt}.
+Since the current state of a neuron may be continuously changing, recurrent networks demand advanced learning algorithms.
 Due to their dynamic nature, they allow for the modelling of advanced techniques, such as long and short term memory.
 
 \begin{figure}
@@ -501,10 +507,10 @@ The first network layer $L_1$, is referred to as the input layer. It receives th
 \draw[arrow]	(h3) -- (o1);
 \draw[arrow]	(h3) -- (o2);
 
-\node[draw=black,fit=(i1) (i2) (i3) (i4),ellipse] (inputLayer) {};
-\node[draw=black,fit=(h01) (h02) (h03) ,ellipse] (hiddenLayer) {};
-\node[draw=black,fit=(h1) (h2) (h3) ,ellipse] (hiddenLayer) {};
-\node[draw=black,fit=(o1) (o2) ,ellipse] (outputLayer) {};
+\node[draw=black,fit=(i1) (i2) (i3) (i4), ellipse] (inputLayer) {};
+\node[draw=black,fit=(h01) (h02) (h03), ellipse] (hiddenLayer) {};
+\node[draw=black,fit=(h1) (h2) (h3), ellipse] (hiddenLayer) {};
+\node[draw=black,fit=(o1) (o2), ellipse] (outputLayer) {};
 
 \node [align=center] (x) at (-1,1.5) {$\overrightarrow{x}$};
 
@@ -521,10 +527,13 @@ The first network layer $L_1$, is referred to as the input layer. It receives th
 \label{fig:layer}
 \end{figure}
 
-Particular significance is drawn to the layers in between input and output layer. Those layers are optional, but needed to solve certain problems. We will discuss the importance of hidden layers for problem solution in chapter \ref{chap:nets}. We denote the set of hidden layers as $H$. It is described as follows:
+Praticular significance is drawn to the layers in between input and output layer. Those layers are optional, but needed to approximate cetain functions such as the XOR-Gate. 
+We denote the set of hidden layers as $H$. It is described as follows:
 \begin{equation}
 H \subseteq L; H = \{L_i|1<i<n\}
-\end{equation}
+\end{equation} 
+
+A network where $H \neq \oldemptyset$ is called a multi-layer network (MLN). 
 
 \subsection{Units}
 \label{subsec:weights}
@@ -704,7 +713,7 @@ Until today, neural networks have been successfully applied to several problems 
 The following sections will give a brief notion of some 'classical' applications where ANNs have found better solutions in shorter time in comparison with other techniques.
 \subsection{Recognition of hand-writing}
 The automated interpretation of hand-written is of great interest for a number of purposes. The destination address of letters and parcels are nowadays processed by computers which use real-time image processing system to recognize handwriting on letters. The typesetting system \LaTeX  allows its users to phrase complex formulas using certain commands which are later being replaced by symbols such as the existential quantifier $\exists$. 
-One would now wish for a system that can take in a hand written representation of the symbol and output the command by which the symbol can later be written in a document. In \cite{MARTIN} artificial neural networks are used to classify such symbols. After drawing the sought symbol, the user is presented a choice of matching symbols along with an associated probability measure of their correctness. The website is available under \url{write-math.com}.
+One would now wish for a system that can take in a hand written representation of the symbol and output the command by which the symbol can later be written in a document. In %\cite{MARTIN} artificial neural networks are used to classify such symbols. After drawing the sought symbol, the user is presented a choice of matching symbols along with an associated probability measure of their correctness. The website is available under \url{write-math.com}.
 \\
 
 The challenge for such systems is the great deviation of styles in hand-written text. This makes it virtually infeasible for conventional methods to reliably classify hand-writing. 
@@ -721,10 +730,19 @@ Given a set of cities and the distances between each pair of cities, what is the
 
 where $\pi(n+1)$ is set to $\pi(1)$.\cite{MATHINF}\\
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\textwidth,scale=1]{files/tsp.png}  
+    \caption{An example graph. We are are interested in finding the cheapest tour\cite{MATHINF}.}
+    \label{fig:tsp}
+\end{figure}
+
+An example graph for the TSP is given in \ref{fig:tsp}. $4!$ possible tours exit, which is the amount of permutations of the vertecies.
+We find the cheapest tour $(1, 3, 4, 2, 1)$ with costs of $w(1, 3) + w(3, 4) + w(4, 2) + w(2, 1) = 11$.
+
 It is of high importance to theoretical computer science, as it is known to be $NP$-complete. In the field of complexity analysis, the class of decision problems for which there is a deterministic Turing-Machine able to solve it in time $\mathcal{O}(n^k)$ is called $P$ (polynomial). An example is the sorting problem. Class $P$ contains problems with running times like $\mathcal{O}(n)$ and $\mathcal{O}(log(n))$ but also those with time $\mathcal{O}(n^{5000})$. In addition to the deterministic Turing machine, complexity analysis also defines the non-deterministic Turing machine. At each time step, there are several possible ways of continuing computation, setting it in contrast with todays computers. The class of Problems $NP$ is solvable by a non-deterministic Turing Machine in polynomial time. $NP$ contains a number of relevant problems, such as the graph isomorphism (Can two graphs be drawn identically?). Problems in $P$ can also be solved by this theoretical model, so $P \subseteq NP$. In other words, a problem is in the class of NP if there is an algorithm (executed by a Turing machine) that can guess a solution and verify whether the guess was correct in polynomial time. In case of omniscient guessing or given a number of processors equal to the number of solutions, trying out all possibilities at the same time one would always get the correct solution. Thus, $NP$ problems would become $P$ problems. 
 
 Nevertheless, computationally feasible approximation techniques have been found which allow to find a good, although not always the best, solution. Hopfield and Tank (1985) proposed an approach using ANNs which allows to find a good, often even the best solution for the TSP. It suggests a single-layer network with $n$ neurons, where $n$ equals the number of cities in the graph, called Hopfield-network. This can be thought of as a square with an edge length of $n$. The output of each individual neuron equals the time step at which the city is visited. Furthermore, genetic algorithms have also been applied to find an approximate solution for the problem %\cite{GENTSP}.
-
 
 \chapter{Learning}\label{ch:learning}
 \section{Hebbian learning rule}
@@ -815,14 +833,14 @@ Gradient descent may be imagined as the effort of a wanderer to reach the bottom
 \begin{figure}
     \centering
     \includegraphics[width=0.3\textwidth,scale=1]{files/graddes.png}  
-    \caption{Illustration of gradient descent.\cite{GRADFIG}}
+    \caption{Illustration of gradient descent.}%\cite{GRADFIG}}
     \label{fig:grad}
 \end{figure}
 
 \subsection{The Backpropagation algorithm}
 
 The Backpropagation algorithm is yet another learning rule for supervised networks, but in comparison to the Hebbian and delta rules, it can also be applied for networks with $n$ numbers of hidden layers. There are certain problems that cannot be solved by networks without at least one hidden layer, the XOR-Gate being a famous example. 
-It was developed by several scientists simultaneously \cite{BACK1}\cite{BACK2}\cite{BACK3} and consists of three stages:
+It was developed by several scientists simultaneously %\cite{BACK1}\cite{BACK2}\cite{BACK3} and consists of three stages:
 \begin{itemize}
 \item[1.] \textbf{The forward-pass}:
 A pattern is presented to the input layer and further propagated into the network.
@@ -988,12 +1006,12 @@ Eventually, the weights are changed according to equation \eqref{eq:backweight}.
 % \end{algorithm}
 % 
 \section{Genetic algorithms}
-\textit{Since this project builds off of Schembri's work, we assume knowledge about the hill-climbing approach in unsupervised learning used in \cite{DANIEL}. Readers not
+\textit{Since this project builds off of Schembri's work, we assume knowledge about the hill-climbing approach in unsupervised learning described in \cite{DANIEL}. Readers not
 familiar with hill-climbing and artificial evolution are advised to refer to the original paper before further reading.} 
 
 \subsection{Crossover}
 The unsupervised training of neural networks is greatly inspired by evolution. The notion of natural selection was first presented by Charles Darwin in his book “\textit{On the origin of species by means of natural selection}”\cite{DARWIN}. 
-As a comprehensive discussion of Darwin's ideas lies out of the range of this paper, \textbf{we?} we will from here on refer to evolution as the following definitions\cite{OXFORD}:
+As a comprehensive discussion of Darwin's ideas lies out of the range of this paper, we will from here on refer to evolution as the following definitions \cite{OXFORD}:
 
 \begin{center}
 \textit{“Change in the genetic composition of a population during successive generations, often resulting in the development of new species. The mechanisms of evolution include natural selection acting on the genetic variation among individuals, mutation, migration, and genetic drift.”}\\
@@ -1023,28 +1041,16 @@ or direct mutation. Direct mutation is often used to clone the best-performing n
 In case of direct mutation, the augmented genetic algorithm does not differ from the standard hill-climbing approach.
 
 \paragraph{Selection}
-%TODO: AI basics book cittation, figure
 In selection, one might be inclined to presume that only well-performing agents ought to be taken into consideration for mating. However, creating
-offspring from both a well and a poorly performing agents can help to increase the perormance. This is why none
+offspring from both a well and a poorly performing agents can help to increase their fitness \cite{KIKLAR}. This is why none
 of the networks must be excluded from the selection process. However, a bias towards better fitness is still desirable. This is implemented by 
-increasing the chance of picking a better agents at random. One might think of the selection process of a game of roulette, where the sizes of the
+increasing the chances of picking better agents. One might think of the selection process of a game of roulette, where the sizes of the
 fields vary. Each field stands for a network of the previous population, their size corresponds to their fitness. As in standard-roulette, each
-field may be chosen, some with a higher probability than others. The roulette wheel is showin in \ref{fig:roul}.
-
-\paragraph{Reproduction}
-If two individuals are chosen for reproduction, they create a certain amount of children according to the rule of genetic combination. 
-As an analogy to human reproduction, the selected networks will be referred to as the male and female part. Figure \ref{fig:repro} illustrates 
-this process. One-Point Crossover is an example of a combination rule for two children.
-During the mating process, a random integer, called crossover point ($CP$), is chosen. It determines the ratio of male and female genes in the offspring. 
-Given that number, the genetic combination can finally take place.  When we talk about genes in the context of ANN, we usually mean the weights 
-of the respective network. The crossover point simply states the number connection weights which are cloned from each parent to form the offspring.
-The total number of weights in an ANN is equal to the number of elements in the weight matrix $W$ (see \ref{subsec:weights}) and can be calculated 
-as follows: $|W| = \sum^{n-1}_{i=1} L_i \cdot L_{i+1}$.
-$CP$ is then equal to the number of weights taken from the first parent, while $|W|-CP$ states the amount from the second parent. 
-
-Other crossover rules are two point crossover, uniform crossover where genes are copied at random 
-%\cite{UNIFORMCROSSOVER} and selective crossover\cite{SELECTCROSSOVER}.
-
+field may be chosen, some with a higher probability than others. An example of the selection process is given in figure \ref{fig:roul}. After the 
+application of a 5-agent population, each one is ranked (as shown in table \ref{tab:rank} according to the amount of collected objects. Subsequently,
+a random number $\in (0,1)$ is chosen. As each slice itself is an interval, the slice containing the random number marks an entity chosen for 
+reproduction. The genes of the corresponding agent are then modified in reproduction to create offspring. \textbf{}.
+  
 \begin{figure}
 	\centering
 	\begin{tikzpicture}
@@ -1065,9 +1071,44 @@ Other crossover rules are two point crossover, uniform crossover where genes are
     \draw[arrow]    (m) to[out=0,in=0] (e);
 	
 	\end{tikzpicture}
-    \caption{The principle structure of the augmented genetic algorithm.\cite{CROSSOVER}}
-	\label{fig:ag}
+\caption{The principle structure of the augmented genetic algorithm.\cite{CROSSOVER}}
+\label{fig:ag}
 \end{figure}
+
+\begin{figure}
+\begin{floatrow}
+\ffigbox
+{%
+    \begin{tikzpicture}[scale=0.5]
+        \pie[color={black!10, black!15, black!20, black!25, black!30}, after number=]
+        {5/E , 15/D , 15/C , 25/B, 40/A}
+    \end{tikzpicture}
+}
+{%
+  \label{fig:roul}%
+  \caption{The probability distribution during the selection process. The size of each slice corresponds
+           to the score (as written inside each slice) of the corresponding agent.}%
+}
+\capbtabbox{%
+  \begin{tabular}{|c|c|} \hline
+     Agent & Score \\ \hline
+     A & 40 \\ \hline
+     B & 25 \\ \hline
+     C & 15 \\ \hline
+     D & 15 \\ \hline
+     E & 5  \\ \hline
+  \end{tabular}
+}{%
+  \label{tab:rank}%
+  \caption{An example fitness ranking of 5-Agent population. The score corresponds to the objects found.}%
+}
+\end{floatrow}
+\end{figure}
+
+\paragraph{Reproduction}
+If two individuals are chosen for reproduction, they create a certain amount of children according to the rule of genetic combination. 
+As an analogy to human reproduction, the selected networks will be referred to as the male and female part. Figure \ref{fig:repro} illustrates 
+this process. 
 
 \begin{figure}
 	\centering
@@ -1093,6 +1134,16 @@ Other crossover rules are two point crossover, uniform crossover where genes are
 	\caption{An illustration of the crossover reproduction model. Two parent networks are unified two create offspring.}
 	\label{fig:repro}
 \end{figure}
+
+One-Point Crossover is an example of a combination rule for two children.
+During the mating process, a random integer, called crossover point ($CP$), is chosen. It determines the ratio of male and female genes in the offspring. 
+Given that number, the genetic combination can finally take place. When we talk about genes in the context of ANN, we usually mean the weights 
+of the respective network. The crossover point simply states the number of connection weights cloned from each parent to form the offspring.
+The total number of weights in an ANN is equal to the number of elements in the weight matrix $W$ (see \ref{subsec:weights}) and can be calculated 
+as follows: $|W| = \sum^{n-1}_{i=1} L_i \cdot L_{i+1}$. For the first of the two children, $CP$ is equal to the number of weights taken from the first parent, 
+while $|W|-CP$ states the amount from the second parent. Conversely, $CP$ equals the weights taken from the second parent, while $|W|-CP$ states the amount from the first parent.
+Figure \ref{fig:matrixcross} shows an example of one-point crossover for an ANN of topology (3,3). The crossover point has been chosen to be $5$ in this example.
+Other crossover rules are two point crossover, uniform crossover where genes are copied at random \cite{UNIFORMCROSSOVER} and selective crossover\cite{SELECTCROSSOVER}.
 
 \begin{figure}
     \begin{center}
@@ -1132,6 +1183,126 @@ Other crossover rules are two point crossover, uniform crossover where genes are
 
 	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
 neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
+red weights originate from the mother network.}
+	\label{fig:matrixcross}
+\end{figure}
+
+\chapter{Design}
+
+\begin{figure}
+\begin{tikzpicture}[scale=5.3,cap=round,>=latex,rotate=90]
+    % draw the coordinates
+    \draw[->] (0cm,1.5cm) -- (0cm,-1.5cm) node[right,fill=white] {$x$};
+    \draw[->] (0cm,0cm) -- (1.5cm,0cm) node[above,fill=white] {$y$};
+    
+    % draw the unit circle
+    \draw [black,thick,domain=0:90] plot ({cos(\x)}, {sin(\x)});
+    \draw [black,thick,domain=-90:0] plot ({cos(\x)}, {sin(\x)});
+    
+    \foreach \x in {-90,-60,...,90} {
+            % lines from center to point
+            \draw[gray] (0cm,0cm) -- (\x:1cm);
+            % dots at each point
+            \filldraw[black] (\x:1cm) circle(0.4pt);
+            % draw each angle in degrees
+            \draw (\x:0.6cm) node[fill=white] {$\x^\circ$};
+    }
+    
+    % draw each angle in radians
+    \foreach \x/\xtext in {
+        -90/\frac{-\pi}{2},
+        -60/\frac{-\pi}{3},
+        -30/\frac{-\pi}{6},
+        0/\frac{0}{0},
+        30/\frac{\pi}{6},
+        60/\frac{\pi}{3},
+        90/\frac{\pi}{2}
+    }
+    \draw (\x:0.85cm) node[fill=white] {$\xtext$};
+    
+    % draw the horizontal and vertical coordinates
+    % the placement is better this way
+    \draw (0cm,-1.25cm) node[above=1pt] {$(1,0)$}
+          (1.25cm,0cm)  node[above=1pt] {$(0,1)$}
+          (0cm,1.25cm)  node[above=1pt] {$(-1,0)$};
+    
+    % origin
+    \draw[fill=black] (0,0) circle(.013);
+
+\end{tikzpicture}
+	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
+neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
+red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
+	\label{fig:pitts1}
+\end{figure}
+
+\begin{figure}
+\begin{tikzpicture}[scale=5.3,cap=round,>=latex]
+    % draw the coordinates
+    \draw[step=0.1,black!20,thin] (-1cm,0) grid (1cm,1cm);
+    
+    \node[] (origin) at (0,0) {}; 
+    \draw[] (-0.6cm,0.3cm) node[blue] {};
+    \draw[blue] (-0.6cm,0.35cm) node[] {$ v_1 = (\frac{-3r}{5}\ \frac{3r}{10})$};
+    \draw[blue, ->] (origin) -- (-0.6cm,0.3cm);
+    
+    \draw[] (0.2cm,0.8cm) node[red] {};
+    \draw[red] (0.2cm,0.85cm) node[] {$ v_2 = (\frac{r}{5}\ \frac{4r}{5})$};
+    \draw[red, ->] (origin) -- (0.2cm, 0.8cm);
+    
+    \draw[->] (-1cm,0cm) -- (1cm,0cm) node[right,fill=white] {$x$};
+    \draw[->] (0cm,0cm) -- (0cm,1cm) node[above,fill=white] {$y$};
+    
+    % draw the unit circle
+    \draw [black,thick,domain=0:90] plot ({cos(\x)}, {sin(\x)});
+    \draw [black,thick,domain=180:90] plot ({cos(\x)}, {sin(\x)});
+    
+    % draw the horizontal and vertical coordinates
+    % the placement is better this way
+    \draw (-1.15cm,0cm) node[above=1pt] {$(-r,0)$}
+          (1.15cm,0cm)  node[above=1pt] {$(r,0)$}
+          (0cm,1.15cm)  node[fill=white] {$(0,r)$};
+    
+    
+    % origin
+    \draw[fill=black] (0,0) circle(.013);
+
+\end{tikzpicture}
+	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
+neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
+red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
+	\label{fig:pitts1}
+\end{figure}
+
+\begin{figure}
+\begin{tikzpicture}[scale=5.3,cap=round,>=latex]
+    % draw the coordinates
+    \draw[step=0.1,black!20,thin] (0,0) grid (1cm,1cm);
+    
+    \node[] (origin) at (0,0) {}; 
+    \draw[] (0.6cm,0.3cm) node[blue] {};
+    \draw[blue] (0.6cm,0.35cm) node[] {$ v_1' = (\frac{3r}{5}\ \frac{3r}{10})$};
+    \draw[blue, ->] (origin) -- (0.6cm,0.3cm);
+    \draw[blue] (0.2cm,0.0cm) arc (0:40:0.13);
+    \node[blue] (alpha) at (0.15,0.04) {$\alpha$}; 
+    
+    \draw[->] (0cm,0cm) -- (1cm,0cm) node[right,fill=white] {$x$};
+    \draw[->] (0cm,0cm) -- (0cm,1cm) node[above,fill=white] {$y$};
+    
+    % draw the unit circle
+    \draw [black,thick,domain=0:90] plot ({cos(\x)}, {sin(\x)});
+    
+    % draw the horizontal and vertical coordinates
+    % the placement is better this way
+    \draw (1.15cm,0cm)  node[above=1pt] {$(r,0)$}
+          (0cm,1.15cm)  node[fill=white] {$(0,r)$};
+    
+    % origin
+    \draw[fill=black] (0,0) circle(.013);
+
+\end{tikzpicture}
+	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
+neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
 red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
 	\label{fig:pitts1}
 \end{figure}
@@ -1154,8 +1325,6 @@ red weights originate from the mother network. The segmentation index has been c
 \listofalgorithms
 \lstlistoflistings
 
-\newpage
-
 %=========================================DICTIONARY====================================
 
 %dictiary style
@@ -1163,4 +1332,4 @@ red weights originate from the mother network. The segmentation index has been c
 %dictionary source
 \bibliography{./files/bibdb}
 
-computationalend{document}
+\end{document}

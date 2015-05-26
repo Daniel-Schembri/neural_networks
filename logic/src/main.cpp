@@ -150,7 +150,7 @@ int main()
         // Train the net what the outputs should have been:
         trainData.getTargetOutputs(targetVals);
         showVectorVals("Targets:", targetVals);
-        assert(targetVals.size() == topology.back());
+//        assert(targetVals.size() == topology.back());
 
         myNet.learn(targetVals);
 
