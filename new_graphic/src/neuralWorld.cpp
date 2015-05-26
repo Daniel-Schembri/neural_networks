@@ -1,3 +1,36 @@
+/*
+* Copyright (c) 2015 Daniel Schembri https://github.com/Daniel-Schembri/neural_networks
+*
+* neuralworld.cpp
+* This cpp-file uses Box2D by Erin Catto 
+*
+* new_graphic
+* This is a graphical user interface to evolve object collecting agents 
+* The agent have two neural networks for steering angle and velocity.
+*
+* This project includes the neural net framework, called logic,
+* of Jonathan Schwarz https://github.com/jonathan-schwarz/neural_networks
+*
+* new_graphic also uses the Box2D-library by Erin Catto
+* At following the license for Box2D:
+*
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
+*
+* This software is provided 'as-is', without any express or implied
+* warranty.  In no event will the authors be held liable for any damages
+* arising from the use of this software.
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
+* 1. The origin of this software must not be misrepresented; you must not
+* claim that you wrote the original software. If you use this software
+* in a product, an acknowledgment in the product documentation would be
+* appreciated but is not required.
+* 2. Altered source versions must be plainly marked as such, and must not be
+* misrepresented as being the original software.
+* 3. This notice may not be removed or altered from any source distribution.
+*/
+
 #include "neuralWorld.h"
 
 
@@ -218,6 +251,7 @@ void NeuralWorld::Init()
 
 void NeuralWorld::Reset()
 {
+
     for(unsigned int i=0; i<population->size(); i++)
     {
         (*population)[i]->fitness = 0;
@@ -235,6 +269,11 @@ void NeuralWorld::Reset()
             }
         }
         Agentbody[i]->SetTransform(b2Vec2(Agentposition.x, Agentposition.y), 0.0f);
+        //Reset angular and velocity force
+        Agentbody[i]->SetLinearVelocity(b2Vec2(0,0));
+        Agentbody[i]->SetAngularVelocity(0);
+
+
     }
 
     for (int i = 0; i < amount_of_all_objects; i++)
@@ -251,6 +290,8 @@ void NeuralWorld::Reset()
         active[population->size() * 2 + i] = true;
         Objectbody[i]->SetActive(true);
         Objectbody[i]->SetTransform( b2Vec2( (-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10))),0.0f);
+        Objectbody[i]->SetLinearVelocity(b2Vec2(0,0));
+        Objectbody[i]->SetAngularVelocity(0);
     }
 
 }
@@ -267,6 +308,7 @@ void NeuralWorld::move_bodies(std::vector< std::vector<double> > output_vectors)
     {
         //Rotate Agent
         Agentbody[i]->SetTransform(Agentbody[i]->GetPosition(), Agentbody[i]->GetAngle() + 0.075f*(output_vectors[i][1]));
+      //  Agentbody[i]->SetTransform(Agentbody[i]->GetPosition(), Agentbody[i]->GetAngle() - (M_PI/2) *(output_vectors[i][1]));
         //Accelerate Agent
         Agentbody[i]->ApplyForce(b2Vec2(-sin(Agentbody[i]->GetAngle())*0.075f * 500 * (output_vectors[i][0]), cos(Agentbody[i]->GetAngle())*0.075f * 500 * (output_vectors[i][0])), Agentbody[i]->GetWorldCenter(), true);
     }

@@ -6,7 +6,7 @@
 
 #define LEARNING_RATE (0.15)
 #define MOMENTUM (0.5)
-#define SIGHT_RADIUS (20.0)
+#define SIGHT_RADIUS (13.0)
 
 class Neuron;
 

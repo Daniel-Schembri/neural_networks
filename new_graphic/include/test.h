@@ -1,5 +1,22 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
+* Copyright (c) 2015 Daniel Schembri https://github.com/Daniel-Schembri/neural_networks
+*
+* test.h
+*
+* This is a modified version of Erin Cattos Box2D Testbed test.h
+*
+* new_graphic
+* This is a graphical user interface to evolve object collecting agents 
+* The agent have two neural networks for steering angle and velocity.
+*
+* This project includes the neural net framework, called logic,
+* of Jonathan Schwarz https://github.com/jonathan-schwarz/neural_networks
+*
+* new_graphic also uses the Box2D-library by Erin Catto
+*
+* At following the license for Box2D:
+*
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -15,6 +32,7 @@
 * misrepresented as being the original software.
 * 3. This notice may not be removed or altered from any source distribution.
 */
+
 
 #ifndef TEST_H
 #define TEST_H
