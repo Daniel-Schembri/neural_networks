@@ -375,7 +375,7 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
     {
         std::vector<double> agent_vals;
 
-        //TODO: hand over correct values
+        //TODO: hand over correct values (scaling to [-1,1] respectively [0,1]
         double x_value = inputvals_vector[i][0] / SIGHT_RADIUS;
         double y_value = inputvals_vector[i][1] / SIGHT_RADIUS;
 
@@ -392,25 +392,29 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
         //                   steering = sign(x) * -(pi/2-(Network output - pi/2))
         double angle_x_v = M_PI/2.0 * population[i]->processA(inputvals_vector[i]);
         double angle_y_v = M_PI/2.0 - angle_x_v;
-        
-        if (0 == inputvals_vector[i][0] && 0 == inputvals_vector[i][1] && angle_x_v == M_PI/2.0 * 1.03f)
-        {
-            x_value = 1;
-        }
+     
+    //    Necessary for driving if no food detected
+    //    if (0 == inputvals_vector[i][0] && 0 == inputvals_vector[i][1] && angle_x_v == M_PI/2.0 * 1.03f)
+    //    {
+    //        x_value = 1;
+    //    }
 
         double steering_angle = sgn(x_value) * -angle_y_v;
 
         agent_vals.push_back(steering_angle);
 
     //    agent_vals[0] = 0;
-   //     agent_vals[1] = 0;
+    //    agent_vals[1] = 0;
 
         result_vectors.push_back(agent_vals);
-
+/*
         std::cout << "Input: (" << inputvals_vector[i][0] << "," << inputvals_vector[i][1] << 
-                     ") Output:" << result_vectors[i][0] << "," << result_vectors[i][1] << ")\n";
+                     ") Output:(" << result_vectors[i][0] << "," << result_vectors[i][1] << 
+                     ") angle_x_v (" << angle_x_v << "), angle_y_v (" << angle_y_v << ")\n";
         //std::cout << "angle_x_v :" << angle_x_v << ", angle_y_v: " << angle_y_v << ", steering_angle: " << steering_angle << "\n"; 
-
+*/
+        result_vectors[i][0] = 0;
+        result_vectors[i][1] = 0;
     }
 
     if (!datasetwritten)
@@ -672,8 +676,8 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
         }
 	}
 
-	kids[0]->velocity_net->setConnection(kid1_weights_V);
-    kids[1]->velocity_net->setConnection(kid2_weights_V);
+	kids[0]->velocity_net->setConnections(kid1_weights_V);
+    kids[1]->velocity_net->setConnections(kid2_weights_V);
 
     return kids;
 }
