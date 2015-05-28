@@ -27,7 +27,7 @@ class Agent
         //std::vector<double> outputvals;
 
     private:
-
+        unsigned int idleness_count;
         std::vector<unsigned> topology;
 
         int id; int nettype; 

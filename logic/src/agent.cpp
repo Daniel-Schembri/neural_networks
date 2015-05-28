@@ -4,11 +4,14 @@
 Agent::Agent()
 {
     fitness = 0; lastfitness = 0;
+    idleness_count = 0;
 }
 
 Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology, int pnet_type)
 {
     fitness = 0; lastfitness = 0; id=pid; nettype = pnet_type;
+
+    idleness_count = 0;
 
     posx = pposx; posy = pposy;
     topology = ptopology;
@@ -24,8 +27,8 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
 		angle_net    = new FeedForwardNet(topology, true);
 		break;
 	case NET_SRN:
-		velocity_net = new SRN(topology, 5, true);
-		angle_net    = new SRN(topology, 5, true);
+//		velocity_net = new srn(topology, true);
+//		angle_net    = new srn(topology, true);
 		break;
 	case NET_SCRIPT:
         myscript = new Script();
@@ -56,8 +59,8 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
 		angle_net    = new FeedForwardNet(topology, true);
 		break;
 	case NET_SRN:
-		velocity_net = new SRN(topology, 5, true);
-		angle_net    = new SRN(topology, 5, true);
+//		velocity_net = new srn(topology, true);
+//		angle_net    = new srn(topology, true);
 		break;
 	case NET_SCRIPT:
         myscript = new Script();
@@ -70,7 +73,7 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
 
     if(NULL != velocity_net)
     {
-        velocity_net->setConnections(pweights);
+        angle_net->setConnections(pweights);
     }
 }
 
@@ -113,6 +116,13 @@ double Agent::processV(std::vector<double> inputvals)
     {
         velocity_net->feedForward(inputvals);
         velocity_net->getResults(result_vals);
+        //For driving the agent if no food detected
+/*
+        if (idleness_count >= 19)
+        {
+            result_vals[0] = 0.2f;
+        }
+*/
     }
     else
     {
@@ -131,6 +141,23 @@ double Agent::processA(std::vector<double> inputvals)
     {
         angle_net->feedForward(inputvals);
         angle_net->getResults(result_vals);
+    
+        //For driving the agent if no food detected
+        /*
+        if(0 == inputvals[0] && 0 == inputvals[1])
+        {
+            idleness_count++;
+        }
+        else
+        {
+            idleness_count = 0;
+        }
+
+        if (idleness_count >= 20)
+        {
+            result_vals[0] = 1.03f;
+        }
+        */
     }
     else
     {
