@@ -231,6 +231,7 @@
 \newpage
 
 \chapter{Introduction}
+\label{ch:intro}
 In \cite{DANIEL}, Schembri proposes the application of machine learning algorithms for training of object collecting agents. 
 Such agents dwell in a simulated, confined, two-dimensional space, where objects are dropped at random. Without any previous knowledge of 
 their environment, agents are placed in the world and are to reason that their aim is to collect objects. The performance or fitness of each 
@@ -255,9 +256,10 @@ in combination with different network structures is given.
 %TODO: Really exposed?
 In chapter \ref{ch:basics} a brief introduction to the very basics of artificial neural networks is given. We investigate their biological counterpart
 and show a mathematical formalisation of their structure. We dive more into the details of artificial neural networks in chapter \ref{ch:ANN} where
-we talk about different models and network structure. Different learning algorithms are presented in chapter \label{ch:learning}. We show both
-supervised and unsupervised algorithms and expose their limitations. The application and evaluation of presented algorithms is shown in
-chapter \label{ch:eval}, where we critically analyse the performance gain in comparison to Schembri's work. A final conclusion is drawn in 
+we different models and network types are introduced. Several learning algorithms are presented in chapter \label{ch:learning}. Both
+supervised and unsupervised algorithms are presented. We investigate their usefulness and expose their limitations. 
+Finally, we show how neural networks can be used to control an agent as proposed in Schembri's work in chapter \label{ch:design}. 
+Evaluation of presented algorithms follows in chapter \label{ch:eval}, where we critically analyse the performance gain in comparison to Schembri's work. A final conclusion is drawn in 
 \label{ch:conclusion} and further ideas of how to improve the performance are given in chapter \label{ch:future}.
 
 \chapter{Basics}
@@ -269,7 +271,7 @@ processing vision and audio signals simultaneously at ease. In contrast, program
 A distinctive feature is their ability to learn and abstract from examples. As distinct from computers, ANNs do not have to be programmed to solve 
 a certain task. This feature makes them particularly interesting for tasks where no solution or at least no efficient algorithm
 exist. Further examples of successful applications of neural networks are given in section \ref{sec:exp}.
-In terms of computability ANNs are an equivalent model to the Turing machine.\cite{NURING}
+In terms of computability, they are an equivalent model to the Turing machine.\cite{NURING}
 
 Neural networks may be looked at from widely different angles. Their models serve neuroscience for the understanding of biological processes 
 in the human brain, while a psychologist verifies learning- and memory theories using those models. A physicist regards them as a physical structure,
@@ -370,25 +372,28 @@ Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed 
 \label{fig:mathneuron}
 \end{figure}
 
-This proposal is of particular importance for the theory of ANN and inspired significant researchers like John von Neumann or Nobert Wiener, who developed cybernetics. However, the McCulloch-Pitts neurons are limited by their inability to learn, resulting from their fixed structure. They also lack the surprising robustness of biological nerve networks, since they rely on a flawless operation of all components. Nevertheless, they still have significance in electrical engineering, where they are used to realise binary functions, due to their increased efficiency in contrast to gates. 
+This proposal is of particular importance for the theory of ANNs and inspired significant researchers like John von Neumann or Nobert Wiener, who developed cybernetics. However, the McCulloch-Pitts neurons are limited by their inability to learn, resulting from their fixed structure. They also lack the surprising robustness of biological nerve networks, since they rely on a flawless operation of all components. Nevertheless, they still have significance in electrical engineering, where they are used to realise binary functions, due to their increased efficiency in contrast to gates. 
 
 \chapter{Artificial neural networks}
 \label{ch:ann}
 \section{Overview}
 
-Scientists have proposed a multitude of different network structures since the advent of research in ANN through their first formalisation. 
+Scientists have proposed a multitude of different network structures since the advent of research in ANNs through their first formalisation. 
 A lot of which have been designed with various motivations, stemming from the different perception of neural networks across disciplines.
 Categorisation can be achieved by distinguishing several parameters, e.g. the number of layers, acceptance of input types or usage of learning techniques.
-Figure \ref{fig:class} illustrates a possible categorisation\cite{NNGER}.
+Figure \ref{fig:class} illustrates a possible categorisation\cite{NNGER}. Note that although not all of the mentioned networks are shown in detail,
+we mention their existence so that an interested reader may be allowed to do further research on the topic.
 The direction of signal flow serves as a first level of distinction, as it substantially characterises the networks structure, complexity and so on.
 Both types of signal flow mandate the propagation of network input further into the network.
 Feed-forward network prohibit the usage of non-straightforward signal flow, i.e. connections may only emerge between subsequent neurons.
-Any connections to predecessors are forbidden. This constraint has allowed for a quick development of learning techniques, empowering ANN to learn from data. 
+Any connections to predecessors are forbidden. This constraint has allowed for a quick development of learning techniques, empowering ANNs by 
+allowing them to learn from data. 
 
-As distinct from feed-forward networks, recurrent (or feedback) networks allow bidirectional signal flow. 
+As distinct from Feed-forward networks, recurrent (or feedback) networks allow bidirectional signal flow. 
 As links from one neuron may be formed with any other neuron in the network, recurrent network are often categorised by increased complexity.
-Since the current state of a neuron may be continuously changing, recurrent networks demand advanced learning algorithms.
-Due to their dynamic nature, they allow for the modelling of advanced techniques, such as long and short term memory.
+Since the current state of a neuron may be continuously changing, recurrent networks demand advanced learning algorithms and are an order of magnitude
+more complex than their counterparts.  Due to their dynamic nature, they allow for the modelling of advanced techniques, 
+such as long and short term memory \cite{LTSM} (\textbf{ltsm}).
 
 \begin{figure}
 \centering
@@ -445,10 +450,20 @@ Due to their dynamic nature, they allow for the modelling of advanced techniques
 
 \end{tikzpicture}}
 \caption{A categorisation of neural network types. BPG = Backpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
-
 \label{fig:class}
 \end{figure}
-A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced. Within this chapter, we will give an introduction of the terminology and mathematical models used to represent a neural network on a computing machine. An appraisal of advantages and detriments of the presented models is rather difficult, as their performance hugly depends on the specific application. Regarding machine learning, and thereforea also ANN, the term performancedemands for a new definition. Machine learning is a scientific discipline that explores the construction and study of algorithms that can learn from data.\cite{MLDEF1} Such algorithms operate by building a model from example inputs and using that to make predictions or decisions.\cite{MLDEF2} As distict from other algorithms, there can never be absolute certainity of the correctness of a machine learning model. This stems from their usage of the probability of statistics applied to real world problems. Algorithmic measures, such as optimality and completeness cannot be utilised to assess the usefulness of a machine learning technique. A performance evaluation can therefore only be conducted given a specific problem and the according data. After all, the selection and appropriate usage of neural network structures requires extensive experience and/or thorough testing. 
+
+A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced. 
+Within this chapter, we will give an introduction of the terminology and mathematical models used to represent a neural network on a computing machine. 
+An appraisal of advantages and detriments of the presented models is rather difficult, as their performance hugely depends on the specific application. 
+Regarding machine learning, and therefore also ANNs, the term performance demands for a new definition. Machine learning is a scientific discipline 
+that explores the construction and study of algorithms that can learn from data.\cite{MLDEF1} 
+Such algorithms operate by building a model from example inputs and using that to make predictions or decisions.\cite{MLDEF2} 
+As distinct from non-probabilistic algorithms, there can never be absolute certainty of the correctness of a machine learning model. 
+This stems from their usage of probability theory and statistical modelling witch are applied to real world problems. 
+Algorithmic measures, such as optimality and completeness cannot be utilised to assess the usefulness of such a technique.
+A performance evaluation can therefore only be conducted given a specific problem and the according data. After all, the selection and 
+appropriate usage of machine learning algorithms (and therefore also neural networks) requires extensive experience and/or thorough testing. 
 
 \section{Network structure}
 \subsection{Layers}
@@ -1187,10 +1202,32 @@ red weights originate from the mother network.}
 	\label{fig:matrixcross}
 \end{figure}
 
-\chapter{Design}
+\chapter{Neural networks for agent control}
+\label{ch:design}
 
+\section{Control parameters and operation considerations}
+In this chapter, we will show how neural networks can be used to control the agent described in chapter \ref{ch:intro}. These agents are 
+characterized by their sensors which observe the environment in a limited range given by a simulation parameter. Agents are only capable 
+of looking forward, but can observe
+objects straight to their left, so that their sight forms a semi-circle of radius $r$ (the sight range) above the agent's head. The sensors will only 
+receive information when an object is in sight. In such a case, the logic (which we strive to achieve with a neural network) will process
+this information and output values that will move the object in the direction of the object. As we make use
+of Schembri's simulator, we need to obey the steering commands by which an agent's motion is achieved. They are:
+
+\begin{itemize}
+    \item $v_a in [0.2,1]$, a scalar velocity command executed in a given direction.
+    \item $\varphi_a in [-\pi/2 rad,\pi/2 rad]$, the steering angle in radians.
+\end{itemize}
+
+Where $\varphi_a = -pi/2$ equals a steering to the right, $\varphi_a = 0$ straight motion and likewise, $\varphi_a = pi/2$ stands for and amendment
+of the heading direction to the left.
+This is illustrated in figure \ref{fig:acontrol}. The velocity command $v_a$ is in theory $ \in [0,1]$ but will be confined to be $\geq 0.2$ so that
+an agent never stops. In such a case, the agent will only receive sensory information if an object is dropped in his sight, which takes a indeterminate
+time, due to the randomness of object placement.
+
+\begin{center}
 \begin{figure}
-\begin{tikzpicture}[scale=5.3,cap=round,>=latex,rotate=90]
+\begin{tikzpicture}[scale=1,cap=round,>=latex,rotate=90]
     % draw the coordinates
     \draw[->] (0cm,1.5cm) -- (0cm,-1.5cm) node[right,fill=white] {$x$};
     \draw[->] (0cm,0cm) -- (1.5cm,0cm) node[above,fill=white] {$y$};
@@ -1230,12 +1267,21 @@ red weights originate from the mother network.}
     \draw[fill=black] (0,0) circle(.013);
 
 \end{tikzpicture}
-	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
-neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
-red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
-	\label{fig:pitts1}
+	\caption{A semicircle representing the possible range of angular steering commands for an agent.}
+	\label{fig:acontrol}
 \end{figure}
+\end{center}
 
+A successfully detected object within the neuron's sight is characterized by an object vector $\overrightarrow{o} \in R$ \textbf{R} pointing towards it. 
+In case of several such objects we only aim to focus the closest one. Therefore, only those vector elements will be processed by the decision policy.
+An example environment in which an agent observes two objects $\overrightarrow{o_1}$ and $\overrightarrow{o_2}$ is given in figure \ref{fig:2obj}. As
+$||\overrightarrow{o_1}|| = \sqrt{(\frac{-3r}{5})^2 + (\frac{3r}{10})^2} > ||\overrightarrow{o_2}|| = \sqrt{(\frac{r}{5})^2 + (\frac{4r}{5})^2}$, the next steering commands only 
+depend on $o_1$. The agent's heading direction must now be altered so as to point to the chosen obstacle $o_1$. This is done by setting the angle
+parameter $\varphi_a$ to the angle enclosed by the vector and the y-axis. Any velocity $v_a > 0$ will now lead an overlapping of the agent with the
+object. If this happens, the object is collected and disappears from the world. In order to do this in a smooth fashion, we will set the velocity
+command $v_a = ||o|| | 0.2 < ||o||$. The agent will therefore start moving into the direction of the obstacle with a gradually decreasing velocity.
+
+\begin{center}
 \begin{figure}
 \begin{tikzpicture}[scale=5.3,cap=round,>=latex]
     % draw the coordinates
@@ -1243,11 +1289,11 @@ red weights originate from the mother network. The segmentation index has been c
     
     \node[] (origin) at (0,0) {}; 
     \draw[] (-0.6cm,0.3cm) node[blue] {};
-    \draw[blue] (-0.6cm,0.35cm) node[] {$ v_1 = (\frac{-3r}{5}\ \frac{3r}{10})$};
+    \draw[blue] (-0.6cm,0.35cm) node[] {$ o_1 = (\frac{-3r}{5}\ \frac{3r}{10})$};
     \draw[blue, ->] (origin) -- (-0.6cm,0.3cm);
     
     \draw[] (0.2cm,0.8cm) node[red] {};
-    \draw[red] (0.2cm,0.85cm) node[] {$ v_2 = (\frac{r}{5}\ \frac{4r}{5})$};
+    \draw[red] (0.2cm,0.85cm) node[] {$ o_2 = (\frac{r}{5}\ \frac{4r}{5})$};
     \draw[red, ->] (origin) -- (0.2cm, 0.8cm);
     
     \draw[->] (-1cm,0cm) -- (1cm,0cm) node[right,fill=white] {$x$};
@@ -1263,17 +1309,56 @@ red weights originate from the mother network. The segmentation index has been c
           (1.15cm,0cm)  node[above=1pt] {$(r,0)$}
           (0cm,1.15cm)  node[fill=white] {$(0,r)$};
     
-    
     % origin
     \draw[fill=black] (0,0) circle(.013);
 
 \end{tikzpicture}
-	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
-neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
-red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
-	\label{fig:pitts1}
+	\caption{An agent's sight at a certain time step in an example environment. Two objects are within the agent's sight, 
+    described by the vectors $o_{1}$ and $o_{2}$. However, the agents sensors will only receive information from the closest object.}
+	\label{fig:2obj}
 \end{figure}
+\end{center}
 
+\section{Control parameters and operation considerations}
+In order to obtain the control values, we leverage two neural networks denoted $net_v$ and $net_{\varphi}$, each one to process a single control parameter. 
+$net_v$ is used to calculate the vector's length, $net_{\varphi}$ the angle between $\overrightarrow{o}$ and the y-axis, respectively.
+Both networks take 
+vector \overrightarrow{$o$} as input and provide a single output which will be used to control the agent. Instead of using a single network
+for both values, we divide the task as there is no direct connection between the values to be computed. Furthermore, experimental results show that
+the error of a single network for both calculations is much higher than the errors of the two networks combined. As the angle between
+the vector and the y-axis is equal when we omit the sign, we will pass the input values to the neural network without taking of $o_x$ (the x component
+of the vector) into consideration. After obtaining the angle from network $net_{\varphi}$, we add the sign again. This transformation is shown in figure \ref{fig:tf}
+In addition, we scale the components of the vector to be $\in [0,1]$ which is done by dividing it by the radius of the semi circle (the range sight):
+
+\begin{equation}
+    o = \frac{o}{r}
+\end{equation}
+
+This will guarantee that \overrightarrow{y_v} (Output of network $net_v$) is also $\in [0,1]$ and can therefore
+be directly passed on as a motion command provided $\overrightarrow{y_v} > 0.2$. Scaling has to be done for the angle enclosed by the vector and the y-axis 
+\overrightarrow{y_{\varphi}} (Output of network $net_{\varphi}$), also. Therefore, we define the mapping
+
+\begin{equation}
+    f: [0,1] \rightarrow [0,\pi/2], n \rightarrow \frac{\pi}{2} \cdot n
+\end{equation}
+
+which takes care of the scaling from the network's output to the angular steering command in radians. Finally, we can state the equations used to
+compute the the control commands. The equation for $v_a$ now incorporates both scaling and the sign of object vector $\overrightarrow{o}$:
+
+\begin{equation}
+\end{equation}
+\begin{equation}
+
+    v_a = sign(o_x) \cdot -(f(\overrightarrow{y_{\varphi}}))
+	v_a=\begin{cases}
+		\overrightarrow{y_v} \quad \overrightarrow{y_v} > 0.2 \\
+		0.2 \quad \overrightarrow{y_v} \leq 0.2 \\
+	\end{cases}
+    \varphi_a = sign(o_x) \cdot -(f(\overrightarrow{y_{\varphi}}))
+\label{eq:step}
+\end{equation}
+
+\begin{center}
 \begin{figure}
 \begin{tikzpicture}[scale=5.3,cap=round,>=latex]
     % draw the coordinates
@@ -1281,7 +1366,7 @@ red weights originate from the mother network. The segmentation index has been c
     
     \node[] (origin) at (0,0) {}; 
     \draw[] (0.6cm,0.3cm) node[blue] {};
-    \draw[blue] (0.6cm,0.35cm) node[] {$ v_1' = (\frac{3r}{5}\ \frac{3r}{10})$};
+    \draw[blue] (0.6cm,0.35cm) node[] {$ o_1' = (\frac{3r}{5}\ \frac{3r}{10})$};
     \draw[blue, ->] (origin) -- (0.6cm,0.3cm);
     \draw[blue] (0.2cm,0.0cm) arc (0:40:0.13);
     \node[blue] (alpha) at (0.15,0.04) {$\alpha$}; 
@@ -1301,18 +1386,27 @@ red weights originate from the mother network. The segmentation index has been c
     \draw[fill=black] (0,0) circle(.013);
 
 \end{tikzpicture}
-	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
-neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
-red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
-	\label{fig:pitts1}
+	\caption{Vector $o_1$ from figure \ref{fig:2obj} after transformation in a coordinate system with both $x,y \geq 0$. $o_1$ loses its sign and
+    becomes $o_1'$. The control logic of the agent will later incorporate the sign.}
+	\label{fig:tf}
 \end{figure}
+\end{center}
 
 \chapter{Evaluation}
 \label{ch:eval}
 \chapter{Conclusion}
 \label{ch:conclusion}
-\chapter{Future work}
-\label{ch:future}
+We have shown how ANNs in combination with supervised machine learning algorithms allow for a successful application on the
+object collecting agent problem. Satisfactory behaviour can be achieved with a relatively small trainings dataset. The application of two neural
+networks instead of merely one is vital for the successful application. The problem becomes a lot more complex when we restrict supervised learning. As 
+agents are placed in the world within the world without any knowledge whatsoever, significantly longer training cycles must be expected. However, 
+even with the application of the augmented genetic algorithm, behaviour is far from being as satisfactory as in the supervised case, let alone that
+of an omniscient agent. Since we use the fitness function to optimise weights of each neural network, we incorporate randomness in the algorithm. 
+Both agent and objects are placed at random, which might lead to a respectively low ranking of an agent with weights close to the optimum. This can 
+happen in case of an unfortunate placement. Therefore, it might be beneficial to find different means by which an agent is ranked and optimise that
+function. Similar work can be found in \cite{DEEPMIND} (\textbf{DEEPMIND}) where a single algorithm is used to train neural networks which play a 
+vast variety of video games. Changing network structure and learning algorithms according to these research results may allow for a successful 
+application of unsupervised learning to the object collecting agent problem. 
 
 \KOMAoptions{listof=leveldown}
 
