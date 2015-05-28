@@ -31,6 +31,8 @@
 \usetikzlibrary{arrows, positioning, shapes, fit}
 %\usepackage[top=1in,bottom=1in,right=1in,left=1in]{geometry}
 \usepackage{pgf-pie}
+\usepackage[font=small,labelfont=bf,tableposition=top]{caption}
+\DeclareCaptionLabelFormat{andtable}{#1~#2  \&  \tablename~\thetable}
 
 %male and female symbol
 \usepackage{wasysym}
@@ -76,6 +78,7 @@
 \let\oldemptyset\emptyset
 \let\emptyset\varnothing
 \usepackage{dsfont}
+\usepackage{mathtools}
 
 %japanese
 \usepackage{CJKutf8}
@@ -252,7 +255,7 @@ to the agents performance. Hence, different structures will be proposed and empi
 Both approaches will be tested in the very same simulation environment as in the original paper. A critical evaluation of both learning approaches
 in combination with different network structures is given.
 
-\paragraph{Structure of this project}
+\paragraph{Structure of this documentation}
 %TODO: Really exposed?
 In chapter \ref{ch:basics} a brief introduction to the very basics of artificial neural networks is given. We investigate their biological counterpart
 and show a mathematical formalisation of their structure. We dive more into the details of artificial neural networks in chapter \ref{ch:ANN} where
@@ -448,7 +451,8 @@ such as long and short term memory \cite{LTSM} (\textbf{ltsm}).
                    R31/R42}
     \draw (\s) -- (\t);
 
-\end{tikzpicture}}
+\end{tikzpicture}
+}
 \caption{A categorisation of neural network types. BPG = Backpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
 \label{fig:class}
 \end{figure}
@@ -538,7 +542,7 @@ The first network layer $L_1$, is referred to as the input layer. It receives th
 \node [align=center] (y1) at (7,1.5) {$\overrightarrow{y}$};
 
 \end{tikzpicture}
-%\caption{%An example of an artificial neural network with $n$ layers. Its network topology is $(|L_1|=4,|L_2|=3,...,|L_{n-1}|=3,|L_n|=2)$}
+\caption{An example of an artificial neural network with $n$ layers. Its network topology is $(|L_1|=4,|L_2|=3,...,|L_{n-1}|=3,|L_n|=2)$}
 \label{fig:layer}
 \end{figure}
 
@@ -746,10 +750,32 @@ Given a set of cities and the distances between each pair of cities, what is the
 where $\pi(n+1)$ is set to $\pi(1)$.\cite{MATHINF}\\
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.2\textwidth,scale=1]{files/tsp.png}  
-    \caption{An example graph. We are are interested in finding the cheapest tour\cite{MATHINF}.}
-    \label{fig:tsp}
+\centering
+    \begin{tikzpicture}
+    \node [shape=circle, fill=black, inner sep=2pt] (x1) at (0.0,0.0) {}; 
+    \node [shape=circle, fill=black, inner sep=2pt] (x2) at (0.0,2.0) {}; 
+    \node [shape=circle, fill=black, inner sep=2pt] (x3) at (2.0,0.0) {}; 
+    \node [shape=circle, fill=black, inner sep=2pt] (x4) at (2.0,2.0) {}; 
+    \node [] (l1) at (-0.3,0.0) {1}; 
+    \node [] (l2) at (-0.3,2.0) {2}; 
+    \node [] (l3) at (2.3,0.0) {3}; 
+    \node [] (l4) at (2.3,2.0) {4}; 
+    \node [] (l5) at (2.3,1.0) {2}; 
+    \node [] (l6) at (-0.3,1.0) {5}; 
+    \node [] (l7) at (1,2.3) {4}; 
+    \node [] (l8) at (1,-0.3) {8}; 
+    \node [] (l9) at (0.75,1.55) {1}; 
+    \node [] (l10) at (1.25,0.45) {3}; 
+
+    \draw[] (x1) -- (x2);
+    \draw[] (x1) -- (x4);
+    \draw[] (x2) -- (x3);
+    \draw[] (x2) -- (x4);
+    \draw[] (x4) -- (x3);
+    \draw[] (x3) -- (x1);
+    \end{tikzpicture}
+\caption{An example graph. We are are interested in finding the cheapest tour.\cite{MATHINF}}
+\label{fig:feedback}
 \end{figure}
 
 An example graph for the TSP is given in \ref{fig:tsp}. $4!$ possible tours exit, which is the amount of permutations of the vertecies.
@@ -758,6 +784,9 @@ We find the cheapest tour $(1, 3, 4, 2, 1)$ with costs of $w(1, 3) + w(3, 4) + w
 It is of high importance to theoretical computer science, as it is known to be $NP$-complete. In the field of complexity analysis, the class of decision problems for which there is a deterministic Turing-Machine able to solve it in time $\mathcal{O}(n^k)$ is called $P$ (polynomial). An example is the sorting problem. Class $P$ contains problems with running times like $\mathcal{O}(n)$ and $\mathcal{O}(log(n))$ but also those with time $\mathcal{O}(n^{5000})$. In addition to the deterministic Turing machine, complexity analysis also defines the non-deterministic Turing machine. At each time step, there are several possible ways of continuing computation, setting it in contrast with todays computers. The class of Problems $NP$ is solvable by a non-deterministic Turing Machine in polynomial time. $NP$ contains a number of relevant problems, such as the graph isomorphism (Can two graphs be drawn identically?). Problems in $P$ can also be solved by this theoretical model, so $P \subseteq NP$. In other words, a problem is in the class of NP if there is an algorithm (executed by a Turing machine) that can guess a solution and verify whether the guess was correct in polynomial time. In case of omniscient guessing or given a number of processors equal to the number of solutions, trying out all possibilities at the same time one would always get the correct solution. Thus, $NP$ problems would become $P$ problems. 
 
 Nevertheless, computationally feasible approximation techniques have been found which allow to find a good, although not always the best, solution. Hopfield and Tank (1985) proposed an approach using ANNs which allows to find a good, often even the best solution for the TSP. It suggests a single-layer network with $n$ neurons, where $n$ equals the number of cities in the graph, called Hopfield-network. This can be thought of as a square with an edge length of $n$. The output of each individual neuron equals the time step at which the city is visited. Furthermore, genetic algorithms have also been applied to find an approximate solution for the problem %\cite{GENTSP}.
+
+\subsection{Playing Atari with Deep Reinforcement Learning}
+\cite{DEEPMIND}
 
 \chapter{Learning}\label{ch:learning}
 \section{Hebbian learning rule}
@@ -848,14 +877,14 @@ Gradient descent may be imagined as the effort of a wanderer to reach the bottom
 \begin{figure}
     \centering
     \includegraphics[width=0.3\textwidth,scale=1]{files/graddes.png}  
-    \caption{Illustration of gradient descent.}%\cite{GRADFIG}}
+    \caption{Illustration of gradient descent.\cite{GRADFIG}}
     \label{fig:grad}
 \end{figure}
 
 \subsection{The Backpropagation algorithm}
 
 The Backpropagation algorithm is yet another learning rule for supervised networks, but in comparison to the Hebbian and delta rules, it can also be applied for networks with $n$ numbers of hidden layers. There are certain problems that cannot be solved by networks without at least one hidden layer, the XOR-Gate being a famous example. 
-It was developed by several scientists simultaneously %\cite{BACK1}\cite{BACK2}\cite{BACK3} and consists of three stages:
+It was developed by several scientists simultaneously \cite{BACK1}\cite{BACK2}\cite{BACK3} and consists of three stages:
 \begin{itemize}
 \item[1.] \textbf{The forward-pass}:
 A pattern is presented to the input layer and further propagated into the network.
@@ -1066,59 +1095,86 @@ application of a 5-agent population, each one is ranked (as shown in table \ref{
 a random number $\in (0,1)$ is chosen. As each slice itself is an interval, the slice containing the random number marks an entity chosen for 
 reproduction. The genes of the corresponding agent are then modified in reproduction to create offspring. \textbf{}.
   
-\begin{figure}
-	\centering
-	\begin{tikzpicture}
-	\node [draw=black, fill=white, align=center] (g) at (2,0) {Generation of initial individuals};
-	\node [draw=black, fill=white, align=center] (e) at (2,-1) {Application};
-	\node [draw=black, fill=white, align=center] (r) at (2,-2) {Fitness ranking};
-	\node [draw=black, fill=white, align=center] (s) at (2,-3) {Selection};
-	\node [draw=black, fill=white, align=center] (c) at (0,-4) {Crossover};
-	\node [draw=black, fill=white, align=center] (m) at (4,-4) {Mutation};
+\begin{minipage}{\textwidth}
+  \begin{minipage}[b]{0.49\textwidth}
+    \centering
+        \begin{tikzpicture}[scale=0.5]
+            \pie[color={black!10, black!15, black!20, black!25, black!30}, after number=]
+            {5/E , 15/D , 15/C , 25/B, 40/A}
+        \end{tikzpicture}
+        \captionof{figure}{The probability distribution during the selection process. The size of each slice corresponds
+                           to the score of the corresponding agent.}
+        \label{fig:roul}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.49\textwidth}
+    \centering
+      \begin{tabular}{|c|c|} \hline
+         Agent & Score \\ \hline
+         A & 40 \\ \hline
+         B & 25 \\ \hline
+         C & 15 \\ \hline
+         D & 15 \\ \hline
+         E & 5  \\ \hline
+      \end{tabular}
+          \captionof{table}{An example fitness ranking of a five agent population. The agents are ranked according to
+                            their fitness, which corresponds to the amount of objects found.}
+          \label{tab:rank}
+    \end{minipage}
+  \end{minipage}
 
-	\draw[arrow]	(g) -- (e);
-	\draw[arrow]	(e) -- (r);
-	\draw[arrow]	(r) -- (s);
-	\draw[arrow]	(s) -- (c);
-	\draw[arrow]	(s) -- (m);
-	\draw[arrow]	(c) -- (m);
-    \draw[arrow]    (c) to[out=-180,in=-180] (e);
-    \draw[arrow]    (m) to[out=0,in=0] (e);
-	
-	\end{tikzpicture}
-\caption{The principle structure of the augmented genetic algorithm.\cite{CROSSOVER}}
-\label{fig:ag}
-\end{figure}
+%    \begin{tikzpicture}[scale=0.5]
+%        \pie[color={black!10, black!15, black!20, black!25, black!30}, after number=]
+%        {5/E , 15/D , 15/C , 25/B, 40/A}
+%    \end{tikzpicture}
 
-\begin{figure}
-\begin{floatrow}
-\ffigbox
-{%
-    \begin{tikzpicture}[scale=0.5]
-        \pie[color={black!10, black!15, black!20, black!25, black!30}, after number=]
-        {5/E , 15/D , 15/C , 25/B, 40/A}
-    \end{tikzpicture}
-}
-{%
-  \label{fig:roul}%
-  \caption{The probability distribution during the selection process. The size of each slice corresponds
-           to the score (as written inside each slice) of the corresponding agent.}%
-}
-\capbtabbox{%
-  \begin{tabular}{|c|c|} \hline
-     Agent & Score \\ \hline
-     A & 40 \\ \hline
-     B & 25 \\ \hline
-     C & 15 \\ \hline
-     D & 15 \\ \hline
-     E & 5  \\ \hline
-  \end{tabular}
-}{%
-  \label{tab:rank}%
-  \caption{An example fitness ranking of 5-Agent population. The score corresponds to the objects found.}%
-}
-\end{floatrow}
-\end{figure}
+%\centering
+%    \begin{tikzpicture}[scale=0.5]
+%        \pie[color={black!10, black!15, black!20, black!25, black!30}, after number=]
+%        {5/E , 15/D , 15/C , 25/B, 40/A}
+%    \end{tikzpicture}
+%    \qquad
+%  \begin{tabular}{|c|c|} \hline
+%     Agent & Score \\ \hline
+%     A & 40 \\ \hline
+%     B & 25 \\ \hline
+%     C & 15 \\ \hline
+%     D & 15 \\ \hline
+%     E & 5  \\ \hline
+%  \end{tabular}
+%    \captionlistentry[table]{A table beside a figure}
+%    \captionsetup{labelformat=andtable}
+%    \caption{A table beside a figure}
+%\begin{floatrow}
+%\ffigbox
+%{%
+%    \rule{3cm}{3cm}
+%    \begin{tikzpicture}[scale=0.5]
+%        \pie[color={black!10, black!15, black!20, black!25, black!30}, after number=]
+%        {5/E , 15/D , 15/C , 25/B, 40/A}
+%         \pie{10/A, 20/B, 30/C, 40/D}
+%    \end{tikzpicture}
+%}
+%{%
+%  \label{fig:roul}%
+%  \caption{The probability distribution during the selection process. The size of each slice corresponds
+%           to the score (as written inside each slice) of the corresponding agent.}%
+%}
+%\capbtabbox{%
+%  \begin{tabular}{|c|c|} \hline
+%     Agent & Score \\ \hline
+%     A & 40 \\ \hline
+%     B & 25 \\ \hline
+%     C & 15 \\ \hline
+%     D & 15 \\ \hline
+%     E & 5  \\ \hline
+%  \end{tabular}
+%}{%
+%%  \label{tab:rank}%
+%  \caption{An example fitness ranking of 5-Agent population. The score corresponds to the objects found.}%
+%}
+%\end{floatrow}
+%\end{figure}
 
 \paragraph{Reproduction}
 If two individuals are chosen for reproduction, they create a certain amount of children according to the rule of genetic combination. 
@@ -1215,11 +1271,11 @@ this information and output values that will move the object in the direction of
 of Schembri's simulator, we need to obey the steering commands by which an agent's motion is achieved. They are:
 
 \begin{itemize}
-    \item $v_a in [0.2,1]$, a scalar velocity command executed in a given direction.
-    \item $\varphi_a in [-\pi/2 rad,\pi/2 rad]$, the steering angle in radians.
+    \item $v_a \in [0.2,1]$, a scalar velocity command executed in a given direction.
+    \item $\varphi_a \in [\frac{-\pi}{2} rad, \frac{\pi}{2} rad]$, the steering angle in radians.
 \end{itemize}
 
-Where $\varphi_a = -pi/2$ equals a steering to the right, $\varphi_a = 0$ straight motion and likewise, $\varphi_a = pi/2$ stands for and amendment
+Where $\varphi_a = \frac{-\pi}{2}$ equals a steering to the right, $\varphi_a = 0$ straight motion and likewise, $\varphi_a = \frac{\pi}{2}$ stands for and amendment
 of the heading direction to the left.
 This is illustrated in figure \ref{fig:acontrol}. The velocity command $v_a$ is in theory $ \in [0,1]$ but will be confined to be $\geq 0.2$ so that
 an agent never stops. In such a case, the agent will only receive sensory information if an object is dropped in his sight, which takes a indeterminate
@@ -1227,7 +1283,7 @@ time, due to the randomness of object placement.
 
 \begin{center}
 \begin{figure}
-\begin{tikzpicture}[scale=1,cap=round,>=latex,rotate=90]
+\begin{tikzpicture}[scale=3.1,cap=round,>=latex,rotate=90]
     % draw the coordinates
     \draw[->] (0cm,1.5cm) -- (0cm,-1.5cm) node[right,fill=white] {$x$};
     \draw[->] (0cm,0cm) -- (1.5cm,0cm) node[above,fill=white] {$y$};
@@ -1272,28 +1328,28 @@ time, due to the randomness of object placement.
 \end{figure}
 \end{center}
 
-A successfully detected object within the neuron's sight is characterized by an object vector $\overrightarrow{o} \in R$ \textbf{R} pointing towards it. 
+A successfully detected object within the neuron's sight is characterized by an object vector $\overrightarrow{o} \in \mathbb{R}$ pointing towards it. 
 In case of several such objects we only aim to focus the closest one. Therefore, only those vector elements will be processed by the decision policy.
 An example environment in which an agent observes two objects $\overrightarrow{o_1}$ and $\overrightarrow{o_2}$ is given in figure \ref{fig:2obj}. As
 $||\overrightarrow{o_1}|| = \sqrt{(\frac{-3r}{5})^2 + (\frac{3r}{10})^2} > ||\overrightarrow{o_2}|| = \sqrt{(\frac{r}{5})^2 + (\frac{4r}{5})^2}$, the next steering commands only 
 depend on $o_1$. The agent's heading direction must now be altered so as to point to the chosen obstacle $o_1$. This is done by setting the angle
 parameter $\varphi_a$ to the angle enclosed by the vector and the y-axis. Any velocity $v_a > 0$ will now lead an overlapping of the agent with the
 object. If this happens, the object is collected and disappears from the world. In order to do this in a smooth fashion, we will set the velocity
-command $v_a = ||o|| | 0.2 < ||o||$. The agent will therefore start moving into the direction of the obstacle with a gradually decreasing velocity.
+command $v_a = ||o||, \text{ provided } 0.2 < ||o||$. The agent will therefore start moving into the direction of the obstacle with a gradually decreasing velocity.
 
 \begin{center}
 \begin{figure}
-\begin{tikzpicture}[scale=5.3,cap=round,>=latex]
+\begin{tikzpicture}[scale=4.5,cap=round,>=latex]
     % draw the coordinates
     \draw[step=0.1,black!20,thin] (-1cm,0) grid (1cm,1cm);
     
     \node[] (origin) at (0,0) {}; 
     \draw[] (-0.6cm,0.3cm) node[blue] {};
-    \draw[blue] (-0.6cm,0.35cm) node[] {$ o_1 = (\frac{-3r}{5}\ \frac{3r}{10})$};
+    \draw[blue] (-0.6cm,0.37cm) node[] {$ o_1 = (\frac{-3r}{5}\ \frac{3r}{10})$};
     \draw[blue, ->] (origin) -- (-0.6cm,0.3cm);
     
     \draw[] (0.2cm,0.8cm) node[red] {};
-    \draw[red] (0.2cm,0.85cm) node[] {$ o_2 = (\frac{r}{5}\ \frac{4r}{5})$};
+    \draw[red] (0.22cm,0.86cm) node[] {$ o_2 = (\frac{r}{5}\ \frac{4r}{5})$};
     \draw[red, ->] (origin) -- (0.2cm, 0.8cm);
     
     \draw[->] (-1cm,0cm) -- (1cm,0cm) node[right,fill=white] {$x$};
@@ -1323,7 +1379,7 @@ command $v_a = ||o|| | 0.2 < ||o||$. The agent will therefore start moving into 
 In order to obtain the control values, we leverage two neural networks denoted $net_v$ and $net_{\varphi}$, each one to process a single control parameter. 
 $net_v$ is used to calculate the vector's length, $net_{\varphi}$ the angle between $\overrightarrow{o}$ and the y-axis, respectively.
 Both networks take 
-vector \overrightarrow{$o$} as input and provide a single output which will be used to control the agent. Instead of using a single network
+vector $\overrightarrow{o}$ as input and provide a single output which will be used to control the agent. Instead of using a single network
 for both values, we divide the task as there is no direct connection between the values to be computed. Furthermore, experimental results show that
 the error of a single network for both calculations is much higher than the errors of the two networks combined. As the angle between
 the vector and the y-axis is equal when we omit the sign, we will pass the input values to the neural network without taking of $o_x$ (the x component
@@ -1334,33 +1390,37 @@ In addition, we scale the components of the vector to be $\in [0,1]$ which is do
     o = \frac{o}{r}
 \end{equation}
 
-This will guarantee that \overrightarrow{y_v} (Output of network $net_v$) is also $\in [0,1]$ and can therefore
+This will guarantee that $\overrightarrow{y_v}$ (Output of network $net_v$) is also $\in [0,1]$ and can therefore
 be directly passed on as a motion command provided $\overrightarrow{y_v} > 0.2$. Scaling has to be done for the angle enclosed by the vector and the y-axis 
-\overrightarrow{y_{\varphi}} (Output of network $net_{\varphi}$), also. Therefore, we define the mapping
+$\overrightarrow{y_{\varphi}}$ (Output of network $net_{\varphi}$), also. Therefore, we define the mapping
 
-\begin{equation}
-    f: [0,1] \rightarrow [0,\pi/2], n \rightarrow \frac{\pi}{2} \cdot n
-\end{equation}
+\begin{gather*} 
+        f: [0,1] \rightarrow [0,\frac{\pi}{2}], \\ 
+        n \mapsto \frac{\pi}{2} \cdot n
+\end{gather*}
+%    \begin{equation}
+%    \begin{split}
+%        f: [0,1] \rightarrow [0,\frac{\pi}{2}], \\ 
+%        n \mapsto \frac{\pi}{2} \cdot n
+%    \end{split}
+%    \end{equation}
 
 which takes care of the scaling from the network's output to the angular steering command in radians. Finally, we can state the equations used to
 compute the the control commands. The equation for $v_a$ now incorporates both scaling and the sign of object vector $\overrightarrow{o}$:
 
 \begin{equation}
-\end{equation}
-\begin{equation}
-
-    v_a = sign(o_x) \cdot -(f(\overrightarrow{y_{\varphi}}))
+\begin{split}
 	v_a=\begin{cases}
-		\overrightarrow{y_v} \quad \overrightarrow{y_v} > 0.2 \\
-		0.2 \quad \overrightarrow{y_v} \leq 0.2 \\
+        \overrightarrow{y_v}, \quad \text{if } \overrightarrow{y_v} > 0.2 \\
+		0.2, \quad \text{otherwise} \\
 	\end{cases}
-    \varphi_a = sign(o_x) \cdot -(f(\overrightarrow{y_{\varphi}}))
-\label{eq:step}
+   \\ \varphi_a = sgn(o_x) \cdot -(f(\overrightarrow{y_{\varphi}}))
+\end{split}
 \end{equation}
 
 \begin{center}
 \begin{figure}
-\begin{tikzpicture}[scale=5.3,cap=round,>=latex]
+\begin{tikzpicture}[scale=4.5,cap=round,>=latex]
     % draw the coordinates
     \draw[step=0.1,black!20,thin] (0,0) grid (1cm,1cm);
     
@@ -1368,8 +1428,8 @@ compute the the control commands. The equation for $v_a$ now incorporates both s
     \draw[] (0.6cm,0.3cm) node[blue] {};
     \draw[blue] (0.6cm,0.35cm) node[] {$ o_1' = (\frac{3r}{5}\ \frac{3r}{10})$};
     \draw[blue, ->] (origin) -- (0.6cm,0.3cm);
-    \draw[blue] (0.2cm,0.0cm) arc (0:40:0.13);
-    \node[blue] (alpha) at (0.15,0.04) {$\alpha$}; 
+    \draw[blue] (0.14cm,0.07cm) arc (0:106:0.11);
+    \node[blue] (alpha) at (0.05,0.09) {$\beta$}; 
     
     \draw[->] (0cm,0cm) -- (1cm,0cm) node[right,fill=white] {$x$};
     \draw[->] (0cm,0cm) -- (0cm,1cm) node[above,fill=white] {$y$};
@@ -1392,8 +1452,9 @@ compute the the control commands. The equation for $v_a$ now incorporates both s
 \end{figure}
 \end{center}
 
-\chapter{Evaluation}
-\label{ch:eval}
+%\chapter{Evaluation}
+%\label{ch:eval}
+
 \chapter{Conclusion}
 \label{ch:conclusion}
 We have shown how ANNs in combination with supervised machine learning algorithms allow for a successful application on the
