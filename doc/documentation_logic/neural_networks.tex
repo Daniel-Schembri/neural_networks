@@ -1055,7 +1055,7 @@ familiar with hill-climbing and artificial evolution are advised to refer to the
 
 \subsection{Crossover}
 The unsupervised training of neural networks is greatly inspired by evolution. The notion of natural selection was first presented by Charles Darwin in his book “\textit{On the origin of species by means of natural selection}”\cite{DARWIN}. 
-As a comprehensive discussion of Darwin's ideas lies out of the range of this paper, we will from here on refer to evolution as the following definitions \cite{OXFORD}:
+    As a comprehensive discussion of Darwin's ideas is outside the scope of this paper, we will from here on refer to evolution as the following definitions \cite{OXFORD}:
 
 \begin{center}
 \textit{“Change in the genetic composition of a population during successive generations, often resulting in the development of new species. The mechanisms of evolution include natural selection acting on the genetic variation among individuals, mutation, migration, and genetic drift.”}\\
@@ -1464,9 +1464,22 @@ agents are placed in the world within the world without any knowledge whatsoever
 even with the application of the augmented genetic algorithm, behaviour is far from being as satisfactory as in the supervised case, let alone that
 of an omniscient agent. Since we use the fitness function to optimise weights of each neural network, we incorporate randomness in the algorithm. 
 Both agent and objects are placed at random, which might lead to a respectively low ranking of an agent with weights close to the optimum. This can 
-happen in case of an unfortunate placement. Therefore, it might be beneficial to find different means by which an agent is ranked and optimise that
-function. Similar work can be found in \cite{DEEPMIND} (\textbf{DEEPMIND}) where a single algorithm is used to train neural networks which play a 
-vast variety of video games. Changing network structure and learning algorithms according to these research results may allow for a successful 
+happen in case of an unfortunate placement. This randomness in placement leads to a noisy signal. Therefore, it might be beneficial to find different means by which an agent is ranked and optimise that
+function. Similar work can be found in \cite{DEEPMIND} where a single algorithm is used to train convolution (\textbf{what?}) neural networks which play a 
+vast variety of Atari video games. Within the work Mnih et al. stress the difficulty of applying their reinforcement learning approach to environments
+encountered in video games. While supervised learning allows for the usage of large amounts of training data, both unsupervised and reinforcement
+learning algorithms must be able to learn from a scalar value, often sparse, noisy and delayed. These are exactly the difficulties encountered in
+the object collection task. A ranking of the agents fitness is only received at the end of each population and therefore after a great number of
+individual decisions which might increase or lower the performance. At the end of each population, a single scalar value does not allow to reason 
+about the quality of each of the thousands of individual decisions. In supervised learning, we provide a measure of error associated with each 
+of the agent's decisions. Furthermore, the applications equal one another in terms of the dependency of behaviour decisions among themselves. 
+An imperfect decision in one time step may result in situations where a number of correct decisions may not be able to make up for the first flawed 
+one. Imagine an agent with a single object at the bottom left of its sight range. In case the agent chooses to steer in the opposite direction,
+this object might fall out of sight. Since the agent does not posses memory of any kind, the object will be lost and might never be found again.
+Thus, an increase in fitness which could have been easily obtained is missed. The same sort of dependencies is found in video games, where one
+flawed decision might ruin a previously well-played game.
+
+Changing network structure and learning algorithms according to these research results may allow for a successful 
 application of unsupervised learning to the object collecting agent problem. 
 
 \KOMAoptions{listof=leveldown}
