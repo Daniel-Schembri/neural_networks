@@ -19,7 +19,6 @@
 \usepackage{scrhack}
 %for source code listings
 \usepackage{listings}
-
 %tables
 \usepackage[table]{xcolor}
 %figures alongside tables
@@ -31,6 +30,8 @@
 \usetikzlibrary{arrows, positioning, shapes, fit}
 %\usepackage[top=1in,bottom=1in,right=1in,left=1in]{geometry}
 \usepackage{pgf-pie}
+\usepackage[font=small,labelfont=bf,tableposition=top]{caption}
+\DeclareCaptionLabelFormat{andtable}{#1~#2  \&  \tablename~\thetable}
 
 %male and female symbol
 \usepackage{wasysym}
@@ -48,7 +49,8 @@
 
 %subfigure
 \usepackage{graphicx}
-\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{subcaption}
 
 %prevent figure from floating pictures
 \usepackage{float}
@@ -76,6 +78,7 @@
 \let\oldemptyset\emptyset
 \let\emptyset\varnothing
 \usepackage{dsfont}
+\usepackage{mathtools}
 
 %japanese
 \usepackage{CJKutf8}
@@ -231,6 +234,7 @@
 \newpage
 
 \chapter{Introduction}
+\label{ch:intro}
 In \cite{DANIEL}, Schembri proposes the application of machine learning algorithms for training of object collecting agents. 
 Such agents dwell in a simulated, confined, two-dimensional space, where objects are dropped at random. Without any previous knowledge of 
 their environment, agents are placed in the world and are to reason that their aim is to collect objects. The performance or fitness of each 
@@ -251,13 +255,14 @@ to the agents performance. Hence, different structures will be proposed and empi
 Both approaches will be tested in the very same simulation environment as in the original paper. A critical evaluation of both learning approaches
 in combination with different network structures is given.
 
-\paragraph{Structure of this project}
+\paragraph{Structure of this documentation}
 %TODO: Really exposed?
 In chapter \ref{ch:basics} a brief introduction to the very basics of artificial neural networks is given. We investigate their biological counterpart
 and show a mathematical formalisation of their structure. We dive more into the details of artificial neural networks in chapter \ref{ch:ANN} where
-we talk about different models and network structure. Different learning algorithms are presented in chapter \label{ch:learning}. We show both
-supervised and unsupervised algorithms and expose their limitations. The application and evaluation of presented algorithms is shown in
-chapter \label{ch:eval}, where we critically analyse the performance gain in comparison to Schembri's work. A final conclusion is drawn in 
+we different models and network types are introduced. Several learning algorithms are presented in chapter \label{ch:learning}. Both
+supervised and unsupervised algorithms are presented. We investigate their usefulness and expose their limitations. 
+Finally, we show how neural networks can be used to control an agent as proposed in Schembri's work in chapter \label{ch:design}. 
+Evaluation of presented algorithms follows in chapter \label{ch:eval}, where we critically analyse the performance gain in comparison to Schembri's work. A final conclusion is drawn in 
 \label{ch:conclusion} and further ideas of how to improve the performance are given in chapter \label{ch:future}.
 
 \chapter{Basics}
@@ -269,7 +274,7 @@ processing vision and audio signals simultaneously at ease. In contrast, program
 A distinctive feature is their ability to learn and abstract from examples. As distinct from computers, ANNs do not have to be programmed to solve 
 a certain task. This feature makes them particularly interesting for tasks where no solution or at least no efficient algorithm
 exist. Further examples of successful applications of neural networks are given in section \ref{sec:exp}.
-In terms of computability ANNs are an equivalent model to the Turing machine.\cite{NURING}
+In terms of computability, they are an equivalent model to the Turing machine.\cite{NURING}
 
 Neural networks may be looked at from widely different angles. Their models serve neuroscience for the understanding of biological processes 
 in the human brain, while a psychologist verifies learning- and memory theories using those models. A physicist regards them as a physical structure,
@@ -292,7 +297,8 @@ Brain activity in relatively short periods (within seconds), defined by the curr
 The other level of change is defined by the interaction of the neurons between each other, e.g. by forming new connections. Those changes happen a lot slower, taking minutes up to several days.\cite{NEUINF} 
 
 \begin{center}
-\begin{figure}
+\begin{figure}[H]
+
 \includegraphics[width=0.8\textwidth,scale=1]{files/neuron.jpg}  
 \caption{The parts of a nerve cell or neuron as shown in \cite{NEU}.}
 \label{fig:neuron}
@@ -326,7 +332,8 @@ a_j = \varphi(\sum_{i}^{} a_{i}), \quad a_i \in \{0, 1\}
 Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed in \cite{NEURONMATH}. This model has later been named \textbf{McCulloch-Pitts neuron}. 
 
 
-\begin{figure}
+\begin{figure}[H]
+
 \centering
 
 \begin{tikzpicture}
@@ -370,27 +377,31 @@ Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed 
 \label{fig:mathneuron}
 \end{figure}
 
-This proposal is of particular importance for the theory of ANN and inspired significant researchers like John von Neumann or Nobert Wiener, who developed cybernetics. However, the McCulloch-Pitts neurons are limited by their inability to learn, resulting from their fixed structure. They also lack the surprising robustness of biological nerve networks, since they rely on a flawless operation of all components. Nevertheless, they still have significance in electrical engineering, where they are used to realise binary functions, due to their increased efficiency in contrast to gates. 
+This proposal is of particular importance for the theory of ANNs and inspired significant researchers like John von Neumann or Nobert Wiener, who developed cybernetics. However, the McCulloch-Pitts neurons are limited by their inability to learn, resulting from their fixed structure. They also lack the surprising robustness of biological nerve networks, since they rely on a flawless operation of all components. Nevertheless, they still have significance in electrical engineering, where they are used to realise binary functions, due to their increased efficiency in contrast to gates. 
 
 \chapter{Artificial neural networks}
 \label{ch:ann}
 \section{Overview}
 
-Scientists have proposed a multitude of different network structures since the advent of research in ANN through their first formalisation. 
+Scientists have proposed a multitude of different network structures since the advent of research in ANNs through their first formalisation. 
 A lot of which have been designed with various motivations, stemming from the different perception of neural networks across disciplines.
 Categorisation can be achieved by distinguishing several parameters, e.g. the number of layers, acceptance of input types or usage of learning techniques.
-Figure \ref{fig:class} illustrates a possible categorisation\cite{NNGER}.
+Figure \ref{fig:class} illustrates a possible categorisation\cite{NNGER}. Note that although not all of the mentioned networks are shown in detail,
+we mention their existence so that an interested reader may be allowed to do further research on the topic.
 The direction of signal flow serves as a first level of distinction, as it substantially characterises the networks structure, complexity and so on.
 Both types of signal flow mandate the propagation of network input further into the network.
 Feed-forward network prohibit the usage of non-straightforward signal flow, i.e. connections may only emerge between subsequent neurons.
-Any connections to predecessors are forbidden. This constraint has allowed for a quick development of learning techniques, empowering ANN to learn from data. 
+Any connections to predecessors are forbidden. This constraint has allowed for a quick development of learning techniques, empowering ANNs by 
+allowing them to learn from data. 
 
-As distinct from feed-forward networks, recurrent (or feedback) networks allow bidirectional signal flow. 
+As distinct from Feed-forward networks, recurrent (or feedback) networks allow bidirectional signal flow. 
 As links from one neuron may be formed with any other neuron in the network, recurrent network are often categorised by increased complexity.
-Since the current state of a neuron may be continuously changing, recurrent networks demand advanced learning algorithms.
-Due to their dynamic nature, they allow for the modelling of advanced techniques, such as long and short term memory.
+Since the current state of a neuron may be continuously changing, recurrent networks demand advanced learning algorithms and are an order of magnitude
+more complex than their counterparts.  Due to their dynamic nature, they allow for the modelling of advanced techniques, 
+such as long and short term memory \cite{LTSM} (\textbf{ltsm}).
 
-\begin{figure}
+\begin{figure}[H]
+
 \centering
 
 \fbox{
@@ -443,12 +454,23 @@ Due to their dynamic nature, they allow for the modelling of advanced techniques
                    R31/R42}
     \draw (\s) -- (\t);
 
-\end{tikzpicture}}
+\end{tikzpicture}
+}
 \caption{A categorisation of neural network types. BPG = Backpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
-
 \label{fig:class}
 \end{figure}
-A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced. Within this chapter, we will give an introduction of the terminology and mathematical models used to represent a neural network on a computing machine. An appraisal of advantages and detriments of the presented models is rather difficult, as their performance hugly depends on the specific application. Regarding machine learning, and thereforea also ANN, the term performancedemands for a new definition. Machine learning is a scientific discipline that explores the construction and study of algorithms that can learn from data.\cite{MLDEF1} Such algorithms operate by building a model from example inputs and using that to make predictions or decisions.\cite{MLDEF2} As distict from other algorithms, there can never be absolute certainity of the correctness of a machine learning model. This stems from their usage of the probability of statistics applied to real world problems. Algorithmic measures, such as optimality and completeness cannot be utilised to assess the usefulness of a machine learning technique. A performance evaluation can therefore only be conducted given a specific problem and the according data. After all, the selection and appropriate usage of neural network structures requires extensive experience and/or thorough testing. 
+
+A comprehensive introduction of all categorised network types would exceed the scope of this project work, and therefore only a subset, interesting for the particular application, will be introduced. 
+Within this chapter, we will give an introduction of the terminology and mathematical models used to represent a neural network on a computing machine. 
+An appraisal of advantages and detriments of the presented models is rather difficult, as their performance hugely depends on the specific application. 
+Regarding machine learning, and therefore also ANNs, the term performance demands for a new definition. Machine learning is a scientific discipline 
+that explores the construction and study of algorithms that can learn from data.\cite{MLDEF1} 
+Such algorithms operate by building a model from example inputs and using that to make predictions or decisions.\cite{MLDEF2} 
+As distinct from non-probabilistic algorithms, there can never be absolute certainty of the correctness of a machine learning model. 
+This stems from their usage of probability theory and statistical modelling witch are applied to real world problems. 
+Algorithmic measures, such as optimality and completeness cannot be utilised to assess the usefulness of such a technique.
+A performance evaluation can therefore only be conducted given a specific problem and the according data. After all, the selection and 
+appropriate usage of machine learning algorithms (and therefore also neural networks) requires extensive experience and/or thorough testing. 
 
 \section{Network structure}
 \subsection{Layers}
@@ -462,7 +484,8 @@ The amount of neurons within a layer is equal to the elements of the respective 
 
 The first network layer $L_1$, is referred to as the input layer. It receives the input vector $\overrightarrow{x} \in \mathds{R}^{|L_1|}$ and passes it onto the next layer. Likewise, $L_n$ is the output layer of the network, whose neurons are called the output units. $\overrightarrow{y} \in \mathds{R}^{|L_n|}$ is the output vector of an ANN. A computer application will later utilise the neural network as a black box, being only interested in the transformation from $\overrightarrow{x}$ to $\overrightarrow{y}$. Figure \ref{fig:layer} shows this. 
 
-\begin{figure}
+\begin{figure}[H]
+
 \centering
 
 \begin{tikzpicture}
@@ -523,7 +546,7 @@ The first network layer $L_1$, is referred to as the input layer. It receives th
 \node [align=center] (y1) at (7,1.5) {$\overrightarrow{y}$};
 
 \end{tikzpicture}
-%\caption{%An example of an artificial neural network with $n$ layers. Its network topology is $(|L_1|=4,|L_2|=3,...,|L_{n-1}|=3,|L_n|=2)$}
+\caption{An example of an artificial neural network with $n$ layers. Its network topology is $(|L_1|=4,|L_2|=3,...,|L_{n-1}|=3,|L_n|=2)$}
 \label{fig:layer}
 \end{figure}
 
@@ -554,149 +577,131 @@ w_{1j} & \cdots & w_{ij} \\
 \end{equation}
 
 In addition, the concept of bias neurons has proven itself useful. Bias units are non-receptive, both in feed-forward and recurrent networks. Hence their activity level is steady, usually $+1$. Links between bias and normal neurons are to be treated normally, the influence of a bias can therefore be altered. They are often used to keep units with little weighted input active, by shifting their activation function $\varphi$ they don't receive significant input. In contrast, a negative link may be used to keep a neuron in an inactive state.
-\begin{figure}
+
+\begin{figure}[H]
+
 \centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+    \begin{tikzpicture}
+        \node [draw=black, align=center, circle] (i) at (0,0) {$n_0$}; 
+        \node [draw=black, align=center, circle] (o) at (4,0) {$n_1$}; 
 
-\begin{tikzpicture}
-    \node [draw=black, align=center, circle] (i) at (0,0) {$n_0$}; 
-    \node [draw=black, align=center, circle] (o) at (4,0) {$n_1$}; 
+        \draw[arrow]	(i) -- (o);
 
-    \draw[arrow]	(i) -- (o);
-
-    \node[] (dw) at (2,0.3){$w_{ij}$};
-    \node[] (di) at (0,0.6){Input: $x$};
-    \node[] (do) at (4,0.6){Output};
-    \node[] (df) at (2.1,-0.7){$\varphi = sig(w_{01}\cdot x)$};
-\end{tikzpicture}
-
-\caption{A single input-output network}
-\label{fig:1on1}
-\end{figure}
-
-Consider the network shown in figure \ref{fig:1on1}. The activation function of the output neuron is chosen to be the sigmoid function. Figure \ref{fig:sigmoid-scale} shows the output for several values of $w$. It can seen that $w$ changes the steepness of the sigmoid function. 
-
-\begin{figure}
+        \node[] (dw) at (2,0.3){$w_{ij}$};
+        \node[] (di) at (0,0.6){Input: $x$};
+        \node[] (do) at (4,0.6){Output};
+        \node[] (df) at (2.1,-0.7){$\varphi = sig(w_{01}\cdot x)$};
+    \end{tikzpicture}
+  \caption{A single input-output network}
+  \label{fig:1on1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
     \centering
-    \includegraphics[width=0.65\textwidth,scale=1]{files/sigmoid-scale.png}  
-    \caption{The output of unit $n_1$ in figure \ref{fig:1on1}}
-    \label{fig:sigmoid-scale}
+        \begin{tikzpicture}
+        \node [draw=black, align=center, circle] (i2) at (0,2) {$n_0$}; 
+        \node [draw=black, align=center, circle] (i1) at (0,0) {$n_1$}; 
+        \node [draw=black, align=center, circle] (o) at (4,1)  {$n_2$}; 
+
+        \draw[arrow]	(i2) -- (o);
+        \draw[arrow]	(i1) -- (o);
+
+        \node[] (dw) at (2,1.8){$w_{02}$};
+        \node[] (dw) at (2,0.8){$w_{12}$};
+        \node[] (di) at (0,0.6){Bias: $1.0$};
+        \node[] (di) at (0,2.6){Input: $x$};
+        \node[] (do) at (4,1.6){Output};
+        \node[] (df) at (2.1,-0.7){$\varphi = sig(w_{02}\cdot x + w_{12}\cdot 1.0)$};
+        \end{tikzpicture}
+    \caption{A single input-output network}
+    \label{fig:2on1}
+\end{subfigure}
+\newline
+\caption{Scaling and shifting the input function}
+\label{fig:networks}
 \end{figure}
 
+Consider the network shown in figure \ref{fig:1on1}. The activation function of the output neuron is chosen to be the sigmoid (abbreviated: sig) function. 
+Figure \ref{fig:sigmoid-scale} shows the output for several values of $w$. It can seen that $w$ changes the steepness of the sigmoid function. 
+
+\begin{figure}[H]
+
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{files/activation/sigsc.pdf}
+  \caption{The output of unit $n_1$ in figure \ref{fig:1on1}}
+  \label{fig:sigmoid-scale}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{files/activation/sigsh.pdf}
+  \caption{The output of unit $n_1$ in figure \ref{fig:2on1}}
+  \label{fig:sigmoid-shift}
+\end{subfigure}
+\newline
+\caption{Scaling and shifting the input function}
+\label{fig:scaling}
+\end{figure}
 
 Figure \ref{fig:2on1} shows the same network with an additional bias neuron. This allows us to shift the activation function according to the weight of the connection link $w_{12}$ as shown in figure \ref{fig:sigmoid-shift}.
 
-\begin{figure}
-\centering
-    \begin{tikzpicture}
-    \node [draw=black, align=center, circle] (i2) at (0,2) {$n_0$}; 
-    \node [draw=black, align=center, circle] (i1) at (0,0) {$n_1$}; 
-    \node [draw=black, align=center, circle] (o) at (4,1)  {$n_2$}; 
-
-    \draw[arrow]	(i2) -- (o);
-    \draw[arrow]	(i1) -- (o);
-
-    \node[] (dw) at (2,1.8){$w_{02}$};
-    \node[] (dw) at (2,0.8){$w_{12}$};
-    \node[] (di) at (0,0.6){Bias: $1.0$};
-    \node[] (di) at (0,2.6){Input: $x$};
-    \node[] (do) at (4,1.6){Output};
-    \node[] (df) at (2.1,-0.7){$\varphi = sig(w_{02}\cdot x + w_{12}\cdot 1.0)$};
-    \end{tikzpicture}
-\caption{A single input-output network}
-\label{fig:2on1}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.65\textwidth,scale=1]{files/sigmoid-shift.png}  
-    \caption{The output of unit $n_1$ in figure \ref{fig:2on1}}
-    \label{fig:sigmoid-shift}
-\end{figure}
-
 \subsection{Activation functions}
 
-As discussed before, the weights of the connections between the neurons represent the 'Intelligence' of the network. The bigger the absolute value of the weight, the greater the influence of a neuron to another. This value can be both positive and negative, as well as neutral \textit{(0)}, meaning that there is currently no influence between the neurons, although there is still a link connecting them. A weight of 0 can be understood as a logical pinch of the link, preventing it from transmitting signals.
+As discussed before, the weights of the connections between the neurons represent the 'Intelligence' of the network. The bigger the absolute value of the weight, the greater 
+the influence of a neuron to another. This value can be both positive and negative, as well as neutral \textit{(0)}, meaning that there is currently no influence between the 
+neurons, although there is still a link connecting them. A weight of 0 can be understood as a logical pinch of the link, preventing it from transmitting signals.
 
 
-The connection between the input values and the activity level of the neuron is made by the activity function $\varphi$. Different models are obtained depending on the choice of the activity or transfer function. Amongst the most common choices are the linear, binary step and sigmoid function as illustrated in Figure \ref{fig:plots}. The linear function has a threshold $t$, which can be used to avoid low network input (e.g. noise) to be further propagated into the network. The binary step function represents the firing of a pulse down the axon if positive $1$), while $0$ represents no firing. The step function is sometimes defined to jump from $-1$ to $1$. 
+The connection between the input values and the activity level of the neuron is made by the activity function $\varphi$. Different models are obtained depending on the choice of 
+the activity or transfer function. Amongst the most common choices are the linear, binary step and sigmoid function as illustrated in Figure \ref{fig:plots}. The linear 
+function has a threshold $t$, which can be used to avoid low network input (e.g. noise) to be further propagated into the network. The binary step function represents the firing 
+of a pulse down the axon if positive $1$), while $0$ represents no firing. The step function is sometimes defined to jump from $-1$ to $1$. 
 
 Sigmoid functions are widely used amongst network which are to represent cognitive processes such as perception, recognition, problem solving, etc. .
 Both the logistic function as well as the hyperbolic tangent function $\tanh()$ can be used. The main advantage of sigmoid functions are:
 
 \begin{itemize}
-\item In contrast with the linear function (without a threshold), the activity level of the function is limited in both the positive and the negative. This means that activity in the network can not spill over unintentionally, which can be caused by recurrent connections.
+\item In contrast with the linear function (without a threshold), the activity level of the function is limited in both the positive and the negative. 
+    This means that activity in the network can not spill over unintentionally, which can be caused by recurrent connections.
 \item Differentiability
-As distinct from the binary step function, it is differentiable at all parts, which as an example, is a requirement of the gradient descent, used by the Backpropagation algorithm (about to be introduced in chapter \ref{ch:learning}
+As distinct from the binary step function, it is differentiable at all parts, which as an example, is a requirement of the gradient descent, used by the Backpropagation algorithm 
+(about to be introduced in chapter \ref{ch:learning}
 \end{itemize}
 
+\begin{figure}[H]
 
-\begin{figure}
 \centering
-\subfigure[]
-{
-   \begin{tikzpicture}
-		\begin{axis}[
-        width=4cm, height=4cm,
-        grid = major,
-        grid style={dashed, grey!30},
-		xmax=1,        
-        ymin=-1,
-        ymax=1,
-        axis background/.style={fill=white},
-        ylabel=$a_{j}$,
-        xlabel=$in_{j}$]
-     
-		\addplot[black]{x};
-		\end{axis}
-	\end{tikzpicture}
-\label{fig:plot1}
-}
-
-\subfigure[]
-{
-   \begin{tikzpicture}
-		\begin{axis}[
-        width=4cm, height=4cm,
-        grid = major,
-        grid style={dashed, grey!30},
-		xmax=1,        
-        ymin=-1,
-        ymax=1,
-        axis background/.style={fill=white},
-        ylabel=$a_{j}$,
-        xlabel=$in_{j}$]
-     
-		\addplot[black]{x+2};
-		\end{axis}
-	\end{tikzpicture}
-\label{fig:plot2}
-}
-
-\subfigure[]
-{
-   \begin{tikzpicture}
-		\begin{axis}[
-        width=4cm, height=4cm,
-        grid = major,
-        grid style={dashed, grey!30},
-		xmax=1,        
-        ymin=-1,
-        ymax=1,
-        axis background/.style={fill=white},
-        ylabel=$a_{j}$,
-        xlabel=$in_{j}$]
-     
-		\addplot[black]{x};
-		\end{axis}
-	\end{tikzpicture}
-\label{fig:plot2}
-}
-	
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{files/activation/step.pdf}
+  \caption{Step function}
+  \label{fig:plot1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{files/activation/sigmoid.pdf}
+  \caption{A sigmoid ($f(x) = \frac{1}{1+e^{-x}}$) function}
+  \label{fig:plot2}
+\end{subfigure}
+\newline
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{files/activation/tanh.pdf}
+  \caption{The $tanh()$ function}
+  \label{fig:plot3}
+\end{subfigure}
 \caption{Comparison of commonly used activation functions}
-\label{fig:plots}
+\label{fig:activations}
 \end{figure}
 
-In order to teach neural networks and enable them to apply learned behavior in following scenarios, the work with them is divided in a training- and test phase. During the training, the network learns certain behavior by feeding repetitive input to the first layer and observing the output of the network. This can be done in a supervised and unsupervised way. In a supervised training phase, the targeted output of the network is already known and is presented to the network as a \textit{teaching factor}. The network produces output depending on the current weights on its connections and adjusts them according to the margin between the targeted and produced output. Unsupervised learning is necessary in situations, where no reasonable teaching factors are available or the observant is more interested on the performance. Similarity between input incentives and connection weights is the factor, according to which weight adjustment is done in such models.
+In order to teach neural networks and enable them to apply learned behavior in following scenarios, the work with them is divided in a training- and test phase. During the 
+training, the network learns certain behavior by feeding repetitive input to the first layer and observing the output of the network. This can be done in a supervised and 
+unsupervised way. In a supervised training phase, the targeted output of the network is already known and is presented to the network as a \textit{teaching factor}. The network 
+produces output depending on the current weights on its connections and adjusts them according to the margin between the targeted and produced output. Unsupervised learning is 
+necessary in situations, where no reasonable teaching factors are available or the observant is more interested on the performance. Similarity between input incentives and 
+connection weights is the factor, according to which weight adjustment is done in such models.
 
 \section{Applications}
 \label{sec:exp}
@@ -712,18 +717,32 @@ Until today, neural networks have been successfully applied to several problems 
 
 The following sections will give a brief notion of some 'classical' applications where ANNs have found better solutions in shorter time in comparison with other techniques.
 \subsection{Recognition of hand-writing}
-The automated interpretation of hand-written is of great interest for a number of purposes. The destination address of letters and parcels are nowadays processed by computers which use real-time image processing system to recognize handwriting on letters. The typesetting system \LaTeX  allows its users to phrase complex formulas using certain commands which are later being replaced by symbols such as the existential quantifier $\exists$. 
-One would now wish for a system that can take in a hand written representation of the symbol and output the command by which the symbol can later be written in a document. In %\cite{MARTIN} artificial neural networks are used to classify such symbols. After drawing the sought symbol, the user is presented a choice of matching symbols along with an associated probability measure of their correctness. The website is available under \url{write-math.com}.
+The automated interpretation of hand-written is of great interest for a number of purposes. The destination address of letters and parcels are nowadays processed by computers 
+which use real-time image processing system to recognize handwriting on letters. The typesetting system \LaTeX  allows its users to phrase complex formulas using certain commands 
+which are later being replaced by symbols such as the existential quantifier $\exists$. 
+One would now wish for a system that can take in a hand written representation of the symbol and output the command by which the symbol can later be written in a document. 
+In \cite{MARTIN} artificial neural networks are used to classify such symbols. After drawing the sought symbol, the user is presented a choice of matching symbols along with an 
+associated probability measure of their correctness. The website is available under \url{write-math.com}.
 \\
 
 The challenge for such systems is the great deviation of styles in hand-written text. This makes it virtually infeasible for conventional methods to reliably classify hand-writing. 
-The network model RCE(Restricted Coulomb Energy Network) has been devised by Nobel price winner Leon Cooper. It overcomes the limitations of the Perceptron as it is capable of detecting geometrical figures (therefore also handwritten text) of any size. 
-Cooper's company Nestor, has successfully used this model to develop a system which can detect characters of the Japanese alphabet Kanji. The Kanji alphabet stems from the Chinese language, contains approximately 3000 different symbols and is extremely complex. 
-Examples are \begin{CJK}{UTF8}{min}輸\end{CJK} - transport or \begin{CJK}{UTF8}{min}熊\end{CJK} - bear. It is nowadays extensively used on mobile devises that allow to write text messages by drawing each individual character instead of choosing symbols from a massive dictionary. 
-Complex sentences formulated by simultaneously using three different alphabets, such as \begin{CJK}{UTF8}{min}世界はコンピュータ技術の登場以来、劇的に変化した。\end{CJK} - \textit{The world has changed dramatically since the advent of computer technology} can now be written in a fairly short amount of time.
+The network model RCE(Restricted Coulomb Energy Network) has been devised by Nobel price winner Leon Cooper. It overcomes the limitations of the Perceptron as it is capable of 
+detecting geometrical figures (therefore also handwritten text) of any size. 
+Cooper's company Nestor, has successfully used this model to develop a system which can detect characters of the Japanese alphabet Kanji. The Kanji alphabet stems from the 
+Chinese language, contains approximately 3000 different symbols and is extremely complex. 
+Examples are \begin{CJK}{UTF8}{min}輸\end{CJK} - transport or \begin{CJK}{UTF8}{min}熊\end{CJK} - bear. It is nowadays extensively used on mobile devises that allow to 
+write text messages by drawing each individual character instead of choosing symbols from a massive dictionary. 
+Complex sentences formulated by simultaneously using three different alphabets, such as \begin{CJK}{UTF8}{min}世界はコンピュータ技術の登場以来、劇的に変化した。\end{CJK} 
+ - \textit{The world has changed dramatically since the advent of computer technology} can now be written in a fairly short amount of time.
 
 \subsection{The Travelling-Salesman-Problem}
-Given a set of cities and the distances between each pair of cities, what is the shortest path that, after visiting each city exactly once, leads to the origin of the route? This task, called the Travelling-Salesman-Problem (often abbreviated as TSP) is an optimisation task which is often encountered in practice (Energy and water supply, microchip design). The TSP can be modelled as a graph: All $n$ cities are represented as vertices, the connections between the cities as edges. Since all cities are connected with each other, the graph is complete. A complete graph is called $K_n$. The cost (travel time) between each pair of vertices $i$ and $j$ is associated with a weight $w(i,j) \geq 0$. A tour that visits each city once and return back to the origin is a Hamilton-circle. As the graph is complete, there are several Hamilton-circles (each of which is a possible solution of the problem). Each permutation of the nodes is a Hamilton-circle, thus there are $n!$ circles. Sought is the Hamilton-circle with the least overall cost, i.e. a permutation $\pi(1),\dots,\pi(n)$ with minimal weight
+Given a set of cities and the distances between each pair of cities, what is the shortest path that, after visiting each city exactly once, leads to the origin of the route? 
+This task, called the Travelling-Salesman-Problem (often abbreviated as TSP) is an optimisation task which is often encountered in practice (Energy and water supply, microchip 
+design). The TSP can be modelled as a graph: All $n$ cities are represented as vertices, the connections between the cities as edges. Since all cities are connected with each 
+other, the graph is complete. A complete graph is called $K_n$. The cost (travel time) between each pair of vertices $i$ and $j$ is associated with a weight $w(i,j) \geq 0$. 
+A tour that visits each city once and return back to the origin is a Hamilton-circle. As the graph is complete, there are several Hamilton-circles (each of which is a possible 
+solution of the problem). Each permutation of the nodes is a Hamilton-circle, thus there are $n!$ circles. Sought is the Hamilton-circle with the least overall cost, i.e. a 
+permutation $\pi(1),\dots,\pi(n)$ with minimal weight
 \begin{equation}
     \sum\limits_{i=1}^n w(\pi(i),\pi(i+1)), 
 \end{equation}
@@ -731,24 +750,49 @@ Given a set of cities and the distances between each pair of cities, what is the
 where $\pi(n+1)$ is set to $\pi(1)$.\cite{MATHINF}\\
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.2\textwidth,scale=1]{files/tsp.png}  
-    \caption{An example graph. We are are interested in finding the cheapest tour\cite{MATHINF}.}
-    \label{fig:tsp}
+\centering
+    \begin{tikzpicture}
+    \node [shape=circle, fill=black, inner sep=2pt] (x1) at (0.0,0.0) {}; 
+    \node [shape=circle, fill=black, inner sep=2pt] (x2) at (0.0,2.0) {}; 
+    \node [shape=circle, fill=black, inner sep=2pt] (x3) at (2.0,0.0) {}; 
+    \node [shape=circle, fill=black, inner sep=2pt] (x4) at (2.0,2.0) {}; 
+    \node [] (l1) at (-0.3,0.0) {1}; 
+    \node [] (l2) at (-0.3,2.0) {2}; 
+    \node [] (l3) at (2.3,0.0) {3}; 
+    \node [] (l4) at (2.3,2.0) {4}; 
+    \node [] (l5) at (2.3,1.0) {2}; 
+    \node [] (l6) at (-0.3,1.0) {5}; 
+    \node [] (l7) at (1,2.3) {4}; 
+    \node [] (l8) at (1,-0.3) {8}; 
+    \node [] (l9) at (0.75,1.55) {1}; 
+    \node [] (l10) at (1.25,0.45) {3}; 
+
+    \draw[] (x1) -- (x2);
+    \draw[] (x1) -- (x4);
+    \draw[] (x2) -- (x3);
+    \draw[] (x2) -- (x4);
+    \draw[] (x4) -- (x3);
+    \draw[] (x3) -- (x1);
+    \end{tikzpicture}
+\caption{An example graph. We are are interested in finding the cheapest tour.\cite{MATHINF}}
+\label{fig:feedback}
 \end{figure}
 
-An example graph for the TSP is given in \ref{fig:tsp}. $4!$ possible tours exit, which is the amount of permutations of the vertecies.
+An example graph for the TSP is given in \ref{fig:tsp}. $4!$ possible tours exit, which is the amount of permutations of the vertices.
 We find the cheapest tour $(1, 3, 4, 2, 1)$ with costs of $w(1, 3) + w(3, 4) + w(4, 2) + w(2, 1) = 11$.
 
 It is of high importance to theoretical computer science, as it is known to be $NP$-complete. In the field of complexity analysis, the class of decision problems for which there is a deterministic Turing-Machine able to solve it in time $\mathcal{O}(n^k)$ is called $P$ (polynomial). An example is the sorting problem. Class $P$ contains problems with running times like $\mathcal{O}(n)$ and $\mathcal{O}(log(n))$ but also those with time $\mathcal{O}(n^{5000})$. In addition to the deterministic Turing machine, complexity analysis also defines the non-deterministic Turing machine. At each time step, there are several possible ways of continuing computation, setting it in contrast with todays computers. The class of Problems $NP$ is solvable by a non-deterministic Turing Machine in polynomial time. $NP$ contains a number of relevant problems, such as the graph isomorphism (Can two graphs be drawn identically?). Problems in $P$ can also be solved by this theoretical model, so $P \subseteq NP$. In other words, a problem is in the class of NP if there is an algorithm (executed by a Turing machine) that can guess a solution and verify whether the guess was correct in polynomial time. In case of omniscient guessing or given a number of processors equal to the number of solutions, trying out all possibilities at the same time one would always get the correct solution. Thus, $NP$ problems would become $P$ problems. 
 
 Nevertheless, computationally feasible approximation techniques have been found which allow to find a good, although not always the best, solution. Hopfield and Tank (1985) proposed an approach using ANNs which allows to find a good, often even the best solution for the TSP. It suggests a single-layer network with $n$ neurons, where $n$ equals the number of cities in the graph, called Hopfield-network. This can be thought of as a square with an edge length of $n$. The output of each individual neuron equals the time step at which the city is visited. Furthermore, genetic algorithms have also been applied to find an approximate solution for the problem %\cite{GENTSP}.
 
-\chapter{Learning}\label{ch:learning}
+\chapter{Learning}
+\label{ch:learning}
 \section{Hebbian learning rule}
 The psychologist Donald Olding Hebb proposed on the easiest learning rules with high biological plausibility in \cite{HEBB}:\\
 
-\textit{“Let us assume that the persistence or repetition of a reverberatory activity (or "trace") tends to induce lasting cellular changes that add to its stability.… When an axon of cell A is near enough to excite a cell B and repeatedly or persistently takes part in firing it, some growth process or metabolic change takes place in one or both cells such that A's efficiency, as one of the cells firing B, is increased.”}\\
+\textit{“Let us assume that the persistence or repetition of a reverberatory activity (or "trace") tends to induce lasting cellular changes that add to its stability\dots 
+When an axon of cell A is near enough to excite a cell B and repeatedly or persistently takes part in firing it, some growth process or metabolic change takes place in one or 
+both cells such that A's efficiency, as one of the cells firing B, is increased.”}\\
 
 In summary: The weight between two units $i$ and $j$ is changed, if both units are active at the same time. The amount of change is set by three factors:
 
@@ -783,19 +827,24 @@ All connections with positive weights are weakened, while the ones with negative
 \item \textbf{Targeted and observed output are equivalent. (= ideal behavior)}\\ There is no need to change the links.
 \end{itemize}
 
-The deltas learning rule equation \eqref{eq:delta2} covers all three possibilities, thus ensuring that the changing rate is proportional to the difference between targeted and observed. The learning parameter $\eta$ is again set before the beginning of the learning process and remains constant. The multiplication with the sending units output $a_i$ ensures that those connections, that have the greatest influence into the error have the greatest $\delta w_{ij}$.
+The deltas learning rule equation \eqref{eq:delta2} covers all three possibilities, thus ensuring that the changing rate is proportional to the difference between targeted and 
+observed. The learning parameter $\eta$ is again set before the beginning of the learning process and remains constant. The multiplication with the sending units output $a_i$ 
+ensures that those connections, that have the greatest influence into the error have the greatest $\delta w_{ij}$.
 \begin{equation}
 \Delta w_{ij} = \eta \cdot \delta \cdot a_i
 \label{eq:delta2}
 \end{equation}
 
-The simplicity of this learning rules also comes at great cost: The comparison only allows us to adjust connections which connect to the rightmost layer in the network. This fact restricts the application of this method from networks with a hidden layer. 
+The simplicity of this learning rules also comes at great cost: The comparison only allows us to adjust connections which connect to the rightmost layer in the network. 
+This fact restricts the application of this method from networks with a hidden layer. 
 
 \section{Backpropagation}
 
 \subsection{Gradient descent}
 
-The optimisation algorithm gradient descent (also steepest descent) tackles the problem of finding a local minimum of a multivariable function $F(x)$. In order to do, one substracts the gradient $\nabla F(a)$ from the current point $a$ to obtain a new point $b$ so that $F(a) \geq F(b)$. The non-negative weight $\gamma$ is often referred to as the stepsize.
+The optimisation algorithm gradient descent (also steepest descent) tackles the problem of finding a local minimum of a multivariate function $F(x)$. In order to do, one 
+subtracts the gradient $\nabla F(a)$ from the current point $a$ to obtain a new point $b$ so that $F(a) \geq F(b)$. The non-negative weight $\gamma$ is often referred to as the 
+step size.
 
 \begin{equation}
  b = a - \gamma \nabla F(a)
@@ -828,36 +877,45 @@ Starting with guess $x_0$ for a local minimum, and iteratively calculating an $x
 \label{alg:GD}
 \end{algorithm}
 
-Gradient descent may be imagined as the effort of a wanderer to reach the bottom of valley as quick as possible, therefore always seeking to climb down as the point of steepest descent. This is illustrated in Figure \ref{fig:grad}
+Gradient descent may be imagined as the effort of a wanderer to reach the bottom of valley as quick as possible, therefore always seeking to climb down as the point of steepest 
+descent. This is illustrated in Figure \ref{fig:grad}
 
-\begin{figure}
+\begin{figure}[H]
+
     \centering
     \includegraphics[width=0.3\textwidth,scale=1]{files/graddes.png}  
-    \caption{Illustration of gradient descent.}%\cite{GRADFIG}}
+    \caption{Illustration of gradient descent.\cite{GRADFIG}}
     \label{fig:grad}
 \end{figure}
 
 \subsection{The Backpropagation algorithm}
 
-The Backpropagation algorithm is yet another learning rule for supervised networks, but in comparison to the Hebbian and delta rules, it can also be applied for networks with $n$ numbers of hidden layers. There are certain problems that cannot be solved by networks without at least one hidden layer, the XOR-Gate being a famous example. 
-It was developed by several scientists simultaneously %\cite{BACK1}\cite{BACK2}\cite{BACK3} and consists of three stages:
+The Backpropagation algorithm is yet another learning rule for supervised networks, but in comparison to the Hebbian and delta rules, it can also be applied for networks with $n$ 
+numbers of hidden layers. There are certain problems that cannot be solved by networks without at least one hidden layer, the XOR-Gate being a famous example. 
+It was developed by several scientists simultaneously \cite{BACK1}\cite{BACK2}\cite{BACK3} and consists of three stages:
 \begin{itemize}
 \item[1.] \textbf{The forward-pass}:
 A pattern is presented to the input layer and further propagated into the network.
 \item[2.] \textbf{Error-determination}:\\
-The observed output is compared to targeted result and an error $E$ is determined by a derivable error-function $\varphi$ shown in equation \eqref{eq:backerror}. The factor of $\frac{1}{2}$ is used to simplify the derivation by cancelling the exponent.
+The observed output is compared to targeted result and an error $E$ is determined by a derivable transfer function $\varphi$ shown in equation \eqref{eq:backerror}. The factor of $\frac{1}{2}$ is used to simplify the derivation by cancelling the exponent.
 
 \begin{equation}
 \varphi = \frac{1}{2} (t-o)^2
 \label{eq:backerror}
 \end{equation}
 \item[3.] \textbf{Backward-pass}:\\
-The error is propagated from the back of the network to the front, hence the name \textbf{Backpropagation}. The connection are updated independent from their influence to $E$, which guarantees a result $o$ that is closer to $t$, provided the same output is presented to the input layer.
+The error is propagated from the back of the network to the front, hence the name \textbf{Backpropagation}. The connection are updated independent from their influence to $E$, 
+which guarantees a result $o$ that is closer to $t$, provided the same output is presented to the input layer.
 \end{itemize}
 
-A first approach on finding a method to changing all weights in a weight that will minimize the error is to find $E$ for all possible combinations of weights $W$. The combination $W_{min}$ with the smallest $E$ would be the perfect solution, an absolute minimum of the error. The problem of this approach is that the computational effort to finding this solution is way to high, since $W_{min}$ would have to be found in a $n$-dimensonial  hyperplane (given the number of neurons $n$).\\
+A first approach on finding a method to changing all weights in a weight that will minimize the error is to find $E$ for all possible combinations of weights $W$. 
+The combination $W_{min}$ with the smallest $E$ would be the perfect solution, an absolute minimum of the error. The problem of this approach is that the computational effort to finding this 
+solution is way to high, since $W_{min}$ would have to be found in a $n$-dimensional  hyperplane (given the number of neurons $n$).\\
 
-Instead, the weights are adjusted using the gradient descent, which does not need to know the complete hyperplane\marginpar{\textit{gradient descent}}. It starts with a random combination of weights for which the gradient is determined. The gradient is the function of a scalar field which shows the rate of change and the direction of the greatest change in the form of a vector field. After the gradient is determined it will be stepped down at a given rate - the learning rate, meaning that the weights are adjusted. For this new combination of weights, the gradient is again determined and stepped down until a local (or global minimum) is found or a maximum amount of repetitions is reached.\\
+Instead, the weights are adjusted using the gradient descent, which does not need to know the complete hyperplane\marginpar{\textit{gradient descent}}. It starts with a random 
+combination of weights for which the gradient is determined. The gradient is the function of a scalar field which shows the rate of change and the direction of the greatest change 
+in the form of a vector field. After the gradient is determined it will be stepped down at a given rate - the learning rate, meaning that the weights are adjusted. 
+For this new combination of weights, the gradient is again determined and stepped down until a local (or global minimum) is found or a maximum amount of repetitions is reached.\\
 
 The amount of change between neurons $i$ and $j$ $\delta w_{ij}$ is calculated as shown in \eqref{eq:backrule}.
 \begin{equation}
@@ -881,140 +939,144 @@ Eventually, the weights are changed according to equation \eqref{eq:backweight}.
 \label{eq:backweight}
 \end{equation}
 
-% \section{Backpropagation through time}
-% 
-% The Backpropagation through time (BTT) algorithm constitutes a learning rule for recurrent networks. 
-% Recurrent networks constitute an architecture that allows bi-directional signal flow within the network. While outputs of feed-forward networks are restricted to be only connected to 
-% a neuron in the preceding layer, connections can now be formed across arbitrary layers. Figure \ref{fig:feedback} shows a recurrent network. As the neuron is connected with
-% itself, it forms a feedback structure. The output of the neuron at time step $t$ serves as a weighted (by weight $g$) input of itself in the next time step.
-% Thus, the output of the network can be computed as follows:
-% 
-% \begin{equation}
-%     y(t+1) = \varphi(w\cdot x(t) + g\cdot y(t))
-% \label{eq:btt}
-% \end{equation}
-% 
-% BTT was independently developed by several researchers.%\cite{BTT1}\cite{BTT2}\cite{BTT3}
-% Back
-% 
-% 
-% \begin{figure}
-% \centering
-%     \begin{tikzpicture}
-%     \node [align=center] (l1) at (0,0) {}; 
-%     \node [align=center] (x2) at (0.0,0.3) {$x(t)$}; 
-%     \node [align=center] (x1) at (0.75,0.3) {$w$}; 
-%     \node [draw=black, align=center, circle] (n) at (1.5,0) {}; 
-%     \node [align=center] (x2) at (2.95,0.3) {$y(t+1)$}; 
-%     \node [align=center] (x3) at (1.6,-0.7) {$g$}; 
-%     \node [align=center] (l2) at (3,0) {}; 
-% 
-%     \draw[arrow]	(l1) -- (n);
-%     \draw[arrow]	(n) -- (l2);
-%     \draw[arrow] (n) to [out=330,in=250,looseness=8] (n);
-%     \end{tikzpicture}
-% \caption{A feedback structure in a recurrent neural network.}
-% \label{fig:feedback}
-% \end{figure}
-% 
-% \begin{figure}
-% \centering
-%     \begin{tikzpicture}
-%     \node [align=center] (n0) at (0,0) {}; 
-%     \node [] (y0) at (0.75,0.3) {$y(0)$}; 
-% 
-%     \node [] (g1) at (0.75,-0.2) {$g$}; 
-%     \node [] (w1) at (1.50,0.7) {$w$}; 
-%     \node [] (x1) at (1.0,1.3) {$x(0)$}; 
-%     \node [] (t1) at (1.5,-0.7) {$t-1$}; 
-%     \node [] (y1) at (2.25,0.3) {$y(1)$}; 
-%     \node [draw=black, align=center, circle] (n1) at (1.5,0) {}; 
-% 
-%     \node [] (g2) at (2.25,-0.2) {$g$}; 
-%     \node [] (w2) at (3.00,0.7) {$w$}; 
-%     \node [] (x2) at (2.5,1.3) {$x(1)$}; 
-%     \node [] (t2) at (3,-0.7) {$t-2$}; 
-%     \node [] (y2) at (3.75,0.3) {$y(2)$}; 
-%     \node [draw=black, align=center, circle] (n2) at (3,0) {}; 
-% 
-%     \node [] (g3) at (3.75,-0.2) {$g$}; 
-%     \node [] (w3) at (4.50,0.7) {$w$}; 
-%     \node [] (x3) at (4.0,1.3) {$x(2)$}; 
-%     \node [] (t3) at (4.5,-0.7) {$t-3$}; 
-%     \node [] (y3) at (5.25,0.3) {$y(3)$}; 
-%     \node [draw=black, align=center, circle] (n3) at (4.5,0) {}; 
-% 
-%     \node [] (g4) at (5.25,-0.2) {$g$}; 
-%     \node [] (w4) at (6.00,0.7) {$w$}; 
-%     \node [] (x4) at (5.5,1.3) {$x(3)$}; 
-%     \node [] (t4) at (6.0,-0.7) {$t-4$}; 
-%     \node [] (y4) at (6.75,0.3) {$y(4)$}; 
-%     \node [draw=black, align=center, circle] (n4) at (6,0) {}; 
-% 
-%     \node [] (g5) at (6.75,-0.2) {$g$}; 
-%     \node [] (w5) at (7.50,0.7) {$w$}; 
-%     \node [] (x5) at (7.0,1.3) {$x(4)$}; 
-%     \node [] (t5) at (7.5,-0.7) {$t-5$}; 
-%     \node [] (y5) at (8.25,0.3) {$y(5)$}; 
-%     \node [draw=black, align=center, circle] (n5) at (7.5,0) {}; 
-% 
-%     \node [align=center] (n6) at (9,0) {}; 
-% 
-%     \draw[arrow]	(n0) -- (n1);
-%     \draw[arrow]	(x1) -- (n1);
-%     \draw[arrow]	(n1) -- (n2);
-%     \draw[arrow]	(x2) -- (n2);
-%     \draw[arrow]	(n2) -- (n3);
-%     \draw[arrow]	(x3) -- (n3);
-%     \draw[arrow]	(n3) -- (n4);
-%     \draw[arrow]	(x4) -- (n4);
-%     \draw[arrow]	(n4) -- (n5);
-%     \draw[arrow]	(x5) -- (n5);
-%     \draw[arrow]	(n5) -- (n6);
-%     \end{tikzpicture}
-%     \caption{The recurrent network shown in figure \ref{fig:feedback} during unfolding with depth $t=5$.}
-% \label{fig:unrolled}
-% \end{figure}
-% 
-% \begin{algorithm}
-% \LinesNumbered
-% \DontPrintSemicolon
-% \BlankLine
-% \Ein{Input $x(t)$ at time $t$, depth $k$}
-% \Aus{Output $y(t)$}
-% \BlankLine
-% \Begin
-% {
-%     Unfold network to contain $k$ instances.\\
-%     $y(0) \leftarrow \text{zero-magnitude vector} \overrightarrow{0}$.
-%     
-%     \For{$\forall t \in [0,n-1]: t \in \mathbb{N}_0$}
-%     {
-%         \tcp{Done for each }
-%         Set network inputs $y(0), x(1), x(2), x(3)$\\
-%         Forward-propagate.\\ 
-%         Error $e = y(t+k) - t;$ $t:$ target error\\
-%         Backpropagate the error across the whole unfolded network.\\
-%         Update all the weights in the network according to standard Backpropagation.\\
-%         $y(0) \leftarrow f(x)$
-% 
-%     
-%     }
-% }
-% \caption{The Backpropagation through time algorithm.}
-% \label{alg:GD}
-% \end{algorithm}
-% 
+ \section{Backpropagation through time}
+ 
+ The Backpropagation through time (BTT) algorithm constitutes a learning rule for recurrent networks. 
+ Recurrent networks constitute an architecture that allows bi-directional signal flow within the network. While outputs of feed-forward networks are restricted to be only connected to 
+ a neuron in the preceding layer, connections can now be formed across arbitrary layers. Figure \ref{fig:feedback} shows a recurrent network. As the neuron is connected with
+ itself, it forms a feedback structure. The output of the neuron at time step $t$ serves as a weighted (by weight $g$) input of itself in the next time step.
+ Thus, the output of the network can be computed as follows:
+ 
+ \begin{equation}
+     y(t+1) = \varphi(w\cdot x(t) + g\cdot y(t))
+ \label{eq:btt}
+ \end{equation}
+ 
+ BTT was independently developed by several researchers.%\cite{BTT1}\cite{BTT2}\cite{BTT3}
+ Back
+ 
+ 
+ \begin{figure}[H]
+
+ \centering
+     \begin{tikzpicture}
+     \node [align=center] (l1) at (0,0) {}; 
+     \node [align=center] (x2) at (0.0,0.3) {$x(t)$}; 
+     \node [align=center] (x1) at (0.75,0.3) {$w$}; 
+     \node [draw=black, align=center, circle] (n) at (1.5,0) {}; 
+     \node [align=center] (x2) at (2.95,0.3) {$y(t+1)$}; 
+     \node [align=center] (x3) at (1.6,-0.7) {$g$}; 
+     \node [align=center] (l2) at (3,0) {}; 
+ 
+     \draw[arrow]	(l1) -- (n);
+     \draw[arrow]	(n) -- (l2);
+     \draw[arrow] (n) to [out=330,in=250,looseness=8] (n);
+     \end{tikzpicture}
+ \caption{A feedback structure in a recurrent neural network.}
+ \label{fig:feedback}
+ \end{figure}
+ 
+ \begin{figure}[H]
+
+ \centering
+     \begin{tikzpicture}
+     \node [align=center] (n0) at (0,0) {}; 
+     \node [] (y0) at (0.75,0.3) {$y(0)$}; 
+ 
+     \node [] (g1) at (0.75,-0.2) {$g$}; 
+     \node [] (w1) at (1.50,0.7) {$w$}; 
+     \node [] (x1) at (1.0,1.3) {$x(0)$}; 
+     \node [] (t1) at (1.5,-0.7) {$t-1$}; 
+     \node [] (y1) at (2.25,0.3) {$y(1)$}; 
+     \node [draw=black, align=center, circle] (n1) at (1.5,0) {}; 
+ 
+     \node [] (g2) at (2.25,-0.2) {$g$}; 
+     \node [] (w2) at (3.00,0.7) {$w$}; 
+     \node [] (x2) at (2.5,1.3) {$x(1)$}; 
+     \node [] (t2) at (3,-0.7) {$t-2$}; 
+     \node [] (y2) at (3.75,0.3) {$y(2)$}; 
+     \node [draw=black, align=center, circle] (n2) at (3,0) {}; 
+ 
+     \node [] (g3) at (3.75,-0.2) {$g$}; 
+     \node [] (w3) at (4.50,0.7) {$w$}; 
+     \node [] (x3) at (4.0,1.3) {$x(2)$}; 
+     \node [] (t3) at (4.5,-0.7) {$t-3$}; 
+     \node [] (y3) at (5.25,0.3) {$y(3)$}; 
+     \node [draw=black, align=center, circle] (n3) at (4.5,0) {}; 
+ 
+     \node [] (g4) at (5.25,-0.2) {$g$}; 
+     \node [] (w4) at (6.00,0.7) {$w$}; 
+     \node [] (x4) at (5.5,1.3) {$x(3)$}; 
+     \node [] (t4) at (6.0,-0.7) {$t-4$}; 
+     \node [] (y4) at (6.75,0.3) {$y(4)$}; 
+     \node [draw=black, align=center, circle] (n4) at (6,0) {}; 
+ 
+     \node [] (g5) at (6.75,-0.2) {$g$}; 
+     \node [] (w5) at (7.50,0.7) {$w$}; 
+     \node [] (x5) at (7.0,1.3) {$x(4)$}; 
+     \node [] (t5) at (7.5,-0.7) {$t-5$}; 
+     \node [] (y5) at (8.25,0.3) {$y(5)$}; 
+     \node [draw=black, align=center, circle] (n5) at (7.5,0) {}; 
+ 
+     \node [align=center] (n6) at (9,0) {}; 
+ 
+     \draw[arrow]	(n0) -- (n1);
+     \draw[arrow]	(x1) -- (n1);
+     \draw[arrow]	(n1) -- (n2);
+     \draw[arrow]	(x2) -- (n2);
+     \draw[arrow]	(n2) -- (n3);
+     \draw[arrow]	(x3) -- (n3);
+     \draw[arrow]	(n3) -- (n4);
+     \draw[arrow]	(x4) -- (n4);
+     \draw[arrow]	(n4) -- (n5);
+     \draw[arrow]	(x5) -- (n5);
+     \draw[arrow]	(n5) -- (n6);
+     \end{tikzpicture}
+     \caption{The recurrent network shown in figure \ref{fig:feedback} during unfolding with depth $t=5$.}
+ \label{fig:unrolled}
+ \end{figure}
+ 
+ \begin{algorithm}[H]
+ \LinesNumbered
+ \DontPrintSemicolon
+ \BlankLine
+ \Ein{Input $x(t)$ at time $t$, depth $k$}
+ \Aus{Output $y(t)$}
+ \BlankLine
+ \Begin
+ {
+     Unfold network to contain $k$ instances.\\
+     $y(0) \leftarrow \text{zero-magnitude vector} \overrightarrow{0}$.
+     
+     \For{$\forall t \in [0,n-1]: t \in \mathbb{N}_0$}
+     {
+         \tcp{Done for each }
+         Set network inputs $y(0), x(1), x(2), x(3)$\\
+         Forward-propagate.\\ 
+         Error $e = y(t+k) - t;$ $t:$ target error\\
+         Backpropagate the error across the whole unfolded network.\\
+         Update all the weights in the network according to standard Backpropagation.\\
+         $y(0) \leftarrow f(x)$
+ 
+     
+     }
+ }
+ \caption{The Backpropagation through time algorithm.}
+ \label{alg:GD}
+ \end{algorithm}
+ 
 \section{Genetic algorithms}
 \textit{Since this project builds off of Schembri's work, we assume knowledge about the hill-climbing approach in unsupervised learning described in \cite{DANIEL}. Readers not
 familiar with hill-climbing and artificial evolution are advised to refer to the original paper before further reading.} 
 
 \subsection{Crossover}
-The unsupervised training of neural networks is greatly inspired by evolution. The notion of natural selection was first presented by Charles Darwin in his book “\textit{On the origin of species by means of natural selection}”\cite{DARWIN}. 
-As a comprehensive discussion of Darwin's ideas lies out of the range of this paper, we will from here on refer to evolution as the following definitions \cite{OXFORD}:
+The unsupervised training of neural networks is greatly inspired by evolution. The notion of natural selection was first presented by Charles Darwin in his book 
+“\textit{On the origin of species by means of natural selection}”\cite{DARWIN}.  As a comprehensive discussion of Darwin's ideas is outside the scope of this paper, 
+we will from here on refer to evolution as the following definitions \cite{OXFORD}:
 
 \begin{center}
-\textit{“Change in the genetic composition of a population during successive generations, often resulting in the development of new species. The mechanisms of evolution include natural selection acting on the genetic variation among individuals, mutation, migration, and genetic drift.”}\\
+\textit{“Change in the genetic composition of a population during successive generations, often resulting in the development of new species. The mechanisms of evolution include 
+natural selection acting on the genetic variation among individuals, mutation, migration, and genetic drift.”}\\
 \end{center}
 
 and
@@ -1051,66 +1113,40 @@ application of a 5-agent population, each one is ranked (as shown in table \ref{
 a random number $\in (0,1)$ is chosen. As each slice itself is an interval, the slice containing the random number marks an entity chosen for 
 reproduction. The genes of the corresponding agent are then modified in reproduction to create offspring. \textbf{}.
   
-\begin{figure}
-	\centering
-	\begin{tikzpicture}
-	\node [draw=black, fill=white, align=center] (g) at (2,0) {Generation of initial individuals};
-	\node [draw=black, fill=white, align=center] (e) at (2,-1) {Application};
-	\node [draw=black, fill=white, align=center] (r) at (2,-2) {Fitness ranking};
-	\node [draw=black, fill=white, align=center] (s) at (2,-3) {Selection};
-	\node [draw=black, fill=white, align=center] (c) at (0,-4) {Crossover};
-	\node [draw=black, fill=white, align=center] (m) at (4,-4) {Mutation};
-
-	\draw[arrow]	(g) -- (e);
-	\draw[arrow]	(e) -- (r);
-	\draw[arrow]	(r) -- (s);
-	\draw[arrow]	(s) -- (c);
-	\draw[arrow]	(s) -- (m);
-	\draw[arrow]	(c) -- (m);
-    \draw[arrow]    (c) to[out=-180,in=-180] (e);
-    \draw[arrow]    (m) to[out=0,in=0] (e);
-	
-	\end{tikzpicture}
-\caption{The principle structure of the augmented genetic algorithm.\cite{CROSSOVER}}
-\label{fig:ag}
-\end{figure}
-
-\begin{figure}
-\begin{floatrow}
-\ffigbox
-{%
-    \begin{tikzpicture}[scale=0.5]
-        \pie[color={black!10, black!15, black!20, black!25, black!30}, after number=]
-        {5/E , 15/D , 15/C , 25/B, 40/A}
-    \end{tikzpicture}
-}
-{%
-  \label{fig:roul}%
-  \caption{The probability distribution during the selection process. The size of each slice corresponds
-           to the score (as written inside each slice) of the corresponding agent.}%
-}
-\capbtabbox{%
-  \begin{tabular}{|c|c|} \hline
-     Agent & Score \\ \hline
-     A & 40 \\ \hline
-     B & 25 \\ \hline
-     C & 15 \\ \hline
-     D & 15 \\ \hline
-     E & 5  \\ \hline
-  \end{tabular}
-}{%
-  \label{tab:rank}%
-  \caption{An example fitness ranking of 5-Agent population. The score corresponds to the objects found.}%
-}
-\end{floatrow}
-\end{figure}
+\begin{minipage}{\textwidth}
+  \begin{minipage}[b]{0.49\textwidth}
+    \centering
+        \begin{tikzpicture}[scale=0.5]
+            \pie[color={black!10, black!15, black!20, black!25, black!30}, after number=]
+            {5/E , 15/D , 15/C , 25/B, 40/A}
+        \end{tikzpicture}
+        \captionof{figure}{The probability distribution during the selection process. The size of each slice corresponds
+                           to the score of the corresponding agent.}
+        \label{fig:roul}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.49\textwidth}
+    \centering
+      \begin{tabular}{|c|c|} \hline
+         Agent & Score \\ \hline
+         A & 40 \\ \hline
+         B & 25 \\ \hline
+         C & 15 \\ \hline
+         D & 15 \\ \hline
+         E & 5  \\ \hline
+      \end{tabular}
+          \captionof{table}{An example fitness ranking of a five agent population. The agents are ranked according to
+                            their fitness, which corresponds to the amount of objects found.}
+          \label{tab:rank}
+    \end{minipage}
+  \end{minipage}
 
 \paragraph{Reproduction}
 If two individuals are chosen for reproduction, they create a certain amount of children according to the rule of genetic combination. 
 As an analogy to human reproduction, the selected networks will be referred to as the male and female part. Figure \ref{fig:repro} illustrates 
 this process. 
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	\node [] (label) at (-2,0) {Parents};
@@ -1145,7 +1181,8 @@ while $|W|-CP$ states the amount from the second parent. Conversely, $CP$ equals
 Figure \ref{fig:matrixcross} shows an example of one-point crossover for an ANN of topology (3,3). The crossover point has been chosen to be $5$ in this example.
 Other crossover rules are two point crossover, uniform crossover where genes are copied at random \cite{UNIFORMCROSSOVER} and selective crossover\cite{SELECTCROSSOVER}.
 
-\begin{figure}
+\begin{figure}[H]
+
     \begin{center}
         $
         W_{\mars} = 
@@ -1187,10 +1224,33 @@ red weights originate from the mother network.}
 	\label{fig:matrixcross}
 \end{figure}
 
-\chapter{Design}
+\chapter{Neural networks for agent control}
+\label{ch:design}
 
-\begin{figure}
-\begin{tikzpicture}[scale=5.3,cap=round,>=latex,rotate=90]
+\section{Control parameters and operation considerations}
+In this chapter, we will show how neural networks can be used to control the agent described in chapter \ref{ch:intro}. These agents are 
+characterized by their sensors which observe the environment in a limited range given by a simulation parameter. Agents are only capable 
+of looking forward, but can observe
+objects straight to their left, so that their sight forms a semi-circle of radius $r$ (the sight range) above the agent's head. The sensors will only 
+receive information when an object is in sight. In such a case, the logic (which we strive to achieve with a neural network) will process
+this information and output values that will move the object in the direction of the object. As we make use
+of Schembri's simulator, we need to obey the steering commands by which an agent's motion is achieved. They are:
+
+\begin{itemize}
+    \item $v_a \in [0.2,1]$, a scalar velocity command executed in a given direction.
+    \item $\beta_a \in [\frac{-\pi}{2} rad, \frac{\pi}{2} rad]$, the steering angle in radians.
+\end{itemize}
+
+Where $\beta_a = \frac{-\pi}{2}$ equals a steering to the right, $\beta_a = 0$ straight motion and likewise, $\beta_a = \frac{\pi}{2}$ stands for and amendment
+of the heading direction to the left.
+This is illustrated in figure \ref{fig:acontrol}. The velocity command $v_a$ is in theory $ \in [0,1]$ but will be confined to be $\geq 0.2$ so that
+an agent never stops. In such a case, the agent will only receive sensory information if an object is dropped in his sight, which takes a indeterminate
+time, due to the randomness of object placement.
+
+\begin{center}
+\begin{figure}[H]
+
+\begin{tikzpicture}[scale=3.1,cap=round,>=latex,rotate=90]
     % draw the coordinates
     \draw[->] (0cm,1.5cm) -- (0cm,-1.5cm) node[right,fill=white] {$x$};
     \draw[->] (0cm,0cm) -- (1.5cm,0cm) node[above,fill=white] {$y$};
@@ -1230,24 +1290,34 @@ red weights originate from the mother network.}
     \draw[fill=black] (0,0) circle(.013);
 
 \end{tikzpicture}
-	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
-neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
-red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
-	\label{fig:pitts1}
+	\caption{A semicircle representing the possible range of angular steering commands for an agent.}
+	\label{fig:acontrol}
 \end{figure}
+\end{center}
 
-\begin{figure}
-\begin{tikzpicture}[scale=5.3,cap=round,>=latex]
+A successfully detected object within the neuron's sight is characterized by an object vector $\overrightarrow{o} \in \mathbb{R}$ pointing towards it. 
+In case of several such objects we only aim to focus the closest one. Therefore, only those vector elements will be processed by the decision policy.
+An example environment in which an agent observes two objects $\overrightarrow{o_1}$ and $\overrightarrow{o_2}$ is given in figure \ref{fig:2obj}. As
+$||\overrightarrow{o_1}|| = \sqrt{(\frac{-3r}{5})^2 + (\frac{3r}{10})^2} > ||\overrightarrow{o_2}|| = \sqrt{(\frac{r}{5})^2 + (\frac{4r}{5})^2}$, the next steering commands only 
+depend on $o_1$. The agent's heading direction must now be altered so as to point to the chosen obstacle $o_1$. This is done by setting the angle
+parameter $\beta_a$ to the angle enclosed by the vector and the y-axis. Any velocity $v_a > 0$ will now lead an overlapping of the agent with the
+object. If this happens, the object is collected and disappears from the world. In order to do this in a smooth fashion, we will set the velocity
+command $v_a = ||o||, \text{ provided } 0.2 < ||o||$. The agent will therefore start moving into the direction of the obstacle with a gradually decreasing velocity.
+
+\begin{center}
+\begin{figure}[H]
+
+\begin{tikzpicture}[scale=4.5,cap=round,>=latex]
     % draw the coordinates
     \draw[step=0.1,black!20,thin] (-1cm,0) grid (1cm,1cm);
     
     \node[] (origin) at (0,0) {}; 
     \draw[] (-0.6cm,0.3cm) node[blue] {};
-    \draw[blue] (-0.6cm,0.35cm) node[] {$ v_1 = (\frac{-3r}{5}\ \frac{3r}{10})$};
+    \draw[blue] (-0.6cm,0.37cm) node[] {$ o_1 = (\frac{-3r}{5}\ \frac{3r}{10})$};
     \draw[blue, ->] (origin) -- (-0.6cm,0.3cm);
     
     \draw[] (0.2cm,0.8cm) node[red] {};
-    \draw[red] (0.2cm,0.85cm) node[] {$ v_2 = (\frac{r}{5}\ \frac{4r}{5})$};
+    \draw[red] (0.22cm,0.86cm) node[] {$ o_2 = (\frac{r}{5}\ \frac{4r}{5})$};
     \draw[red, ->] (origin) -- (0.2cm, 0.8cm);
     
     \draw[->] (-1cm,0cm) -- (1cm,0cm) node[right,fill=white] {$x$};
@@ -1263,28 +1333,66 @@ red weights originate from the mother network. The segmentation index has been c
           (1.15cm,0cm)  node[above=1pt] {$(r,0)$}
           (0cm,1.15cm)  node[fill=white] {$(0,r)$};
     
-    
     % origin
     \draw[fill=black] (0,0) circle(.013);
 
 \end{tikzpicture}
-	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
-neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
-red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
-	\label{fig:pitts1}
+	\caption{An agent's sight at a certain time step in an example environment. Two objects are within the agent's sight, 
+    described by the vectors $o_{1}$ and $o_{2}$. However, the agents sensors will only receive information from the closest object.}
+	\label{fig:2obj}
 \end{figure}
+\end{center}
 
-\begin{figure}
-\begin{tikzpicture}[scale=5.3,cap=round,>=latex]
+\section{Control parameters and operation considerations}
+In order to obtain the control values, we leverage two neural networks denoted $net_v$ and $net_{\beta}$, each one to process a single control parameter. 
+$net_v$ is used to calculate the vector's length, $net_{\beta}$ the angle between $\overrightarrow{o}$ and the y-axis, respectively.
+Both networks take 
+vector $\overrightarrow{o}$ as input and provide a single output which will be used to control the agent. Instead of using a single network
+for both values, we divide the task as there is no direct connection between the values to be computed. Furthermore, experimental results show that
+the error of a single network for both calculations is much higher than the errors of the two networks combined. As the angle between
+the vector and the y-axis is equal when we omit the sign, we will pass the input values to the neural network without taking of $o_x$ (the x component
+of the vector) into consideration. After obtaining the angle from network $net_{\beta}$, we add the sign again. This transformation is shown in figure \ref{fig:tf}
+In addition, we scale the components of the vector to be $\in [0,1]$ which is done by dividing it by the radius of the semi circle (the range sight):
+
+\begin{equation}
+    o = \frac{o}{r}
+\end{equation}
+
+This will guarantee that $\overrightarrow{y_v}$ (Output of network $net_v$) is also $\in [0,1]$ and can therefore
+be directly passed on as a motion command provided $\overrightarrow{y_v} > 0.2$. Scaling has to be done for the angle enclosed by the vector and the y-axis 
+$\overrightarrow{y_\beta}$ (Output of network $net_\beta$), also. Therefore, we define the mapping
+
+\begin{gather*} 
+        f: [0,1] \rightarrow [0,\frac{\pi}{2}], \\ 
+        n \mapsto \frac{\pi}{2} \cdot n
+\end{gather*}
+
+which takes care of the scaling from the network's output to the angular steering command in radians. Finally, we can state the equations used to
+compute the control commands. The equation for $v_a$ now incorporates both scaling and the sign of object vector $\overrightarrow{o}$:
+
+\begin{equation}
+\begin{split}
+	    v_a=\begin{cases}
+        \overrightarrow{y_v}, \quad \text{if } \overrightarrow{y_v} > 0.2 \\
+		0.2, \quad \text{otherwise} \\
+	\end{cases}
+    \\ \beta_a = sgn(o_x) \cdot -(f(\overrightarrow{y_{\beta}}))
+\end{split}
+\end{equation}
+
+\begin{center}
+\begin{figure}[H]
+
+\begin{tikzpicture}[scale=4.5,cap=round,>=latex]
     % draw the coordinates
     \draw[step=0.1,black!20,thin] (0,0) grid (1cm,1cm);
     
     \node[] (origin) at (0,0) {}; 
     \draw[] (0.6cm,0.3cm) node[blue] {};
-    \draw[blue] (0.6cm,0.35cm) node[] {$ v_1' = (\frac{3r}{5}\ \frac{3r}{10})$};
+    \draw[blue] (0.6cm,0.35cm) node[] {$ o_1' = (\frac{3r}{5}\ \frac{3r}{10})$};
     \draw[blue, ->] (origin) -- (0.6cm,0.3cm);
-    \draw[blue] (0.2cm,0.0cm) arc (0:40:0.13);
-    \node[blue] (alpha) at (0.15,0.04) {$\alpha$}; 
+    \draw[blue] (0.14cm,0.07cm) arc (0:106:0.11);
+    \node[blue] (alpha) at (0.05,0.09) {$\beta$}; 
     
     \draw[->] (0cm,0cm) -- (1cm,0cm) node[right,fill=white] {$x$};
     \draw[->] (0cm,0cm) -- (0cm,1cm) node[above,fill=white] {$y$};
@@ -1301,18 +1409,214 @@ red weights originate from the mother network. The segmentation index has been c
     \draw[fill=black] (0,0) circle(.013);
 
 \end{tikzpicture}
-	\caption{A One-Point Crossover application on a neural network given by topology $(3,3)$. We combine the genes (weights) of the
-neural networks to create two children. The blue weights indicate the genes of the male parent network, wheres the 
-red weights originate from the mother network. The segmentation index has been chosen to be 5 in this example.}
-	\label{fig:pitts1}
+	\caption{Vector $o_1$ from figure \ref{fig:2obj} after transformation in a coordinate system with both $x,y \geq 0$. $o_1$ loses its sign and
+    becomes $o_1'$. The control logic of the agent will later incorporate the sign.}
+	\label{fig:tf}
+\end{figure}
+\end{center}
+
+\section{Network structure}
+\begin{figure}[H]
+
+\centering
+
+\begin{tikzpicture}
+\node [draw=black, align=center, circle] (i2) at (0,2) {}; 
+\node [draw=black, align=center, circle] (i3) at (0,1) {}; 
+
+\node [draw=black, align=center, circle] (h01) at (2,2.5) {}; 
+\node [draw=black, align=center, circle] (h02) at (2,1.5) {};
+\node [] (h03) at (2,0.5) {$\vdots$};
+
+\node [draw=black, align=center, circle] (o1) at (4,1.5) {};
+
+\draw[arrow]	(i2) -- (h01);
+\draw[arrow]	(i2) -- (h02);
+\draw[arrow]	(i2) -- (h03);
+
+\draw[arrow]	(i3) -- (h01);
+\draw[arrow]	(i3) -- (h02);
+\draw[arrow]	(i3) -- (h03);
+
+\draw[arrow]	(h01) -- (o1);
+
+\draw[arrow]	(h02) -- (o1);
+
+\draw[arrow]	(h03) -- (o1);
+
+\node[draw=black,fit=(i2) (i3), ellipse] (inputLayer) {};
+\node[draw=black,fit=(h01) (h02) (h03), ellipse] (hiddenLayer) {};
+\node[draw=black,fit=(o1), ellipse] (outputLayer) {};
+
+\node [align=center] (x) at (-1,1.5) {$\overrightarrow{x}$};
+
+\node [align=center] (di) at (0,5) {\textcolor{black}Input\\ layer\\ $L_1$};
+\node [align=center] (dh1) at (2,5) {\textcolor{black}Hidden\\ layer\\ $L_{2} = H$};
+\node [align=center] (do) at (4,5) {\textcolor{black}Output\\ layer\\ $L_3$};
+
+\node [align=center] (y1) at (5,1.5) {$\overrightarrow{y}$};
+
+\end{tikzpicture}
+\caption{Network structure of both ANNs $net_v$ and $net_\beta$. Its network topology is $(|L_1|=2, |H|=n,|L_3|=1)$}.
+\label{fig:layer}
 \end{figure}
 
 \chapter{Evaluation}
 \label{ch:eval}
+
+\section{Supervised learning}
+
+As discussed in the previous chapter, we applied two neural networks for each navigation task. Standard Backpropagation as introduced in \ref{ch:learnign} has been used
+to train each network with previously calculated data. An example of a training data file is shown in listing \ref{lst:exp}. As there is no way to predict the performance 
+of different network structures, we trained the networks with a number of different configurations and compared the results afterwards. The decisive criteria for the
+learning progression is the network error $E$ (Distance from network output to target values) which is to be minimised. In order to produce meaningful data, we created
+a recent network average error, which averages over the last $100$ error values. This value can be observed to become smaller and smaller over time. 
+
+\begin{lstlisting}[caption={An example of data used to train $net_v$ with Backpropagation.},label={lst:exp},stepnumber=1]
+topology: 2 6 1
+in: 0.204762060691 0.638586017483
+out: 0.670611365265
+in: 0.0167079901642 0.922020036351
+out: 0.92217140726
+in: 0.00612609545556 0.357105772792
+out: 0.357158315047
+\end{lstlisting}
+
+\paragraph{Topology evaluation} We tested both networks with a MLN-structure $(2,n,1)$ as described in chapter \ref{ch:design} for a varying amount of hidden neurons.
+Figure \ref{hv} and \ref{ha} show the results for a training data size of $n = 20,000$. Both an overall view as as well as a detailed view of the end of the training is given.
+(For the sake of clarity, we omit certain configurations which provide no additional information e.g. show results very similar to the presented ones).
+The results for $net_v$ in figure \ref{hvo} clearly show how all network configurations allow for an overall error of $<0.075$, although, clear differences between individual 
+configurations can be observed. First of all, we can observe that $|H| = 10$ requires the longest time to make noticeable progress. It takes around $2,000-2,500$ iterations for this 
+particular configuration to finally lower its error below $0.1$. Another interesting point is $n=5,000$. Some topologies (e.g. (2,5,1) and (2,1,1) are unable to make any 
+further learning progress and remain almost the same even after $15,000$ more iterations. However, 8 hidden units start to decrease once more. $n=10,000$ shows a similar point, where
+4 hidden neurons allow for another error decrease, after topology $(2,3,1)$ started to decrease a bit earlier. After about $n=17,000-18,000$ an optimum seems to be reached. 
+In the detailed view, we can see that topology $(2,8,1)$ provides the best approximation for the velocity control with a final error of around $2.086\%$ . 
+It is therefore chosen for further experiments and the final application.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{files/supervised/hv.pdf}
+  \caption{An overall view.}
+  \label{fig:hvo}
+\end{subfigure}%
+\newline
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{files/supervised/hvend.pdf}
+  \caption{A detailed few focused on the last training iterations.}
+  \label{fig:hvend}
+\end{subfigure}
+\newline
+\caption{Training results of $net_v$ for iteartion size $n = 20,000$ and a 
+         varying amount of hidden layer neurons $|H|$. $|H| = 5,9,7$ have 
+         been left out due to their strong similarity with the shown results.}
+\label{fig:hv}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{files/supervised/ha.pdf}
+  \caption{An overall view.}
+  \label{fig:hao}
+\end{subfigure}%
+\newline
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{files/supervised/haend.pdf}
+  \caption{A detailed few focused on the last training iterations.}
+  \label{fig:haend}
+\end{subfigure}
+\newline
+\caption{Training results of $net_\beta$ for iteartion size $n = 20,000$ and a 
+         varying amount of hidden layer neurons $|H|$. $|H| = 5,9,7$ have 
+         been left out due to their strong similarity with the shown results.}
+\label{fig:ha}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{files/supervised/bv.pdf}
+  \caption{$net_v$}
+  \label{fig:ha}
+\end{subfigure}%
+\newline
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{files/supervised/ba.pdf}
+  \caption{$net_\beta$}
+  \label{fig:haend}
+\end{subfigure}
+\newline
+\caption{Training results with and without bias neurons for both networks with
+         the respective minimal topology as obtained from Figures \ref{ha} and  \ref{hv}.}
+\label{fig:hvend}
+\end{figure}
+
+Figure \ref{fig:action} shows trained agents in the 2D world. The grey semi circle above the agents head is the approximated sight range of each agent.
+At time step $t=1$, several objects are located within the sight range of each agent, as indicated by the straight lines form the agent to the objects.
+As mentioned in chapter ref{ch:design}, only the object closes to the agent will be used as sensor input. This object is indicated by a red line. Therefore
+agent 1 (the one beneath the other) is to move in an almost straight line to collect the object. We can see that the agent successfully collected the targeted
+object at time step $t=2$. In the meanwhile, the other agent has already collected 3 objects close to each other and is now aiming for one that was previously 
+in the sight range of agent 1 at time step 1. $t=3$ shows that both agents have been able to once more collect the targeted objects and are now moving away 
+from each other. 
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{files/action/1.png}
+  \caption{time step $t=1$}
+  \label{fig:a1}
+\end{subfigure}%
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{files/action/2.png}
+  \caption{time step $t=2$}
+  \label{fig:a2}
+\end{subfigure}%
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{files/action/3.png}
+  \caption{time step $t=3$}
+  \label{fig:a3}
+\end{subfigure}
+\caption{Demonstration of the successful supervised learning approach.
+         Two agents are shown over three time steps.}
+\label{fig:action}
+\end{figure}
+
 \chapter{Conclusion}
 \label{ch:conclusion}
-\chapter{Future work}
-\label{ch:future}
+We have shown how ANNs in combination with supervised machine learning algorithms allow for a successful application on the
+object collecting agent problem. Satisfactory behaviour can be achieved with a relatively small trainings dataset. The application of two neural
+networks instead of merely one is vital for the successful application. The problem becomes a lot more complex when we restrict supervised learning. As 
+agents are placed in the world within the world without any knowledge whatsoever, significantly longer training cycles must be expected. However, 
+even with the application of the augmented genetic algorithm, behaviour is far from being as satisfactory as in the supervised case, let alone that
+of an omniscient agent. Since we use the fitness function to optimise weights of each neural network, we incorporate randomness in the algorithm. 
+Both agent and objects are placed at random, which might lead to a respectively low ranking of an agent with weights close to the optimum. This can 
+happen in case of an unfortunate placement. This randomness in placement leads to a noisy signal. Therefore, it might be beneficial to find different means by which an agent is ranked and optimise that
+function. Similar work can be found in \cite{DEEPMIND} where a single algorithm is used to train convolution neural networks which play a 
+vast variety of Atari video games. Within the work Mnih et al. stress the difficulty of applying their reinforcement learning approach to environments
+encountered in video games. While supervised learning allows for the usage of large amounts of training data, both unsupervised and reinforcement
+learning algorithms must be able to learn from a scalar value, often sparse, noisy and delayed. These are exactly the difficulties encountered in
+the object collection task. A ranking of the agents fitness is only received at the end of each population and therefore after a great number of
+individual decisions which might increase or lower the performance. At the end of each population, a single scalar value does not allow to reason 
+about the quality of each of the thousands of individual decisions. In supervised learning, we provide a measure of error associated with each 
+of the agent's decisions. Furthermore, the applications equal one another in terms of the dependency of behaviour decisions among themselves. 
+An imperfect decision in one time step may result in situations where a number of correct decisions may not be able to make up for the first flawed 
+one. Imagine an agent with a single object at the bottom left of its sight range. In case the agent chooses to steer in the opposite direction,
+this object might fall out of sight. Since the agent does not posses memory of any kind, the object will be lost and might never be found again.
+Thus, an increase in fitness which could have been easily obtained is missed. The same sort of dependencies is found in video games, where one
+flawed decision might ruin a previously well-played game.
+
+Changing network structure and learning algorithms according to these research results may allow for a successful 
+application of unsupervised learning to the object collecting agent problem. 
 
 \KOMAoptions{listof=leveldown}
 
