@@ -228,7 +228,7 @@
     \acro{ovec}[$\protect \overrightarrow{y}$]{The output vector of a neural network}
     \acro{act}[$\varphi$]{Activation (transfer) function of a neuron}
     \acro{eta}[$\eta$]{Learning rate of a network}
-    \acro{grad}[$\nabla F(a)$]{Gradient of the multivariable function $F(x)$ at point $a$}
+    \acro{grad}[$\nabla F(a)$]{Gradient of the multivariate function $F(x)$ at point $a$}
 \end{acronym}
 
 \newpage
@@ -237,7 +237,7 @@
 \label{ch:intro}
 In \cite{DANIEL}, Schembri proposes the application of machine learning algorithms for training of object collecting agents. 
 Such agents dwell in a simulated, confined, two-dimensional space, where objects are dropped at random. Without any previous knowledge of 
-their environment, agents are placed in the world and are to reason that their aim is to collect objects. The performance or fitness of each 
+their environment, agents are placed in the world and are to reason that their goal is to collect objects. The performance or fitness of each 
 individual is rated by the amount of objects collected in a given time period. Thus, this fitness ranking serves as a quality measure for the 
 chosen approaches.
 
@@ -246,7 +246,9 @@ Unsupervised learning with genetic algorithms is chosen as the means to achieve 
 an agents behaviour and evaluate whether this amendment improved or lowered the agents performance. In case of a successful change, the changes
 will be accepted, whereas they are reverted if the change was not. By gradual application of this technique, Schembri tries to increase
 the performance so as to achieve intelligent behaviour.
-This project builds off of Schembri's work and both extends the unsupervised approach and also shows that successful learning can be 
+
+
+This project builds off of aforementioned work and both extends the unsupervised approach and also shows that successful learning can be 
 achieved by means of previous training. The basic rationale behind this supervised approach is that an agent is presented a set of correct 
 policies from given input to output data. It is then to learn from this given data and mimic the underlying control policy and apply it to
 previously unseen data. In addition to the learning approach, alterations in the neural network structure can also have significant influence
@@ -254,6 +256,19 @@ to the agents performance. Hence, different structures will be proposed and empi
 
 Both approaches will be tested in the very same simulation environment as in the original paper. A critical evaluation of both learning approaches
 in combination with different network structures is given.
+
+\paragraph{Motivation}
+Machine learning techniques power a variety of aspects of modern life. Web searches, content filtering, speech recognition, object detection in
+images or product suggestions are examples of fields in which great progress has been made through its application.  
+With the advent of representation learning, machines can now be fed with raw data and are able to extract the representation needed for detection
+or classification. This is a major achievement as the successful application of Machine learning has previously taken careful engineering and
+domain-specific knowledge. A set of methodologies called Deep learning applies representation learning to multiple layers of representation. 
+In image processing, such a layer may represent the presence of edges in an image. Deep learning is outstandingly useful in detecting patterns in 
+high-dimensional data. In an age of availability of large datasets through this is interesting for many fields in science, business and government.
+Besides the aforementioned technology examples, Deep learning was also used to reconstruct brain circuits or predict the effect of mutations in
+non-coding DNA on gene expression and disease. \cite{DEEPLEARNING}
+
+Thus, we regard neural networks (Which deep learning is at and abstract level) as a field much worth of study.
 
 \paragraph{Structure of this documentation}
 %TODO: Really exposed?
@@ -289,12 +304,24 @@ therefore given in the following sections. In addition, we show how they have be
 in a computer program.
 
 \section{Biological background}
-From all the other organs, the human brain has a special significance. It is the only organ that does not process any metabolic products, but a ‘substance’ which became the target of scientific investigation during the last century: Information. It was mainly through the works of \textit{Golgi} and \textit{Ramón y Cajal}, that science began to perceive it as a complex net of interconnected cells.  Contemporary concepts of the operation of the brain suggests, that mental activity consists primarily of electrochemical activity in large networks of nerve cells, or neurons. 
-Figure \ref{fig:neuron} introduces the different parts of the neuron. Branching out from the cell body or soma, several fibers called dendrites summarise the input of the cell body from up to 100,000 connected neurons. In case this electric potential exceeds a threshold, the cell body will produce a quick spike, which is transmitted by the axon. The axon is a single long fiber, typically with a length of 1 cm, what is roughly 100 times the diameter of the cell body. As a matter of fact, it can a reach a length of up to several metres. As the axon branches out, it transmits this signal to other neurons. The synaptic terminals, are contacts of the axon. The electric potential of the signal causes the release of chemicals called neurotransmitter, which lead to a potential change. This change can be either excitatory or inhibitory, amplifying or reducing the signal. This signal amendment defines the behavior of the network on two levels: 
+From all the other organs, the human brain has a special significance. It is the only organ that does not process any metabolic products, but a 
+‘substance’ which became the target of scientific investigation during the last century: Information. It was mainly through the works of 
+\textit{Golgi} and \textit{Ramón y Cajal}, that science began to perceive it as a complex net of interconnected cells.  Contemporary 
+concepts of the operation of the brain suggests, that mental activity consists primarily of electrochemical activity in large networks of nerve 
+cells, or neurons.  Figure \ref{fig:neuron} introduces the different parts of the neuron. Branching out from the cell body or soma, several fibers 
+called dendrites summarise the input of the cell body from up to 100,000 connected neurons. In case this electric potential exceeds a threshold, 
+the cell body will produce a quick spike, which is transmitted by the axon. The axon is a single long fiber, typically with a length of 1 cm, 
+what is roughly 100 times the diameter of the cell body. As a matter of fact, it can a reach a length of up to several metres. As the axon branches 
+out, it transmits this signal to other neurons. The synaptic terminals, are contacts of the axon. The electric potential of the signal causes the 
+release of chemicals called neurotransmitter, which lead to a potential change. This change can be either excitatory or inhibitory, amplifying or 
+reducing the signal. This signal amendment defines the behavior of the network on two levels: 
 
-Brain activity in relatively short periods (within seconds), defined by the current activity state of each individual neuron. The occurring activity patterns encode data, which is continuously changing. Among others, both short term memory and immediate perception are believed to be represented by this changing activity pattern.
+Brain activity in relatively short periods (within seconds), defined by the current activity state of each individual neuron. The occurring 
+activity patterns encode data, which is continuously changing. Among others, both short term memory and immediate perception are believed to be 
+represented by this changing activity pattern.
 
-The other level of change is defined by the interaction of the neurons between each other, e.g. by forming new connections. Those changes happen a lot slower, taking minutes up to several days.\cite{NEUINF} 
+The other level of change is defined by the interaction of the neurons between each other, e.g. by forming new connections. Those changes happen 
+a lot slower, taking minutes up to several days.\cite{NEUINF} 
 
 \begin{center}
 \begin{figure}
@@ -306,9 +333,15 @@ The other level of change is defined by the interaction of the neurons between e
 
 
 \section{Mathematical formalisation}\label{sec:mcpitts}
-During the second world war, research in computer technology has been promoted for the sake of military purposes. With the advent of computer technology, neural networks started to become significant as models of abstract automata. McCulloch and Pitt's 1943 published work (>>\textit{A logical calculus of the ideas immamnent in nervous activity}<<) proposes a cell which allows th simulation of AND-, OR- and NOT-gates and therefore every boolean function. This cell is a simple model of neuron with binary threshold and the first formal describtion of a neural network. Within their work, neurons are perceived as basic Input/Ouput units, which process input of $i$ neurons and propagate their output further into the network through a single output.\\
+During the second world war, research in computer technology has been promoted for the sake of military purposes. With the onset of computer 
+technology, neural networks started to become significant as models of abstract automata. McCulloch and Pitt's 1943 published work 
+(>>\textit{A logical calculus of the ideas immanent in nervous activity}<<) proposes a cell which allows th simulation of AND-, OR- and NOT-gates 
+and therefore every boolean function. This cell is a simple model of neuron with binary threshold and the first formal description of a 
+neural network. Within their work, neurons are perceived as basic Input/Output units, which process input of $i$ neurons and propagate their 
+output further into the network through a single output.\\
 
-The activity level $a_j$ of a neuron $j$ is assigned by its transfer function $\varphi$. McCulloch and Pitt proposed a simple step function, where $S$ is the threshold:\\
+The activity level $a_j$ of a neuron $j$ is assigned by its transfer function $\varphi$. McCulloch and Pitt proposed a simple step function, 
+where $S$ is the threshold:\\
 
 \begin{equation}
 	\varphi(x)=\begin{cases}
@@ -320,15 +353,12 @@ The activity level $a_j$ of a neuron $j$ is assigned by its transfer function $\
 %The synaptic terminal's function is depicted by the multiplication of the input from neuron $a_i$ by a factor, the weight $w_{ij}$ of the connection link between neurons $i$ and $j$. $w_{ij}$ is either excitatory or inhibitory. 
 Given the definition of $\varphi$ in equation \eqref{eq:step}, activity levels are always binary and computed as follows:\\
 
-%\begin{equation}
-%a_j = \varphi(\sum_{i=0}^{} w_{ij} \cdot a_{i}), \quad a_i \in \{0, 1\}, w_{ij} \in \{1, -1\}
-%\end{equation}
-
 \begin{equation}
 a_j = \varphi(\sum_{i}^{} a_{i}), \quad a_i \in \{0, 1\}
 \end{equation}
 
-Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed in \cite{NEURONMATH}. This model has later been named \textbf{McCulloch-Pitts neuron}. 
+Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed in \cite{NEURONMATH}. This model has later been 
+named \textbf{McCulloch-Pitts neuron}. 
 
 
 \begin{figure}
@@ -375,7 +405,11 @@ Figure \ref{fig:mathneuron} illustrates the mathematical formalisation proposed 
 \label{fig:mathneuron}
 \end{figure}
 
-This proposal is of particular importance for the theory of ANNs and inspired significant researchers like John von Neumann or Nobert Wiener, who developed cybernetics. However, the McCulloch-Pitts neurons are limited by their inability to learn, resulting from their fixed structure. They also lack the surprising robustness of biological nerve networks, since they rely on a flawless operation of all components. Nevertheless, they still have significance in electrical engineering, where they are used to realise binary functions, due to their increased efficiency in contrast to gates. 
+This proposal is of particular importance for the theory of ANNs and inspired significant researchers like John von Neumann or Nobert Wiener, 
+who developed cybernetics. However, the McCulloch-Pitts neurons are limited by their inability to learn, resulting from their fixed structure. 
+They also lack the surprising robustness of biological nerve networks, since they rely on a flawless operation of all components. Nevertheless, 
+they still have significance in electrical engineering, where they are used to realise binary functions, due to their increased efficiency in 
+contrast to gates. 
 
 \chapter{Artificial neural networks}
 \label{ch:ann}
@@ -453,7 +487,8 @@ such as long and short term memory \cite{LTSM} (\textbf{ltsm}).
 
 \end{tikzpicture}
 }
-\caption{A categorisation of neural network types. BPG = Backpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
+\caption{A categorisation of neural network types. BPG = Backpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, 
+BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent network, LTSM = Long short term memory}
 \label{fig:class}
 \end{figure}
 
@@ -471,15 +506,22 @@ appropriate usage of machine learning algorithms (and therefore also neural netw
 
 \section{Network structure}
 \subsection{Layers}
-The units within a network are categorised into several layers according to their position. This allows for an accurate description of the network and the function of each respective unit within the network. The set of layers of a ANN will be denoted as $L$, where an artificial neural network of size n, written as $\text{ANN}^n$ is the union of the n layers in the network:
+The units within a network are categorised into several layers according to their position. This allows for an accurate description of the network 
+and the function of each respective unit within the network. The set of layers of a ANN will be denoted as $L$, where an artificial neural network 
+of size $n$, written as $\text{ANN}^n$ is the union of the $n$ layers in the network:
 
 \begin{equation}
     \text{ANN}^n = \bigcup_{N}^{i=1}{L_i}
 \end{equation}
 
-The amount of neurons within a layer is equal to the elements of the respective set. The total number of neurons in an ANN is $\sum_{i=1}^{n}{|L_i|}$. The tuple $(|L_1|,...,|L_n|)$ is called the \textbf{network topolgy} and fully describes the structure (with exclusion of the connections) of a feed-forward network. Recurrent networks need and additional description.
+The amount of neurons within a layer is equal to the elements of the respective set. The total number of neurons in an ANN is 
+$\sum_{i=1}^{n}{|L_i|}$. The tuple $(|L_1|,...,|L_n|)$ is called the \textbf{network topolgy} and fully describes the structure (with exclusion of the connections) 
+of a feed-forward network. Recurrent networks need and additional description.
 
-The first network layer $L_1$, is referred to as the input layer. It receives the input vector $\overrightarrow{x} \in \mathds{R}^{|L_1|}$ and passes it onto the next layer. Likewise, $L_n$ is the output layer of the network, whose neurons are called the output units. $\overrightarrow{y} \in \mathds{R}^{|L_n|}$ is the output vector of an ANN. A computer application will later utilise the neural network as a black box, being only interested in the transformation from $\overrightarrow{x}$ to $\overrightarrow{y}$. Figure \ref{fig:layer} shows this. 
+The first network layer $L_1$, is referred to as the input layer. It receives the input vector $\overrightarrow{x} \in \mathds{R}^{|L_1|}$ and 
+passes it onto the next layer. Likewise, $L_n$ is the output layer of the network, whose neurons are called the output units. 
+$\overrightarrow{y} \in \mathds{R}^{|L_n|}$ is the output vector of an ANN. A computer application will later utilise the neural network as a black 
+box, being only interested in the transformation from $\overrightarrow{x}$ to $\overrightarrow{y}$. Figure \ref{fig:layer} shows this. 
 
 \begin{figure}
 \centering
@@ -546,7 +588,8 @@ The first network layer $L_1$, is referred to as the input layer. It receives th
 \label{fig:layer}
 \end{figure}
 
-Praticular significance is drawn to the layers in between input and output layer. Those layers are optional, but needed to approximate cetain functions such as the XOR-Gate. 
+Particular significance is drawn to the layers in between input and output layer. Those layers are optional, but needed to approximate certain 
+functions such as the XOR-Gate. 
 We denote the set of hidden layers as $H$. It is described as follows:
 \begin{equation}
 H \subseteq L; H = \{L_i|1<i<n\}
@@ -572,7 +615,10 @@ w_{1j} & \cdots & w_{ij} \\
 \end{pmatrix}
 \end{equation}
 
-In addition, the concept of bias neurons has proven itself useful. Bias units are non-receptive, both in feed-forward and recurrent networks. Hence their activity level is steady, usually $+1$. Links between bias and normal neurons are to be treated normally, the influence of a bias can therefore be altered. They are often used to keep units with little weighted input active, by shifting their activation function $\varphi$ they don't receive significant input. In contrast, a negative link may be used to keep a neuron in an inactive state.
+In addition, the concept of bias neurons has proven itself useful. Bias units are non-receptive, both in feed-forward and recurrent networks. 
+Hence their activity level is steady, usually $+1$. Links between bias and normal neurons are to be treated normally, the influence of a bias can 
+therefore be altered. They are often used to keep units with little weighted input active, by shifting their activation function $\varphi$ they 
+don't receive significant input. In contrast, a negative link may be used to keep a neuron in an inactive state.
 \begin{figure}
 \centering
 
@@ -592,7 +638,8 @@ In addition, the concept of bias neurons has proven itself useful. Bias units ar
 \label{fig:1on1}
 \end{figure}
 
-Consider the network shown in figure \ref{fig:1on1}. The activation function of the output neuron is chosen to be the sigmoid function. Figure \ref{fig:sigmoid-scale} shows the output for several values of $w$. It can seen that $w$ changes the steepness of the sigmoid function. 
+Consider the network shown in figure \ref{fig:1on1}. The activation function of the output neuron is chosen to be the sigmoid function. 
+Figure \ref{fig:sigmoid-scale} shows the output for several values of $w$. It can seen that $w$ changes the steepness of the sigmoid function. 
 
 \begin{figure}
     \centering
@@ -602,7 +649,8 @@ Consider the network shown in figure \ref{fig:1on1}. The activation function of 
 \end{figure}
 
 
-Figure \ref{fig:2on1} shows the same network with an additional bias neuron. This allows us to shift the activation function according to the weight of the connection link $w_{12}$ as shown in figure \ref{fig:sigmoid-shift}.
+Figure \ref{fig:2on1} shows the same network with an additional bias neuron. This allows us to shift the activation function according to the 
+weight of the connection link $w_{12}$ as shown in figure \ref{fig:sigmoid-shift}.
 
 \begin{figure}
 \centering
@@ -634,12 +682,20 @@ Figure \ref{fig:2on1} shows the same network with an additional bias neuron. Thi
 
 \subsection{Activation functions}
 
-As discussed before, the weights of the connections between the neurons represent the 'Intelligence' of the network. The bigger the absolute value of the weight, the greater the influence of a neuron to another. This value can be both positive and negative, as well as neutral \textit{(0)}, meaning that there is currently no influence between the neurons, although there is still a link connecting them. A weight of 0 can be understood as a logical pinch of the link, preventing it from transmitting signals.
+As discussed before, the weights of the connections between the neurons represent the 'Intelligence' of the network. The bigger the absolute 
+value of the weight, the greater the influence of a neuron to another. This value can be both positive and negative, as well as 
+neutral \textit{(0)}, meaning that there is currently no influence between the neurons, although there is still a link connecting them. 
+A weight of 0 can be understood as a logical pinch of the link, preventing it from transmitting signals.
 
 
-The connection between the input values and the activity level of the neuron is made by the activity function $\varphi$. Different models are obtained depending on the choice of the activity or transfer function. Amongst the most common choices are the linear, binary step and sigmoid function as illustrated in Figure \ref{fig:plots}. The linear function has a threshold $t$, which can be used to avoid low network input (e.g. noise) to be further propagated into the network. The binary step function represents the firing of a pulse down the axon if positive $1$), while $0$ represents no firing. The step function is sometimes defined to jump from $-1$ to $1$. 
+The connection between the input values and the activity level of the neuron is made by the activity function $\varphi$. Different models are 
+obtained depending on the choice of the activity or transfer function. Among the most common choices are the binary step, 
+sigmoid and $tanh$ function as illustrated in Figure \ref{fig:plots}. The linear function has a threshold $t$, which can be used to avoid 
+low network input (e.g. noise) to be further propagated into the network. The binary step function represents the firing of a pulse down the axon 
+if positive $1$), while $0$ represents no firing. The step function is sometimes defined to jump from $-1$ to $1$. 
 
-Sigmoid functions are widely used amongst network which are to represent cognitive processes such as perception, recognition, problem solving, etc. .
+Sigmoid functions are widely used amongst network which are to represent cognitive processes such as perception, recognition, problem solving, 
+etc. .
 Both the logistic function as well as the hyperbolic tangent function $\tanh()$ can be used. The main advantage of sigmoid functions are:
 
 \begin{itemize}
@@ -1465,8 +1521,8 @@ even with the application of the augmented genetic algorithm, behaviour is far f
 of an omniscient agent. Since we use the fitness function to optimise weights of each neural network, we incorporate randomness in the algorithm. 
 Both agent and objects are placed at random, which might lead to a respectively low ranking of an agent with weights close to the optimum. This can 
 happen in case of an unfortunate placement. This randomness in placement leads to a noisy signal. Therefore, it might be beneficial to find different means by which an agent is ranked and optimise that
-function. Similar work can be found in \cite{DEEPMIND} where a single algorithm is used to train convolution (\textbf{what?}) neural networks which play a 
-vast variety of Atari video games. Within the work Mnih et al. stress the difficulty of applying their reinforcement learning approach to environments
+function. Similar work can be found in \cite{DEEPMIND} where a single algorithm is used to train convolution neural networks to play a 
+vast variety of Atari video games. In their paper, Mnih et al. stress the difficulty of applying their reinforcement learning approach to environments
 encountered in video games. While supervised learning allows for the usage of large amounts of training data, both unsupervised and reinforcement
 learning algorithms must be able to learn from a scalar value, often sparse, noisy and delayed. These are exactly the difficulties encountered in
 the object collection task. A ranking of the agents fitness is only received at the end of each population and therefore after a great number of
