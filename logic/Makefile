@@ -14,8 +14,8 @@ TRAINSRC_C     = calculatedData.py
 TRAINSRC_R     = randomData.py
 
 #default value in case no paramter is given
-SAMPLES        = 10000
-TOPOLOGY       = 2 8 1
+SAMPLES        = 20000
+TOPOLOGY       = 2 3 1
 
 CXX = g++
 

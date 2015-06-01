@@ -113,51 +113,97 @@ void showVectorVals(std::string label, std::vector<double> &v)
 }
 
 
-int main()
+int main(int argc, const char *argv[])
 {
     //.
     //├── main.cpp
     //└── training
     //    └── trainingData.txt
-    TrainingData trainData("./src/training/trainingDataV.txt");
 
-    // e.g., { 3, 2, 1 }
-    std::vector<unsigned> topology;
-    trainData.getTopology(topology);
-
-    // use bias neurons
-    SRN myNet(topology, 5, false);
-
-    std::vector<double> inputVals, targetVals, resultVals;
-    int trainingPass = 0;
-
-    while (!trainData.isEof()) 
+    if ('V' == *argv[1])
     {
-        ++trainingPass;
-        cout << endl << "Pass " << trainingPass;
+        TrainingData trainData("./src/training/trainingDataV.txt");
 
-        // Get new input data and feed it forward:
-        if (trainData.getNextInputs(inputVals) != topology[0])
-            break;
+        // e.g., { 3, 2, 1 }
+        std::vector<unsigned> topology;
+        trainData.getTopology(topology);
 
-        showVectorVals(": Inputs:", inputVals);
-        myNet.feedForward(inputVals);
+        // use bias neurons
+        FeedForwardNet myNet(topology, false);
 
-        // Collect the net's actual output results:
-        myNet.getResults(resultVals);
-        showVectorVals("Outputs:", resultVals);
+        std::vector<double> inputVals, targetVals, resultVals;
+        int trainingPass = 0;
 
-        // Train the net what the outputs should have been:
-        trainData.getTargetOutputs(targetVals);
-        showVectorVals("Targets:", targetVals);
-//        assert(targetVals.size() == topology.back());
+        while (!trainData.isEof()) 
+        {
+            ++trainingPass;
+    //        cout << endl << "Pass " << trainingPass;
 
-        myNet.learn(targetVals);
+            // Get new input data and feed it forward:
+            if (trainData.getNextInputs(inputVals) != topology[0])
+                break;
 
-        // Report how well the training is working, average over recent samples:
-        cout << "Net recent average error: " << myNet.getRecentAverageError() << endl;
+    //        showVectorVals(": Inputs:", inputVals);
+            myNet.feedForward(inputVals);
+
+            // Collect the net's actual output results:
+            myNet.getResults(resultVals);
+    //        showVectorVals("Outputs:", resultVals);
+
+            // Train the net what the outputs should have been:
+            trainData.getTargetOutputs(targetVals);
+    //        showVectorVals("Targets:", targetVals);
+    //        assert(targetVals.size() == topology.back());
+
+            myNet.learn(targetVals);
+
+            // Report how well the training is working, average over recent samples:
+    //        cout << "Net recent average error: " << myNet.getRecentAverageError() << endl;
+            cout << myNet.getRecentAverageError() << endl;
+        }
     }
 
-    cout << endl << "Done" << endl;
+    if ('A' == *argv[1])
+    {
+        TrainingData trainData("./src/training/trainingDataA.txt");
+
+        // e.g., { 3, 2, 1 }
+        std::vector<unsigned> topology;
+        trainData.getTopology(topology);
+
+        // use bias neurons
+        FeedForwardNet myNet(topology, false);
+
+        std::vector<double> inputVals, targetVals, resultVals;
+        int trainingPass = 0;
+
+        while (!trainData.isEof()) 
+        {
+            ++trainingPass;
+    //        cout << endl << "Pass " << trainingPass;
+
+            // Get new input data and feed it forward:
+            if (trainData.getNextInputs(inputVals) != topology[0])
+                break;
+
+    //        showVectorVals(": Inputs:", inputVals);
+            myNet.feedForward(inputVals);
+
+            // Collect the net's actual output results:
+            myNet.getResults(resultVals);
+    //        showVectorVals("Outputs:", resultVals);
+
+            // Train the net what the outputs should have been:
+            trainData.getTargetOutputs(targetVals);
+    //        showVectorVals("Targets:", targetVals);
+    //        assert(targetVals.size() == topology.back());
+
+            myNet.learn(targetVals);
+
+            // Report how well the training is working, average over recent samples:
+    //        cout << "Net recent average error: " << myNet.getRecentAverageError() << endl;
+            cout << myNet.getRecentAverageError() << endl;
+        }
+    }
 }
 
