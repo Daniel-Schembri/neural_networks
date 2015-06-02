@@ -195,14 +195,67 @@
 %
 %
 %
+\begin{abstract} 
+\huge{\textbf{Abstract}} \\
+
+\normalsize
+
+This document was created for the project work at Pforzheim university in the course: Master of Science in Embedded Systems. 
+This projectwork describes the development of a simulation environment for object collecting agents. The agents can base on a simple script or have a neural network that can be trained supervised or evolved by evolutionary algorithms.
+
+The simulator was written in C++ using the 2D physics-engine Box2D by Erin Catto and using the OpenGl-frameworks GLUT, respectively Freeglut for accelerating the displaying of the simulation and GLUI for the graphical user interface. 
+
+The neural network framework is written by Jonathan Schwarz and detaily described in his projectwork ' A comparison of neural network types and learning techniques with an application in artificial life'. \\ \\ \\ \\ \\ \\ \\ \\
+
+\huge{\textbf{Abstract}} \\
+
+\normalsize
+
+Dieser Bericht wurde im Rahmen der Projektarbeit des Studienganges Master of Science in Embedded Systems der Hochschule Pforzheim angefertigt. 
+
+Diese Projektarbeit beschreibt die Entwicklung eines Simulators für virtuelle Agenten, die Objekte in einer 2-dimensionalen Umgebung sammeln. 
+
+Der Simulator wurde in C++ entwickelt. Die Physics-engine Box2D von Erin Catto wird verwendet. Ebenso die OpenGL-Frameworks GLUT bzw. Freeglut zur Beschleunigten Darstellung der Simulation und GLUI für die Graphische Benutzer Schnittstelle. 
+
+Das Framework der neuronalen Netze wurde von Jonathan Schwarz entwickelt und wird in seiner Projektarbeit 'A comparison of neural network types and learning techniques with an application in artificial life' näher beschrieben.
+	
+	
+\end{abstract}
 
 
 
 \chapter{Introduction}
+Artificial intelligence is an exciting field of computer science. One great dream of humanity was to create an technical analogy of the human mind.
+Philosophers and researches are wildly discussing if this goal is reachable and desirable.
+In this projectwork the main interest lies in agents and artificial neural networks.
+
+Therefore a simulator is developed to let these agents collect objects in a 2-dimensional world. The agents can be realized as a simple script or by containing a neural network that is trained supervised or evolved with special algorithms derived from evolution theory.
+
+
+
 Intelligent systems are widely used, like in robotics.
 The motivation to write this projectwork was
-to find out basically, how an intelligent system can be created by simple algorithms (rules) and compare them with 'classical' solutions. Therefore a simple task was to let agents collect objects in a virtual environment.
+to find out basically, how an intelligent system can be created by simple algorithms and compare them with different types of artificial neural networks.
 
+Today there is no exact definition of what intelligence is.
+In general there are certain categories focusing different points of view to describe it.
+
+
+Artificial intellgence has four branches of research: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{multicols}{2}
+			\begin{itemize}
+				\item \textbf{Knowledge-based systems}
+				\item \textbf{Robotics}
+				\item \textbf{Pattern recognition}
+				\item \textbf{Pattern prediction}
+			\end{itemize}
+		\end{multicols}
+	\end{minipage}
+}   \\
+\\
 
 
 In this project neural networks of the second type are used, because the main interest lies in finding a good mathematical solution.
@@ -211,15 +264,15 @@ In this project neural networks of the second type are used, because the main in
 
 \section{State of the art}
 
-\section{Artificial intelligence}
-Today there is no exact definition of what intelligence is.
-In general there are certain categories focusing different points of view to describe it.
+
 
 
 \chapter{The concept of agents}
 An agent is a programm that interacts self-sufficent depending on the actual state. It has, in general sensors, a processing logic and actuators. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the concept of agents is used to compare with neural networks.
 
 Most agents are found in the world wide web. For example webcrawlers, search-engines and bots are well known.
+
+The following figure shows the general structure of an agent:
 
 
 \begin{center}
@@ -231,7 +284,7 @@ Most agents are found in the world wide web. For example webcrawlers, search-eng
 	\end{figure}
 \end{center}
 
-
+The logic part can be less or more complex. Just the actual perception can be processed or a specified sequence of perceptions. In Chapter 2.1 (Todo: LINK) this is described detaily.
 
 \subsection{Rationality}
 An agent creates a sequence of actions. These actions causes a sequence of states in the corresponding environment. Every sequence of states can be rated. The agent is called rational if it can maximize its score, considering its sequence of perceptions and its previous knowledge of the problem. Its important to distinguish rationality and perfection. An agent never will be perfectly solving a problem. Its unrealistic to expect the best possible solution for a problem in partitial observable environment. It can solve the problem as it can be expected by the given perceptions. The agent can't predict randomly events.
@@ -255,9 +308,6 @@ An agent who doesn't learn can most likely not solve a problem if the environmen
 In nature animals are equipped with reflex actions to survive long enough to learn to handle with their environment.
 
 \section{Types of agents}
-
-TODO: Describe the agent program.
-TODO: Prove the english topics in the original book!
 
 \subsection{Simple reflex agent}
 The simplest type of an agent is the reflex based agent.
