@@ -223,10 +223,10 @@
     \acro{$n_j$}{Neuron (also unit) $j$}
     \acro{$W$}{The connection matrix}
 %    \acro{weight}[$w_{ij}$}{Weight on the connection link between neurons $n_i$ and $n_j$}
-    \acro{deltaweight}[$\Delta w_{ij}$]{Weight change  on the connection link between unit $i$ and $j$}
+    \acro{deltaweight}[$\Delta w_{ij}$]{Weight change on the connection link between unit $i$ and $j$}
     \acro{ivec}[$\protect \overrightarrow{x}$]{The input vector of a neural network}
     \acro{ovec}[$\protect \overrightarrow{y}$]{The output vector of a neural network}
-    \acro{act}[$\varphi$]{Activation (transfer) function of a neuron}
+    \acro{act}[$\varphi$]{Activation (or transfer) function of a neuron}
     \acro{eta}[$\eta$]{Learning rate of a network}
     \acro{grad}[$\nabla F(a)$]{Gradient of the multivariate function $F(x)$ at point $a$}
 \end{acronym}
@@ -261,14 +261,14 @@ in combination with different network structures is given.
 
 \paragraph{Motivation}
 Machine learning techniques power a variety of aspects of modern life. Content filtering, speech recognition, object detection in
-images or product suggestions are examples of fields in which great progress has been made through its application.  
+images or product suggestions are examples of fields in which great progress has been made through its application. 
 With the advent of representation learning, machines can now be fed with raw data and are able to extract the representation needed for detection
 or classification. This is a major achievement as the successful application of Machine learning has previously taken careful engineering and
-domain-specific knowledge. A set of methodologies called \texit{Deep learning} applies representation learning to multiple layers of representation. 
+domain-specific knowledge. A set of methodologies called \textit{Deep learning} applies representation learning to multiple layers of representation. 
 In image processing, such a layer may represent the presence of edges in an image. Deep learning has proven itself outstandingly useful in detecting 
 patterns in high-dimensional data. In an age of availability of large datasets, this is interesting for many fields in science, business and government.
 Besides the aforementioned technology examples, Deep learning was also used to reconstruct brain circuits or predict the effect of mutations in
-non-coding DNA on gene expression and disease. \cite{DEEPLEARNING}
+non-coding DNA on gene expression and disease.\cite{DEEPLEARNING}
 
 
 Thus, we regard neural networks (Which Deep learning is at a more abstract level) as a field much worth of study.
@@ -301,7 +301,7 @@ in the human brain, while a psychologist verifies learning- and memory theories 
 which can be described by their energy functions and probabilistic regularities. From a computer scientific point of view, neural networks
 are massive parallelized, adaptive and partially self-organised information processing systems. \cite{NNGER}
 Within this project, neural network (or rather artificial ones) are regarded as a means of machine learning to allow computer to learn and reason
-from data.  Machine learning itself may be understood as a sub field or means to an end of artificial intelligence.
+from data. Machine learning itself may be understood as a sub field or means to an end of artificial intelligence.
 We are particularly interested in using them to define a decision policy for intelligent agents. Such a decision policy uses knowledge of the agent's
 environment, obtained by sensors, to manipulate it using its actuators. This is done in a way to maximise the expected future reward (collecting as
 many objects as possible). Nevertheless, a brief explanation of their biological inspiration promotes the understanding of their structure and is 
@@ -311,7 +311,7 @@ in a computer program.
 \section{Biological background}
 From all the other organs, the human brain is of special significance. It is the only organ that does not process any metabolic products, but a 
 ‘substance’ which became the target of scientific investigation during the last century: Information. It was mainly through the works of 
-\textit{Golgi} and \textit{Ramón y Cajal}, that science began to perceive it as a complex net of interconnected cells.  Contemporary 
+\textit{Golgi} and \textit{Ramón y Cajal}, that science began to perceive it as a complex net of interconnected cells. Contemporary 
 concepts of the operation of the brain suggests, that mental activity consists primarily of electrochemical activity in large networks of nerve 
 cells, or neurons. Figure \ref{fig:neuron} introduces the different parts of the neuron. Branching out from the cell body or soma, several fibers 
 called dendrites summarise the input of the cell body from up to 100,000 connected neurons. In case this electric potential exceeds a threshold, 
@@ -339,17 +339,17 @@ represented by this changing activity pattern.
 \end{center}
 
 
-\section{Mathematical formalisation}\label{sec:mcpitts}
-% TODO: ref
+\section{Mathematical formalisation}
+\label{sec:mcpitts}
 During the second world war, research in computer technology has been promoted for the sake of military purposes. With the onset of computer 
 technology, neural networks started to become significant as models of abstract automata. McCulloch and Pitt's 1943 published work 
-(>>\textit{A logical calculus of the ideas immanent in nervous activity}<<) \ref{MCP} proposes a cell which allows the simulation of AND-, OR- and 
+(>>\textit{A logical calculus of the ideas immanent in nervous activity}<<)\cite{MCP} proposes a cell which allows the simulation of AND-, OR- and 
 NOT-gates and therefore every boolean function. This cell is a simple model of a neuron with binary threshold and the first formal description of a 
 neural network. Within their work, neurons are perceived as basic Input/Output units, which process input of $i$ neurons and propagate their 
 output further into the network until a single neuron to the very right constitutes the output.\\
 
-The activity level of a neuron $j$ will throughout this paper referred to as $a_j$. It assigned by its transfer function $\varphi$. 
-McCulloch and Pitt proposed a simple binary step function, where $S$ is the threshold:\\
+The activity level of a neuron $j$ will throughout this paper referred to as $a_j$. It assigned by its activation function $\varphi$. 
+McCulloch and Pitt proposed a simple binary step function as activation function $\varphi$, where $S$ is the threshold:\\
 
 \begin{equation}
 	\varphi(x)=\begin{cases}
@@ -358,8 +358,6 @@ McCulloch and Pitt proposed a simple binary step function, where $S$ is the thre
 	\end{cases}
 \label{eq:step}
 \end{equation}
-%The synaptic terminal's function is depicted by the multiplication of the input from neuron $a_i$ by a factor, the weight $w_{ij}$ of the 
-%connection link between neurons $i$ and $j$. $w_{ij}$ is either excitatory or inhibitory. 
 Given the definition of $\varphi$ in equation \eqref{eq:step}, activity levels are always binary and computed as follows:\\
 
 \begin{equation}
@@ -422,7 +420,7 @@ they still have significance in electrical engineering, where they are used to r
 contrast to gates. 
 
 \chapter{Artificial neural networks}
-\label{ch:ann}
+\label{ch:ANN}
 \section{Overview}
 
 Scientists have proposed a multitude of different network structures since the advent of research in ANNs through their first formalisation. 
@@ -437,11 +435,11 @@ Any connections to predecessors are forbidden. This constraint has allowed for a
 allowing them to learn from data. 
 
 
-As distinct from feed-forward networks, recurrent (or feedback) networks allow bidirectional signal flow. 
+As distinct from feedforward networks, recurrent (or feedback) networks allow bidirectional signal flow. 
 Links from one neuron are no longer retricted to lead to neurons in the next layer, but may be formed with any other neuron in the network.
 Since the current state of a neuron may be continuously changing (e.g. when a connection is formed from and to itself), recurrent networks 
 demand advanced learning algorithms and are an order of magnitude more complex in terms of structure. Due to their dynamic nature, they allow 
-for the modelling of advanced techniques, such as long and short term memory (LTSM).\cite{LTSM}
+for the modelling of advanced techniques, such as long and short term memory (LSTM).\cite{LSTM}
 
 \begin{figure}[H]
 
@@ -449,7 +447,7 @@ for the modelling of advanced techniques, such as long and short term memory (LT
 
 \fbox{
 \begin{tikzpicture}
-\node [align=center] (L1) at (3,10) {feed-forward}; 
+\node [align=center] (L1) at (3,10) {feedforward}; 
 
 \node [align=center] (R1) at (10,10) {recurrent}; 
 
@@ -499,7 +497,6 @@ for the modelling of advanced techniques, such as long and short term memory (LT
 
 \end{tikzpicture}
 }
-%TODO: Long short term oder Long term short term
 \caption{A categorisation of neural network types. BPG = Backpropagation, CPN = Counterpropagation, BAM = Bidirectional associative memory, 
 BSB = Brain-State-in-a-Box, ART = Adaptive Resonance Theory, SRN = Simple recurrent networks, LSTM = Long short term memory}
 \label{fig:class}
@@ -515,13 +512,13 @@ also ANNs, demand for a new definition as distinct from classical computer scien
 \textit{“Machine learning is a scientific discipline that explores the construction and study of algorithms that can learn from data.”}\cite{MLDEF1}\\ 
 
 
-%TODO: Probabilistic definition
 \textit{“Such algorithms operate by building a model from example inputs and using that to make predictions or decisions.”} \cite{MLDEF2} 
 
 
-As distinct from non-probabilistic algorithms, there can never be absolute certainty of the correctness of a machine learning model. 
-This stems from their usage of probability theory and statistical modelling which are applied to real world problems. 
-Thus, algorithmic measures, such as optimality and completeness, cannot be utilised to assess the usefulness of such a technique.
+Machine learning is closely related to statistics and many models associated with it build upon probabilistic modelling of data or express their 
+results as a probability distribution over a set of random variables. As distinct from non-probabilistic algorithms, there can never be absolute 
+certainty of the correctness of a machine learning model. This stems from their usage of probability theory and statistical modelling which are 
+applied to real world problems. Thus, algorithmic measures, such as optimality and completeness, cannot be utilised to assess the usefulness of such a technique.
 A performance evaluation can therefore only be conducted given a specific problem and the according data. After all, the selection and 
 appropriate usage of machine learning algorithms (and therefore also neural networks) requires extensive experience and/or thorough testing. 
 
@@ -537,7 +534,7 @@ of size $n$, written as $\text{ANN}^n$ is the union of the $n$ layers in the net
 
 The amount of neurons within a layer is equal to the elements of the respective set. The total number of neurons in an ANN is 
 $\sum_{i=1}^{n}{|L_i|}$. The tuple $(|L_1|,...,|L_n|)$ is called the \textit{network topolgy} and describes the 
-structure (with exclusion of the connections) of a feed-forward network. Recurrent networks demand additional description.
+structure (with exclusion of the connections) of a feedforward network. Recurrent networks demand additional description.
 
 The first network layer $L_1$, is referred to as the input layer. It receives the input vector $\overrightarrow{x} \in \mathds{R}^{|L_1|}$ and 
 passes it onto the next layer. Likewise, $L_n$ is the output layer of the network, whose neurons are called the output units. 
@@ -610,9 +607,8 @@ box, being only interested in the transformation from $\overrightarrow{x}$ to $\
 \label{fig:layer}
 \end{figure}
 
- %TODO: XOR citation 
 Particular significance is drawn to the layers in between input and output layer. Those layers are optional, but needed to approximate certain 
-functions such as the XOR-Gate. As they are invisible to an application using the network as a black box, all neurons $n_i \notin L_1 ^ n_i \notin L_n$
+functions such as the XOR-Gate.\cite{XOR} As they are invisible to an application using the network as a black box, all neurons $n_i \notin L_1 \wedge n_i \notin L_n$
 are called hidden neurons and are organised in hidden layers. The set of hidden layers is denoted as $H$: 
 \begin{equation}
 H \subseteq L; H = \{L_i|1<i<n\}
@@ -621,14 +617,16 @@ H \subseteq L; H = \{L_i|1<i<n\}
 A network where $H \neq \oldemptyset$ is called a multi-layer network (MLN). 
 
 \subsection{Units}
-\label{subsec:weights}
+\label{subsec:units}
 
 A first improvement to McCulloch and Pitt's model was the concept of weighted connection links. Inspired by the function of the synaptic 
 terminals, a weight $w_{ij}$ between two neurons $n_i$ and $n_j$ models the magnitude of influence that a signal from $n_i$ has on the state of $n_j$.
 Weights may be both positive and negative, exhibatory or inhibatory. A magnitude of zero stands for a cut-off signal flow. 
 On the implementation side, the entirety of connection weights within a network is often stored in a matrix, which allows for cheap manipulation of the weights. 
-The manipulation of connection weights may be used to alter the network's behaviour. $W$ is called the connection matrix, which fully represents 
-the structure of a feed-forward network. A simple example where $H = \emptyset$ is given below. 
+The manipulation of connection weights may be used to alter the network's behaviour. Altering the weights in a way that allows to more accurately approximates
+a function is referred to as \textbf{learning} of a neural network. We will show means by which learning can be achieved in chapter \ref{ch:learning}.
+
+$W$ is called the connection matrix, which fully represents the structure of a feedforward network. A simple example where $H = \emptyset$ is given below. 
 \begin{equation}
 W = 
 \begin{pmatrix}
@@ -638,8 +636,7 @@ w_{1j} & \cdots & w_{ij} \\
 \end{pmatrix}
 \end{equation}
 
-%+- 1
-In addition, the concept of bias neurons has proven itself useful. Bias units are non-receptive, both in feed-forward and recurrent networks. 
+In addition, the concept of bias neurons has proven itself useful. Bias units are non-receptive, both in feedforward and recurrent networks. 
 Hence their activity level is steady, usually $+1$. Links between bias and regular neurons do not differ from normal links. Hence, they are 
 associated with a weight $w_{ij}$ which may be altered. Bias neurons are often used to keep units with little weighted input active, 
 which is done by shifting their activation function $\varphi$. This can be necessary if a neuron does not receive significant input. 
@@ -689,7 +686,7 @@ In contrast, a negative weight may be used to keep a neuron in an inactive state
 \end{figure}
 
 Consider the network shown in figure \ref{fig:1on1}. The activation function of the output neuron is chosen to be the sigmoid (abbreviated: sig) 
-function.  Figure \ref{fig:sigmoid-scale} shows the output for several values of $w$. It can seen that $w$ changes the steepness of the 
+function. Figure \ref{fig:sigmoid-scale} shows the output for several values of $w$. It can seen that $w$ changes the steepness of the 
 sigmoid function. 
 
 Figure \ref{fig:2on1} shows the same network with an additional bias neuron. This allows us to shift the activation function according to the 
@@ -717,25 +714,24 @@ weight on the connection link $w_{12}$ as shown in figure \ref{fig:sigmoid-shift
 
 \subsection{Activation functions}
 
-%TODO: Really discused before
-As discussed before, the weights of the connections between the neurons represent the 'Intelligence' of the network. The bigger the absolute 
+As mentioned before, the weights of the connections between the neurons model the behaviour of the network. The bigger the absolute 
 value of the weight, the greater the influence of a neuron to another. This value can be both positive and negative, as well as 
 neutral \textit{(0)}, meaning that there is currently no influence between the neurons, although there is still a link connecting them. 
 A weight of 0 can be understood as a logical pinch of the link, preventing it from transmitting signals.
 
 
 The connection between the input values and the activity level of the neuron is made by the activity function $\varphi$. Different models are 
-obtained depending on the choice of the activity or transfer function. Among the most common choices are the binary step, 
-sigmoid and hyperbolic tangent $\tanh()$ functions as illustrated in Figure \ref{fig:plots}. The binary step function represents the firing of a pulse down the axon 
+obtained depending on the choice of the activity or transfer function. Among the most common choices are the binary step (as used by McCulloch and Pitts), 
+sigmoid and hyperbolic tangent $\tanh()$ functions as illustrated in Figure \ref{fig:activations}. The step function represents the firing of a pulse down the axon 
 if positive $1$), while $0$ represents no firing. The step function is sometimes defined to jump from $-1$ to $1$. 
 
 Sigmoid functions are widely used among networks which are to represent cognitive processes such as perception, recognition, problem solving, 
-etc. . %TODO: logistic function, binary step
+etc. . 
 The main advantage of a sigmoid functions are:
 
 \begin{itemize}
 \item The activity level of the function is limited in both the positive and the negative. This means that activity in the network can not spill 
-over unintentionally, which can be caused by recurrent connections. Note that this property may not be met by a linear function.
+      over unintentionally, which can be caused by recurrent connections. Note that this property may not be met by other functions (e.g. a linear one).
 \item \textbf{Differentiability}
 As distinct from the binary step function, it is differentiable at all parts, which as an example, is a requirement of the gradient descent,
 used by the Backpropagation algorithm (about to be introduced in chapter \ref{ch:learning}.
@@ -747,7 +743,7 @@ used by the Backpropagation algorithm (about to be introduced in chapter \ref{ch
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=1.1\linewidth]{files/activation/step.pdf}
-  \caption{Step function}
+  \caption{The binary step function}
   \label{fig:plot1}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
@@ -785,7 +781,7 @@ Examples are:\\
     \item Noise suppression and signal filtering in communication technology.
     \item Object recognition.
     \item Weather forecast.
-    \item Function approximation including time series prediction.  
+    \item Function approximation including time series prediction. 
 \end{itemize} 
 
 The following sections will give a brief notion of some ANN applications where their application has been noticeably more beneficial than approaches 
@@ -804,9 +800,9 @@ associated probability measure of their correctness. The application is availabl
 The challenge for such systems is the great deviation of styles in hand-written text. This makes it virtually infeasible for conventional methods 
 to reliably classify hand-writing. The network model RCE(Restricted Coulomb Energy Network) has been devised by Nobel price winner Leon Cooper for 
 that very purpose. It overcomes the limitations of the perceptron as it is capable of detecting geometrical figures (therefore also handwritten text) 
-of any size. Cooper's company Nestor has successfully used this model to develop a system which can (among others) detect characters of the Japanese alphabet \texit{Kanji}.
+of any size. Cooper's company Nestor has successfully used this model to develop a system which can (among others) detect characters of the Japanese alphabet \textit{Kanji}.
 The Kanji alphabet stems from the Chinese language, contains approximately 3000 different symbols and is extremely complex. This is due to the great
-variety of symbols which can  be formed with lines arranged in a certain way. Examples are \begin{CJK}{UTF8}{min}輸\end{CJK} - transport or 
+variety of symbols which can be formed with lines arranged in a certain way. Examples are \begin{CJK}{UTF8}{min}輸\end{CJK} - transport or 
 \begin{CJK}{UTF8}{min}熊\end{CJK} - bear. It is nowadays extensively used on mobile devises which allow its users to write text messages by drawing 
 each individual character instead of choosing symbols from a massive dictionary. Complex sentences formulated by simultaneously using three different
 alphabets, such as \begin{CJK}{UTF8}{min}世界はコンピュータ技術の登場以来、劇的に変化した。\end{CJK} - \textit{The world has changed dramatically 
@@ -814,7 +810,7 @@ since the advent of computer technology} can now be written in fairly short time
 
 \subsection{The Travelling-Salesman-Problem}
 Given a set of cities and the distances between each pair of cities, what is the shortest path that, after visiting each city exactly once, 
-leads back to the origin of the route?  This task, called the Travelling-Salesman-Problem (often abbreviated as TSP) is an optimisation task 
+leads back to the origin of the route? This task, called the Travelling-Salesman-Problem (often abbreviated as TSP) is an optimisation task 
 often encountered in practice (Energy and water supply, microchip design, ...). The TSP can be modelled as a graph: All $n$ cities are represented 
 as vertices, the connections between the cities as edges. Since all cities are connected with each other, the graph is complete. 
 The cost (travel time) between each pair of vertices $i$ and $j$ is associated with a weight $w(i,j) \geq 0$. 
@@ -854,13 +850,12 @@ where $\pi(n+1)$ is set to $\pi(1)$.\cite{MATHINF}\\
     \draw[] (x3) -- (x1);
     \end{tikzpicture}
 \caption{An example graph. We are are interested in finding the cheapest tour.\cite{MATHINF}}
-\label{fig:feedback}
+\label{fig:tsp}
 \end{figure}
 
 An example graph for the TSP is given in \ref{fig:tsp}. $4!$ possible tours exit, which is the amount of permutations of the vertices.
 We find the cheapest tour $(1, 3, 4, 2, 1)$ with costs of $w(1, 3) + w(3, 4) + w(4, 2) + w(2, 1) = 11$.
 
-%TODO: The sorting problem?
 The TSP is of high importance in theoretical computer science, as it is known to be $NP$-complete. In the field of complexity analysis, 
 the class of decision problems for which there is a deterministic Turing-Machine able to solve it in time $\mathcal{O}(n^k)$ is called $P$ 
 (polynomial). An example is the sorting problem. Class $P$ contains problems with running times like $\mathcal{O}(n)$ and $\mathcal{O}(log(n))$ but 
@@ -879,7 +874,6 @@ single-layer network with $n$ neurons, where $n$ equals the number of cities in 
 square with an edge length of $n$. The output of each individual neuron equals the time step at which the city is visited. Furthermore, 
 genetic algorithms have also been applied to find an approximate solution for the problem.\cite{GENTSP}
 
-%TODO: better explanation of learning
 \chapter{Learning}
 \label{ch:learning}
 \section{Hebbian learning rule}
@@ -988,7 +982,7 @@ reached.
 \begin{figure}[H]
 
     \centering
-    \includegraphics[width=0.3\textwidth,scale=1]{files/graddes.png}  
+    \includegraphics[width=0.3\textwidth,scale=1]{files/graddes.png} 
     \caption{Illustration of gradient descent.\cite{GRADFIG}}
     \label{fig:grad}
 \end{figure}
@@ -1047,7 +1041,7 @@ Eventually, the weights are changed according to equation \eqref{eq:backweight}.
 \section{Backpropagation through time}
 
 The Backpropagation through time (BTT) algorithm is a learning rule for recurrent networks (Also referred to as RNNs). 
-RNNs constitute an architecture that allows bi-directional signal flow within the network. While links of feed-forward networks are constraint to 
+RNNs constitute an architecture that allows bi-directional signal flow within the network. While links of feedforward networks are constraint to 
 lead only to neurons in the subsequent layer, connections can now be formed across arbitrary layers. Figure \ref{fig:feedback} shows a 
 simple recurrent network (Also called Elman networks). As each neuron is connected with itself, it forms a so-called feedback structure. 
 The output of the neuron at time $t$ serves as a weighted (by weight $g$) input of itself in the next time step.
@@ -1061,8 +1055,8 @@ Thus, the output of the network can be computed as follows:
 BTT was independently developed by several researchers shortly after the proposition of standard Backpropagation.\cite{BTT1}\cite{BTT2}\cite{BTT3}
 As Backpropagation in its pure form is unable to cope with bi-directional signal flow, the rationale behind BTT is a dynamic structure which alters
 between application and training. Figure \ref{fig:unrolled} shows this architectural transformation called “unrolling over time”. Given a certain 
-depth, the feedback structure is transformed into a very deep feed-forward structure. As the original inputs of each time step are preserved,
-training can now take place according to algorithm \ref{alg:BTT}. The interested reader may refer to \ref{DEEPLEARNING} to further information on
+depth, the feedback structure is transformed into a very deep feedforward structure. As the original inputs of each time step are preserved,
+training can now take place according to algorithm \ref{alg:BTT}. The interested reader may refer to \cite{DEEPLEARNING} to further information on
 Backpropagation through time.
 
 \begin{figure}[H]
@@ -1206,10 +1200,34 @@ combination of the weights of two chosen networks according to specific criteria
 to overcome the pitfall of local minima. We will refer to this combination of as \textit{augmented genetic algorithm}.
 
 Figure \ref{fig:ag} shows the principle structure of the augmented genetic algorithm. A thorough explanation is also given in \cite{CROSSOVER}.
-After a population has been applied in an environment, the fitness of each individual is ranked according to their performance.  
+After a population has been applied in an environment, the fitness of each individual is ranked according to their performance. 
 In addition, a selection process choses certain networks according to a selection function. Individuals are either selected for reproduction 
 or direct mutation. Direct mutation is often used to clone the best-performing networks of the current population (sometimes called elitism). 
 In case of direct mutation, the augmented genetic algorithm does not differ from the standard hill-climbing approach.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \node [draw=black, fill=white, align=center] (g) at (2,0) {Generation of initial individuals};
+    \node [draw=black, fill=white, align=center] (e) at (2,-1) {Application};
+    \node [draw=black, fill=white, align=center] (r) at (2,-2) {Fitness ranking};
+    \node [draw=black, fill=white, align=center] (s) at (2,-3) {Selection};
+    \node [draw=black, fill=white, align=center] (c) at (0,-4) {Crossover};
+    \node [draw=black, fill=white, align=center] (m) at (4,-4) {Mutation};
+
+    \draw[arrow]    (g) -- (e);
+    \draw[arrow]    (e) -- (r);
+    \draw[arrow]    (r) -- (s);
+    \draw[arrow]    (s) -- (c);
+    \draw[arrow]    (s) -- (m);
+    \draw[arrow]    (c) -- (m);
+    \draw[arrow]    (c) to[out=-180,in=-180] (e);
+    \draw[arrow]    (m) to[out=0,in=0] (e);
+    
+    \end{tikzpicture}
+\caption{The principle structure of the augmented genetic algorithm.\cite{CROSSOVER}}
+\label{fig:ag}
+\end{figure}
 
 \paragraph{Selection}
 In selection, one might be inclined to presume that only well-performing agents ought to be taken into consideration for mating. However, creating
@@ -1284,7 +1302,7 @@ One-Point Crossover is an example of a combination rule for two children. During
 is chosen. It determines the ratio of male and female genes in the offspring. Given that number, the genetic combination can finally take place.
 When we talk about genes in the context of ANNs, we are referring to the weights of the respective network. The crossover point simply states the number 
 of connection weights cloned from each parent to form the offspring. The total number of weights in an ANN is equal to the number of elements in the 
-weight matrix $W$ (see section \ref{subsec:weights}) and can be calculated as follows: $|W| = \sum^{n-1}_{i=1} L_i \cdot L_{i+1}$. 
+weight matrix $W$ (see section \ref{subsec:units}) and can be calculated as follows: $|W| = \sum^{n-1}_{i=1} L_i \cdot L_{i+1}$. 
 For the first of the two children, $CP$ is equal to the number of weights taken from the first parent, while $|W|-CP$ states the amount from the 
 second parent. Conversely, $CP$ equals the weights taken from the second parent, while $|W|-CP$ states the amount from the first parent. 
 Figure \ref{fig:matrixcross} shows an example of one-point crossover for an ANN of topology (3,3). The crossover point has been chosen to be $5$ in 
@@ -1308,7 +1326,6 @@ crossover\cite{SELECTCROSSOVER}.
         \textcolor{red}{w_{13}} & \textcolor{red}{w_{23}} & \textcolor{red}{w_{33}} \\
         \end{pmatrix}
         $
-            
         \end{center}
 
         \begin{center}
@@ -1587,7 +1604,7 @@ stated as topology form as $(2, n, 1)$.
 
 \section{Supervised learning}
 
-As discussed in the previous chapter, we applied two neural networks for each navigation task. Standard Backpropagation as introduced in \ref{ch:learnign} has been used
+As discussed in the previous chapter, we applied two neural networks for each navigation task. Standard Backpropagation as introduced in \ref{ch:learning} has been used
 to train each network with previously calculated data. An example of a training data file is shown in listing \ref{lst:exp}. As there is no way to predict the performance 
 of different network structures, we trained the networks with a number of different configurations and compared the results afterwards. The decisive criteria for the
 learning progression is the network error $E$ (Distance from network output to target values) which is to be minimised. In order to produce meaningful data, we created
@@ -1604,9 +1621,9 @@ out: 0.357158315047
 \end{lstlisting}
 
 \paragraph{Topology evaluation} We tested both networks with a MLN-structure $(2,n,1)$ as described in chapter \ref{ch:design} for a varying amount of hidden neurons.
-Figure \ref{hv} and \ref{ha} show the results for a training data size of $n = 20,000$. Both an overall view as as well as a detailed view of the end of the training is given.
+Figure \ref{fig:hv} and \ref{fig:ha} show the results for a training data size of $n = 20,000$. Both an overall view as as well as a detailed view of the end of the training is given.
 (For the sake of clarity, we omit certain configurations which provide no additional information e.g. show results very similar to the presented ones).
-The results for $net_v$ in figure \ref{hvo} clearly show how all network configurations allow for an overall error of $<0.075$, although, clear differences between individual 
+The results for $net_v$ in figure \ref{fig:hvo} clearly show how all network configurations allow for an overall error of $<0.075$, although, clear differences between individual 
 configurations can be observed. First of all, we can observe that $|H| = 10$ requires the longest time to make noticeable progress. It takes around $2,000-2,500$ iterations for this 
 particular configuration to finally lower its error below $0.1$. Another interesting point is $n=5,000$. Some topologies (e.g. (2,5,1) and (2,1,1) are unable to make any 
 further learning progress and remain almost the same even after $15,000$ more iterations. However, 8 hidden units start to decrease once more. $n=10,000$ shows a similar point, where
@@ -1675,7 +1692,7 @@ It is therefore chosen for further experiments and the final application.
 \end{subfigure}
 \newline
 \caption{Training results with and without bias neurons for both networks with
-         the respective minimal topology as obtained from Figures \ref{ha} and  \ref{hv}.}
+         the respective minimal topology as obtained from Figures \ref{fig:ha} and \ref{fig:hv}.}
 \label{fig:hvend}
 \end{figure}
 
