@@ -1,4 +1,5 @@
 #include <cassert>
+#include <iostream>
 
 #include "evolutionary.hpp"
 #include "commonDefs.hpp"
@@ -129,11 +130,8 @@ int evolutionary::evolve(int id_algo)
 
 }
 
-
-
 int evolutionary::evolve_hillclimber()
 {
-
     iterationsteps++;
 
     if (iterationsteps >= evolvesteps) // 3000 = 1Min
@@ -156,8 +154,6 @@ int evolutionary::evolve_hillclimber()
     }
     return 0;
 }
-
-
 
 int evolutionary::evolve_simulatedannealing()
 {
@@ -195,17 +191,34 @@ int evolutionary::evolve_simulatedannealing()
 
 int evolutionary::evolve_learn()  //
 {
-    if(!net_learned)
+    double T;
+    double randomval = 0.0f;
+    double r, p;
+    r = 0.0f; p = 0.0f; T = sim_parameter.annealing_rate;
+    iterationsteps++;
+
+    if (iterationsteps >= evolvesteps) // 3000 = 1Min
     {
-        learn();
-        net_learned = true;
+        if(!net_learned)
+        {
+            learn();
+            net_learned = true;
+        }
+
+        iterationsteps = 0;
+        save_bestAgent();
+
+        generations++;
+        // Cool down annealing rate
+        return 1;  //Signal that Simulation must be Reset
     }
     return 0;
+
 }
 
 void evolutionary::do_or_save_revert(Agent *agent, bool revert)
 {
-//Do or save Angle Net
+    //Do or save Angle Net
     for (unsigned int i=0; i<agent->angle_net->m_layers.size();i++)  //Amount of Layers
     {
         for(unsigned int j=0;j<agent->angle_net->m_layers[i].size();j++)    //Amount of Neurons
@@ -227,7 +240,7 @@ void evolutionary::do_or_save_revert(Agent *agent, bool revert)
         }
     }
 
-//Do or save Velocity Net
+    //Do or save Velocity Net
     for (unsigned int i=0; i<agent->velocity_net->m_layers.size();i++)  //Amount of Layers
     {
         for(unsigned int j=0;j<agent->velocity_net->m_layers[i].size();j++)    //Amount of Neurons
@@ -248,7 +261,6 @@ void evolutionary::do_or_save_revert(Agent *agent, bool revert)
             }
         }
     }
-
 
 }
 
@@ -330,7 +342,6 @@ void evolutionary::learn()
             trainingdata_input.push_back(col[0]);
             trainingdata_input.push_back(col[1]);
             trainingdata_output.push_back(col[2]);
-            trainingdata_output.push_back(col[3]);
 
             population[i]->velocity_net->feedForward(trainingdata_input);
             population[i]->learnV(trainingdata_output);
@@ -356,7 +367,6 @@ void evolutionary::learn()
             trainingdata_input.push_back(col[0]);
             trainingdata_input.push_back(col[1]);
             trainingdata_output.push_back(col[2]);
-            trainingdata_output.push_back(col[3]);
 
             population[i]->angle_net->feedForward(trainingdata_input);
             population[i]->learnA(trainingdata_output);
@@ -393,11 +403,11 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
         double angle_x_v = M_PI/2.0 * population[i]->processA(inputvals_vector[i]);
         double angle_y_v = M_PI/2.0 - angle_x_v;
      
-    //    Necessary for driving if no food detected
-    //    if (0 == inputvals_vector[i][0] && 0 == inputvals_vector[i][1] && angle_x_v == M_PI/2.0 * 1.03f)
-    //    {
-    //        x_value = 1;
-    //    }
+//        Necessary for driving if no food detected
+        if (0 == inputvals_vector[i][0] && 0 == inputvals_vector[i][1] && angle_x_v == M_PI/2.0 * 1.03f)
+        {
+            x_value = 1;
+        }
 
         double steering_angle = sgn(x_value) * -angle_y_v;
 
@@ -413,8 +423,8 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
                      ") angle_x_v (" << angle_x_v << "), angle_y_v (" << angle_y_v << ")\n";
         //std::cout << "angle_x_v :" << angle_x_v << ", angle_y_v: " << angle_y_v << ", steering_angle: " << steering_angle << "\n"; 
 */
-        result_vectors[i][0] = 0;
-        result_vectors[i][1] = 0;
+//        result_vectors[i][0] = 0;
+//        result_vectors[i][1] = 0;
     }
 
     if (!datasetwritten)
@@ -478,6 +488,9 @@ void evolutionary::save_bestFitness()
             best_Fitness = population[i]->fitness;
         }
     }
+
+    std::cout << "B: " << best_Fitness << std::endl;
+
     best_fitnesses.push_back(best_Fitness);
 }
 
@@ -489,6 +502,8 @@ void evolutionary::save_averageFitness()
         average_Fitness += population[i]->fitness;
     }
     average_Fitness = average_Fitness / (float) population.size();
+
+    std::cout << "A: " << average_Fitness << std::endl;
 
     average_fitnesses.push_back(average_Fitness);
 }
@@ -533,7 +548,6 @@ void evolutionary::save_bestAgent()
             best_Agents[0] = population[i];
         }
     }
-
 }
 
 void evolutionary::set_trainingdataV(std::vector< std::vector<double> > ptrainingdata)

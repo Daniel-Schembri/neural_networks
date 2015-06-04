@@ -49,9 +49,7 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
     topology = ptopology;
 	
     velocity_net = NULL;
-    angle_net    = NULL;
-    myscript = NULL;
-
+    angle_net    = NULL; myscript = NULL; 
 	switch(nettype)
 	{
 	case NET_FEEDFORWARD:
@@ -117,12 +115,12 @@ double Agent::processV(std::vector<double> inputvals)
         velocity_net->feedForward(inputvals);
         velocity_net->getResults(result_vals);
         //For driving the agent if no food detected
-/*
+
         if (idleness_count >= 19)
         {
             result_vals[0] = 0.2f;
         }
-*/
+
     }
     else
     {
@@ -143,7 +141,6 @@ double Agent::processA(std::vector<double> inputvals)
         angle_net->getResults(result_vals);
     
         //For driving the agent if no food detected
-        /*
         if(0 == inputvals[0] && 0 == inputvals[1])
         {
             idleness_count++;
@@ -157,7 +154,6 @@ double Agent::processA(std::vector<double> inputvals)
         {
             result_vals[0] = 1.03f;
         }
-        */
     }
     else
     {
@@ -197,5 +193,5 @@ bool Agent::operator== (const Agent &other) const
 
 /*
 float32 a = fabs(player->GetPosition().x - Object[i]->GetPosition().x);
-float32 b = fabs(player->GetPosition().y - Object[i]->GetPosition().y); //Fabs ist Betrag
+float32 b = fabs(player->GetPosition().y - Object[i]->GetPosition().y);
 */
