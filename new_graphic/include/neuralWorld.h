@@ -35,6 +35,7 @@
 #ifndef NEURAL_WORLD_H
 #define NEURAL_WORLD_H
 
+#include <math.h>		//For initialising the generator und for timemeasurement
 #include <time.h>		//For initialising the generator und for timemeasurement
 #include "feedForwardNet.hpp"
 
@@ -46,8 +47,6 @@
 #define MODE_SINGLEPLAYER 0
 #define MODE_EVOLUTION 1
 #define MODE_BESTAgentS 2
-
-#define M_PI 3.14159265359
 
 #define DEGTORAD (M_PI/180)
 #define AMOUNT_OF_Object 40

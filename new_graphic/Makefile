@@ -14,14 +14,14 @@ GLUIlib  = libs/Box2D_v2.3.0/Box2D/Build/glui/libglui.a
 CXX = g++
 
 #only in debug version
-CXXDEBUGFLAGS = -ggdb
+#CXXDEBUGFLAGS = -ggdb
 
 #Use c++11
 CXXFLAGS = -std=c++11
 
 #all warnings
-CXXFLAGS  += -Wall
-CXXFLAGS  += -Wextra
+#CXXFLAGS  += -Wall
+#CXXFLAGS  += -Wextra
 
 #maximum optimization
 CXXFLAGS  += -O3
@@ -41,13 +41,7 @@ SRCS = gui.cpp \
      ../logic/src/feedForwardNet.cpp \
      ../logic/src/ffNeuron.cpp \
      ../logic/src/net.cpp \
-     ../logic/src/neuron.cpp \
-#     ../logic/src/competitive.cpp \
-#     ../logic/src/competitiveNeuron.cpp 
-#     ../logic/src/selfOrganizingMap.cpp 
-#     ../logic/src/somNeuron.cpp 
-#     ../logic/src/srn.cpp \
-#     ../logic/src/srnNeuron.cpp 
+     ../logic/src/neuron.cpp
 
 OBJS   = ${SRCS:%.cpp=%.o} 
 
