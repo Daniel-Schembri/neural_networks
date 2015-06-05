@@ -107,7 +107,7 @@
 
 \author
 {
-    \textbf{Jonathan Schwarz} - matriculation number: 304727
+    \textbf{Jonathan Schwarz} - matriculation number: 304728
 }
 \date
 {
@@ -259,7 +259,7 @@ to the agents performance. Hence, different structures will be proposed and empi
 Both approaches will be tested in the very same simulation environment as in the original paper. A critical evaluation of both learning approaches
 in combination with different network structures is given.
 
-\paragraph{Motivation}
+\section{Motivation}
 Machine learning techniques power a variety of aspects of modern life. Content filtering, speech recognition, object detection in
 images or product suggestions are examples of fields in which great progress has been made through its application. 
 With the advent of representation learning, machines can now be fed with raw data and are able to extract the representation needed for detection
@@ -273,7 +273,7 @@ non-coding DNA on gene expression and disease.\cite{DEEPLEARNING}
 
 Thus, we regard neural networks (Which Deep learning is at a more abstract level) as a field much worth of study.
 
-\paragraph{Structure of this documentation}
+\section{Structure of this documentation}
 In chapter \ref{ch:basics} a brief introduction to the very basics of artificial neural networks is given. We investigate their biological counterpart
 and show a mathematical formalisation of their structure. We dive more into the details of artificial neural networks in chapter \ref{ch:ANN} where
 we different models and network types are introduced. Several learning algorithms for these structures are then presented in chapter \label{ch:learning}. 
@@ -1229,7 +1229,7 @@ In case of direct mutation, the augmented genetic algorithm does not differ from
 \label{fig:ag}
 \end{figure}
 
-\paragraph{Selection}
+\subsubsection{Selection}
 In selection, one might be inclined to presume that only well-performing agents ought to be taken into consideration for mating. However, creating
 offspring from both a well and a poorly performing agents can help to increase their fitness \cite{KIKLAR}. This is why none
 of the networks must be excluded from the selection process. However, a bias towards better fitness is still desirable. This is implemented by 
@@ -1268,7 +1268,7 @@ chosen for reproduction. The genes of the corresponding agent are then modified 
     \end{minipage}
   \end{minipage}
 
-\paragraph{Reproduction}
+\subsubsection{Reproduction}
 If two individuals are chosen for reproduction, they create a certain amount of children according to the rule of genetic combination. 
 As an analogy to human reproduction, the selected networks will be referred to as the male and female part. Figure \ref{fig:repro} illustrates 
 this process. 
@@ -1601,6 +1601,43 @@ stated as topology form as $(2, n, 1)$.
 
 \chapter{Evaluation}
 \label{ch:eval}
+\section{Unsupervised learning}
+
+Figure \ref{fig:u} shows a comparison of different unsupervised learning techniques. We compare the averaged fitness of each generation in
+\ref{fig:ua}, as well as the best fitness of each generation. Shown is a population size of $500$, i.e. all algorithms have been applied $499$ times
+on a population with randomly initialized values. Simulation values have been set to $10$ agents in a world with $100$ objects. After objects have
+been collected, new ones will spawn in the environment. Both the hillclimber as well as the simulated annealing 
+approach have been proposed and implemented by Schembri. The results show that even with increasing generation size, performance does not seem to 
+change for the better. Despite of the variations between each generation (due to the random placement of objects and agents), performance for each
+algorithm stays within the same range. Simulated annealing shows the best results in both figures. Crossover results are a little worse compared to
+the hillclimber in the average graphics, but performs better when only the best agents are of interest. Altogether, crossover seems to have the 
+highest fluctuation, which might be a result of mating.
+
+
+Overall, neither of the presented approaches succeeds in creating satisfactory behaviour for agents without prior knowledge of their environment.
+\\
+\\We discuss why this might be the case in chapter \ref{ch:conclusion}. 
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{files/unsupervised/sub_average.pdf}
+  \caption{Shown is the average fitness of all agents of a generation.}
+  \label{fig:ua}
+\end{subfigure}%
+\newline
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{files/unsupervised/sub_best.pdf}
+  \caption{Shown is the best fitness of all agents of a generation.}
+  \label{fig:ub}
+\end{subfigure}
+\newline
+\caption{Results of the application of unsupervised learning techniques for the object collecting agent problem.
+         Shown are the average as well as the best fitness of each generation in comparison to each other.}
+\label{fig:u}
+\end{figure}
 
 \section{Supervised learning}
 
@@ -1620,7 +1657,8 @@ in:  0.00612609545556 0.357105772792
 out: 0.357158315047
 \end{lstlisting}
 
-\paragraph{Topology evaluation} We tested both networks with a MLN-structure $(2,n,1)$ as described in chapter \ref{ch:design} for a varying amount of hidden neurons.
+\subsection{Topology evaluation} 
+We tested both networks with a MLN-structure $(2,n,1)$ as described in chapter \ref{ch:design} for a varying amount of hidden neurons.
 Figure \ref{fig:hv} and \ref{fig:ha} show the results for a training data size of $n = 20,000$. Both an overall view as as well as a detailed view of the end of the training is given.
 (For the sake of clarity, we omit certain configurations which provide no additional information e.g. show results very similar to the presented ones).
 The results for $net_v$ in figure \ref{fig:hvo} clearly show how all network configurations allow for an overall error of $<0.075$, although, clear differences between individual 
@@ -1696,7 +1734,16 @@ It is therefore chosen for further experiments and the final application.
 \label{fig:hvend}
 \end{figure}
 
-Figure \ref{fig:action} shows trained agents in the 2D world. The grey semi circle above the agents head is the approximated sight range of each agent.
+\newpage
+As in the previous section, we applied the supervised algorithm to $500$ generations and observed their performance. Note that while for a unsupervised
+algorithm, generations depend on each other, this is not the case for the Backpropagation approach. Each of the generations is in fact first created
+with random weights and afterwards trained. A comparison of the results for unsupervised learning with supervised approach is shown in figure \ref{fig:a}.
+We can observe a clear increase in performance for both graphs. For the average case, the supervised networks outperform the best scoring supervised
+network by a factor of $>3$. Even in case of the best agents of each generation, the trained networks collects more than twice the amount of objects
+collected by the best unsupervised agent.
+\\
+\\As distinct from the unsupervised approach, training also leads to satisfactory behaviour. This is shown in figure \ref{fig:action} where 
+trained agents in the 2D world have been observed. The grey semi circle above the agents head is the approximated sight range of each agent.
 At time step $t=1$, several objects are located within the sight range of each agent, as indicated by the straight lines form the agent to the objects.
 As mentioned in chapter ref{ch:design}, only the object closes to the agent will be used as sensor input. This object is indicated by a red line. Therefore
 agent 1 (the one beneath the other) is to move in an almost straight line to collect the object. We can see that the agent successfully collected the targeted
@@ -1728,6 +1775,28 @@ from each other.
          Two agents are shown over three time steps.}
 \label{fig:action}
 \end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{files/unsupervised/all_average.pdf}
+  \caption{Shown is the average fitness of all agents of a generation.}
+  \label{fig:aa}
+\end{subfigure}%
+\newline
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{files/unsupervised/all_best.pdf}
+  \caption{Shown is the best fitness of all agents of a generation.}
+  \label{fig:ab}
+\end{subfigure}
+\newline
+\caption{Results of the application of both supervised and unsupervised learning techniques for the object collecting agent problem.
+         Shown are the average as well as the best fitness of each generation in comparison to each other.}
+\label{fig:a}
+\end{figure}
+
 
 \chapter{Conclusion}
 \label{ch:conclusion}
