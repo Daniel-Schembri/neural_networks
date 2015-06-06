@@ -195,38 +195,90 @@
 %
 %
 %
+\begin{abstract} 
+\huge{\textbf{Abstract}} \\
+
+\normalsize
+
+This document was created for the project work at Pforzheim university in the course: Master of Science in Embedded Systems. 
+This projectwork describes the development of a simulation environment for object collecting agents. The agents can base on a simple script or have a neural network that can be trained supervised or evolved by evolutionary algorithms.
+
+The simulator was written in C++ using the 2D physics-engine Box2D by Erin Catto and using the OpenGl-frameworks GLUT, respectively Freeglut for accelerating the displaying of the simulation and GLUI for the graphical user interface. 
+
+The neural network framework is written by Jonathan Schwarz and detaily described in his projectwork ' A comparison of neural network types and learning techniques with an application in artificial life'. \\ \\ \\ \\ \\ \\ \\ \\
+
+\huge{\textbf{Abstract}} \\
+
+\normalsize
+
+Dieser Bericht wurde im Rahmen der Projektarbeit des Studienganges Master of Science in Embedded Systems der Hochschule Pforzheim angefertigt. 
+
+Diese Projektarbeit beschreibt die Entwicklung eines Simulators für virtuelle Agenten, die Objekte in einer 2-dimensionalen Umgebung sammeln. 
+
+Der Simulator wurde in C++ entwickelt. Die Physics-engine Box2D von Erin Catto wird verwendet. Ebenso die OpenGL-Frameworks GLUT bzw. Freeglut zur Beschleunigten Darstellung der Simulation und GLUI für die Graphische Benutzer Schnittstelle. 
+
+Das Framework der neuronalen Netze wurde von Jonathan Schwarz entwickelt und wird in seiner Projektarbeit 'A comparison of neural network types and learning techniques with an application in artificial life' näher beschrieben.
+	
+	
+\end{abstract}
 
 
 
 \chapter{Introduction}
-Intelligent systems are widely used, like in robotics.
-The motivation to write this projectwork was
-to find out basically, how an intelligent system can be created by simple algorithms (rules) and compare them with 'classical' solutions. Therefore a simple task was to let agents collect objects in a virtual environment.
+This document was created at Pforzheim university in the course Master of Science in Embedded Systems.
+It was part of the project work.
 
+\section{Motivation}
+Artificial intelligence is an exciting field of computer science. One great dream of humanity was to create an technical analogy of the human mind.
+Philosophers and researches are wildly discussing if this goal is reachable and desirable.
+In this projectwork the main interest lies in agents, artificial neural networks and evolutionary training of these networks.
 
-
-In this project neural networks of the second type are used, because the main interest lies in finding a good mathematical solution.
-
-2-dimensional because its easier to see.
-
-\section{State of the art}
-
-\section{Artificial intelligence}
 Today there is no exact definition of what intelligence is.
 In general there are certain categories focusing different points of view to describe it.
 
 
+Artificial intelligence has four branches of research: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{multicols}{2}
+			\begin{itemize}
+				\item \textbf{Knowledge-based systems}
+				\item \textbf{Robotics}
+				\item \textbf{Pattern recognition}
+				\item \textbf{Pattern prediction}
+			\end{itemize}
+		\end{multicols}
+	\end{minipage}
+}   \\
+
+\section{Project task}
+The task of this project work is to develop a simulator to let agents collect objects in a 2-dimensional world. The agents logic is realized  by a neural network that is trained supervised or evolved with special algorithms derived from evolution theory.
+The simulator has to simulate a realistical environment. Therefore a physics engine is used.
+The simulation has to be rated and the collected data displayed. \\
+
+
+In this project neural networks of the second generation are used, because the main interest lies in finding a good mathematical solution.
+
+
 \chapter{The concept of agents}
-An agent is a programm that interacts self-sufficent depending on the actual state. It has sensors, a processing logic and actuators. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the 
+An agent is a programm that interacts self-sufficent depending on the actual state. It has, in general sensors, a processing logic and actuators. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the concept of agents is used to compare with neural networks.
+
+Most agents are found in the world wide web. For example webcrawlers, search-engines and bots are well known.
+
+The following figure shows the general structure of an agent:
+
 
 \begin{center}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=1.0\textwidth,scale=1]{files/agent.png}  
-		\caption{Structure of an agent (oriented on \cite{ki-book} )} 
+		\caption{General structure of an agent (oriented on \cite{ki-book} )} 
 		\label{fig:agent}
 	\end{figure}
 \end{center}
+
+The logic part can be less or more complex. Just the actual perception can be processed or a specified sequence of perceptions. In Chapter 2.1 (Todo: LINK) this is described detaily.
 
 \subsection{Rationality}
 An agent creates a sequence of actions. These actions causes a sequence of states in the corresponding environment. Every sequence of states can be rated. The agent is called rational if it can maximize its score, considering its sequence of perceptions and its previous knowledge of the problem. Its important to distinguish rationality and perfection. An agent never will be perfectly solving a problem. Its unrealistic to expect the best possible solution for a problem in partitial observable environment. It can solve the problem as it can be expected by the given perceptions. The agent can't predict randomly events.
@@ -251,22 +303,73 @@ In nature animals are equipped with reflex actions to survive long enough to lea
 
 \section{Types of agents}
 
-TODO: Prove the english topics in the original book!
+\subsection{Simple reflex agent}
+The simplest type of an agent is the reflex based agent.
+This agent ignores the sequence of perception and just acts on the sensordata it actually gets. This type of agent can be used for simple tasks. The benefits are the fast implementation and a drastically reduced state space.
+The disadvantages lies in the simplicity. This agent has no memory and therefore doesn't include past states in his decisions. If the present state of the environment doesn't provide enough information or it is just partially observable, the agent could not solve the task.
+In partially observebale environment there can occur loops of wrong behaviour. This loops can be overcome if a random action can be chosen.
+For best functionality of a simple reflex agent the problem-environment should be fully observable(TODO: note to the next section).
+For more complex tasks using the following described agent-types may be a better solution.
 
-\subsection{The reflex agent}
+\subsection{Model-based reflex agent}
+The model-based reflex agent expands the simple reflex agent by a memory. It internally creates a model of the world by past sensor data.
+This model is used to predict future states in the environment.
+This can be a moving object or changes in the environment made by the agent itself for example.
 
-\subsection{Target based agent}
+Internally states of the agent are used to approximate the state of the environment on changes. 
+The model is also used to estimate temporaly unobservable parts of the environment.
 
-\subsection{Usabiltiy oriented agent}
-
-
-\section{Applications}
-Most agents are found in the world wide web. For example webcrawlers, search-engines and bots are well known.
+The model-based reflex agents ability to solve a task reaches its limit, if he has to act in a new environment or other agents acting in the world, too. The internally created model may then not fit anymore.
 
 
-\section{The problem-environment}
+\subsection{Goal-based agent}
+On some tasks it isn't enough to know the correct action on a specified state at the environment, like reflex-based agents do. It can be important for an agent to know the goal behind those actions. This is necessary for a generalization of a problem. For example: For a given route A To B there can be described a sequence of actions an agent has to execute. In general to get from one point to another its more difficult to describe general rules, as other routes may differ a lot. Its therefore too complex to describe all rules in detail. 
+
+The benefit is a agent who can solve complex tasks. The disadvantage is a need of more computing time. For real-time tasks this can be an obstacle.
+
+\subsection{Utility-based agent}
+The utility-based agent expands the goal-based agent by the fact, that it can choose between several solutions. Therefore the agent has a rating function to choose the best or at least a good enough solution by several criteria. This rating function can be more complex then computing solutions of the task itself.
+
+The development of such complex agent and corresponding rating algorithms is an own topic of computer science and includes research areas like perception, representation, reasoning and learning.
+
+
+\subsection{Learning agent}
+The complete development of an agent is difficult and time-consuming. Therefore Alan Turing searched in 1950 (TODO: Source Turing) for a way to speed up this process. The concept of the learning agent was created. The learning agent has four components: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{multicols}{2}
+			\begin{itemize}
+				\item \textbf{Performance element}
+				\item \textbf{Learning element}
+				\item \textbf{Critic}
+				\item \textbf{Problem generator}
+			\end{itemize}
+		\end{multicols}
+	\end{minipage}
+}   \\
+\\
+
+The \textbf{performance element} is the executive part of the agent. It processes sensor data and makes actions. \\
+
+The \textbf{learning element} is responsible for improvements of the agent. The learning element can contain a decision tree, a neural net, a support vector machine or other learning structures. \\
+
+The \textbf{critic} rates the performance element and tells the learning element how to improve it. \\
+
+A \textbf{problem generator} is used to improve learning by making new experiences. Without the problem generator the agent would make it actions with its learned best actions, but would never try new actions, that may seem uneffective in the first way, but in a long term run may be more effective. \\
+
+The most important part for improvements is the correlation between the \textbf{performance element} and the \textbf{learning element}.
+
+
+
+
+
+source: Artificial Intelligence Book and www.cs.hs-rm.de/~linn/fachsem0910/anders/Anders.pdf
+
+
+\section{The task environment}
 (TODO: Aufgabenumgebung englsiches Wort)
-In the first case its important to preferably define the problem completely. The problem-environment is defined by four categories: \\
+In the first case its important to preferably define the task completely. The task environment is defined by four categories: \\
 
 \fbox{
 	\begin{minipage}{15cm}
@@ -286,24 +389,228 @@ In the first case its important to preferably define the problem completely. The
 
 \textbf{The environment}
 If the sensors allow the agent to get the information of the whole environment, the environment is called \textbf{fully observeable}. The agent therefore can get all relevant information for its actions. Otherwise an environment is classified as \textbf{partially observeable}. This for example can be if the sensors are limited or influenced by interferences.
-If the agent has no sensors at all, the problem-environment is called \textbf{unobserveable}. Instinctively you would think this kind of agent would be totally useless, but there exist succesful algorithms to solve problems. For example a vacuuming robot can clean a room effectively. It therefore just uses stochastic algorithms. In factories this is used effectively to  turn objects. The benefit is less costs in sensors.\\
+If the agent has no sensors at all, the task environment is called \textbf{unobserveable}. Instinctively you would think this kind of agent would be totally useless, but there exist succesful algorithms to solve problems. For example a vacuuming robot can clean a room effectively. It therefore just uses stochastic algorithms. In factories this is used effectively to  turn objects. The benefit is less costs in sensors. \\
 
-TODO: Einzelagenten- und Multiagentenumgebung.
+It can also be necessary to know if the environment is a \textbf{single-} or \textbf{multiagent}-based. Multiple agents can A \textbf{cooperate} or A \textbf{compete}. \\
 
-The environment is \textbf{deterministic} if all further states are predictable by the current state and there are no random events. Otherwise it is \textbf{stochastic}. In reality there can exist deterministic environments. But often the possibilities are too complex. The environment must then be handled by the agent as it was stochastic. Therefore there are given probabilities for each possibility. If not it is called \textbf{non-deterministic}.
+The environment is \textbf{deterministic} if all further states are predictable by the current state and there are no random events. Otherwise it is \textbf{stochastic}. In reality there can exist deterministic environments. But often the possibilities are too complex. The environment must then be handled by the agent as it was stochastic. Therefore there are given probabilities for each possibility. If not it is called \textbf{non-deterministic}. \\
 
-\textbf{The actuators}
+If the action of the agent does only depend on the actual environment state and does not influence future state the environment is called \textbf{episodic}. Otherwise its called
+\textbf{sequential}. Chess for example is a sequential environment because every move can bring the game in a win- or lose-situation. \\
 
-\textbf{The sensors}
+A \textbf{static} environment doesn't change. This makes it easier for the agent. A \textbf{dynamically} environment on the other hand needs a continuously observation. If the environment doesn't change, but the agents rating-process it is called \textbf{semidynamically}. \\
+
+It can have \textbf{discrete} or \textbf{continous} states. Chess has discrete states, as it is played move by move. It could get a continous character if the time to calculate a move plays a role. Driving a car is in general continously as accelerating and steering have continous units.\\
+
+The environment can be \textbf{known} or \textbf{unknown}. That means that the agent has foreknowledge about the environment. This category does not describe if the environment is observable. \\
 
 
+\textbf{The actuators} are the components an agent interacts with the environment. In developing an agent there must be kept an eye on the possible actions an agent can do.\\
 
+\textbf{The sensors} are responsible to get data of the environment. With good algorithms costs for sensors can be noticeably reduced.
+
+
+Source: Artificial intelligence book chapter 2.3
 
 \chapter{Artificial neural networks}
 
+\section{Network types}
+At the moment there are three generations of neural networks. 
+The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
+In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
+The newest generation uses spikes, an encoding through time.
+
+\subsection{First generation}
+The first generation of neural networks have binary in- and outputs.
+
+\subsubsection{McCulloch-Pitts neuron}
+The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
+developed by Warren McCulloch and Walter Pitts in 1943.
+They wanted to realise a simple, realistic neuron-modell of operations in the brain and find out if the brain could compute turing computability functions.
+McCulloch-Pitts-neuron has binary in- and outputs.
+A real threshold can be defined, which reached, let the neuron fire an one, otherwise zero.
+Its possible to add absolute suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs. The use of such absolute supressing inputs is for the most cases doubtfull.
 
 
-\section{Applications}
+Neural networks of this type of neuron can just learn by changing topology of the network, that is laborious.
+
+At the following a figure of a single neuron:
+
+\begin{figure}[H]  % [H] erzwingt Position an der Stelle im Text
+	\centering
+	\begin{tikzpicture}
+	\node [align=center] (dummy1) at (-0.25,3.5) {$x_{1}$}; 
+	\node [align=center] (dummy2) at (-0.25,2.5) {$x_{n}$}; 
+	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
+	\node [align=center] (dummy3) at (3,3) {f($x_{1}$,..,$x_{n}$)}; 
+	\draw[arrow]	(dummy1) -- (f1);
+	\draw[arrow]	(dummy2) -- (f1);
+	\draw[arrow]	(f1) -- (dummy3);
+	\draw[dotted] (dummy1) -- (dummy2);
+	
+	\end{tikzpicture}
+	\caption{A McCulloch-Pitts-neuron}
+	\label{fig:pitts1}
+\end{figure}
+The neuroninput is computed by:
+
+\begin{equation}
+neuroninput = \sum_{i=1}^{n} x_{n} \quad  x \in \{0, 1\}
+\end{equation}
+
+
+A function composition:
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+	\node [align=center] (dummy1) at (-0.25,3.5) {$x_{1}$}; 
+	\node [align=center] (dummy2) at (-0.25,2.5) {$x_{n}$}; 
+	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
+	\node [draw=black, fill=white, align=center, circle] (g1) at (2.5,3) {g}; 
+	\node [align=center] (dummy3) at (4.5,3) {f(g($x_{1}$,..,$x_{n}$)}; 
+	\draw[arrow]	(dummy1) -- (f1);
+	\draw[arrow]	(dummy2) -- (f1);
+	\draw[arrow]	(f1) -- (g1);
+	\draw[arrow]	(g1) -- (dummy3);
+	\draw[dotted] (dummy1) -- (dummy2);
+	
+	\end{tikzpicture}
+	\caption{Function composition of two McCulloch-Pitts-neurons}
+	\label{fig:pitts2}
+\end{figure}
+
+A recursive neuron:
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+	\node [align=center] (dummy1) at (-0.25,3) {$x_{t}$}; 
+	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
+	\node [align=center] (dummy2) at (4,3) {f($x_{t}$,f($x_{t-1}$,f($x_{t-2}$,...)))}; 
+	\draw[arrow]	(dummy1) -- (f1);
+	\draw[arrow]	(f1) -- (dummy2);
+	\draw[arrow]	(f1) -- (f1);
+	\draw[->] (1.35,3) .. controls (1.3,2.15) and (0.6,2.2) .. (0.65, 3);
+	\end{tikzpicture}
+	\caption{Recursive McCulloch-Pitts-neuron}
+	\label{fig:pitts3}
+\end{figure}
+
+The output is given after a fixed timestep t.
+
+\paragraph{Applications}
+The McCulloch-Pitts-neuron is biologically not plausible, because learning
+can just happen by changing the threshold and the network topology. This
+needs complex algorithms.
+But this neuron type can realise AND-, OR- and NOT-Gates.
+Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. You can simulate finite state machines, too.
+You may think if its better to have real or at least integer values to transmit more information instead of just binary signals. This depends on the applicationtype. Binary values are easier to realize, both in electrical and biological systems and mcculloch-pitts-networks are equivalent to other kind of networks with more signalstates. Though you get a more complex networktopology, if you use binary neurons.
+
+It was the first mathematical model of artifical neural networks.\cite{NEURONMATH}
+
+
+\subsubsection{Perceptron}
+The classical perceptron was published by Frank Rosenblatt in 1958.
+It has an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
+the perceptron has real weights. The advantage is that learning-algorithms has just to change the weights
+instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero(neutral) weights.
+
+\paragraph{Linear seperability}
+A classical perceptron can only seperate linear datasets. This is due to only two layers. For seperating non-linear datasets read \ref{sec:mlp}.
+An widely known example is the xor-problem.
+
+\begin{figure}[H]
+	\centering
+	%	\subfigure[]
+	%	{
+	\begin{tabular}{|l|l|l|}
+		\hline
+		x1 & x2 & f6\\
+		\hline
+		0 & 0 & 0 \\
+		\hline
+		0 & 1 & 1 \\
+		\hline
+		1 & 0 & 1 \\
+		\hline
+		1 & 1 & 0 \\
+		\hline
+	\end{tabular}
+	%}
+	\caption{XOR-Function: Not linear seperable}
+	\label{fig:linsep1}
+	
+	\subfigure[]
+	{
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=4cm, height=4cm,     % size of the image
+		grid = major,
+		grid style={dashed, gray!30},
+		xmax=1,        
+		ymin=-1,
+		ymax=1,
+		axis background/.style={fill=white},
+		ylabel=$a_{j}$,
+		xlabel=$in_{j}$]
+		
+		\addplot[black]{-0.5*x+0.5};
+		%	\addplot[black]{-2*x-1.5};
+		\end{axis}
+		\end{tikzpicture}
+		\label{fig:sepplot1}
+	}
+	
+\end{figure}
+
+\paragraph{Applications}
+The perceptron can be used as pattern associator to categorise an inputpattern to a class, competitive network. Also linear seperable data can be categorised.
+It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{sec:learning})
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\textwidth,scale=1]{files/neuron.jpg}  
+		\caption{A singlelayer perceptron \cite{PERSIN}.}
+		\label{fig:neuron}
+	\end{figure}
+\end{center}
+
+\subsection{Second generation}
+The idea of the second generation of neural networks is born in the 90s. The firerate of a neuron encodes the transmitted signal. In this case now real values are used for in- and outputs.
+
+\subsubsection{Multi layer perceptron (MLP)} \label{sec:mlp}
+The multilayer perceptron was intruduced by Minsky and Papert in . It has an input-, an output- and
+one or multiple hiddenlayers. In contrast to the singlelayerperceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
+
+\paragraph{Applications}
+
+
+\subsubsection{Kohonen networks / Selforganizing maps (SOM)}
+Kohonen-networks are inventioned by the finnish engineer Teuvo Kohonen in 1982. They have two layers. An inputlayer and a n-dimensional outputlayer.
+Kohonen-networks usually don't have hidden layers.
+The inputspace 
+
+\paragraph{Applications}
+Data-mining, unsupervised learning, clusteranalysis, computergraphics. 
+
+\subsection{Combination of networkmodels}
+
+\subsubsection{MLP and SOM} %look at neuronale netze im klartext chapter 6.3
+
+\subsection{Third generation}
+In the third generation of artifical neural networks the signal is additionally encoded in time. These called spikes are
+
+\subsubsection{Spiking neural networks}
+
+\paragraph{Applications}
+
+%\subsection{Feed Forward}
+\subsection{Recurrent}
+
+
+source: Daniel Rey Book
 
 
 
@@ -324,6 +631,8 @@ therefore it hasn't to be linear or differentiable. \\
 
 In this project evolutionary algortihms are used to find the best 
 (unsupervised) neural network to controll one creature. The idea is to use the amount of food a creature collect over a defined time as fitnessvalue.
+
+\section{Modelisation TODO}
 
 \section{The creepy random search method or hill climber method}
 The creepy random search method is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973. % 1973 correct?? look at literaturesource in kinnebruck
@@ -439,6 +748,7 @@ Simulated annealing is suitable for functions with many local optima.
 %\subsection{Weaknesses}
 
 %\section{Applications}
+
 
 
 
