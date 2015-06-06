@@ -911,7 +911,7 @@ void gui::init()
 	created = false;
 	glui = NULL;
 	glui_createevolution = NULL;
-	plotterWindow = NULL;
+	plotterWindow = 0;
 
 	//TODO In Test.cpp
 	//Init Box2D-Simulation

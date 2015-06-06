@@ -40,9 +40,9 @@
 int main(int argc, char** argv)
 {
 
-	gui *ngui = new gui("Simulation of Agents", 0, 0, 1280, 928, argc, argv);
+	gui ngui("Simulation of Agents", 0, 0, 1280, 928, argc, argv);
 
-	ngui->Start();
+	ngui.Start();
 
 	return 0;
 }

@@ -1,8 +1,9 @@
 #ifndef Agent_H
 #define Agent_H
 
-#define M_PI 3.14159265359
 #define DEGTORAD (M_PI/180)
+
+#include <math.h>
 
 #include "commonDefs.hpp"
 #include "feedForwardNet.hpp"
@@ -22,9 +23,6 @@ class Agent
         Net* angle_net;           //The Neural Net used to compute the agent's angle
         Script* myscript;         //Script to directly test functions
         int fitness, lastfitness; // bestfitness;
-
-        //Output
-        //std::vector<double> outputvals;
 
     private:
         unsigned int idleness_count;
