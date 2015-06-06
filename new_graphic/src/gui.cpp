@@ -222,8 +222,44 @@ void gui::Timer2(int)
              }
 
 			 //Plot Statistics
-			 plot_debugDraw.DrawString(5, 20, "Mode: %d", sim_parameter.mode);
-			 plot_debugDraw.DrawString(5, 45, "Evolve_Algorithm: %d", sim_parameter.evolve_algorithm);
+             if (0 == sim_parameter.mode)
+             {
+    			 plot_debugDraw.DrawString(5, 20, "Mode: Singleplayer");
+             }
+             else if (1 == sim_parameter.mode)
+             {
+    			 plot_debugDraw.DrawString(5, 20, "Mode: Evolution");
+             }
+             else if (2 == sim_parameter.mode)
+             {
+    			 plot_debugDraw.DrawString(5, 20, "Mode: Best Agents ");
+             }
+
+			 //Plot Statistics
+             if (0 == sim_parameter.evolve_algorithm)
+             {
+                 plot_debugDraw.DrawString(5, 45, "Evolve_Algorithm: Hillclimber");
+             }
+             else if (1 == sim_parameter.evolve_algorithm)
+             {
+                 plot_debugDraw.DrawString(5, 45, "Evolve_Algorithm: Simulated Annealing");
+             }
+             else if (2 == sim_parameter.evolve_algorithm)
+             {
+                 plot_debugDraw.DrawString(5, 45, "Evolve_Algorithm: Supervised Learning");
+             }
+             else if (3 == sim_parameter.evolve_algorithm)
+             {
+                 plot_debugDraw.DrawString(5, 45, "Evolve_Algorithm: Crossover");
+             }
+             else if (4 == sim_parameter.evolve_algorithm)
+             {
+                 plot_debugDraw.DrawString(5, 45, "Evolve_Algorithm: Script");
+             }
+
+
+
+
 			 plot_debugDraw.DrawString(5, 70, "generation: %d", evolution_control->generations);
 			 plot_debugDraw.DrawString(5, 95, "iterations: %d / %d", evolution_control->iterationsteps, evolution_control->evolvesteps);
 			 plot_debugDraw.DrawString(5, 120, "mutation_rate: %f", evolution_control->sim_parameter.mutation_rate);
@@ -783,21 +819,21 @@ void gui::Createevolution_win()
 		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Simulated Annealing");
 		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Supervised Learning");
 		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Crossover");
-		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Script");
+//		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Script");
 
 		glui_createevolution->add_separator();
 
-		GLUI_RadioGroup* mode_radiogroup = glui_createevolution->add_radiogroup(&temp_sim_parameter.mode);
-		glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Singleplayer");
-		glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Evolution");
-		glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Best Agents");
+//		GLUI_RadioGroup* mode_radiogroup = glui_createevolution->add_radiogroup(&temp_sim_parameter.mode);
+//		glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Singleplayer");
+//		glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Evolution");
+//		glui_createevolution->add_radiobutton_to_group(mode_radiogroup, "Best Agents");
 
-		glui_createevolution->add_separator();
+//		glui_createevolution->add_separator();
 
 		GLUI_RadioGroup* nettype_radiogroup = glui_createevolution->add_radiogroup(&temp_sim_parameter.nettype);
 		glui_createevolution->add_radiobutton_to_group(nettype_radiogroup, "Feedforward");
-		glui_createevolution->add_radiobutton_to_group(nettype_radiogroup, "Simple Recurrent");
-		glui_createevolution->add_radiobutton_to_group(nettype_radiogroup, "Script");
+//		glui_createevolution->add_radiobutton_to_group(nettype_radiogroup, "Simple Recurrent");
+//		glui_createevolution->add_radiobutton_to_group(nettype_radiogroup, "Script");
 
 		glui_createevolution->add_separator();
 
@@ -841,10 +877,10 @@ void gui::Create_Panel()
 	glui->add_column_to_panel(drawPanel, true);
 	glui->add_button_to_panel(drawPanel, "Restart", 0, Wrapper_Restart_setVal);
 	glui->add_column_to_panel(drawPanel, true);
-	glui->add_button_to_panel(drawPanel, "Best Agents");
-	glui->add_column_to_panel(drawPanel, true);
-	glui->add_button_to_panel(drawPanel, "Help");
-	glui->add_column_to_panel(drawPanel, true);
+//	glui->add_button_to_panel(drawPanel, "Best Agents");
+//	glui->add_column_to_panel(drawPanel, true);
+//	glui->add_button_to_panel(drawPanel, "Help");
+//	glui->add_column_to_panel(drawPanel, true);
 	glui->add_button_to_panel(drawPanel, "Quit", 0, (GLUI_Update_CB)Wrapper_Exit);
 	glui->add_column_to_panel(drawPanel, true);
 
