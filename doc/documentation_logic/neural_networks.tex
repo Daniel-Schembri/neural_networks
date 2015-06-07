@@ -1153,15 +1153,14 @@ Backpropagation through time.
     
     \For{$\forall t \in [0,n-1]: t \in \mathbb{N}_0$}
     {
-        \tcp{Done for each }
-        Set network inputs $y(0), x(1), x(2), x(3)$\\
+        \tcp{Done for each}
+        Set network inputs $y(0), x(0), x(1), ..., x(k)$\\
         Forward-propagate.\\ 
-        Error $e = y(t+k) - t;$ $t:$ target error\\
-        Backpropagate the error across the whole unfolded network.\\
+        Error $e = target - y(t+k)$\\
+        Backpropagate the error across the network.\\
         Update all the weights in the network according to standard Backpropagation.\\
-        $y(0) \leftarrow f(x)$
-
-    
+        Average the weights of the unfolded network that correspond to $g$ in the RNN.\\
+        Set each of those weights to the averaged $g$ value\\
     }
 }
 \caption{The Backpropagation through time algorithm.}
