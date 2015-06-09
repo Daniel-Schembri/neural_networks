@@ -631,6 +631,8 @@ void gui::Pause(int)
 
 }
 
+
+
 void gui::Exit(int code)
 {
 	// TODO: freeglut is not building on OSX
@@ -651,11 +653,8 @@ void gui::Exit(int code)
     evolution_control = NULL;
   }
   
-
-/*
   if (NULL != glui)
   {
-    std::cout << "glui deleted" << std::endl;
   //  delete glui;
     glui->close();
     glui = NULL;
@@ -663,14 +662,13 @@ void gui::Exit(int code)
 
   if (NULL != glui_createevolution)
   {
-    std::cout << "glui evolution deleted" << std::endl;
   //  delete glui_createevolution;
     glui_createevolution->close();
     glui_createevolution = NULL;
   }
-*/
+
   return;
-//	exit(code); //This or return instead?
+	exit(code); //This or return instead?
 }
 
 void gui::SingleStep(int)
@@ -690,11 +688,12 @@ void gui::Keyboard(unsigned char key, int x, int y)
 		switch (key)
 		{
 		case 27:
-#ifndef __APPLE__
+//#ifndef __APPLE__
 			// freeglut specific function
-			glutLeaveMainLoop();
-#endif
-			exit(0);
+//			glutLeaveMainLoop();
+//#endif
+			Exit(0);
+
 			break;
 
 			// Press 'z' to zoom out.
