@@ -85,6 +85,7 @@ private:
 	float settingsHz = 60.0;
 	GLUI *glui;
 	GLUI *glui_createevolution;
+    int glui_createevolution_id;
 	float32 viewZoom = 5.0f;
 	float32 viewZoom_panel = 3.0f;
 	int tx, ty, tw, th;

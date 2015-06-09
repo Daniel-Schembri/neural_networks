@@ -583,9 +583,8 @@ void gui::new_evolution(int)
 
 void gui::create_evolution(int)
 {
-
-	//	Createevolution_win();
-	
+    glui_createevolution->close();
+    Createevolution_win();
 
 	glui_createevolution->enable();
 	glui_createevolution->show();
@@ -819,14 +818,9 @@ gui::gui()
 void gui::Createevolution_win()
 {
 	//Window to create new Evolution
-	//if (NULL == glui_createevolution)
-	{
 		glui_createevolution = GLUI_Master.create_glui("New Evolution", 0, 300, 300);
-
-		glui_createevolution->add_separator();
-
-
-		//glui_createevolution->add_column(false);
+		glui_createevolution_id = glui_createevolution->get_glut_window_id(); 
+        glui_createevolution->add_separator();
 
 		GLUI_Spinner* popSizeSpinner = glui_createevolution->add_spinner("Population Size", GLUI_SPINNER_INT, &temp_sim_parameter.population_size);
 		popSizeSpinner->set_int_limits(1, 100);
@@ -892,7 +886,6 @@ void gui::Createevolution_win()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glMatrixMode(GL_MODELVIEW);
 		glutSwapBuffers();
-	}
 }
 
 
@@ -942,7 +935,8 @@ void gui::init()
 {
 	created = false;
 	glui = NULL;
-	glui_createevolution = NULL;
+	glui_createevolution = 0; //was NULL before
+    glui_createevolution_id = 0;
 	plotterWindow = 0;
 
 	//TODO In Test.cpp
