@@ -98,6 +98,19 @@ NeuralWorld::NeuralWorld(std::vector<Agent *> *ppopulation, int pamount_Object, 
     Init();
 }
 
+
+NeuralWorld::~NeuralWorld()
+{
+
+    if (NULL != touches)
+    {
+        delete touches;
+        touches = NULL;
+    }
+
+}
+
+
 void NeuralWorld::Init()
 {
     force[0] = false; force[1] = false; force[2] = false; force[3] = false;

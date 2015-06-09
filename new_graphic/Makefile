@@ -24,7 +24,7 @@ CXXFLAGS = -std=c++11
 #CXXFLAGS  += -Wextra
 
 #maximum optimization
-CXXFLAGS  += -O3
+CXXFLAGS  += -O3 -g
 CXXFLAGS  += -march=native
 
 CXXFLAGS  += -I$(INCDIR) -I$(INCDIRBOX2D) -I$(INCUSR) -I$(INCDIRLOGIC)

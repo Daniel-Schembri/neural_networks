@@ -40,6 +40,7 @@
 #include <Box2D/Box2D.h>
 #include "render.h"
 
+#include <iostream>
 #include <stdlib.h>
 
 class Test;

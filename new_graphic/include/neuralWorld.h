@@ -103,6 +103,7 @@ private:
 //Methods
 public:
 	NeuralWorld();
+	~NeuralWorld();
 	NeuralWorld(std::vector<Agent *> *ppopulation, int pamount_Object, int field_size, int pmode);
 	static Test* Create(std::vector<Agent *> *ppopulation, int pamount_Object, int pfield_size, int pmode);
 	void Step(Settings* settings);

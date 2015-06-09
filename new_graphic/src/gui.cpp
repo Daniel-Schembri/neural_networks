@@ -637,7 +637,40 @@ void gui::Exit(int code)
 #ifdef FREEGLUT
 	glutLeaveMainLoop();
 #endif
-	exit(code);
+
+//Call destructors
+  if (NULL != test)
+  {
+    delete test;
+    test = NULL;
+  }
+
+  if (NULL != evolution_control)
+  {
+    delete evolution_control;
+    evolution_control = NULL;
+  }
+  
+
+/*
+  if (NULL != glui)
+  {
+    std::cout << "glui deleted" << std::endl;
+  //  delete glui;
+    glui->close();
+    glui = NULL;
+  }
+
+  if (NULL != glui_createevolution)
+  {
+    std::cout << "glui evolution deleted" << std::endl;
+  //  delete glui_createevolution;
+    glui_createevolution->close();
+    glui_createevolution = NULL;
+  }
+*/
+  return;
+//	exit(code); //This or return instead?
 }
 
 void gui::SingleStep(int)
@@ -942,6 +975,7 @@ void gui::init()
 	sim_parameter.mutation_rate = 0.0f;
 	sim_parameter.annealing_rate = 0;
 	sim_parameter.nettype = 0; //Feedforward
+    sim_parameter.amount_of_elite_copies = 0;
 
 	temp_sim_parameter.amount_of_Object = 40;
 	temp_sim_parameter.evolvetime = 30;
@@ -952,6 +986,7 @@ void gui::init()
 	temp_sim_parameter.annealing_rate = 300;
 	temp_sim_parameter.population_size = 10;
 	temp_sim_parameter.nettype = 0; //Feedforward
+    temp_sim_parameter.amount_of_elite_copies = 3;
 
 	//TODO: Choose in new_evolution window!
 	//Evolution

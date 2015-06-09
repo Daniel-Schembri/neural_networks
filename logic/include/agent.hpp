@@ -35,6 +35,7 @@ class Agent
     public:
 
         Agent();
+        Agent(const Agent &obj);
         ~Agent();
 
         Agent(float pposx, float pposy, int pid, 
@@ -42,6 +43,9 @@ class Agent
         Agent(float pposx, float pposy, int pid, 
               std::vector<unsigned> ptopology, int pnet_type, WeightMatrix &pweights);
 
+        int getid() const;
+        int getnettype() const;
+        std::vector<unsigned> gettopology() const;
         //Obtain the agent's velocity from the current sensor values
         double processV(std::vector<double> inputVals);
 

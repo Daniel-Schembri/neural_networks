@@ -43,7 +43,10 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
     best_fitnesses.push_back(0);
     average_fitnesses.push_back(0.0f);
 
-    best_Agents.push_back(population[0]);  //Just to keep one field to save later best Agent
+    Agent* local = new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, ptopology, sim_parameter.nettype);
+   // *local = *(population[0]);
+
+    best_Agents.push_back(local);  //Just to keep one field to save later best Agent
 
     for (unsigned int i = 0; i < 100; i++)  
     {
@@ -61,7 +64,7 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
 
 evolutionary::~evolutionary()
 {
-    /*
+    
     if(!best_Agents.empty())
     {
         for(unsigned i=0; i<best_Agents.size();++i)
@@ -98,7 +101,7 @@ evolutionary::~evolutionary()
         }
         newPopulation.clear();
     }
-    */
+    
 }
 
 
@@ -545,7 +548,13 @@ void evolutionary::save_bestAgent()
     {    
         if (population[i]->fitness > best_fitness)
         {
-            best_Agents[0] = population[i];
+           if (NULL != best_Agents[0])
+           {
+               delete best_Agents[0];
+               best_Agents[0] = NULL;
+           }
+           best_Agents[0] = new Agent(*(population[i]));
+           // *(best_Agents[0]) = *(population[i]); //Doesnt work!
         }
     }
 }
@@ -717,20 +726,22 @@ int evolutionary::evolve_crossover()
         // Add some elitism by copying the best agent n times
         for(unsigned i=0;i < sim_parameter.amount_of_elite_copies; ++i)
         {
-            mutate_net(best_Agents[0]->angle_net);
-			mutate_net(best_Agents[0]->velocity_net);
-            newPopulation.push_back(best_Agents[0]);
+            //Make a copy of the best agent
+            Agent* best_Agent = new Agent(*(best_Agents[0]));
+            mutate_net(best_Agent->angle_net);
+			mutate_net(best_Agent->velocity_net);
+            newPopulation[i] = best_Agent;
         }
 
-        while(sim_parameter.population_size != newPopulation.size())
+        while(sim_parameter.population_size < newPopulation.size())
         {
             int mum_id = rand() % (population.size()-1);
             int dad_id = rand() % (population.size()-1);
 
             assert(0 <= mum_id && (population.size()-1) >= mum_id);
 
-            Agent& mum = *(population[mum_id]);
-            Agent& dad = *(population[dad_id]);
+            Agent& mum = *(population[mum_id]);  //Here maybe a bug
+            Agent& dad = *(population[dad_id]);  //Here maybe a bug
 
             std::vector<Agent*> kids;
 

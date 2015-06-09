@@ -75,6 +75,54 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
     }
 }
 
+Agent::Agent(const Agent &other)
+{
+    velocity_net = NULL;
+    angle_net = NULL;
+    myscript = NULL;
+
+    //private attributes
+    idleness_count = 0;
+    posx = 0; posy = 0; angle = 0; //not important to get position
+    id = other.getid() ; nettype = other.getnettype();
+    topology = other.gettopology();
+
+    fitness = other.fitness; lastfitness = other.lastfitness;
+
+    if (NULL != other.velocity_net)
+    {
+        if (NET_FEEDFORWARD == nettype)
+        {
+            velocity_net = new FeedForwardNet(topology, true);
+        }
+        else if (NET_SRN == nettype);
+        {
+    //        velocity_net = new srn(topology, true);
+        }
+        velocity_net->setConnections(other.velocity_net->getConnections());
+    }
+
+    if (NULL != other.angle_net)
+    {
+        if (NET_FEEDFORWARD == nettype)
+        {
+            angle_net = new FeedForwardNet(topology, true);
+        }
+        else if (NET_SRN == nettype);
+        {
+      //      angle_net = new srn(topology, true);
+        }
+        angle_net->setConnections(other.angle_net->getConnections());
+    }
+
+    if (NULL != other.myscript)
+    {
+ //       myscript = new Script();
+    }
+
+    
+}
+
 Agent::~Agent()
 {
     if(NULL != velocity_net)
@@ -94,6 +142,22 @@ Agent::~Agent()
         delete myscript;
         myscript = NULL;
     }
+}
+
+
+int Agent::getid() const
+{
+    return id;
+}
+
+int Agent::getnettype() const
+{
+    return nettype;
+}
+
+std::vector<unsigned> Agent::gettopology() const
+{
+    return topology; 
 }
 
 void Agent::learnV(std::vector<double> ptrainingdata_output)
@@ -163,6 +227,7 @@ double Agent::processA(std::vector<double> inputvals)
     assert(1 == result_vals.size());
     return result_vals[0];
 }
+
 
 bool Agent::operator== (const Agent &other) const
 {
