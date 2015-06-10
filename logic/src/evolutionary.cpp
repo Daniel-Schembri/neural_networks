@@ -194,29 +194,12 @@ int evolutionary::evolve_simulatedannealing()
 
 int evolutionary::evolve_learn()  //
 {
-    double T;
-    double randomval = 0.0f;
-    double r, p;
-    r = 0.0f; p = 0.0f; T = sim_parameter.annealing_rate;
-    iterationsteps++;
-
-    if (iterationsteps >= evolvesteps) // 3000 = 1Min
+    if(!net_learned)
     {
-        if(!net_learned)
-        {
-            learn();
-            net_learned = true;
-        }
-
-        iterationsteps = 0;
-        save_bestAgent();
-
-        generations++;
-        // Cool down annealing rate
-        return 1;  //Signal that Simulation must be Reset
+        learn();
+        net_learned = true;
     }
     return 0;
-
 }
 
 void evolutionary::do_or_save_revert(Agent *agent, bool revert)
