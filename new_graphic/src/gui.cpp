@@ -287,6 +287,14 @@ void gui::Timer2(int)
 			 glutSwapBuffers();
 		 }
 	 }
+    else
+    {
+        //Clear 1st GLUT-Window
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glMatrixMode(GL_MODELVIEW);
+        glutSwapBuffers();
+    }
  }
 void gui::Resize(int w, int h)
 {
@@ -308,6 +316,13 @@ void gui::Resize(int w, int h)
 
 	// L/R/B/T
 	gluOrtho2D(lower.x, upper.x, lower.y, upper.y);
+
+    //Clear 1st GLUT-Window
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_MODELVIEW);
+	glutSwapBuffers();
+
 }
 
 void gui::SimulationLoop()
@@ -381,6 +396,14 @@ void gui::SimulationLoop()
 			}
 		}
 	}
+    else
+    {
+        //Clear 1st GLUT-Window
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glMatrixMode(GL_MODELVIEW);
+        glutSwapBuffers();
+    }
 }
 
 void gui::Resize_Panel(int32 w, int32 h)
@@ -920,7 +943,7 @@ void gui::Create_Panel()
 void gui::Create_plotterwin()
 {
 	//TODO: Set Focus on Subwindow that under Freeglut (Win) it gets Keyboard-callback
-	plotterWindow = glutCreateSubWindow(mainWindow, 880, 0, 400, 848);
+	plotterWindow = glutCreateSubWindow(mainWindow, 880, 0, 400, 800); //848 before
 	glutDisplayFunc(Wrapper_plotting);
 	glutKeyboardFunc(Wrapper_Keyboard_Panel);
 	glutReshapeFunc(Wrapper_Resize_Panel);
