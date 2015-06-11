@@ -841,32 +841,43 @@ gui::gui()
 void gui::Createevolution_win()
 {
 	//Window to create new Evolution
-		glui_createevolution = GLUI_Master.create_glui("New Evolution", 0, 300, 300);
+		glui_createevolution = GLUI_Master.create_glui("New evolution", 0, 300, 300);
 		glui_createevolution_id = glui_createevolution->get_glut_window_id(); 
         glui_createevolution->add_separator();
 
-		GLUI_Spinner* popSizeSpinner = glui_createevolution->add_spinner("Population Size", GLUI_SPINNER_INT, &temp_sim_parameter.population_size);
+		glui_createevolution->add_statictext("General options");
+		GLUI_Spinner* popSizeSpinner = glui_createevolution->add_spinner("Population size", GLUI_SPINNER_INT, &temp_sim_parameter.population_size);
 		popSizeSpinner->set_int_limits(1, 100);
-		GLUI_Spinner* amountObjectSpinner = glui_createevolution->add_spinner("Amount of Objects", GLUI_SPINNER_INT, &temp_sim_parameter.amount_of_Object);
+		GLUI_Spinner* amountObjectSpinner = glui_createevolution->add_spinner("Amount of objects", GLUI_SPINNER_INT, &temp_sim_parameter.amount_of_Object);
 		amountObjectSpinner->set_int_limits(1, 1000);
-		GLUI_Spinner* evolveTimeSpinner = glui_createevolution->add_spinner("Evolve Time in Sec", GLUI_SPINNER_INT, &temp_sim_parameter.evolvetime);
+		GLUI_Spinner* evolveTimeSpinner = glui_createevolution->add_spinner("Evolve time in sec", GLUI_SPINNER_INT, &temp_sim_parameter.evolvetime);
 		evolveTimeSpinner->set_int_limits(5, 1000);
 
-		GLUI_Spinner* fieldsizeSpinner = glui_createevolution->add_spinner("Field Size", GLUI_SPINNER_INT, &temp_sim_parameter.field_size);
+		GLUI_Spinner* fieldsizeSpinner = glui_createevolution->add_spinner("Field size", GLUI_SPINNER_INT, &temp_sim_parameter.field_size);
 		fieldsizeSpinner->set_int_limits(40, 200);
-		GLUI_Spinner* mutationRateSpinner = glui_createevolution->add_spinner("Mutation Rate", GLUI_SPINNER_FLOAT, &temp_sim_parameter.mutation_rate);
+		GLUI_Spinner* mutationRateSpinner = glui_createevolution->add_spinner("Mutation rate", GLUI_SPINNER_FLOAT, &temp_sim_parameter.mutation_rate);
 		mutationRateSpinner->set_float_limits(0.01f, 1.0f);
 		glui_createevolution->add_separator();
-		GLUI_Spinner* simulated_annealingSpinner = glui_createevolution->add_spinner("Annealing Rate", GLUI_SPINNER_INT, &temp_sim_parameter.annealing_rate);
+
+		glui_createevolution->add_statictext("Simulated annealing options");
+		GLUI_Spinner* simulated_annealingSpinner = glui_createevolution->add_spinner("Annealing rate", GLUI_SPINNER_INT, &temp_sim_parameter.annealing_rate);
 		simulated_annealingSpinner->set_int_limits(1, 10000);
 		glui_createevolution->add_separator();
+
+		glui_createevolution->add_statictext("Crossover options");
+		GLUI_Spinner* simulated_eliteSpinner = glui_createevolution->add_spinner("Elite copies", GLUI_SPINNER_INT, &temp_sim_parameter.amount_of_elite_copies);
+		simulated_annealingSpinner->set_int_limits(1, 100);
+		GLUI_Spinner* simulated_crossoverrateSpinner = glui_createevolution->add_spinner("Crossover rate", GLUI_SPINNER_FLOAT, &temp_sim_parameter.crossover_rate);
+		mutationRateSpinner->set_float_limits(0.01f, 1.0f);
+        
+        glui_createevolution->add_separator();
 		glui_createevolution->add_statictext("Evolutionary algorithm");
 
 		GLUI_RadioGroup* evolve_algorithms_radiogroup = glui_createevolution->add_radiogroup(&temp_sim_parameter.evolve_algorithm);
 
 		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Hillclimber");
-		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Simulated Annealing");
-		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Supervised Learning");
+		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Simulated annealing");
+		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Supervised learning");
 		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Crossover");
 //		glui_createevolution->add_radiobutton_to_group(evolve_algorithms_radiogroup, "Script");
 
@@ -879,6 +890,7 @@ void gui::Createevolution_win()
 
 //		glui_createevolution->add_separator();
 
+		glui_createevolution->add_statictext("Network type");
 		GLUI_RadioGroup* nettype_radiogroup = glui_createevolution->add_radiogroup(&temp_sim_parameter.nettype);
 		glui_createevolution->add_radiobutton_to_group(nettype_radiogroup, "Feedforward");
 //		glui_createevolution->add_radiobutton_to_group(nettype_radiogroup, "Simple Recurrent");
@@ -992,6 +1004,7 @@ void gui::init()
 	sim_parameter.annealing_rate = 0;
 	sim_parameter.nettype = 0; //Feedforward
     sim_parameter.amount_of_elite_copies = 0;
+    sim_parameter.crossover_rate = 0.0f;
 
 	temp_sim_parameter.amount_of_Object = 40;
 	temp_sim_parameter.evolvetime = 30;
@@ -1003,6 +1016,7 @@ void gui::init()
 	temp_sim_parameter.population_size = 10;
 	temp_sim_parameter.nettype = 0; //Feedforward
     temp_sim_parameter.amount_of_elite_copies = 3;
+    temp_sim_parameter.crossover_rate = 0.7f;
 
 	//TODO: Choose in new_evolution window!
 	//Evolution
