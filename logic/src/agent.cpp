@@ -43,13 +43,17 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
 Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology, int pnet_type,
              WeightMatrix &pweights)
 {
-    fitness = 0; lastfitness = 0; id=pid;
+    fitness = 0; lastfitness = 0; id=pid; nettype = pnet_type;
+
+    idleness_count = 0;
 
     posx = pposx; posy = pposy;
     topology = ptopology;
 	
     velocity_net = NULL;
-    angle_net    = NULL; myscript = NULL; 
+    angle_net    = NULL;
+    myscript = NULL; 
+
 	switch(nettype)
 	{
 	case NET_FEEDFORWARD:
@@ -117,7 +121,7 @@ Agent::Agent(const Agent &other)
 
     if (NULL != other.myscript)
     {
- //       myscript = new Script();
+        myscript = new Script();
     }
 
     
