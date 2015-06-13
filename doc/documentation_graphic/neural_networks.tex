@@ -211,13 +211,13 @@ The neural network framework is written by Jonathan Schwarz and detaily describe
 
 \normalsize
 
-Dieser Bericht wurde im Rahmen der Projektarbeit des Studienganges Master of Science in Embedded Systems der Hochschule Pforzheim angefertigt. 
+Dieser Projektbericht wurde im Rahmen der Projektarbeit des Studienganges Master of Science in Embedded Systems der Hochschule Pforzheim angefertigt. 
 
 Diese Projektarbeit beschreibt die Entwicklung eines Simulators für virtuelle Agenten, die Objekte in einer 2-dimensionalen Umgebung sammeln. 
 
-Der Simulator wurde in C++ entwickelt. Die Physics-engine Box2D von Erin Catto wird verwendet. Ebenso die OpenGL-Frameworks GLUT bzw. Freeglut zur Beschleunigten Darstellung der Simulation und GLUI für die Graphische Benutzer Schnittstelle. 
+Der Simulator wurde in C++ entwickelt. Die Physics-engine Box2D von Erin Catto wird verwendet. Ebenso die OpenGL-Frameworks GLUT bzw. Freeglut zur beschleunigten Darstellung der Simulation und GLUI für die Graphische Benutzer Schnittstelle. 
 
-Das Framework der neuronalen Netze wurde von Jonathan Schwarz entwickelt und wird in seiner Projektarbeit 'A comparison of neural network types and learning techniques with an application in artificial life' näher beschrieben.
+Das Framework der neuronalen Netze wurde von Jonathan Schwarz entwickelt und wird in seinem Projektbericht 'A comparison of neural network types and learning techniques with an application in artificial life' näher beschrieben.
 	
 	
 \end{abstract}
@@ -226,39 +226,50 @@ Das Framework der neuronalen Netze wurde von Jonathan Schwarz entwickelt und wir
 
 \chapter{Introduction}
 This document was created at Pforzheim university in the course Master of Science in Embedded Systems.
-It was part of the project work.
+It was part of the project work. \\
+
+The first chapters explain the basic concepts of software agents, artificial neural networks and evolutionary algorithms.
+The following chapters introduce the used libraries and tools.
+
+The last part describes the implementation of the simulator and concludes with the simulation results and a further view of the discussed topic.
 
 \section{Motivation}
-Artificial intelligence is an exciting field of computer science. One great dream of humanity was to create an technical analogy of the human mind.
-Philosophers and researches are wildly discussing if this goal is reachable and desirable.
+The classical method to solve a task mostly is to use a detailed prior knowledge. If this knowledge isn't sufficient it has to be acquired hardly. The development of this solution therefore can be difficult, time-consuming and expensive.
+This causes a big interest in solving tasks in an universal way. Creatures seems to solve problems easily by the abilities the received by evolution. This motivated researcher to apply this mechanisms in computer science. Thanks to the computing power of today evolution can be used in an abstract way to cultivate solutions and handle optimization problems.
+
+
 In this projectwork the main interest lies in agents, artificial neural networks and evolutionary training of these networks.
-
-Today there is no exact definition of what intelligence is.
-In general there are certain categories focusing different points of view to describe it.
+The motivation is to create a suitable simulation environment and to compare different evolutionary algorithms.
 
 
-Artificial intelligence has four branches of research: \\
 
-\fbox{
-	\begin{minipage}{15cm}
-		\begin{multicols}{2}
-			\begin{itemize}
-				\item \textbf{Knowledge-based systems}
-				\item \textbf{Robotics}
-				\item \textbf{Pattern recognition}
-				\item \textbf{Pattern prediction}
-			\end{itemize}
-		\end{multicols}
-	\end{minipage}
-}   \\
+%Today there is no exact definition of what intelligence is. In general there are certain categories focusing different points of view to describe it.
+
+
+%Artificial intelligence has four branches of research: \\
+
+%\fbox{
+%	\begin{minipage}{15cm}
+%		\begin{multicols}{2}
+%			\begin{itemize}
+%				\item \textbf{Knowledge-based systems}
+%				\item \textbf{Robotics}
+%				\item \textbf{Pattern recognition}
+%				\item \textbf{Pattern prediction}
+%			\end{itemize}
+%		\end{multicols}
+%	\end{minipage}
+%}    \\
 
 \section{Project task}
 The task of this project work is to develop a simulator to let agents collect objects in a 2-dimensional world. The agents logic is realized  by a neural network that is trained supervised or evolved with special algorithms derived from evolution theory.
 The simulator has to simulate a realistical environment. Therefore a physics engine is used.
-The simulation has to be rated and the collected data displayed. \\
+The simulation has to be rated and the collected data displayed. The simulator uses the neural network framework developed by Jonathan Schwarz.
+Artificial neural networks are function approximators and evolved in this project work to see if they can solve the task satisfactoringly.
+The concept of software agents is used as a frame to get an abstract view of the used algorithms. \\
 
 
-In this project neural networks of the second generation are used, because the main interest lies in finding a good mathematical solution.
+%In this project neural networks of the second generation are used, because the main interest lies in finding a good mathematical solution.
 
 
 \chapter{The concept of agents}
@@ -413,17 +424,12 @@ The environment can be \textbf{known} or \textbf{unknown}. That means that the a
 Source: Artificial intelligence book chapter 2.3
 
 \chapter{Artificial neural networks}
+Artificial neural networks (ANN)
 
 \section{Network types}
-At the moment there are three generations of neural networks. 
-The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
-In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
-The newest generation uses spikes, an encoding through time.
 
-\subsection{First generation}
-The first generation of neural networks have binary in- and outputs.
 
-\subsubsection{McCulloch-Pitts neuron}
+\subsection{McCulloch-Pitts neuron}
 The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
 developed by Warren McCulloch and Walter Pitts in 1943.
 They wanted to realise a simple, realistic neuron-modell of operations in the brain and find out if the brain could compute turing computability functions.
@@ -432,9 +438,9 @@ A real threshold can be defined, which reached, let the neuron fire an one, othe
 Its possible to add absolute suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs. The use of such absolute supressing inputs is for the most cases doubtfull.
 
 
-Neural networks of this type of neuron can just learn by changing topology of the network, that is laborious.
+Neural networks of this type of neuron can just learn by changing topology of the network. This is laborious.
 
-At the following a figure of a single neuron:
+At the following a figure of a single neuron is shown:
 
 \begin{figure}[H]  % [H] erzwingt Position an der Stelle im Text
 	\centering
@@ -452,7 +458,11 @@ At the following a figure of a single neuron:
 	\caption{A McCulloch-Pitts-neuron}
 	\label{fig:pitts1}
 \end{figure}
-The neuroninput is computed by:
+
+In general a neuron can be considered as a function.
+The neuron has n inputs and 1 output that can be connected to multiple neurons. It has a activation function that fires if the threshold is reached.
+
+The overall input is computed by:
 
 \begin{equation}
 neuroninput = \sum_{i=1}^{n} x_{n} \quad  x \in \{0, 1\}
@@ -480,6 +490,8 @@ A function composition:
 	\label{fig:pitts2}
 \end{figure}
 
+The function composition is a concatenation of multiple neurons.
+
 A recursive neuron:
 
 \begin{figure}[H]
@@ -497,7 +509,7 @@ A recursive neuron:
 	\label{fig:pitts3}
 \end{figure}
 
-The output is given after a fixed timestep t.
+The output is given after a fixed timestep t that has to be choosed.
 
 \paragraph{Applications}
 The McCulloch-Pitts-neuron is biologically not plausible, because learning
@@ -510,13 +522,12 @@ You may think if its better to have real or at least integer values to transmit 
 It was the first mathematical model of artifical neural networks.\cite{NEURONMATH}
 
 
-\subsubsection{Perceptron}
+\subsection{Perceptron}
 The classical perceptron was published by Frank Rosenblatt in 1958.
 It has an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
-the perceptron has real weights. The advantage is that learning-algorithms has just to change the weights
-instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero(neutral) weights.
+the perceptron has real weights. The advantage is that learning-algorithms have just to change the weights instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero (neutral) weights.
 
-\paragraph{Linear seperability}
+\subsubsection*{Linear seperability}
 A classical perceptron can only seperate linear datasets. This is due to only two layers. For seperating non-linear datasets read \ref{sec:mlp}.
 An widely known example is the xor-problem.
 
@@ -565,7 +576,7 @@ An widely known example is the xor-problem.
 \end{figure}
 
 \paragraph{Applications}
-The perceptron can be used as pattern associator to categorise an inputpattern to a class, competitive network. Also linear seperable data can be categorised.
+The perceptron can be used as pattern associator to categorise an input pattern to a class. It can also be used as competitive network. Also linear seperable data can be categorised.
 It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{sec:learning})
 
 \begin{center}
@@ -577,17 +588,15 @@ It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{
 	\end{figure}
 \end{center}
 
-\subsection{Second generation}
-The idea of the second generation of neural networks is born in the 90s. The firerate of a neuron encodes the transmitted signal. In this case now real values are used for in- and outputs.
 
-\subsubsection{Multi layer perceptron (MLP)} \label{sec:mlp}
+\subsection{Multi layer perceptron (MLP)} \label{sec:mlp}
 The multilayer perceptron was intruduced by Minsky and Papert in . It has an input-, an output- and
-one or multiple hiddenlayers. In contrast to the singlelayerperceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
+one or multiple hiddenlayers. In contrast to the singlelayer perceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
 
 \paragraph{Applications}
 
 
-\subsubsection{Kohonen networks / Selforganizing maps (SOM)}
+\subsection{Kohonen networks / Selforganizing maps (SOM)}
 Kohonen-networks are inventioned by the finnish engineer Teuvo Kohonen in 1982. They have two layers. An inputlayer and a n-dimensional outputlayer.
 Kohonen-networks usually don't have hidden layers.
 The inputspace 
@@ -595,19 +604,33 @@ The inputspace
 \paragraph{Applications}
 Data-mining, unsupervised learning, clusteranalysis, computergraphics. 
 
-\subsection{Combination of networkmodels}
-
-\subsubsection{MLP and SOM} %look at neuronale netze im klartext chapter 6.3
-
-\subsection{Third generation}
-In the third generation of artifical neural networks the signal is additionally encoded in time. These called spikes are
-
-\subsubsection{Spiking neural networks}
-
-\paragraph{Applications}
 
 %\subsection{Feed Forward}
 \subsection{Recurrent}
+
+\section{Network models}
+At the moment there are three generations of neural networks: \\
+
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item \textbf{Binary neural networks}
+			\item \textbf{Real valued neural networks}
+			\item \textbf{Spiking neural networks}
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
+In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
+The newest generation uses spikes, an encoding through time.
+
+At the moment there are three generations of neural networks. 
+The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
+In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
+The newest generation uses spikes, an encoding through time.
 
 
 source: Daniel Rey Book
@@ -1106,7 +1129,7 @@ This draws every shape in the bodylist of the world.
 \begin{center}
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.4\textwidth,scale=0.5]{files/Box2D-structure.png}
+		\includegraphics[width=0.4\textwidth,scale=0.5]{files/Box2D-Structure.png}
 		\caption{The general structure of a Box2D-application} \cite{box2d-structure}
 		\label{fig:box2d-structure}
 	\end{figure}
