@@ -226,17 +226,22 @@ Das Framework der neuronalen Netze wurde von Jonathan Schwarz entwickelt und wir
 
 \chapter{Introduction}
 This document was created at Pforzheim university in the course Master of Science in Embedded Systems.
-It was part of the project work. \\
+It was part of the project work.
 
+\section{Document structure}
 The first chapters explain the basic concepts of software agents, artificial neural networks and evolutionary algorithms.
 The following chapters introduce the used libraries and tools.
 
-The last part describes the implementation of the simulator and concludes with the simulation results and a further view of the discussed topic.
+The main part describes the implementation of the simulator and the theoretical considerations. The last part concludes with the simulation results and a further view of the discussed topic.
 
 \section{Motivation}
 The classical method to solve a task mostly is to use a detailed prior knowledge. If this knowledge isn't sufficient it has to be acquired hardly. The development of this solution therefore can be difficult, time-consuming and expensive.
-This causes a big interest in solving tasks in an universal way. Creatures seems to solve problems easily by the abilities the received by evolution. This motivated researcher to apply this mechanisms in computer science. Thanks to the computing power of today evolution can be used in an abstract way to cultivate solutions and handle optimization problems.
+This circumstances causes a big interest in solving tasks in an universal way. Creatures seems to solve problems easily by the abilities the received by evolution. This motivated researcher to apply this mechanisms in computer science. Thanks to the computing power of today evolution can be used in an abstract way to cultivate solutions and handle optimization problems.
 
+The concept of software agents is one model of artificial intelligence. It's an abstract view of an intelligent system that perceives its environment and acts self-sufficiently.
+
+Artificial neural networks are a concept to approximate target functions. These networks can be used for tasks with just partitial knowledg.
+They work well for finding patterns for example.
 
 In this projectwork the main interest lies in agents, artificial neural networks and evolutionary training of these networks.
 The motivation is to create a suitable simulation environment and to compare different evolutionary algorithms.
@@ -424,17 +429,23 @@ The environment can be \textbf{known} or \textbf{unknown}. That means that the a
 Source: Artificial intelligence book chapter 2.3
 
 \chapter{Artificial neural networks}
-Artificial neural networks (ANN)
+Artificial neural networks (ANN) are function approximators. They map a function:
+
+\begin{equation}
+	F: R^n \to R^m
+\end{equation} 
+Source Rochas
+
 
 \section{Network types}
-
+In this section some different neural network types are described.
 
 \subsection{McCulloch-Pitts neuron}
 The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
 developed by Warren McCulloch and Walter Pitts in 1943.
-They wanted to realise a simple, realistic neuron-modell of operations in the brain and find out if the brain could compute turing computability functions.
-McCulloch-Pitts-neuron has binary in- and outputs.
-A real threshold can be defined, which reached, let the neuron fire an one, otherwise zero.
+They wanted to realise a simple, realistic neuron-modell of the operations in the human brain and find out if the brain could compute turing computability functions.
+McCulloch-Pitts-neuron has binary inputs and one binary output.
+A real threshold has to be defined, which reached, let the neuron fire an one, otherwise zero.
 Its possible to add absolute suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs. The use of such absolute supressing inputs is for the most cases doubtfull.
 
 
@@ -468,6 +479,22 @@ The overall input is computed by:
 neuroninput = \sum_{i=1}^{n} x_{n} \quad  x \in \{0, 1\}
 \end{equation}
 
+$x_{n}$ are the binary inputs.
+
+The output Y is:
+
+
+\[ Y =
+\begin{cases}
+1       & \quad \text{if } \sum_{i=1}^{n} x_{n}  \geq S \\
+0  & \quad \text{otherwise}\\
+\end{cases}
+\]
+
+
+
+
+%Source Rochas
 
 A function composition:
 
@@ -509,7 +536,7 @@ A recursive neuron:
 	\label{fig:pitts3}
 \end{figure}
 
-The output is given after a fixed timestep t that has to be choosed.
+The output is given after a fixed timestep t. $t$ represents the amount of cycles a recursive neural net has to compute before the output can be used.
 
 \paragraph{Applications}
 The McCulloch-Pitts-neuron is biologically not plausible, because learning
@@ -525,11 +552,12 @@ It was the first mathematical model of artifical neural networks.\cite{NEURONMAT
 \subsection{Perceptron}
 The classical perceptron was published by Frank Rosenblatt in 1958.
 It has an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
-the perceptron has real weights. The advantage is that learning-algorithms have just to change the weights instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero (neutral) weights.
+the perceptron has additionally real weights. The advantage is that learning-algorithms have just to change the weights instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero (neutral) weights.
 
 \subsubsection*{Linear seperability}
-A classical perceptron can only seperate linear datasets. This is due to only two layers. For seperating non-linear datasets read \ref{sec:mlp}.
-An widely known example is the xor-problem.
+One main task of neural networks is to classify data. The net is therefore used as a seperator.
+The classical perceptron can only seperate linear datasets. This is due to only two layers. For seperating non-linear datasets read \ref{sec:mlp}.
+
 
 \begin{figure}[H]
 	\centering
@@ -545,33 +573,77 @@ An widely known example is the xor-problem.
 		\hline
 		1 & 0 & 1 \\
 		\hline
+		1 & 1 & 1 \\
+		\hline
+	\end{tabular}
+	%}
+	\caption{OR-Function: linear seperable}
+	\label{fig:linsep1}
+	
+		\subfigure[]
+		{
+			\begin{tikzpicture}
+			\begin{axis}[
+			width=4cm, height=4cm,     % size of the image
+			grid = major,
+			grid style={dashed, gray!30},
+			xmax=1,        
+			ymin=-1,
+			ymax=1,
+			axis background/.style={fill=white},
+			ylabel=$a_{j}$,
+			xlabel=$in_{j}$]
+			
+			\addplot[black]{-0.5*x+0.5};
+			%	\addplot[black]{-2*x-1.5};
+			\end{axis}
+			\end{tikzpicture}
+			\label{fig:sepplot1}
+		}
+	
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	%	\subfigure[]
+	%	{
+	\begin{tabular}{|l|l|l|}
+		\hline
+		x1 & x2 & f6\\
+		\hline
+		0 & 0 & 0 \\
+		\hline
+		0 & 1 & 1 \\
+		\hline
+		1 & 0 & 0 \\
+		\hline
 		1 & 1 & 0 \\
 		\hline
 	\end{tabular}
 	%}
-	\caption{XOR-Function: Not linear seperable}
-	\label{fig:linsep1}
+	\caption{And-Function: linear seperable}
+	\label{fig:linsep2}
 	
-	\subfigure[]
-	{
-		\begin{tikzpicture}
-		\begin{axis}[
-		width=4cm, height=4cm,     % size of the image
-		grid = major,
-		grid style={dashed, gray!30},
-		xmax=1,        
-		ymin=-1,
-		ymax=1,
-		axis background/.style={fill=white},
-		ylabel=$a_{j}$,
-		xlabel=$in_{j}$]
-		
-		\addplot[black]{-0.5*x+0.5};
-		%	\addplot[black]{-2*x-1.5};
-		\end{axis}
-		\end{tikzpicture}
-		\label{fig:sepplot1}
-	}
+		\subfigure[]
+		{
+			\begin{tikzpicture}
+			\begin{axis}[
+			width=4cm, height=4cm,     % size of the image
+			grid = major,
+			grid style={dashed, gray!30},
+			xmax=1,        
+			ymin=-1,
+			ymax=1,
+			axis background/.style={fill=white},
+			ylabel=$a_{j}$,
+			xlabel=$in_{j}$]
+			
+			\addplot[black]{-0.5*x+0.5};
+			%	\addplot[black]{-2*x-1.5};
+			\end{axis}
+			\end{tikzpicture}
+			\label{fig:sepplot2}
+		}
 	
 \end{figure}
 
@@ -593,20 +665,66 @@ It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{
 The multilayer perceptron was intruduced by Minsky and Papert in . It has an input-, an output- and
 one or multiple hiddenlayers. In contrast to the singlelayer perceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
 
+An widely known example is the xor-problem.
+
+\begin{figure}[H]
+	\centering
+	%	\subfigure[]
+	%	{
+	\begin{tabular}{|l|l|l|}
+		\hline
+		x1 & x2 & f6\\
+		\hline
+		0 & 0 & 0 \\
+		\hline
+		0 & 1 & 1 \\
+		\hline
+		1 & 0 & 1 \\
+		\hline
+		1 & 1 & 0 \\
+		\hline
+	\end{tabular}
+	%}
+	\caption{XOR-Function: Not linear seperable}
+	\label{fig:nlinsep}
+	
+	\subfigure[]
+	{
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=4cm, height=4cm,     % size of the image
+		grid = major,
+		grid style={dashed, gray!30},
+		xmax=1,        
+		ymin=-1,
+		ymax=1,
+		axis background/.style={fill=white},
+		ylabel=$a_{j}$,
+		xlabel=$in_{j}$]
+		
+		\addplot[black]{-0.5*x+0.5};
+		%	\addplot[black]{-2*x-1.5};
+		\end{axis}
+		\end{tikzpicture}
+		\label{fig:nsepplot1}
+	}
+	
+\end{figure}
+
 \paragraph{Applications}
 
 
-\subsection{Kohonen networks / Selforganizing maps (SOM)}
-Kohonen-networks are inventioned by the finnish engineer Teuvo Kohonen in 1982. They have two layers. An inputlayer and a n-dimensional outputlayer.
-Kohonen-networks usually don't have hidden layers.
-The inputspace 
+%\subsection{Kohonen networks / Selforganizing maps (SOM)}
+%Kohonen-networks are inventioned by the finnish engineer Teuvo Kohonen in 1982. They have two layers. An inputlayer and a n-dimensional outputlayer.
+%Kohonen-networks usually don't have hidden layers.
+%The inputspace 
 
-\paragraph{Applications}
-Data-mining, unsupervised learning, clusteranalysis, computergraphics. 
+%\paragraph{Applications}
+%Data-mining, unsupervised learning, clusteranalysis, computergraphics. 
 
 
 %\subsection{Feed Forward}
-\subsection{Recurrent}
+%\subsection{Recurrent}
 
 \section{Network models}
 At the moment there are three generations of neural networks: \\
@@ -615,9 +733,9 @@ At the moment there are three generations of neural networks: \\
 \fbox{
 	\begin{minipage}{15cm}
 		\begin{itemize} 
-			\item \textbf{Binary neural networks}
-			\item \textbf{Real valued neural networks}
-			\item \textbf{Spiking neural networks}
+			\item \textbf{1. generation - Mccullloch-Pitts Neuron, Perceptron (binary)}
+			\item \textbf{2. generation - real valued perceptron, multi layer perceptron(MLP) (real)}
+			\item \textbf{3. generation - spiking neural networks (encoding through time)}
 		\end{itemize}
 	\end{minipage}
 }   \\
@@ -636,9 +754,25 @@ The newest generation uses spikes, an encoding through time.
 source: Daniel Rey Book
 
 
+\section{Learning}
+One way of learning can happen supervised by a given training data set. The net is then trained by learning algorithms. (Hebbian, Backprop..). The net error is minimized. After the training cycle the net is tested by a test data set, that should differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training exactly. But this behaviour can can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote[1]{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} \\
+
+Other ways of learning are unsupervised and semi supervised learning. At unsupervised learning there is no training set given and the net has to organize itself to find a solution. This can happen by different methods like clustering. On semi supervised learning a incomplete and unlabeled data set is given. \\
+
+An alternative to this learning methods is the evolutionary training of the net. Populations of nets are cultivated and rated by a fitness function. There exist many optimization algorithms. Some of them are described in chapter \ref{sec:evo}. \\
+
+In this project work the topology and type of the networks is kept and only the weights are changed by the evolution process.
+
+
+
+
+
+
+
 
 
 \chapter{Optimization with evolutionary algorithms}
+\label{sec:evo}
 Optimization is widely used, for example in information technology, engineering,
 economics, etc. Applications are the routing of circuits, the optimal usage of machinery,
 the traveling-salesman-problem and much more. It is often difficult to create a mathematical
