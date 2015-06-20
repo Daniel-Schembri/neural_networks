@@ -459,7 +459,6 @@ Source Rochas
 
 
 \section{Network types}
-In this section some different neural network types are described.
 
 \subsection{McCulloch-Pitts neuron}
 The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
@@ -575,7 +574,7 @@ The classical perceptron was published by Frank Rosenblatt in 1958.
 It has an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
 the perceptron has additionally real weights. The advantage is that learning-algorithms have just to change the weights instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero (neutral) weights.
 
-\subsubsection*{Linear seperability}
+\subsubsection*{Linear seperability (TODO)}
 One main task of neural networks is to classify data. The net is therefore used as a seperator.
 The classical perceptron can only seperate linear datasets. This is due to only two layers. For seperating non-linear datasets see chapter \ref{sec:mlp}.
 
@@ -682,7 +681,7 @@ It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{
 \end{center}
 
 
-\subsection{Multi layer perceptron (MLP)} \label{sec:mlp}
+\subsection{Multi layer perceptron (MLP) (TODO)} \label{sec:mlp}
 The multilayer perceptron was intruduced by Minsky and Papert in . It has an input-, an output- and
 one or multiple hiddenlayers. In contrast to the singlelayer perceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
 
@@ -776,7 +775,7 @@ source: Daniel Rey Book
 
 
 \section{Learning}
-One way of learning can happen supervised by a given training data set. The net is then trained by learning algorithms. (Hebbian, Backprop..). The net error is minimized. After the training cycle the net is tested by a test data set, that should differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training exactly. But this behaviour can can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} \\
+One way of learning can happen supervised by a given training data set. The net is then trained by learning algorithms. The net error is minimized. After the training cycle the net is tested by a test data set, that should differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training exactly. But this behaviour can can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} \\
 
 Other ways of learning are unsupervised and semi supervised learning. At unsupervised learning there is no training set given and the net has to organize itself to find a solution. This can happen by different methods like clustering. On semi supervised learning a incomplete and unlabeled data set is given. \\
 
@@ -1478,9 +1477,99 @@ Callbacks are now defined. This has to be static functions, like in GLUT.
 
 'GLUI\_Master' is a global GLUI-object used to register callbacks, as glui-windows use for example the idle-callback extensively to control components status.
 
-\chapter{Development of a simulator for virtual agents}
+\chapter{Implementation}
 
 \section{Concept}
+The main concept is to cultivate a population of agents by different evolutionary algorithms to find a satisfying solution. Each agent has a sensor, representing an own coordinate system. The agents has to collect as much objects as possible in a given time. Therefore it has a feedforward neural network realized as multilayer perceptron.
+The objects and the agents are spawned randomly every round.
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth,scale=1.0]{files/main-concept.png}  
+		\caption{A sketch of the main concept}
+		\label{fig:concept-main}
+	\end{figure}
+\end{center}
+
+\subsection{The task environment}
+The simulation environment is: \\
+
+\fbox{
+	\begin{minipage}{15cm}				\begin{multicols}{2}
+		\begin{itemize} 
+			\item \textbf{partially observeable}
+			\item \textbf{single agent based or mulitagend based and competive} 
+			\item \textbf{deterministic}
+			\item \textbf{episodic}
+		    \item \textbf{static}
+		    \item \textbf{continous}
+		    \item \textbf{known}, because the sensors give all necessary values
+		\end{itemize}
+	\end{multicols}
+	\end{minipage}
+}   \\
+\\
+
+The simulation environment is \textbf{partially observeable} because the agents perception is limited by the sensor that has a fixed radius. \\
+
+It can be both \textbf{single agent based or mulitagend based and competive}, depending on the population size. If there is just one agent to train its single agent based, with more agents multiagent based and competive. \\
+
+The environment is \textbf{deterministic}. The start positions are choosen randomly, but the process of collecting the objects is from this point on deterministic as each step to get objects can be desribed step by step. \\
+
+Its \textbf{episodic} as the actual state does not change the general method of collecting further objects.
+
+The task environment is \textbf{static}, even if there are multiple agents we consider a static behaviour of the environment for simplicity. The agent don't interrupt each other to often. \\
+
+\textbf{Continuity} is given, because we handle with real values like the acceleration, the rotation and real valued neuron weights. The time for one generation is also continous. \\
+
+The environment is \textbf{known} as the agents sensor gives all data necessary to solve the task.\\
+
+\subsection{Realizing the agent}
+In this project work a simple reflex agent is realized.
+The agents processing logic is realized by a multilayer perceptron. That means the agent has no memory and just processes the actual perception\footnote{To get a memory a recurrent neural network could be used}. This categorises the agent to a simple reflex agent.
+
+\subsubsection*{The agents sensor}
+The agents sensor is a semicircle detecting just collectable objects in an given radius. The sensor returns a vector containing the X- and Y-coordinate relative to the agents actual position.
+
+\subsubsection*{The agents actuator}
+The agent can rotate left or right.
+The agent can accelerate just forwards.
+
+
+\subsection{Coordinate system transformation}
+
+To get the relative position of an object the global coordinate system has to be transformed into the agents local coordinate system, considering the agents actual angle.
+
+Therefore at first a translation is made, then the rotation of the agent is applied.
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\textwidth,scale=1.0]{files/CoordinateRotation.png}  
+		\caption{(Source https://de.wikipedia.org/wiki/Koordinatentransformation) \cite{wikipedia}.}
+		\label{fig:cosys-transform}
+	\end{figure}
+\end{center}
+
+\begin{equation}
+\vec{P'}^{\,} =
+\begin{pmatrix}
+\cos \alpha & \sin \alpha & 0 \\
+-\sin \alpha & \cos \alpha & 0 \\
+0 & 0 & 1
+\end{pmatrix}
+* \vec{P}^{\,}
+\end{equation}
+
+\begin{equation}
+x' = x * \cos \alpha + y * \sin \alpha
+\end{equation}
+\begin{equation}
+y' = -x * \sin \alpha + y * \cos \alpha
+\end{equation}
+
+Source: Wikipedia
 
 
 Transformation of the inputvalues through the input-neurons from range [-20.0, 20.0] and [0.0, 20.0] (Sensor x and y) and [-Pi, +Pi] (DeltaAngle) to the range [-1.0,+1.0] or [0.0, 1.0] with tanh function. (Better function? Linear function?)
@@ -1490,7 +1579,7 @@ rotate clockwise. If Agent is rotated by 180degree error should rotate counter-c
 has learned to rotate clockwise without deltaangle as input.
 
 
-Optional: Random placment of Objects and agents: see algorithm in NeuralWorld.cpp
+Optional: Random placement of Objects and agents: see algorithm in NeuralWorld.cpp
 
 
 
@@ -1507,13 +1596,49 @@ Scalable World:
 - Amount of Objects
 - Amount of Agents
 
+\section{The graphical user interface}
+
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,scale=1.0]{files/new_graphic.png}  
+		\caption{new graphic}
+		\label{fig:cosys-transform}
+	\end{figure}
+\end{center}
+
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.2\textwidth,scale=1.0]{files/new_graphic_new_ev.png}
+		\caption{new graphic create evolution}
+		\label{fig:cosys-transform}
+	\end{figure}
+\end{center}
+
+
+
+\subsection{Visualisation}
+
+Fitness Graph
+Weight Matrix
+Neural Network
+% \subsection{The fitness-function}
+
+
+% \subsection{Neural networks}
+
+
+
 \section{Software-Engineering}
 
 \subsection{Classdiagram}
 
 \subsection{Use-Cases}
 
-\subsection{The graphical user interface}
+
 
 Buttons, Modes
 
@@ -1522,8 +1647,6 @@ Optical Design of the gui
 Weight-Matrix
 
 Neural Network Activation
-
-\subsection{The interface}
 
 
 The inputs: 
@@ -1581,6 +1704,10 @@ Concept
 
 \section{Box2D}
 
+\subsection{The interface}
+(to the concrete implementation in Box2D)
+
+
 Call the Step-multiple times instead of changing the timestepvalue
 
 Care that the fixture shapes center is at (0,0) (The body's center). Can be problem at rotation if shape is not centered.
@@ -1595,20 +1722,18 @@ Detection of food: atan2-function
 Make, CMake
 Python for Trainingdata
 
-\section{Visualisation}
-
-Fitness Graph
-Weight Matrix
-Neural Network
-% \subsection{The fitness-function}
-
-
-% \subsection{Neural networks}
-
-
 
 
 \chapter{Results of the simulation}
+
+\section{A simple script}
+The simple script is based on trigonometric function.
+
+\section{The hillclimber method}
+
+\section{Simulated annealing}
+
+
 
 \chapter{Conclusion}
 
