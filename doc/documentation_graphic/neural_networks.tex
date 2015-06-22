@@ -225,7 +225,7 @@ Das Framework der neuronalen Netze wurde von Jonathan Schwarz entwickelt und wir
 
 
 \chapter{Introduction}
-This document was created at Pforzheim university in the course Master of Science in Embedded Systems.
+This document was created at Pforzheim University in the course Master of Science in Embedded Systems.
 It was part of the project work.
 
 \section{Document structure}
@@ -236,7 +236,7 @@ The main part describes the implementation of the simulator and the theoretical 
 
 \section{Motivation}
 The classical method to solve a task mostly is to use a detailed prior knowledge. If this knowledge isn't sufficient it has to be acquired hardly. The development of this solution therefore can be difficult, time-consuming and expensive.
-This circumstances causes an interest in solving tasks in an universal way. Creatures seems to solve problems easily by the abilities the received by evolution. This motivated researcher to apply this mechanisms in computer science. Thanks to the computing power of today evolution can be used in an abstract way to cultivate solutions and handle optimization problems.
+This circumstances causes an interest in solving tasks in an universal way. Creatures seems to solve problems easily by the abilities they received by evolution. This motivated researcher to apply this mechanisms in computer science. Thanks to the computing power of today evolution can be used in an abstract way to cultivate solutions and handle optimization problems.
 
 The concept of software agents is one model of artificial intelligence. It's an abstract view of an intelligent system that perceives its environment and acts self-sufficiently.
 
@@ -268,9 +268,9 @@ The motivation is to create a suitable simulation environment and to compare dif
 
 \section{Project task}
 The task of this project work is to develop a simulator to let agents collect objects in a 2-dimensional world. The agents logic is realized  by a neural network that is trained supervised or evolved with special algorithms derived from evolution theory.
-The simulator has to simulate a realistical environment. Therefore a physics engine is used.
+The simulator has to simulate a realistic environment. Therefore a physics engine is used.
 The simulation has to be rated and the collected data displayed. The simulator uses the neural network framework developed by Jonathan Schwarz.
-Artificial neural networks are function approximators and evolved in this project work to see if they can solve the task satisfactoringly.
+Artificial neural networks are function approximators and evolved in this project work to see if they can solve the task satisfactionally.
 The concept of software agents is used as a frame to get an abstract view of the used algorithms. \\
 
 
@@ -278,7 +278,7 @@ The concept of software agents is used as a frame to get an abstract view of the
 
 
 \chapter{The concept of agents}
-An agent is a programm that interacts self-sufficently depending on the actual state. It has, in general, sensors, a processing logic and actuators. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the concept of agents is used to compare with neural networks.
+An agent is a programm that interacts self-sufficently depending on its actual state. In general, it has sensors, a processing logic and actuators. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the concept of agents is used to compare with neural networks.
 
 Most agents are found in the world wide web. For example webcrawlers, search-engines and bots are well known.
 
@@ -297,32 +297,32 @@ The following figure shows the general structure of an agent:
 The logic part can be less or more complex. Just the actual perception can be processed or a specified sequence of perceptions. This is described detaily in the following sections.
 
 \section{Rationality}
-An agent creates a sequence of actions. These actions causes a sequence of states in the corresponding environment. Every sequence of states can be rated. The agent is called rational if it can maximize its score, considering its sequence of perceptions and its previous knowledge of the problem. Its important to distinguish rationality and perfection. An agent never will be perfectly solving a problem. Its unrealistic to expect the best possible solution for a problem in partitial observable environment. It can solve the problem as it can be expected by the given perceptions. The agent can't predict randomly events.
+An agent creates a sequence of actions. These actions causes a sequence of states in the corresponding environment. Every sequence of states can be rated. The agent is called rational if it can maximize its score, considering its sequence of perceptions and its previous knowledge of the problem. Its important to distinguish rationality and perfection. An agent never will be perfectly solving a problem. It's unrealistic to expect the best possible solution for a problem in partitial observable environment. It can solve the problem as it can be expected by the given perceptions. The agent can't predict random events.
 
-To achieve rationality the following topics have to be considered: \\
+In order to achieve rationality the following topics have to be considered: \\
 
 \fbox{
 	\begin{minipage}{15cm}
 		\begin{itemize} 
-			\item A sufficient previous knowledge of the problem.
-			\item A good rating of the resulting state sequence of the environment.
-			\item The perception sequence.
-			\item The possible actions the agent can execute.
+			\item A sufficient previous knowledge of the problem
+			\item A good rating of the resulting state sequence of the environment
+			\item The perception sequence
+			\item The possible actions the agent can execute
 		\end{itemize}
 	\end{minipage}
 }   \\
 
 \subsubsection{Learning}
-It is important for the agent to get further knowledge by its perceptions. Therefore the agent has to make some actions to explore the world, if he acts in a unknown environment.
+It is important for the agent to gain further knowledge by its perceptions. Therefore the agent has to make some actions to explore the world, if he acts in a unknown environment.
 An agent who doesn't learn can most likely not solve a problem if the environment changes.
-In nature animals are equipped with reflex actions to survive long enough to learn to handle with their environment.
+In nature animals are equipped with reflex actions to survive long enough to learn to adapt to their enviroment.
 
 \section{Types of agents}
 
 \subsection{Simple reflex agent}
 The simplest type of an agent is the reflex based agent.
-This agent only processes the actual perception and act on the base of this actual state. This type of agent can be used for simple tasks. The benefits are the fast implementation and a drastically reduced state space.
-The disadvantages lies in the simplicity. This agent has no memory and therefore doesn't include past states in his decisions. If the present state of the environment doesn't provide enough information or it is just partially observable, the agent could not solve the task.
+This agent only processes the actual perception and act on the base of this actual state. This type of agent can be used for simple tasks. The benefits are a fast implementation and a drastically reduced state space.
+The disadvantage lies within the simplicity. This agent has no memory and therefore doesn't include past states in his decisions. If the present state of the environment doesn't provide enough information or it is just partially observable, the agent could not solve the task.
 In partially observebale environment there can occur loops of wrong behaviour. This loops can be overcome if a random action can be chosen.
 For best functionality of a simple reflex agent the problem-environment should be fully observable.\footnote{See Chapter \ref{sec:env} for an explanaition of the environment}
 For more complex tasks using the following described agent-types may be a better solution.
@@ -331,16 +331,16 @@ For more complex tasks using the following described agent-types may be a better
 The model-based reflex agent expands the simple reflex agent by a memory. It internally creates a model of the world by past sensor data. This model is used to predict future states in the environment.
 This can be a moving object or changes in the environment made by the agent itself for example.
 
-Internally states of the agent are used to approximate the state of the environment on changes. 
+Internal states of the agent are used to approximate the state of the environment if changes occur. 
 The model is also used to estimate temporaly unobservable parts of the environment.
 
-The model-based reflex agents ability to solve a task reaches its limit, if it has to act in a new environment or other agents acting in the world, too. The internally created model may then not fit anymore.
+The model-based reflex agents ability to solve a task reaches its limit, if it has to act in a new environment or other agents acting in the world, too. The internally created model then may not fit anymore.
 
 
 \subsection{Goal-based agent}
-On some tasks it isn't enough to know the correct action on a specified state at the environment, like reflex-based agents do. It can be important for an agent to know the goal behind those actions. This is necessary for the generalization of a problem. For example: For a given route A To B there can be described a sequence of actions an agent has to execute to reach the target B. In general to get from one point to another its more difficult to describe general rules, as other routes may differ a lot. Its therefore too complex to describe all rules in detail. Therefore a generalization of this task has to be modelised.
+For some tasks it isn't enough to know the correct action on a specified state at the environment, like reflex-based agents do. It can be important for an agent to know the goal behind those actions. This is necessary for the generalization of a problem. For example: For a given route A To B there can be a description for a sequence of actions the agent has to execute in order to reach the target B. It is more difficult to describe specific rules for getting from one point to another in general, as other routes may differ a lot. It's therefore too complex to describe all rules in detail; hencefore a generalization of this task has to be modelised.
 
-The benefit is an agent that can solve complex tasks. The disadvantage is a need of more computing time. For real-time tasks this can be an obstacle.
+The benefit is an agent that can solve complex tasks. The drawback is a need of more computing time. For real-time tasks this can be an obstacle.
 
 \subsection{Utility-based agent}
 The utility-based agent expands the goal-based agent by the fact, that it can choose between several solutions. Therefore the agent has a rating function to choose the best or at least a good enough solution by several criteria. This rating function can be more complex then computing solutions of the task itself.
@@ -371,7 +371,7 @@ The \textbf{learning element} is responsible for improvements of the agent. The 
 
 The \textbf{critic} rates the performance element and tells the learning element how to improve it. \\
 
-A \textbf{problem generator} is used to improve learning by making new experiences. Without the problem generator the agent would make it actions with its learned best actions, but would never try new actions, that may seem uneffective in the first way, but in a long term run may be more effective. \\
+A \textbf{problem generator} is used to improve learning by making new experiences. Without the problem generator the agent would work with its best actions, but would never try new actions, that may seem uneffective in the first way, but may prove to be more effective in a long term run. \\
 
 The most important part for improvements is the correlation between the \textbf{performance element} and the \textbf{learning element}.
 
@@ -384,7 +384,7 @@ source: Artificial Intelligence Book and www.cs.hs-rm.de/~linn/fachsem0910/ander
 
 \section{The task environment}
 \label{sec:env}
-In the first case its important to preferably define the task completely. The task environment is defined by four categories: \\
+In the first case its preferable to define the task completely. The task environment is defined by four categories: \\
 
 \fbox{
 	\begin{minipage}{15cm}
@@ -400,29 +400,29 @@ In the first case its important to preferably define the task completely. The ta
 }   \\
 \\
 
-\textbf{The performance} is defined by the rating the agent can achieve. Therefore \\
+\textbf{The performance} is defined by the rating the agent can achieve. Therefore (TODO)\\
 
-\textbf{The environment} is the frame an agent solves a task.
-If the sensors allow the agent to get the information of the whole environment, the environment is called \textbf{fully observeable}. The agent therefore can get all relevant information for its actions. Otherwise an environment is classified as \textbf{partially observeable}. This for example can be if the sensors are limited or influenced by interferences.
-If the agent has no sensors at all, the task environment is called \textbf{unobserveable}. Instinctively you would think this kind of agent would be totally useless, but there exist succesful algorithms to solve problems. For example a vacuuming robot can clean a room effectively. It therefore uses stochastic algorithms. In factories this is used effectively to  turn objects. The benefit is less costs in sensors. \\
+\textbf{The environment} is the frame an agent solves a task within.
+If the sensors allow the agent to get the information of the whole environment, the environment is called \textbf{fully observeable}. The agent therefore can get all relevant information for its actions. Otherwise an environment is classified as \textbf{partially observeable}. For example this can be if the sensors are limited or influenced by interferences.
+If the agent has no sensors at all, the task environment is called \textbf{unobserveable}. Instinctively you would think this kind of agent would be totally useless, but there exist succesful algorithms to solve problems. For example a vacuuming robot can clean a room effectively. It therefore uses stochastic algorithms. In factories this is used effectively to turn objects on an assembly line. The benefit is less costs in sensors. \\
 
-It can also be necessary to know if the environment is a \textbf{single-} or \textbf{multiagent}-based. Multiple agents can \textbf{cooperate} or \textbf{compete}. \\
+It can also be necessary to know if the environment is a \textbf{single-} or \textbf{multiagent}-based one. Multiple agents can \textbf{cooperate} or \textbf{compete}. \\
 
-The environment is \textbf{deterministic} if all further states are predictable by the current state and there are no random events. Otherwise it is \textbf{stochastic}. In reality there can exist deterministic environments. But often the possibilities are too complex. The environment must then be handled by the agent as it was stochastic. Therefore there are given probabilities for each possibility. If not it is called \textbf{non-deterministic}. \\
+The environment is \textbf{deterministic} if all further states are predictable by the current state and there are no random events. Otherwise it is \textbf{stochastic}. In reality there can exist deterministic environments. But often the possibilities are too complex. The environment must then be handled by the agent as if it were stochastic. There are given probabilities for each possibility. If not it is called \textbf{non-deterministic}. \\
 
 If the action of the agent does only depend on the actual environment state and does not influence future state the environment is called \textbf{episodic}. Otherwise its called
 \textbf{sequential}. Chess for example is a sequential environment because every move can bring the game in a win- or lose-situation. \\
 
-A \textbf{static} environment doesn't change. This makes it easier for the agent to solve a task. A \textbf{dynamically} environment on the other hand needs a continuously observation. If the environment doesn't change, but the agents rating-process, it is called \textbf{semidynamically}. \\
+A \textbf{static} environment doesn't change. This makes it easier for the agent to solve a task. A \textbf{dynamically} environment on the other hand needs a continuously observation. If the environment doesn't change, but the agent's rating-process, it is called \textbf{semidynamically}. \\
 
 The environment can have \textbf{discrete} or \textbf{continous} states. Chess has discrete states, as it is played move by move. It could get a continous character if the time to calculate a move plays a role. Driving a car is in general continously as accelerating and steering have continous units.\\
 
 The environment can be \textbf{known} or \textbf{unknown}. That means that the agent has foreknowledge about the environment. This category has nothing to do with observability. \\
 
 
-\textbf{The actuators} are the components an agent interacts with the environment. In developing an agent there must be kept an eye on the possible actions an agent can do.\\
+\textbf{The actuators} are the components an agent uses to interact with the environment. In developing an agent there must be kept an eye on the possible actions an agent can do.\\
 
-\textbf{The sensors} are responsible to get data of the environment. With good algorithms costs for sensors can be noticeably reduced.
+\textbf{The sensors} are responsible for receiving data of the environment. With good algorithms costs for sensors can be noticeably reduced.
 
 
 Source: Artificial intelligence book chapter 2.3
@@ -430,8 +430,8 @@ Source: Artificial intelligence book chapter 2.3
 \chapter{Artificial neural networks}
 Artficial neural networks (ANN) are inspired by their biological equivalents.
 They are used in machine learning as an own class of classfiers, next to support vector machines
-and other mathematical methods. There exist models with biological plausability to research the
-operations in the human brain and models the get a more mathematical models whos interest lies more in a good technical solution in artifical intelligence.
+and other mathematical methods. On the one hand there exist models offering biological plausability to research the
+operations in the human brain. On the other hand there exist models whos main focus lies in finding good mathematical solutions for technical tasks.
 
 Artificial neural networks are often seen as a black box: \\
 
@@ -465,11 +465,11 @@ The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
 developed by Warren McCulloch and Walter Pitts in 1943.
 They wanted to realise a simple, realistic neuron-modell of the operations in the human brain and find out if the brain could compute turing computability functions.
 McCulloch-Pitts-neuron has binary inputs and one binary output.
-A real threshold has to be defined, which reached, let the neuron fire an one, otherwise zero.
+A real threshold has to be defined, which reached, let the neuron fire one or otherwise zero as output.
 Its possible to add absolute suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs. The use of such absolute supressing inputs is for the most cases doubtfull.
 
 
-Neural networks of this type of neuron can just learn by changing topology of the network. This is laborious as it causes a high effort in implementation.
+Neural networks of this type of neuron can just learn by changing topology of the network. This causes an unnecessary workload due to its high effort in implementation.
 
 At the following a figure of a single neuron is shown:
 
@@ -560,11 +560,10 @@ The output is given after a fixed timestep $t$. $t$ represents the amount of cyc
 
 \paragraph{Applications}
 The McCulloch-Pitts-neuron is biologically not plausible, because learning
-can just happen by changing the threshold and the network topology. This
-needs complex algorithms.
+can just happen by changing the threshold and the network topology. This needs complex algorithms.
 But this neuron type can realise AND-, OR- and NOT-Gates.
 Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. You can simulate finite state machines, too.
-You may think if its better to have real or at least integer values to transmit more information instead of just binary signals. This depends on the application type. Binary values are easier to realize, both in electrical and biological systems and mcculloch-pitts-networks are equivalent to other kind of networks with more signalstates. Though you get a more complex network topology, if you use binary neurons.
+You may think if its better to have real or at least integer values to transmit more information instead of just binary signals. However this depends on the application type. Binary values are easier to realize, both in electrical and biological systems and mcculloch-pitts-networks are equivalent to other kind of networks with more signalstates. Though you get a more complex network topology, if you use binary neurons.
 
 It was the first mathematical model of artifical neural networks.\cite{NEURONMATH}
 
@@ -572,7 +571,7 @@ It was the first mathematical model of artifical neural networks.\cite{NEURONMAT
 \subsection{Perceptron}
 The classical perceptron was published by Frank Rosenblatt in 1958.
 It has an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
-the perceptron has additionally real weights. The advantage is that learning-algorithms have just to change the weights instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero (neutral) weights.
+the perceptron has additionally real weights. The advantage is that learning-algorithms just have to change the weights instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero (neutral) weights.
 
 \subsubsection*{Linear seperability (TODO)}
 One main task of neural networks is to classify data. The net is therefore used as a seperator.
@@ -668,7 +667,7 @@ The classical perceptron can only seperate linear datasets. This is due to only 
 \end{figure}
 
 \paragraph{Applications}
-The perceptron can be used as pattern associator to categorise an input pattern to a class. It can also be used as competitive network. Also linear seperable data can be categorised.
+The perceptron can be used as pattern associator to assign an input pattern to a class. It can also be used as competitive network. Also linear seperable data can be categorised.
 It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{sec:learning})
 
 \begin{center}
@@ -761,27 +760,23 @@ At the moment there are three generations of neural networks: \\
 }   \\
 \\
 
-The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
-In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
-The newest generation uses spikes, an encoding through time.
-
 At the moment there are three generations of neural networks. 
 The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
 In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
 The newest generation uses spikes, an encoding through time.
 
 
-source: Daniel Rey Book
+TODO source: Daniel Rey Book
 
 
 \section{Learning}
-One way of learning can happen supervised by a given training data set. The net is then trained by learning algorithms. The net error is minimized. After the training cycle the net is tested by a test data set, that should differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training exactly. But this behaviour can can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} \\
+One way of learning can happen supervised by a given training data set. The net is then trained by learning algorithms. The net error is minimized. After the training cycle the net is tested by a test data set, that should differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training exactly. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} \\
 
-Other ways of learning are unsupervised and semi supervised learning. At unsupervised learning there is no training set given and the net has to organize itself to find a solution. This can happen by different methods like clustering. On semi supervised learning a incomplete and unlabeled data set is given. \\
+Other ways of learning are unsupervised and semi-supervised learning. At unsupervised learning there is no training set given and the net has to organize itself to find a solution. This can happen by different methods like clustering. On semi-supervised learning a incomplete and unlabeled data set is given. \\
 
-An alternative to this learning methods is the evolutionary training of the net. Populations of nets are cultivated and rated by a fitness function. There exist many optimization algorithms.\footnote{Some of them are described in chapter \ref{sec:evo}} \\
+An alternative to these learning methods is the evolutionary training of the net. Populations of nets are cultivated and rated by a fitness function. For these there exist many optimization algorithms.\footnote{Some of them are described in chapter \ref{sec:evo}} \\
 
-In this project work the topology and type of the networks is kept and only the weights are changed by the evolution process.
+In this project work the topology and type of the networks are kept and only the weights are changed by the evolution process.
 
 
 
@@ -796,9 +791,8 @@ In this project work the topology and type of the networks is kept and only the 
 Optimization is widely used, for example in information technology, engineering and
 economics. Applications are the routing of circuits, the optimal usage of machinery,
 the traveling-salesman-problem\footnote{The traveling salesman problem describes to find the shortest route between cities} and others. It is often difficult to create a mathematical
-model of such optimization problems. Therefore in the last decades methods were developed who
-uses principles of the evolution.
-The simplest method is the selection-method. In this model a dateset will be generated and randomly changes, called mutations, are made. The best datasets, chosen by the best fitness, will be kept. The fitness depends on the modelisation of the problem.
+model for such optimization problems. Over the last decades methods were developed who use principles of the evolution.
+The simplest method is the selection-method. In this model a dateset will be generated and random changes, called mutations, are made. The best datasets, chosen by the best fitness, will be kept. The fitness depends on the modelisation of the problem.
 Each dateset is called an individual. A set of individuals is called a population. The individuals
 of a population can be recombined. Mostly the best individuals are recombined with randomly chosen
 ones. This method is more effective than the selection-method. This and other methods are  called
@@ -824,17 +818,17 @@ A model has the following components: \\
 \\
 
 \subsection{Search space}
-The search space contains all possible solutions of the optimization problem. But it only defines the general form a solution can have. To effectively optimize, its important to define a simple structered search space, because in a too large and complex one the algorithm could not find a good solution in an appropriate time.
+The search space contains all possible solutions of the optimization problem. But it only defines the general form a solution can have. To effectively optimize, its important to define a simple structered search space, because in a too large and complex one the algorithm could not find a feasible solution in an appropriate time.
 
 \subsection{Rating function}
 With the search space on its own a good solution cannot be found. A rating function, representing the quality of a solution has to be defined. For maximization problems the function is called fitness function. A high score represents a good solution. For minimization problems a error function has to be choosen. This function describes the deviation of the result. A minimal difference of the target output (preferably zero) is the goal.
 
 \subsection{Algorithms}
-In general, if you look at all possible optimization problems, all algorithms are equal in effectivity, even a completely random choosing of parameters. This is described by the no-free-lunch-theorem(Source). There is no best universal algorithm to solve all problems. Some algorithms are better in a special field of problems and aren't in other ones. Therefore a categorisation of the problem to a specific class of algorithms is helpful.
+In general, if you look at all possible optimization problems, all algorithms are equal in effectivness, even a completely random choice of parameters. This is described by the no-free-lunch-theorem(TODO Source). There is no best universal algorithm to solve all problems. Some algorithms are better in a special field of problems and aren't in other ones. Therefore a categorisation of the problem to a specific class of algorithms is helpful.
 
 \section{The hill climber method}
 The hillclimber method, also called the creepy random search method, is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973. % 1973 correct?? look at literaturesource in kinnebruck
-Parameters of a system are randomly changed till a minimum or maximum of a targetfunction is reached. The value of the parameterchanges per iterationstep are limited. \\
+Parameters of a system are randomly changed untill a minimum or maximum of a targetfunction is reached. The value of the parameterchanges per iterationstep are limited. \\
 
 \textbf{The main algorithm is:}
 
@@ -893,7 +887,7 @@ To realise this, there have been developed some extended versions of this method
 	\begin{minipage}{15cm}
 		\begin{itemize} 
 			\item A stagnation of the fitness is allowed by a specified probability (Simulated annealing)
-			\item A stagnation of the fitness is allowed till a maximal deterioration. (Threshold accepting, deluge method)
+			\item A stagnation of the fitness is allowed untill a maximal deterioration. (Threshold accepting, deluge method)
 		\end{itemize}
 	\end{minipage}
 } \\
@@ -903,7 +897,7 @@ To realise this, there have been developed some extended versions of this method
 Simulated annealing is a probabilistic optimization method.
 It is inspired by the annealing of fluid materia to a solid aggregate states in metallurgy. While cooling down a material the thermodynamic free energy has to get as minimal as possible to get a clear crystalline structure. Therefore its suggested to cool down to material slowly for a better probability of getting a clear solid body.
 
-Analog in optimization you start with a high temperature T, means reaching a wide area in the search space. So reaching more maxima is possible. At the beginning each chromosome has the same probability to get selected. With each iteration the temperature is reduced and the reached area is getting smaller. Selecting better chromosomes is now more probalistic.
+Analog in optimization you start with a high temperature T, means reaching a wide area in the search space. That way it's possible to reach more maxima. At the beginning each chromosome has the same probability to get selected. With each iteration the temperature is reduced and the reached area is getting smaller. Selecting better chromosomes is now more probalistic.
 Towards the end the algorithm commutes in an optimum and behaves like the standard hillclimbing-algorithm.
 
 Slowly reducing the temperature increases the chance to find the global optimum. Cooling to fast leads to commuting early into a local optimum instead.
@@ -919,18 +913,18 @@ At the beginning a big T tends to equalize the probability of all chromosomes. F
 
 
 \section{Crossover}
-The crossover algorithm represents the idea of cultivating a population of individual solutions. After rating the population, the best individuum is chooesen and crossed with a random one of the actual population. There are two children created, who can optionally be mutated. This is done until the a new generation of individuals is created.
+The crossover algorithm represents the idea of cultivating a population of individual solutions. After rating the population, the best individual is choosen and crossed with a random one of the actual population. There are two children created, who can optionally be mutated. This is done until the a new generation of individuals is created.
 The process is repeated until a satisfying solution is cultivated or the process is aborted.\footnote{For more information see project work of Jonathan Schwarz}
 
 \section{Applications}
-The use of a specific algorithm depends on the problem and its modelisation. In general all optimization-methods are equal in effectivity, if we look over all posible optimization-problems in one set (No-free-Lunch-Theorem Source). Astonishingly a purely random search isn't less effective.
-Some of the given methods are better in special cases than others. Also a good understanding of the problems topic is essentially. Evolutinary algortihms take advantage of reducing the set of problems and a good modelisation.
+The use of a specific algorithm depends on the problem and its modelisation. In general all optimization-methods are equal in effectivness, if we look over all posible optimization-problems in one set (No-free-Lunch-Theorem Source). Astonishingly a purely random search isn't less effective.
+Some of the given methods are better in special cases than others. Also a good understanding of the problem's topic is essentially. Evolutinary algortihms take advantage of reducing the set of problems and a good modelisation.
 Simulated annealing is suitable for functions with many local optima.
 
 
 
 \chapter{The Box2D-Physicsengine}
-Box2D is a 2-dimensional physics engine, created by Erin Catto. It is licensed under the zlib-license, hence it is noncommercial and open source. The Box2D library is written platform-independently in C++. It is used mainly for gamedevelopment. There exist many portations to other programming languages, like Java and C\#. \\
+Box2D is a 2-dimensional physics engine, created by Erin Catto. It is licensed under the zlib-license, hence it is noncommercial and open source. The Box2D library is written platform-independently in C++. It is used mainly for game development. Many portations into other programming languages, like Java and C\# exists. \\
 (source jbox2d)
 
 
@@ -969,7 +963,7 @@ A body contains the following values: \\
 
 A body contains one or more fixtures, containing the shape and more properties of the body.
 
-If a body is moved, also the fixtures are moved.
+If a body is moved, the fixtures are also moved.
 
 \subsubsection*{Bodydefinitions}
 To create a body, a bodydefinition has to be created first. It's holding the bodytype, linear- and angular damping values, among other things.
@@ -1049,7 +1043,7 @@ The following properties are part of a fixture:
 }   \\
 \\
 
-A single \textbf{shape} is contained by the fixture. The shape can be a rect, a polygon or a circle. Shapes aren't linked to the body directly, because they may be used independly of the simulation. Therefore the fixture is interposed between body and shape. In Box2D the maximum amount of vertices is defaultly set to eight. A vertex defines the position-vector of an body's edge. A polygon therefore can be created with a minimum of three position-vectors and maximally with eight.
+A single \textbf{shape} is contained by the fixture. The shape can be a rect, a polygon or a circle. Shapes aren't linked to the body directly, because they may be used independly of the simulation. Therefore the fixture is interposed between body and shape. In Box2D the maximum amount of vertices is defaultly set to eight. A vertex defines the position-vector of a body's edge. A polygon therefore can be created with a minimum of three position-vectors and maximally with eight.
 \\
 
 \textbf{Broad-phase proxies} are used internally by Box2D to accelerate collision detection. Therefore a dynamic tree containing the collision-pairs in form of AABB's\footnote{AABB: Axis aligned boundary box. AABBs are used for fast computing of collision detection} are used. In the most cases it isn't necessary for the user to use proxies. \\
@@ -1123,7 +1117,7 @@ b2Body* m_body = m_world->CreateBody(&myBodyDef);
 \end{lstlisting}
 
 \section{Collision detection}
-In Box2D collisions are computed between two fixtures. If a collision happens a contact object, containing information about collision coordinates, normals and impulse among ohter things, is created. A contact object can be used to manage a collision.
+In Box2D collisions are computed between two fixtures. A contact object, containing information about collision coordinates, normals and impulse among ohter things, is created if a collision happens. A contact object can be used to manage a collision.
 
 An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is used for fast performance of computing geometrical operations. (source: wikipedia)
 
@@ -1243,7 +1237,7 @@ For a value nonzero the following rules are applied at collision: \\
 \\
 
 \subsubsection*{Contact filter}
-For an own specification of collision behaviour the following virtual method can be overwritten: \\
+For an userdefined specification of collision behaviour the following virtual method can be overwritten: \\
 \begin{lstlisting}[caption={The contact filter method},label=lst:box2d-contactfiler]
 bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB);
 \end{lstlisting}
@@ -1282,7 +1276,7 @@ m_world->DrawDebugData();
 This draws every shape in the bodylist of the world.
  \newpage
 \section{Structure of a Box2D-Project}
-It follows the general structure of a Box2D-project: \\
+As follows, you can see the general structure of a Box2D-Project: \\
 
 \begin{center}
 	\begin{figure}[H]
@@ -1395,7 +1389,7 @@ static void Display()
 }
 \end{lstlisting}
 
-The first line sets the draw-color to white and with no transparency. The color is formatted in RGBA. The first three parameters represents the colors red, green and blue. The last parameter is alpha, the transparency of the figure. 0.0f means no quantity of the according parameter and 1.0f as the full quantity.
+The first line sets the draw-color to white and with no transparency. The color is formatted in RGBA. The first three parameters represent the colors red, green and blue. The last parameter is alpha, the transparency of the figure. 0.0f means no quantity of the according parameter and 1.0f as the full quantity.
  This is used by the second line to clear the scene.
 Then the viewmode is set, the position of the camera is loaded.
 With 'glBegin' the drawing of an object is started. In this example a triangle is drawn. Therefore the three vertices of the triangle has to OpenGl. This is done by. Each object has to finished with the 'glEnd'-command.
@@ -1415,7 +1409,7 @@ gluPerspective(45.0f, (double)w / (double)h, 1.0f, 200.0f);
 }
 \end{lstlisting}
 
-The first line sets the viewports position and size. The following operations should than applied on the projection-matrix. Therefore the Matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered then. \\
+The first line sets the viewports position and size. The following operations should than applied on the projection-matrix. Therefore the Matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered in this case. \\
 
 TODO: Figure of the camera perspective
 
@@ -1480,7 +1474,7 @@ Callbacks are now defined. This has to be static functions, like in GLUT.
 \chapter{Implementation}
 
 \section{Concept}
-The main concept is to cultivate a population of agents by different evolutionary algorithms to find a satisfying solution. Each agent has a sensor, representing an own coordinate system. The agents has to collect as much objects as possible in a given time. Therefore it has a feedforward neural network realized as multilayer perceptron.
+The main concept is to cultivate a population of agents by different evolutionary algorithms to find a satisfying solution. Each agent has a sensor, representing an own coordinate system. The agents have to collect as much objects as possible within a given time. Therefore it has a feedforward neural network realized as multilayer perceptron.
 The objects and the agents are spawned randomly every round.
 
 \begin{center}
