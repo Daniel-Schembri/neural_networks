@@ -93,7 +93,7 @@
 }
 \date
 {
-    Winter term 2013/2014
+    Summer term 2015
 }
 %\today{}}
 
@@ -211,13 +211,13 @@ The neural network framework is written by Jonathan Schwarz and detaily describe
 
 \normalsize
 
-Dieser Bericht wurde im Rahmen der Projektarbeit des Studienganges Master of Science in Embedded Systems der Hochschule Pforzheim angefertigt. 
+Dieser Projektbericht wurde im Rahmen der Projektarbeit des Studienganges Master of Science in Embedded Systems der Hochschule Pforzheim angefertigt. 
 
 Diese Projektarbeit beschreibt die Entwicklung eines Simulators für virtuelle Agenten, die Objekte in einer 2-dimensionalen Umgebung sammeln. 
 
-Der Simulator wurde in C++ entwickelt. Die Physics-engine Box2D von Erin Catto wird verwendet. Ebenso die OpenGL-Frameworks GLUT bzw. Freeglut zur Beschleunigten Darstellung der Simulation und GLUI für die Graphische Benutzer Schnittstelle. 
+Der Simulator wurde in C++ entwickelt. Die Physics-engine Box2D von Erin Catto wird verwendet. Ebenso die OpenGL-Frameworks GLUT bzw. Freeglut zur beschleunigten Darstellung der Simulation und GLUI für die Graphische Benutzer Schnittstelle. 
 
-Das Framework der neuronalen Netze wurde von Jonathan Schwarz entwickelt und wird in seiner Projektarbeit 'A comparison of neural network types and learning techniques with an application in artificial life' näher beschrieben.
+Das Framework der neuronalen Netze wurde von Jonathan Schwarz entwickelt und wird in seinem Projektbericht 'A comparison of neural network types and learning techniques with an application in artificial life' näher beschrieben.
 	
 	
 \end{abstract}
@@ -225,44 +225,60 @@ Das Framework der neuronalen Netze wurde von Jonathan Schwarz entwickelt und wir
 
 
 \chapter{Introduction}
-This document was created at Pforzheim university in the course Master of Science in Embedded Systems.
+This document was created at Pforzheim University in the course Master of Science in Embedded Systems.
 It was part of the project work.
 
+\section{Document structure}
+The first chapters explain the basic concepts of software agents, artificial neural networks and evolutionary algorithms.
+The following chapters introduce the used libraries and tools.
+
+The main part describes the implementation of the simulator and the theoretical considerations. The last part concludes with the simulation results and a further view of the discussed topic.
+
 \section{Motivation}
-Artificial intelligence is an exciting field of computer science. One great dream of humanity was to create an technical analogy of the human mind.
-Philosophers and researches are wildly discussing if this goal is reachable and desirable.
+The classical method to solve a task mostly is to use a detailed prior knowledge. If this knowledge isn't sufficient it has to be acquired hardly. The development of this solution therefore can be difficult, time-consuming and expensive.
+This circumstances causes an interest in solving tasks in an universal way. Creatures seems to solve problems easily by the abilities they received by evolution. This motivated researcher to apply this mechanisms in computer science. Thanks to the computing power of today evolution can be used in an abstract way to cultivate solutions and handle optimization problems.
+
+The concept of software agents is one model of artificial intelligence. It's an abstract view of an intelligent system that perceives its environment and acts self-sufficiently.
+
+Artificial neural networks are a concept to approximate target functions. These networks can be used for tasks with just partitial knowledge.
+They work well for finding patterns for example.
+
 In this projectwork the main interest lies in agents, artificial neural networks and evolutionary training of these networks.
-
-Today there is no exact definition of what intelligence is.
-In general there are certain categories focusing different points of view to describe it.
+The motivation is to create a suitable simulation environment and to compare different evolutionary algorithms.
 
 
-Artificial intelligence has four branches of research: \\
 
-\fbox{
-	\begin{minipage}{15cm}
-		\begin{multicols}{2}
-			\begin{itemize}
-				\item \textbf{Knowledge-based systems}
-				\item \textbf{Robotics}
-				\item \textbf{Pattern recognition}
-				\item \textbf{Pattern prediction}
-			\end{itemize}
-		\end{multicols}
-	\end{minipage}
-}   \\
+%Today there is no exact definition of what intelligence is. In general there are certain categories focusing different points of view to describe it.
+
+
+%Artificial intelligence has four branches of research: \\
+
+%\fbox{
+%	\begin{minipage}{15cm}
+%		\begin{multicols}{2}
+%			\begin{itemize}
+%				\item \textbf{Knowledge-based systems}
+%				\item \textbf{Robotics}
+%				\item \textbf{Pattern recognition}
+%				\item \textbf{Pattern prediction}
+%			\end{itemize}
+%		\end{multicols}
+%	\end{minipage}
+%}    \\
 
 \section{Project task}
 The task of this project work is to develop a simulator to let agents collect objects in a 2-dimensional world. The agents logic is realized  by a neural network that is trained supervised or evolved with special algorithms derived from evolution theory.
-The simulator has to simulate a realistical environment. Therefore a physics engine is used.
-The simulation has to be rated and the collected data displayed. \\
+The simulator has to simulate a realistic environment. Therefore a physics engine is used.
+The simulation has to be rated and the collected data displayed. The simulator uses the neural network framework developed by Jonathan Schwarz.
+Artificial neural networks are function approximators and evolved in this project work to see if they can solve the task satisfactionally.
+The concept of software agents is used as a frame to get an abstract view of the used algorithms. \\
 
 
-In this project neural networks of the second generation are used, because the main interest lies in finding a good mathematical solution.
+%In this project neural networks of the second generation are used, because the main interest lies in finding a good mathematical solution.
 
 
 \chapter{The concept of agents}
-An agent is a programm that interacts self-sufficent depending on the actual state. It has, in general sensors, a processing logic and actuators. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the concept of agents is used to compare with neural networks.
+An agent is a programm that interacts self-sufficently depending on its actual state. In general, it has sensors, a processing logic and actuators. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the concept of agents is used to compare with neural networks.
 
 Most agents are found in the world wide web. For example webcrawlers, search-engines and bots are well known.
 
@@ -273,68 +289,67 @@ The following figure shows the general structure of an agent:
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=1.0\textwidth,scale=1]{files/agent.png}  
-		\caption{General structure of an agent (oriented on \cite{ki-book} )} 
+		\caption{General structure of an agent (oriented on \cite{ai} Figure 2.9)} 
 		\label{fig:agent}
 	\end{figure}
 \end{center}
 
-The logic part can be less or more complex. Just the actual perception can be processed or a specified sequence of perceptions. In Chapter 2.1 (Todo: LINK) this is described detaily.
+The logic part can be less or more complex. Just the actual perception can be processed or a specified sequence of perceptions. This is described detaily in the following sections.
 
-\subsection{Rationality}
-An agent creates a sequence of actions. These actions causes a sequence of states in the corresponding environment. Every sequence of states can be rated. The agent is called rational if it can maximize its score, considering its sequence of perceptions and its previous knowledge of the problem. Its important to distinguish rationality and perfection. An agent never will be perfectly solving a problem. Its unrealistic to expect the best possible solution for a problem in partitial observable environment. It can solve the problem as it can be expected by the given perceptions. The agent can't predict randomly events.
+\section{Rationality}
+An agent creates a sequence of actions. These actions causes a sequence of states in the corresponding environment. Every sequence of states can be rated. The agent is called rational if it can maximize its score, considering its sequence of perceptions and its previous knowledge of the problem. Its important to distinguish rationality and perfection. An agent never will be perfectly solving a problem. It's unrealistic to expect the best possible solution for a problem in partitial observable environment. It can solve the problem as it can be expected by the given perceptions. The agent can't predict random events.
 
-To achieve rationality the following topics have to be considered: \\
+In order to achieve rationality the following topics have to be considered: \\
 
 \fbox{
 	\begin{minipage}{15cm}
 		\begin{itemize} 
-			\item A sufficient previous knowledge of the problem.
-			\item A good rating of the resulting state sequence of the environment.
-			\item The perception sequence.
-			\item The possible actions the agent can execute.
+			\item A sufficient previous knowledge of the problem
+			\item A good rating of the resulting state sequence of the environment
+			\item The perception sequence
+			\item The possible actions the agent can execute
 		\end{itemize}
 	\end{minipage}
 }   \\
 
 \subsubsection{Learning}
-It is important for the agent to get further knowledge by its perceptions. Therefore the agent has to make some actions to explore the world, if he acts in a unknown environment.
+It is important for the agent to gain further knowledge by its perceptions. Therefore the agent has to make some actions to explore the world, if he acts in a unknown environment.
 An agent who doesn't learn can most likely not solve a problem if the environment changes.
-In nature animals are equipped with reflex actions to survive long enough to learn to handle with their environment.
+In nature animals are equipped with reflex actions to survive long enough to learn to adapt to their enviroment.
 
 \section{Types of agents}
 
 \subsection{Simple reflex agent}
 The simplest type of an agent is the reflex based agent.
-This agent ignores the sequence of perception and just acts on the sensordata it actually gets. This type of agent can be used for simple tasks. The benefits are the fast implementation and a drastically reduced state space.
-The disadvantages lies in the simplicity. This agent has no memory and therefore doesn't include past states in his decisions. If the present state of the environment doesn't provide enough information or it is just partially observable, the agent could not solve the task.
+This agent only processes the actual perception and act on the base of this actual state. This type of agent can be used for simple tasks. The benefits are a fast implementation and a drastically reduced state space.
+The disadvantage lies within the simplicity. This agent has no memory and therefore doesn't include past states in his decisions. If the present state of the environment doesn't provide enough information or it is just partially observable, the agent could not solve the task.
 In partially observebale environment there can occur loops of wrong behaviour. This loops can be overcome if a random action can be chosen.
-For best functionality of a simple reflex agent the problem-environment should be fully observable(TODO: note to the next section).
+For best functionality of a simple reflex agent the problem-environment should be fully observable.\footnote{See Chapter \ref{sec:env} for an explanaition of the environment}
 For more complex tasks using the following described agent-types may be a better solution.
 
 \subsection{Model-based reflex agent}
-The model-based reflex agent expands the simple reflex agent by a memory. It internally creates a model of the world by past sensor data.
-This model is used to predict future states in the environment.
+The model-based reflex agent expands the simple reflex agent by a memory. It internally creates a model of the world by past sensor data. This model is used to predict future states in the environment.
 This can be a moving object or changes in the environment made by the agent itself for example.
 
-Internally states of the agent are used to approximate the state of the environment on changes. 
+Internal states of the agent are used to approximate the state of the environment if changes occur. 
 The model is also used to estimate temporaly unobservable parts of the environment.
 
-The model-based reflex agents ability to solve a task reaches its limit, if he has to act in a new environment or other agents acting in the world, too. The internally created model may then not fit anymore.
+The model-based reflex agents ability to solve a task reaches its limit, if it has to act in a new environment or other agents acting in the world, too. The internally created model then may not fit anymore.
 
 
 \subsection{Goal-based agent}
-On some tasks it isn't enough to know the correct action on a specified state at the environment, like reflex-based agents do. It can be important for an agent to know the goal behind those actions. This is necessary for a generalization of a problem. For example: For a given route A To B there can be described a sequence of actions an agent has to execute. In general to get from one point to another its more difficult to describe general rules, as other routes may differ a lot. Its therefore too complex to describe all rules in detail. 
+For some tasks it isn't enough to know the correct action on a specified state at the environment, like reflex-based agents do. It can be important for an agent to know the goal behind those actions. This is necessary for the generalization of a problem. For example: For a given route A To B there can be a description for a sequence of actions the agent has to execute in order to reach the target B. It is more difficult to describe specific rules for getting from one point to another in general, as other routes may differ a lot. It's therefore too complex to describe all rules in detail; hencefore a generalization of this task has to be modelised.
 
-The benefit is a agent who can solve complex tasks. The disadvantage is a need of more computing time. For real-time tasks this can be an obstacle.
+The benefit is an agent that can solve complex tasks. The drawback is a need of more computing time. For real-time tasks this can be an obstacle.
 
 \subsection{Utility-based agent}
 The utility-based agent expands the goal-based agent by the fact, that it can choose between several solutions. Therefore the agent has a rating function to choose the best or at least a good enough solution by several criteria. This rating function can be more complex then computing solutions of the task itself.
 
-The development of such complex agent and corresponding rating algorithms is an own topic of computer science and includes research areas like perception, representation, reasoning and learning.
+The development of such complex agent and corresponding rating algorithms can be difficult and is an own topic of computer science and includes research areas like perception, representation, reasoning and learning.
 
 
 \subsection{Learning agent}
-The complete development of an agent is difficult and time-consuming. Therefore Alan Turing searched in 1950 (TODO: Source Turing) for a way to speed up this process. The concept of the learning agent was created. The learning agent has four components: \\
+The complete development of an agent is difficult and time-consuming. Therefore Alan Turing searched in 1950 (\cite{turing}) for a way to speed up this process. The concept of the learning agent was created. The learning agent has four components: \\
 
 \fbox{
 	\begin{minipage}{15cm}
@@ -356,7 +371,7 @@ The \textbf{learning element} is responsible for improvements of the agent. The 
 
 The \textbf{critic} rates the performance element and tells the learning element how to improve it. \\
 
-A \textbf{problem generator} is used to improve learning by making new experiences. Without the problem generator the agent would make it actions with its learned best actions, but would never try new actions, that may seem uneffective in the first way, but in a long term run may be more effective. \\
+A \textbf{problem generator} is used to improve learning by making new experiences. Without the problem generator the agent would work with its best actions, but would never try new actions, that may seem uneffective in the first way, but may prove to be more effective in a long term run. \\
 
 The most important part for improvements is the correlation between the \textbf{performance element} and the \textbf{learning element}.
 
@@ -364,12 +379,12 @@ The most important part for improvements is the correlation between the \textbf{
 
 
 
-source: Artificial Intelligence Book and www.cs.hs-rm.de/~linn/fachsem0910/anders/Anders.pdf
+(\cite{ai}Chapter 2)
 
 
 \section{The task environment}
-(TODO: Aufgabenumgebung englsiches Wort)
-In the first case its important to preferably define the task completely. The task environment is defined by four categories: \\
+\label{sec:env}
+In the first case its preferable to define the task completely. The task environment is defined by four categories: \\
 
 \fbox{
 	\begin{minipage}{15cm}
@@ -385,56 +400,73 @@ In the first case its important to preferably define the task completely. The ta
 }   \\
 \\
 
-\textbf{The performance} is defined by the rating the agent can achieve. Therefore \\
+\textbf{The performance} is defined by the rating the agent can achieve. Therefore (TODO)\\
 
-\textbf{The environment}
-If the sensors allow the agent to get the information of the whole environment, the environment is called \textbf{fully observeable}. The agent therefore can get all relevant information for its actions. Otherwise an environment is classified as \textbf{partially observeable}. This for example can be if the sensors are limited or influenced by interferences.
-If the agent has no sensors at all, the task environment is called \textbf{unobserveable}. Instinctively you would think this kind of agent would be totally useless, but there exist succesful algorithms to solve problems. For example a vacuuming robot can clean a room effectively. It therefore just uses stochastic algorithms. In factories this is used effectively to  turn objects. The benefit is less costs in sensors. \\
+\textbf{The environment} is the frame an agent solves a task within.
+If the sensors allow the agent to get the information of the whole environment, the environment is called \textbf{fully observeable}. The agent therefore can get all relevant information for its actions. Otherwise an environment is classified as \textbf{partially observeable}. For example this can be if the sensors are limited or influenced by interferences.
+If the agent has no sensors at all, the task environment is called \textbf{unobserveable}. Instinctively you would think this kind of agent would be totally useless, but there exist succesful algorithms to solve problems. For example a vacuuming robot can clean a room effectively. It therefore uses stochastic algorithms. In factories this is used effectively to turn objects on an assembly line. The benefit is less costs in sensors. \\
 
-It can also be necessary to know if the environment is a \textbf{single-} or \textbf{multiagent}-based. Multiple agents can A \textbf{cooperate} or A \textbf{compete}. \\
+It can also be necessary to know if the environment is a \textbf{single-} or \textbf{multiagent}-based one. Multiple agents can \textbf{cooperate} or \textbf{compete}. \\
 
-The environment is \textbf{deterministic} if all further states are predictable by the current state and there are no random events. Otherwise it is \textbf{stochastic}. In reality there can exist deterministic environments. But often the possibilities are too complex. The environment must then be handled by the agent as it was stochastic. Therefore there are given probabilities for each possibility. If not it is called \textbf{non-deterministic}. \\
+The environment is \textbf{deterministic} if all further states are predictable by the current state and there are no random events. Otherwise it is \textbf{stochastic}. In reality there can exist deterministic environments. But often the possibilities are too complex. The environment must then be handled by the agent as if it were stochastic. There are given probabilities for each possibility. If not it is called \textbf{non-deterministic}. \\
 
 If the action of the agent does only depend on the actual environment state and does not influence future state the environment is called \textbf{episodic}. Otherwise its called
 \textbf{sequential}. Chess for example is a sequential environment because every move can bring the game in a win- or lose-situation. \\
 
-A \textbf{static} environment doesn't change. This makes it easier for the agent. A \textbf{dynamically} environment on the other hand needs a continuously observation. If the environment doesn't change, but the agents rating-process it is called \textbf{semidynamically}. \\
+A \textbf{static} environment doesn't change. This makes it easier for the agent to solve a task. A \textbf{dynamically} environment on the other hand needs a continuously observation. If the environment doesn't change, but the agent's rating-process, it is called \textbf{semidynamically}. \\
 
-It can have \textbf{discrete} or \textbf{continous} states. Chess has discrete states, as it is played move by move. It could get a continous character if the time to calculate a move plays a role. Driving a car is in general continously as accelerating and steering have continous units.\\
+The environment can have \textbf{discrete} or \textbf{continous} states. Chess has discrete states, as it is played move by move. It could get a continous character if the time to calculate a move plays a role. Driving a car is in general continously as accelerating and steering have continous units.\\
 
-The environment can be \textbf{known} or \textbf{unknown}. That means that the agent has foreknowledge about the environment. This category does not describe if the environment is observable. \\
-
-
-\textbf{The actuators} are the components an agent interacts with the environment. In developing an agent there must be kept an eye on the possible actions an agent can do.\\
-
-\textbf{The sensors} are responsible to get data of the environment. With good algorithms costs for sensors can be noticeably reduced.
+The environment can be \textbf{known} or \textbf{unknown}. That means that the agent has foreknowledge about the environment. This category has nothing to do with observability. \\
 
 
-Source: Artificial intelligence book chapter 2.3
+\textbf{The actuators} are the components an agent uses to interact with the environment. In developing an agent there must be kept an eye on the possible actions an agent can do.\\
+
+\textbf{The sensors} are responsible for receiving data of the environment. With good algorithms costs for sensors can be noticeably reduced.
+
+
+(\cite{ai}Chapter 2.3)
 
 \chapter{Artificial neural networks}
+Artficial neural networks (ANN) are inspired by their biological equivalents.
+They are used in machine learning as an own class of classfiers, next to support vector machines
+and other mathematical methods. On the one hand there exist models offering biological plausability to research the
+operations in the human brain. On the other hand there exist models whos main focus lies in finding good mathematical solutions for technical tasks.
+
+Artificial neural networks are often seen as a black box: \\
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\textwidth,scale=1.0]{files/nn-bb.png}  
+		\caption{An ANN as black box \cite{rojas}}
+		\label{fig:neuron}
+	\end{figure}
+\end{center} 
+They estimate or approximate target functions. 
+This happens on the base on a given data set or completely unsupervised.
+They map a function as follows:\cite{rojas}
+
+\begin{equation}
+	F: R^n \to R^m 
+\end{equation} 
+
+
 
 \section{Network types}
-At the moment there are three generations of neural networks. 
-The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
-In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
-The newest generation uses spikes, an encoding through time.
 
-\subsection{First generation}
-The first generation of neural networks have binary in- and outputs.
-
-\subsubsection{McCulloch-Pitts neuron}
+\subsection{McCulloch-Pitts neuron}
 The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
 developed by Warren McCulloch and Walter Pitts in 1943.
-They wanted to realise a simple, realistic neuron-modell of operations in the brain and find out if the brain could compute turing computability functions.
-McCulloch-Pitts-neuron has binary in- and outputs.
-A real threshold can be defined, which reached, let the neuron fire an one, otherwise zero.
+They wanted to realise a simple, realistic neuron-modell of the operations in the human brain and find out if the brain could compute turing computability functions.
+McCulloch-Pitts-neuron has binary inputs and one binary output.
+A real threshold has to be defined, which reached, let the neuron fire one or otherwise zero as output.
 Its possible to add absolute suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs. The use of such absolute supressing inputs is for the most cases doubtfull.
 
 
-Neural networks of this type of neuron can just learn by changing topology of the network, that is laborious.
+Neural networks of this type of neuron can just learn by changing topology of the network. This causes an unnecessary workload due to its high effort in implementation.
 
-At the following a figure of a single neuron:
+At the following a figure of a single neuron is shown:
 
 \begin{figure}[H]  % [H] erzwingt Position an der Stelle im Text
 	\centering
@@ -452,12 +484,32 @@ At the following a figure of a single neuron:
 	\caption{A McCulloch-Pitts-neuron}
 	\label{fig:pitts1}
 \end{figure}
-The neuroninput is computed by:
+
+In general a neuron can be considered as a function.
+The neuron has n inputs and 1 output that can be connected to multiple neurons. It has a activation function that fires if the threshold $S$ is reached. \\
+
+The overall input is computed by:
 
 \begin{equation}
 neuroninput = \sum_{i=1}^{n} x_{n} \quad  x \in \{0, 1\}
 \end{equation}
 
+$x_{n}$ are the binary inputs. \\
+
+The output Y is:
+
+
+\[ Y =
+\begin{cases}
+1       & \quad \text{if } \sum_{i=1}^{n} x_{n}  \geq S \\
+0  & \quad \text{otherwise}\\
+\end{cases}
+\]
+
+
+
+
+%Source Rochas
 
 A function composition:
 
@@ -480,6 +532,8 @@ A function composition:
 	\label{fig:pitts2}
 \end{figure}
 
+The function composition is a concatenation of multiple neurons. \\
+
 A recursive neuron:
 
 \begin{figure}[H]
@@ -497,36 +551,143 @@ A recursive neuron:
 	\label{fig:pitts3}
 \end{figure}
 
-The output is given after a fixed timestep t.
+The output is given after a fixed timestep $t$. $t$ represents the amount of cycles a recursive neural net has to compute before the output can be used. A recursive connection behaves like a memory that contains the amount of $t$ post states.
 
 \paragraph{Applications}
 The McCulloch-Pitts-neuron is biologically not plausible, because learning
-can just happen by changing the threshold and the network topology. This
-needs complex algorithms.
+can just happen by changing the threshold and the network topology. This needs complex algorithms.
 But this neuron type can realise AND-, OR- and NOT-Gates.
 Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. You can simulate finite state machines, too.
-You may think if its better to have real or at least integer values to transmit more information instead of just binary signals. This depends on the applicationtype. Binary values are easier to realize, both in electrical and biological systems and mcculloch-pitts-networks are equivalent to other kind of networks with more signalstates. Though you get a more complex networktopology, if you use binary neurons.
+You may think if its better to have real or at least integer values to transmit more information instead of just binary signals. However this depends on the application type. Binary values are easier to realize, both in electrical and biological systems and mcculloch-pitts-networks are equivalent to other kind of networks with more signalstates. Though you get a more complex network topology, if you use binary neurons.
 
 It was the first mathematical model of artifical neural networks.\cite{NEURONMATH}
 
 
-\subsubsection{Perceptron}
+\subsection{Perceptron}
 The classical perceptron was published by Frank Rosenblatt in 1958.
 It has an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
-the perceptron has real weights. The advantage is that learning-algorithms has just to change the weights
-instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero(neutral) weights.
+the perceptron has additionally real weights. The advantage is that learning-algorithms just have to change the weights instead of the topology. Its possible to define positive (stimulation), negative (supression) and zero (neutral) weights.
 
-\paragraph{Linear seperability}
-A classical perceptron can only seperate linear datasets. This is due to only two layers. For seperating non-linear datasets read \ref{sec:mlp}.
+\subsubsection*{Linear seperability (TODO)}
+One main task of neural networks is to classify data. The net is therefore used as a seperator.
+The classical perceptron can only seperate linear datasets. This is due to only two layers. For seperating non-linear datasets see chapter \ref{sec:mlp}.
+
+
+\begin{figure}[H]
+	\centering
+	%	\subfigure[]
+	%	{
+	\begin{tabular}{|c|c|c|}
+		\hline
+		x1 & x2 & f(x1, x2)\\
+		\hline
+		0 & 0 & 0 \\
+		\hline
+		0 & 1 & 1 \\
+		\hline
+		1 & 0 & 1 \\
+		\hline
+		1 & 1 & 1 \\
+		\hline
+	\end{tabular}
+	%}
+	\caption{OR-Function: linear seperable}
+	\label{fig:linsep1}
+	
+		\subfigure[]
+		{
+			\begin{tikzpicture}
+			\begin{axis}[
+			width=4cm, height=4cm,     % size of the image
+			grid = major,
+			grid style={dashed, gray!30},
+			xmax=1,        
+			ymin=-1,
+			ymax=1,
+			axis background/.style={fill=white},
+			ylabel=$a_{j}$,
+			xlabel=$in_{j}$]
+			
+			\addplot[black]{-0.5*x+0.5};
+			%	\addplot[black]{-2*x-1.5};
+			\end{axis}
+			\end{tikzpicture}
+			\label{fig:sepplot1}
+		}
+	
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	%	\subfigure[]
+	%	{
+	\begin{tabular}{|c|c|c|}
+		\hline
+		x1 & x2 & f(x1, x2)\\
+		\hline
+		0 & 0 & 0 \\
+		\hline
+		0 & 1 & 1 \\
+		\hline
+		1 & 0 & 0 \\
+		\hline
+		1 & 1 & 0 \\
+		\hline
+	\end{tabular}
+	%}
+	\caption{And-Function: linear seperable}
+	\label{fig:linsep2}
+	
+		\subfigure[]
+		{
+			\begin{tikzpicture}
+			\begin{axis}[
+			width=4cm, height=4cm,     % size of the image
+			grid = major,
+			grid style={dashed, gray!30},
+			xmax=1,        
+			ymin=-1,
+			ymax=1,
+			axis background/.style={fill=white},
+			ylabel=$a_{j}$,
+			xlabel=$in_{j}$]
+			
+			\addplot[black]{-0.5*x+0.5};
+			%	\addplot[black]{-2*x-1.5};
+			\end{axis}
+			\end{tikzpicture}
+			\label{fig:sepplot2}
+		}
+	
+\end{figure}
+
+\paragraph{Applications}
+The perceptron can be used as pattern associator to assign an input pattern to a class. It can also be used as competitive network. Also linear seperable data can be categorised.
+It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{sec:learning})
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+	%	\includegraphics[width=0.8\textwidth,scale=1]{files/neuron.jpg}  
+		\caption{A singlelayer perceptron \cite{PERSIN}.}
+		\label{fig:neuron}
+	\end{figure}
+\end{center}
+
+
+\subsection{Multi layer perceptron (MLP) (TODO)} \label{sec:mlp}
+The multilayer perceptron was intruduced by Minsky and Papert in . It has an input-, an output- and
+one or multiple hiddenlayers. In contrast to the singlelayer perceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
+
 An widely known example is the xor-problem.
 
 \begin{figure}[H]
 	\centering
 	%	\subfigure[]
 	%	{
-	\begin{tabular}{|l|l|l|}
+	\begin{tabular}{|c|c|c|}
 		\hline
-		x1 & x2 & f6\\
+		x1 & x2 & f(x1, x2)\\
 		\hline
 		0 & 0 & 0 \\
 		\hline
@@ -539,7 +700,7 @@ An widely known example is the xor-problem.
 	\end{tabular}
 	%}
 	\caption{XOR-Function: Not linear seperable}
-	\label{fig:linsep1}
+	\label{fig:nlinsep}
 	
 	\subfigure[]
 	{
@@ -556,73 +717,77 @@ An widely known example is the xor-problem.
 		xlabel=$in_{j}$]
 		
 		\addplot[black]{-0.5*x+0.5};
-		%	\addplot[black]{-2*x-1.5};
+			\addplot[black]{-0.5*x-1.5};
 		\end{axis}
 		\end{tikzpicture}
-		\label{fig:sepplot1}
+		\label{fig:nsepplot1}
 	}
 	
 \end{figure}
 
 \paragraph{Applications}
-The perceptron can be used as pattern associator to categorise an inputpattern to a class, competitive network. Also linear seperable data can be categorised.
-It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{sec:learning})
-
-\begin{center}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.8\textwidth,scale=1]{files/neuron.jpg}  
-		\caption{A singlelayer perceptron \cite{PERSIN}.}
-		\label{fig:neuron}
-	\end{figure}
-\end{center}
-
-\subsection{Second generation}
-The idea of the second generation of neural networks is born in the 90s. The firerate of a neuron encodes the transmitted signal. In this case now real values are used for in- and outputs.
-
-\subsubsection{Multi layer perceptron (MLP)} \label{sec:mlp}
-The multilayer perceptron was intruduced by Minsky and Papert in . It has an input-, an output- and
-one or multiple hiddenlayers. In contrast to the singlelayerperceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
-
-\paragraph{Applications}
 
 
-\subsubsection{Kohonen networks / Selforganizing maps (SOM)}
-Kohonen-networks are inventioned by the finnish engineer Teuvo Kohonen in 1982. They have two layers. An inputlayer and a n-dimensional outputlayer.
-Kohonen-networks usually don't have hidden layers.
-The inputspace 
+%\subsection{Kohonen networks / Selforganizing maps (SOM)}
+%Kohonen-networks are inventioned by the finnish engineer Teuvo Kohonen in 1982. They have two layers. An inputlayer and a n-dimensional outputlayer.
+%Kohonen-networks usually don't have hidden layers.
+%The inputspace 
 
-\paragraph{Applications}
-Data-mining, unsupervised learning, clusteranalysis, computergraphics. 
+%\paragraph{Applications}
+%Data-mining, unsupervised learning, clusteranalysis, computergraphics. 
 
-\subsection{Combination of networkmodels}
-
-\subsubsection{MLP and SOM} %look at neuronale netze im klartext chapter 6.3
-
-\subsection{Third generation}
-In the third generation of artifical neural networks the signal is additionally encoded in time. These called spikes are
-
-\subsubsection{Spiking neural networks}
-
-\paragraph{Applications}
 
 %\subsection{Feed Forward}
-\subsection{Recurrent}
+%\subsection{Recurrent}
+
+\section{Network models}
+At the moment there are three generations of neural networks: \\
 
 
-source: Daniel Rey Book
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item \textbf{1. generation - Mccullloch-Pitts Neuron, Perceptron (binary)}
+			\item \textbf{2. generation - real valued perceptron, multi layer perceptron(MLP) (real)}
+			\item \textbf{3. generation - spiking neural networks (encoding through time)}
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+At the moment there are three generations of neural networks. 
+The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
+In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
+The newest generation uses spikes, an encoding through time.
+
+
+TODO source: Daniel Rey Book
+
+
+\section{Learning}
+One way of learning can happen supervised by a given training data set. The net is then trained by learning algorithms. The net error is minimized. After the training cycle the net is tested by a test data set, that should differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training exactly. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} \\
+
+Other ways of learning are unsupervised and semi-supervised learning. At unsupervised learning there is no training set given and the net has to organize itself to find a solution. This can happen by different methods like clustering. On semi-supervised learning a incomplete and unlabeled data set is given. \\
+
+An alternative to these learning methods is the evolutionary training of the net. Populations of nets are cultivated and rated by a fitness function. For these there exist many optimization algorithms.\footnote{Some of them are described in chapter \ref{sec:evo}} \\
+
+In this project work the topology and type of the networks are kept and only the weights are changed by the evolution process.
+
+
+
+
+
 
 
 
 
 \chapter{Optimization with evolutionary algorithms}
-Optimization is widely used, for example in information technology, engineering,
-economics, etc. Applications are the routing of circuits, the optimal usage of machinery,
-the traveling-salesman-problem and much more. It is often difficult to create a mathematical
-model of such optimization problems. Therefore in the last decades were developed methods who
-uses principles of the evolution.
-The simplest method is the selection-method. In this model a dateset will be generated and randomly
-changes, called mutations, are made. The best datasets, chosen by the best fitness, will be kept. The fitness depends on the modelisation of the problem.
+\label{sec:evo}
+Optimization is widely used, for example in information technology, engineering and
+economics. Applications are the routing of circuits, the optimal usage of machinery,
+the traveling-salesman-problem\footnote{The traveling salesman problem describes to find the shortest route between cities} and others. It is often difficult to create a mathematical
+model for such optimization problems. Over the last decades methods were developed who use principles of the evolution.
+The simplest method is the selection-method. In this model a dateset will be generated and random changes, called mutations, are made. The best datasets, chosen by the best fitness, will be kept. The fitness depends on the modelisation of the problem.
 Each dateset is called an individual. A set of individuals is called a population. The individuals
 of a population can be recombined. Mostly the best individuals are recombined with randomly chosen
 ones. This method is more effective than the selection-method. This and other methods are  called
@@ -630,13 +795,35 @@ evolutionary algorithms. To use an evolutionary algorithm, the problem must not 
 therefore it hasn't to be linear or differentiable. \\
 
 In this project evolutionary algortihms are used to find the best 
-(unsupervised) neural network to controll one creature. The idea is to use the amount of food a creature collect over a defined time as fitnessvalue.
+(unsupervised) neural network to controll one creature. The idea is to use the amount of food a creature collect over a defined time as fitnessvalue. The evolutionary algorithm changes the agent weights of the multilayer perceptron.
 
-\section{Modelisation TODO}
+\section{Modelisation}
+A good model of the optimization problem is important to find a satisfying solution with optimization- respectively evolutionary algorithms. At least a partial prior knowledge of the task is necessary.
+A model has the following components: \\
 
-\section{The creepy random search method or hill climber method}
-The creepy random search method is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973. % 1973 correct?? look at literaturesource in kinnebruck
-Parameters of a system are randomly changed till a minimum or maximum of a targetfunction is reached. The value of the parameterchanges per iterationstep are limited. \\
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item \textbf{Search space}
+			\item \textbf{Rating function (fitness- or error function)}
+			\item \textbf{Evolutionary algorihtm}
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+\subsection{Search space}
+The search space contains all possible solutions of the optimization problem. But it only defines the general form a solution can have. To effectively optimize, its important to define a simple structered search space, because in a too large and complex one the algorithm could not find a feasible solution in an appropriate time.
+
+\subsection{Rating function}
+With the search space on its own a good solution cannot be found. A rating function, representing the quality of a solution has to be defined. For maximization problems the function is called fitness function. A high score represents a good solution. For minimization problems a error function has to be choosen. This function describes the deviation of the result. A minimal difference of the target output (preferably zero) is the goal.
+
+\subsection{Algorithms}
+In general, if you look at all possible optimization problems, all algorithms are equal in effectivness, even a completely random choice of parameters. This is described by the no-free-lunch-theorem(TODO Source). There is no best universal algorithm to solve all problems. Some algorithms are better in a special field of problems and aren't in other ones. Therefore a categorisation of the problem to a specific class of algorithms is helpful.
+
+\section{The hill climber method}
+The hillclimber method, also called the creepy random search method, is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973. % 1973 correct?? look at literaturesource in kinnebruck
+Parameters of a system are randomly changed untill a minimum or maximum of a targetfunction is reached. The value of the parameterchanges per iterationstep are limited. \\
 
 \textbf{The main algorithm is:}
 
@@ -645,13 +832,13 @@ Parameters of a system are randomly changed till a minimum or maximum of a targe
 		\begin{enumerate} 
 			\item Generate a randomly initialized chromosome.
 			\item Change the chromosome parameter by limited random delta-values. 
-			\item Prove if the chromosome has a better fitness than the old one and replace it. Otherwise forget the new chromosome.
+			\item Prove if the chromosome has a better fitness than the old one and replace it. Otherwise refuse the new chromosome.
 			\item If the optimization-condition is reached abort, otherwise go to step 2.
 		\end{enumerate}
 	\end{minipage}
 } \\
 
-The algorihm can be imagined as a blind hillclimber. The hillclimber makes a random step. If he gets higher, he makes the next step. Otherwise he takes back his last step and makes another random step. The big problem is, that this algorithm mostly converges in a local optimum. \\
+The algorihm can be imagined as a blind hillclimber. The hillclimber makes a random step. If he gets higher, he makes the next step. Otherwise he takes back his last step and makes another random step. The main problem is, that this algorithm mostly converges in a local optimum. \\
 
 \textbf{Reasons to use this kind of algorithm:}
 
@@ -685,12 +872,6 @@ The algorihm can be imagined as a blind hillclimber. The hillclimber makes a ran
 \end{center}
 
 
-\subsection{Constraints} %Bedingungen und Nebenbedingungen
-The main condition is the fitness-function. Second conditions
-can be the
-
-%\subsection{Efficency} %Optional chapter to test the efficency between mathematical methods and evolutionary methods. For example zero of a function.
-
 \section{Variants of the creepy random search method}
 In the main-method of the creepy random search you just accept better fitness values after an iteration-step and reject worse ones.
 The problem is, that with this algorithm you will mostly get stuck on a local optimum, instead of finding the global one.
@@ -701,7 +882,7 @@ To realise this, there have been developed some extended versions of this method
 	\begin{minipage}{15cm}
 		\begin{itemize} 
 			\item A stagnation of the fitness is allowed by a specified probability (Simulated annealing)
-			\item A stagnation of the fitness is allowed till a maximal deterioration. (Threshold accepting, deluge method)
+			\item A stagnation of the fitness is allowed untill a maximal deterioration. (Threshold accepting, deluge method)
 		\end{itemize}
 	\end{minipage}
 } \\
@@ -711,8 +892,8 @@ To realise this, there have been developed some extended versions of this method
 Simulated annealing is a probabilistic optimization method.
 It is inspired by the annealing of fluid materia to a solid aggregate states in metallurgy. While cooling down a material the thermodynamic free energy has to get as minimal as possible to get a clear crystalline structure. Therefore its suggested to cool down to material slowly for a better probability of getting a clear solid body.
 
-Analog in optimization you start with a high temperature T, means a big delta, to make wide jumps in the problemphase-space. So jumps between more maxima are possible. At the beginning each chromosome has the same probability to get selected. With each iteration the temperature is reduced and the jumps are getting shorter. Selecting better chromosomes is now more probalistic.
-Towards the end the algorithm commutes in a optimum and behaves like the standard hillclimbing-algorithm.
+Analog in optimization you start with a high temperature T, means reaching a wide area in the search space. That way it's possible to reach more maxima. At the beginning each chromosome has the same probability to get selected. With each iteration the temperature is reduced and the reached area is getting smaller. Selecting better chromosomes is now more probalistic.
+Towards the end the algorithm commutes in an optimum and behaves like the standard hillclimbing-algorithm.
 
 Slowly reducing the temperature increases the chance to find the global optimum. Cooling to fast leads to commuting early into a local optimum instead.
 
@@ -723,42 +904,24 @@ p(r) = \frac{1}{1+exp(-r/T)}
 \end{equation} 
 
 The probability to select a worse chromosome should be small.
-At the beginning a big T tends to equalize the probability of all chromosomes. For $T \to \infty$ all chromosomes have the same chance to get selected. Lowering T gives good chromosomes priority. For T = 0.1
-
-\subsection{Threshold accepting}
-
-\section{Recombination}
+At the beginning a big T tends to equalize the probability of all chromosomes. For $T \to \infty$ all chromosomes have the same chance to get selected. Lowering T gives good chromosomes priority.
 
 
+\section{Crossover}
+The crossover algorithm represents the idea of cultivating a population of individual solutions. After rating the population, the best individual is choosen and crossed with a random one of the actual population. There are two children created, who can optionally be mutated. This is done until the a new generation of individuals is created.
+The process is repeated until a satisfying solution is cultivated or the process is aborted.\footnote{For more information see project work of Jonathan Schwarz}
 
 \section{Applications}
-The use of a specific algorithm depends on the problem and its modelisation. In general all optimization-methods are equal in effectivity, if we look over all posible optimization-problems in one set (No-free-Lunch-Theorem Source). Astonishingly a purely random search isn't less effective.
-Some of the given methods are better in special cases than others. Also a good understanding of the problems topic is essentially. Evolutinary algortihms take advantage of reducing the set of problems and a good modelisation.
+The use of a specific algorithm depends on the problem and its modelisation. In general all optimization-methods are equal in effectivness, if we look over all posible optimization-problems in one set (No-free-Lunch-Theorem Source). Astonishingly a purely random search isn't less effective.
+Some of the given methods are better in special cases than others. Also a good understanding of the problem's topic is essentially. Evolutinary algortihms take advantage of reducing the set of problems and a good modelisation.
 Simulated annealing is suitable for functions with many local optima.
-
-% \section{Genetic algorithms - An artifical duck}
-
-%\chapter{Alternative algorithms}
-%In this chapter other intelligent algorithms are presented.
-%These algortihms are for comparing the neural network to %simpler
-%methods.
-
-%\section{The greedy algorithm}
-
-%\subsection{Weaknesses}
-
-%\section{Applications}
-
-
-
 
 
 
 \chapter{The Box2D-Physicsengine}
-Box2D is 2-dimensional physics engine, created by Erin Catto. It is licensed under the zlib-license, hence it is noncommercial and open source. The Box2D library is written platform-independently in C++. It is used mainly for gamedevelopment. There exist many portations to other programming languages, like Java and C\#. \\
+Box2D is a 2-dimensional physics engine, created by Erin Catto. It is licensed under the zlib-license, hence it is noncommercial and open source. The Box2D library is written platform-independently in C++. It is used mainly for game development. Many portations into other programming languages, like Java and C\# exists. \\
 (source jbox2d)
-To setup Box2D look at:
-(source http://www.iforce2d.net/b2dtut/setup-linux)
+
 
 Box2D is used by the project to simulate a realistic physical environment, proving the agents behaviour. \\
 
@@ -768,13 +931,11 @@ The project-structure is based on the testbed-program.
 
 
 \section{Core concepts}
-In this section the main concepts of Box2D are explained.
-
 
 \subsection{Bodies}
 Bodies are the main objects, affected by physics-simulation.
 
-The body contains the following values: \\
+A body contains the following values: \\
 
 \fbox{
 	\begin{minipage}{15cm}
@@ -797,7 +958,7 @@ The body contains the following values: \\
 
 A body contains one or more fixtures, containing the shape and more properties of the body.
 
-If a body is moved, also the fixtures are moved.
+If a body is moved, the fixtures are also moved.
 
 \subsubsection*{Bodydefinitions}
 To create a body, a bodydefinition has to be created first. It's holding the bodytype, linear- and angular damping values, among other things.
@@ -825,32 +986,32 @@ Kinematic bodies doesn't collide with other static- or kinematic bodies.\\
 The \textbf{dynamic body} is the commonly used bodytype in Box2D-simulations. It is fully simulated and can be moved by the user or by forces, as its usual way.
 
 \subsubsection*{Damping, friction and gravity scale}
-Damping reduces the velocity (linear and angular) of the body.
-Friction reduces the velocity of a body at collision with other bodies.
+\textbf{Damping} reduces the velocity (linear and angular) of the body.
+\textbf{Friction} reduces the velocity of a body at collision with other bodies.
 
 The damping parameter can be zero for no damping and infinite for full damping. In general a value between 0 and 0.1 is used.
 
-The gravity scale is a factor that determines how much the worlds gravity influences the body. 0 determines no influence.
+The \textbf{gravity scale} is a factor that determines how much the worlds gravity influences the body. 0 determines no influence. The standard value is 1.
 
 \subsubsection*{Activation and Sleeping}
-A body can be set asleep. Sleeping is used to save cpu-time. The body will be woken up, if an other body collides with it.
+A body can be set asleep. This is used to save cpu-time as for sleeping bodies there is no computing of physics necessary. The body will be woken up, if an other body collides with it.
 A body can be completely excluded from simulation by setting it inactive instead.
-Instead of the sleeping-mode it will not be woken up.
+In contrast to the sleeping-mode it will not be woken up.
 
-\subsubsection*{Methods}
-TODO
+%\subsubsection*{Methods}
+%TODO
 
-\begin{lstlisting}[caption={Setting body definitions},label=lst:bodydef]
-b2BodyDef myBodyDef;
-myBodyDef.type = b2_dynamicBody;
-myBodyDef.position.Set(0, 20); //set start position
-myBodyDef.angle = 0; //set start angle
-\end{lstlisting}
+%\begin{lstlisting}[caption={Setting body definitions},label=lst:bodydef]
+%b2BodyDef myBodyDef;
+%myBodyDef.type = b2_dynamicBody;
+%myBodyDef.position.Set(0, 20); //set start position
+%myBodyDef.angle = 0; //set start angle
+%\end{lstlisting}
 
 
-Transforming a body
-Set Velocity
-Set Angular velocity
+%Transforming a body
+%Set Velocity
+%Set Angular velocity
 
 \subsection{Fixtures}
 Fixtures give bodies a shape and additional properties. A body can have multiple fixtures, with their positions relativly to the body's origin.
@@ -877,10 +1038,10 @@ The following properties are part of a fixture:
 }   \\
 \\
 
-A single \textbf{shape} is contained by the fixture. The shape can be a rect, a polygon or a circle. Shapes aren't linked to the body directly, because they may be used independly of the simulation. Therefore the fixture is interposed between body and shape. In Box2D the maximum amount of vertices is defaultly set to eight. A vertex defines the position-vector of an body's edge. A polygon therefore can be created with a minimum of three position-vectors and maximally with eight.
+A single \textbf{shape} is contained by the fixture. The shape can be a rect, a polygon or a circle. Shapes aren't linked to the body directly, because they may be used independly of the simulation. Therefore the fixture is interposed between body and shape. In Box2D the maximum amount of vertices is defaultly set to eight. A vertex defines the position-vector of a body's edge. A polygon therefore can be created with a minimum of three position-vectors and maximally with eight.
 \\
 
-\textbf{Broad-phase proxies} are used internally by Box2D to accelerate collision detection. Therefore a dynamic tree containing the collision-pairs in form of AABB's(footnote) are used. In the most cases it isn't necessary for the user to use proxies. \\
+\textbf{Broad-phase proxies} are used internally by Box2D to accelerate collision detection. Therefore a dynamic tree containing the collision-pairs in form of AABB's\footnote{AABB: Axis aligned boundary box. AABBs are used for fast computing of collision detection} are used. In the most cases it isn't necessary for the user to use proxies. \\
 
 The \textbf{densitiy} is used for computation of the body's mass.\\
 
@@ -930,7 +1091,7 @@ The physics-simulation is controlled by three parameters: \\
 }   \\
 \\
 
-These parameters are used by the Step-Method of the world in which one single simulationstep is processed. \\
+These parameters are used by the step-method of the world in which one single simulation step is processed. \\
 
 The \textbf{timeStep} parameter defines the time-resolution on which the simulation will update the environment. A lower timestep improves the quality of the simulation, but on costs of performance. A higher timestep increases the performance, but the simulation can be inaccurate on too low values.
 The default value is 60Hz. The author of Box2D suggests not to use values lower than 30Hz. As set, the timestep should not be changed as it could cause unwanted behaviour. For a faster simulation the step-method should just called multiple times. \\
@@ -951,14 +1112,7 @@ b2Body* m_body = m_world->CreateBody(&myBodyDef);
 \end{lstlisting}
 
 \section{Collision detection}
-In Box2D collisions are computed between two fixtures. If a collision happens a contact object, containing information about collision coordinates, normals and impulse among ohter things, is created. A contact object can be used to manage a collision.
-
-The collision-computation processes four phases:
-TODO: Flowchart of a collision-process:
-
-
-source: iforce2D
-
+In Box2D collisions are computed between two fixtures. A contact object, containing information about collision coordinates, normals and impulse among ohter things, is created if a collision happens. A contact object can be used to manage a collision.
 
 An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is used for fast performance of computing geometrical operations. (source: wikipedia)
 
@@ -972,7 +1126,7 @@ An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is 
 \end{center}
 If two AABBs are overlapping, a contact between the two fixtures is created, but the isTouching()-method returns 'False', because the shapes aren't overlapping.
 
-Sometimes, fast moving bodies misses collisions. Therefore it is possible to define the body as a bullet.
+Sometimes, fast moving bodies misses collisions. Therefore it is possible to define the body as a bullet for high resolution at collisions, in cost of performance.
 This can be accomplished at creation of the body, by the body's definition instance:
 
 \begin{lstlisting}[caption={Define fixture as bullet before creation},label=lst:fixture-bullet-before]
@@ -1002,13 +1156,29 @@ The second picture shows non-bullet bodies overlapping. A bullet-body takes more
 Bullet bodies
 
 \subsection{Contact listener}
-The contact listener calls callback-methods if the events 'Begin contact' and 'End contact' are triggered.
+The contact listener executes callback-methods if the events 'Begin contact' or 'End contact' are triggered.
 On a collision a contact object is created containing information about the fixtures collision.
 Contacts are used to manage collisions between two fixtures.
 
 To access the contact and the two colliding fixture a contact listener should be used.
 
-TODO: accessing contacts, 
+The collision-computation processes four phases: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item \textbf{Begin contact}
+			\item \textbf{Presolve} 
+			\item \textbf{Postsolve}
+			\item \textbf{End contact}
+
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+
+source: iforce2D
 
 
 \begin{lstlisting}[caption={Contact listener methods},label=lst:collision-contact]
@@ -1042,7 +1212,7 @@ The default behaviour is that all fixtures can collide with each other. If you w
 
 These bits are 16-Bit wide and therefore 16 groups are supported.
 Category bits declare on which groups a fixture belongs. A fixture has to belong to minimal one and maximal 16 groups.
-The mask bit defines with what group of fixtures this fixture can collide. The default values are 0x0001 for category bits and 0xFFFF for mask bits, meaning every fixture can collide with each other.
+The mask bit defines the group of fixtures this fixture can collide with. The default values are 0x0001 for category bits and 0xFFFF for mask bits, meaning every fixture can collide with each other.
 
 \subsubsection*{Group indizes}
 Group indizes can be used to get a more specified behaviour as only with category- and maskbits.
@@ -1062,7 +1232,7 @@ For a value nonzero the following rules are applied at collision: \\
 \\
 
 \subsubsection*{Contact filter}
-For an own specification of collision behaviour the following virtual method can be overwritten: \\
+For an userdefined specification of collision behaviour the following virtual method can be overwritten: \\
 \begin{lstlisting}[caption={The contact filter method},label=lst:box2d-contactfiler]
 bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB);
 \end{lstlisting}
@@ -1092,38 +1262,39 @@ m_debugDraw.SetFlags(flags);
 \end{lstlisting}
 
 
-After each calling of the Step-method the following method has to be called: \\
+After each calling of the step-method the following method has to be called: \\
 
 \begin{lstlisting}[caption={Using debugdraw after each step},label=lst:box2d-ddraw]
 m_world->DrawDebugData();
 \end{lstlisting}
- 
+
 This draws every shape in the bodylist of the world.
-
+ \newpage
 \section{Structure of a Box2D-Project}
-
+As follows, you can see the general structure of a Box2D-Project: \\
 
 \begin{center}
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.4\textwidth,scale=0.5]{files/Box2D-structure.png}
+		\includegraphics[width=0.4\textwidth,scale=0.5]{files/Box2D-Structure.png}
 		\caption{The general structure of a Box2D-application} \cite{box2d-structure}
 		\label{fig:box2d-structure}
 	\end{figure}
 \end{center}
 
+TODO: short description
 
-
-Important: In BeginContact and EndContact no change of active-flag and some other values of a body/fixture
+%Important: In BeginContact and EndContact no change of active-flag and some other values of a body/fixture
 
 
 \section{Testbed}
 
+TODO
 
-AnimalFixtureDef[i].isSensor = false;
-AnimalFixtureDef[i].friction = 1.0f;
-AnimalBodydef[i].linearDamping = 1.0f;
-AnimalBodydef[i].angularDamping = 2.0f;
+%AnimalFixtureDef[i].isSensor = false;
+%AnimalFixtureDef[i].friction = 1.0f;
+%AnimalBodydef[i].linearDamping = 1.0f;
+%AnimalBodydef[i].angularDamping = 2.0f;
 
 \chapter{The OpenGL graphics library}
 OpenGL stands for Open Graphics Library. It is a widely used for developing graphics applications and was published in 1992 by Silicon Graphics. Since 2006 it is maintained by the Khronos Group. It is licensed under a open source license. The logo and the trademark are licensed under a trademark-license.
@@ -1137,12 +1308,6 @@ The Box2D-Testbed uses GLUT respectively Freeglut and GLUI. Thererefore theses l
 source: www.opengl.org
 www.sgi.com/tech/opengl/?/
 
-\section{Basics}
-
-\subsection{Cameras}
-
-Model Matrix
-Projection Matrix
 
 \section{The OpenGL Utility Toolkit (GLUT)}
 The OpenGL Utility Toolkit (GLUT) was developed by Mark Kilgard. It is used to extend OpenGL-Applications by window-management. GLUT is used for small- and medium sized OpenGL-applications.
@@ -1180,7 +1345,7 @@ int main(int argc, char* argv[])
   glutKeyboardFunc(Keyhandler);
   glutReshapeFunc(Resizehandler);
   
-  //Here optionally a GLUI-window can be included, see Chapter 4.3
+  //Here optionally a GLUI-window can be included, see Chapter 6.3
   
   //Enter glut main loop, usually no return from this function
   glutMainLoop(); 
@@ -1191,7 +1356,7 @@ int main(int argc, char* argv[])
 In the first lines glut is initialised, a window with specified position, size and a title is created.
 The variable 'mainWindow' is of type int. It stores the adress of the window-structure.
 
-In the second part of the codesnippet the handler-functions are set. The handler functions have to be static functions, because .
+In the second part of the codesnippet the handler-functions are set. The handler functions have to be static functions.
 At the end the glut main loop is entered. Usually this function never returns. In Freeglut there exist functions to leave and re-enter the main loop.
 
 The following Codesnippet shows the drawing of a simple triangle:
@@ -1219,7 +1384,7 @@ static void Display()
 }
 \end{lstlisting}
 
-The first line sets the draw-color to white and with no transparency. The color is formatted in RGBA. The first three parameters represents the colors red, green and blue. The last parameter is alpha, the transparency of the figure. 0.0f means no quantity of the according parameter and 1.0f as the full quantity.
+The first line sets the draw-color to white and with no transparency. The color is formatted in RGBA. The first three parameters represent the colors red, green and blue. The last parameter is alpha, the transparency of the figure. 0.0f means no quantity of the according parameter and 1.0f as the full quantity.
  This is used by the second line to clear the scene.
 Then the viewmode is set, the position of the camera is loaded.
 With 'glBegin' the drawing of an object is started. In this example a triangle is drawn. Therefore the three vertices of the triangle has to OpenGl. This is done by. Each object has to finished with the 'glEnd'-command.
@@ -1239,10 +1404,9 @@ gluPerspective(45.0f, (double)w / (double)h, 1.0f, 200.0f);
 }
 \end{lstlisting}
 
-The first line sets the viewports position and size. The following operations should than applied on the projection-matrix. Therefore the Matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered then.
-TODO: Figure of the camera perspective
+The first line sets the viewports position and size. The following operations should than applied on the projection-matrix. Therefore the Matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered in this case. \\
 
-TODO: More Callbacks of GLUT: Idle, etc.
+TODO: Figure of the camera perspective
 
 \section{The OpenGL User Interface Library(GLUI)}
 The OpenGL User Inteface Library (GLUI) is a GLUT-based user interface library developed by Paul Rademacher. It is written in C++ and usable for multiple platforms.
@@ -1266,9 +1430,8 @@ glui.sourceforge.net/
 
 
 \subsection{GLUI-Program}
-
-Here is described how a GLUI-window is set up.
-The following code is included after the creation of a GLUT-window and before entering the glut main loop (see listing 4.1):
+In this section is described how a GLUI-window is set up.
+The following code is included after the creation of a GLUT-window and before entering the glut main loop (see \ref{lst:glut-init}) :
 
 
 \begin{lstlisting}[caption={Creating a GLUI-window},label=lst:glui-create]
@@ -1303,9 +1466,99 @@ Callbacks are now defined. This has to be static functions, like in GLUT.
 
 'GLUI\_Master' is a global GLUI-object used to register callbacks, as glui-windows use for example the idle-callback extensively to control components status.
 
-\chapter{Development of a simulator for virtual agents}
+\chapter{Implementation}
 
 \section{Concept}
+The main concept is to cultivate a population of agents by different evolutionary algorithms to find a satisfying solution. Each agent has a sensor, representing an own coordinate system. The agents have to collect as much objects as possible within a given time. Therefore it has a feedforward neural network realized as multilayer perceptron.
+The objects and the agents are spawned randomly every round.
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth,scale=1.0]{files/main-concept.png}  
+		\caption{A sketch of the main concept}
+		\label{fig:concept-main}
+	\end{figure}
+\end{center}
+
+\subsection{The task environment}
+The simulation environment is: \\
+
+\fbox{
+	\begin{minipage}{15cm}				\begin{multicols}{2}
+		\begin{itemize} 
+			\item \textbf{partially observeable}
+			\item \textbf{single agent based or mulitagend based and competive} 
+			\item \textbf{deterministic}
+			\item \textbf{episodic}
+		    \item \textbf{static}
+		    \item \textbf{continous}
+		    \item \textbf{known}, because the sensors give all necessary values
+		\end{itemize}
+	\end{multicols}
+	\end{minipage}
+}   \\
+\\
+
+The simulation environment is \textbf{partially observeable} because the agents perception is limited by the sensor that has a fixed radius. \\
+
+It can be both \textbf{single agent based or mulitagend based and competive}, depending on the population size. If there is just one agent to train its single agent based, with more agents multiagent based and competive. \\
+
+The environment is \textbf{deterministic}. The start positions are choosen randomly, but the process of collecting the objects is from this point on deterministic as each step to get objects can be desribed step by step. \\
+
+Its \textbf{episodic} as the actual state does not change the general method of collecting further objects.
+
+The task environment is \textbf{static}, even if there are multiple agents we consider a static behaviour of the environment for simplicity. The agent don't interrupt each other to often. \\
+
+\textbf{Continuity} is given, because we handle with real values like the acceleration, the rotation and real valued neuron weights. The time for one generation is also continous. \\
+
+The environment is \textbf{known} as the agents sensor gives all data necessary to solve the task.\\
+
+\subsection{Realizing the agent}
+In this project work a simple reflex agent is realized.
+The agents processing logic is realized by a multilayer perceptron. That means the agent has no memory and just processes the actual perception\footnote{To get a memory a recurrent neural network could be used}. This categorises the agent to a simple reflex agent.
+
+\subsubsection*{The agents sensor}
+The agents sensor is a semicircle detecting just collectable objects in an given radius. The sensor returns a vector containing the X- and Y-coordinate relative to the agents actual position.
+
+\subsubsection*{The agents actuator}
+The agent can rotate left or right.
+The agent can accelerate just forwards.
+
+
+\subsection{Coordinate system transformation}
+
+To get the relative position of an object the global coordinate system has to be transformed into the agents local coordinate system, considering the agents actual angle.
+
+Therefore at first a translation is made, then the rotation of the agent is applied.
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\textwidth,scale=1.0]{files/CoordinateRotation.png}  
+		\caption{(Source https://de.wikipedia.org/wiki/Koordinatentransformation) \cite{wikipedia}.}
+		\label{fig:cosys-transform}
+	\end{figure}
+\end{center}
+
+\begin{equation}
+\vec{P'}^{\,} =
+\begin{pmatrix}
+\cos \alpha & \sin \alpha & 0 \\
+-\sin \alpha & \cos \alpha & 0 \\
+0 & 0 & 1
+\end{pmatrix}
+* \vec{P}^{\,}
+\end{equation}
+
+\begin{equation}
+x' = x * \cos \alpha + y * \sin \alpha
+\end{equation}
+\begin{equation}
+y' = -x * \sin \alpha + y * \cos \alpha
+\end{equation}
+
+Source: Wikipedia
 
 
 Transformation of the inputvalues through the input-neurons from range [-20.0, 20.0] and [0.0, 20.0] (Sensor x and y) and [-Pi, +Pi] (DeltaAngle) to the range [-1.0,+1.0] or [0.0, 1.0] with tanh function. (Better function? Linear function?)
@@ -1315,7 +1568,7 @@ rotate clockwise. If Agent is rotated by 180degree error should rotate counter-c
 has learned to rotate clockwise without deltaangle as input.
 
 
-Optional: Random placment of Objects and agents: see algorithm in NeuralWorld.cpp
+Optional: Random placement of Objects and agents: see algorithm in NeuralWorld.cpp
 
 
 
@@ -1332,13 +1585,49 @@ Scalable World:
 - Amount of Objects
 - Amount of Agents
 
+\section{The graphical user interface}
+
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,scale=1.0]{files/new_graphic.png}  
+		\caption{new graphic}
+		\label{fig:cosys-transform}
+	\end{figure}
+\end{center}
+
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.2\textwidth,scale=1.0]{files/new_graphic_new_ev.png}
+		\caption{new graphic create evolution}
+		\label{fig:cosys-transform}
+	\end{figure}
+\end{center}
+
+
+
+\subsection{Visualisation}
+
+Fitness Graph
+Weight Matrix
+Neural Network
+% \subsection{The fitness-function}
+
+
+% \subsection{Neural networks}
+
+
+
 \section{Software-Engineering}
 
 \subsection{Classdiagram}
 
 \subsection{Use-Cases}
 
-\subsection{The graphical user interface}
+
 
 Buttons, Modes
 
@@ -1347,8 +1636,6 @@ Optical Design of the gui
 Weight-Matrix
 
 Neural Network Activation
-
-\subsection{The interface}
 
 
 The inputs: 
@@ -1406,6 +1693,10 @@ Concept
 
 \section{Box2D}
 
+\subsection{The interface}
+(to the concrete implementation in Box2D)
+
+
 Call the Step-multiple times instead of changing the timestepvalue
 
 Care that the fixture shapes center is at (0,0) (The body's center). Can be problem at rotation if shape is not centered.
@@ -1420,20 +1711,18 @@ Detection of food: atan2-function
 Make, CMake
 Python for Trainingdata
 
-\section{Visualisation}
-
-Fitness Graph
-Weight Matrix
-Neural Network
-% \subsection{The fitness-function}
-
-
-% \subsection{Neural networks}
-
-
 
 
 \chapter{Results of the simulation}
+
+\section{A simple script}
+The simple script is based on trigonometric function.
+
+\section{The hillclimber method}
+
+\section{Simulated annealing}
+
+
 
 \chapter{Conclusion}
 
