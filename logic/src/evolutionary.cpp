@@ -38,6 +38,8 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
     for (unsigned i = 0; i < sim_parameter.population_size; i++)
     {
         population.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, i, ptopology, sim_parameter.nettype));
+        //For Crossover
+        newPopulation.push_back(NULL);
     }
 
     best_fitnesses.push_back(0);
@@ -563,9 +565,10 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
     if ((randval > sim_parameter.crossover_rate) || (mum == dad)) 
     {
         // Simply return mum and dad, they will be copied into the next population
-        kids.push_back(&mum);
-        kids.push_back(&dad);
+        kids.push_back(new Agent(mum));
+        kids.push_back(new Agent(dad));
 
+        std::cout << "mum == dad" << std::endl;
         return kids;
     }
 
@@ -588,10 +591,7 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
     {
         // All Connections of the respective layer
         vector<vector<Connection> > kid1_layerConnections;
-        kid1_weights.push_back(kid1_layerConnections);
-
         vector<vector<Connection> > kid2_layerConnections;
-        kid2_weights.push_back(kid2_layerConnections);
 
         unsigned nbNeuronsInLayer = dad_weights[nbLayer].size();
         for (unsigned nbNeuron = 0; nbNeuron < nbNeuronsInLayer; ++nbNeuron) 
@@ -619,9 +619,13 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
                 }
                 ++gene_count;
             }
+            kid1_layerConnections.push_back(kid1_neuronConnections);
+            kid2_layerConnections.push_back(kid2_neuronConnections);
         }
+        kid1_weights.push_back(kid1_layerConnections);
+        kid2_weights.push_back(kid2_layerConnections);
     }
-
+    //Create new agent and set its angle net
     kids.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid1_weights));
     kids.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid2_weights));
 
@@ -648,10 +652,7 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
     {
         // All Connections of the respective layer
         vector<vector<Connection> > kid1_layerConnections_V;
-        kid1_weights_V.push_back(kid1_layerConnections_V);
-
         vector<vector<Connection> > kid2_layerConnections_V;
-        kid2_weights_V.push_back(kid2_layerConnections_V);
 
         unsigned nbNeuronsInLayer_V = dad_weights_V[nbLayer_V].size();
         for (unsigned nbNeuron_V = 0; nbNeuron_V < nbNeuronsInLayer_V; ++nbNeuron_V) 
@@ -679,7 +680,11 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
                 }
                 ++gene_count_V;
             }
+            kid1_layerConnections_V.push_back(kid1_neuronConnections_V);
+            kid2_layerConnections_V.push_back(kid2_neuronConnections_V);
         }
+        kid1_weights_V.push_back(kid1_layerConnections_V);
+        kid2_weights_V.push_back(kid2_layerConnections_V);
 	}
 
 	kids[0]->velocity_net->setConnections(kid1_weights_V);
@@ -703,28 +708,47 @@ int evolutionary::evolve_crossover()
         // Created strcutre: [1][1][1][2][2][3][4]. Random number between 1 and length(array) will
         // more likely choose an agent with a superior fitness
         for(unsigned i=0; i < population.size(); ++i)
-            for(int j=0; j < population[j]->fitness; ++j)
-                roulette.push_back(i);
-
-        // Add some elitism by copying the best agent n times
-        for(unsigned i=0;i < sim_parameter.amount_of_elite_copies; ++i)
         {
-            //Make a copy of the best agent
-            Agent* best_Agent = new Agent(*(best_Agents[0]));
-            mutate_net(best_Agent->angle_net);
-			mutate_net(best_Agent->velocity_net);
-            newPopulation[i] = best_Agent;
+            for(int j=0; j < population[i]->fitness; ++j)
+            {
+                roulette.push_back(i);
+            }
         }
 
-        while(sim_parameter.population_size < newPopulation.size())
-        {
-            int mum_id = rand() % (population.size()-1);
-            int dad_id = rand() % (population.size()-1);
+//        while(sim_parameter.population_size < newPopulation.size())
+//        {
+          int range = 0;
+
+          range = population.size()/2;
+          //if popsize is odd
+          if (1 == population.size() % 2)
+          {
+              range = population.size()/2 + 1;
+          }
+          //Crossover-Algorithm
+          for (unsigned i=0; i < range; ++i)
+          {
+            //Roulette
+           int mum_id = 0;
+           int dad_id = 0; 
+              if ( (!roulette.empty()) && (!(roulette.size() < 2)) )
+              {
+                  mum_id = roulette[(int) (rand() % (roulette.size()-1) )];
+                  dad_id = roulette[(int) (rand() % (roulette.size()-1) )];
+              }
+              else
+              {
+                  if ( !(population.size() < 2) )
+                  {
+                      mum_id = rand() % (population.size()-1);
+                      dad_id = rand() % (population.size()-1);
+                  }
+              }
 
             assert(0 <= mum_id && (population.size()-1) >= mum_id);
 
-            Agent& mum = *(population[mum_id]);  //Here maybe a bug
-            Agent& dad = *(population[dad_id]);  //Here maybe a bug
+            Agent& mum = *(population[mum_id]);  //Here maybe a bug?
+            Agent& dad = *(population[dad_id]);  //Here maybe a bug?
 
             std::vector<Agent*> kids;
 
@@ -738,8 +762,50 @@ int evolutionary::evolve_crossover()
 			mutate_net(kids[1]->velocity_net);		
 			
             // Insert into the new population
-            newPopulation.push_back(kids[0]);
-            newPopulation.push_back(kids[1]);
+//Delete old Agents and add new created
+        
+          std::cout << "i: " << i << std::endl;
+          std::cout << "i+range : " << i+range << std::endl;
+
+           // delete newPopulation[i];
+            newPopulation[i] = kids[0];
+            if(! ((range > population.size()/2) && (i == range-1)) ) // If popsize is odd and its the last iteration
+            {
+                std::cout << "i+range: " << i+range << " assigned" << std::endl;
+            //    delete newPopulation[i+range];
+                newPopulation[i+range] = kids[1];
+            }
+            else
+            {
+                delete kids[1];
+                kids[1] = NULL;
+            }
+        //    newPopulation.push_back(kids[0]);
+        //    newPopulation.push_back(kids[1]);
+        }
+        
+        // Add some elitism by copying the best agent n times
+        for(unsigned i=0;i < sim_parameter.amount_of_elite_copies; ++i)
+        {
+            if (population.size() <= i)
+            {
+                break;
+            }
+            delete newPopulation[i];
+            //Make a copy of the best agent
+            Agent* best_Agent = new Agent(*(best_Agents[0]));
+            mutate_net(best_Agent->angle_net);
+			mutate_net(best_Agent->velocity_net);
+            newPopulation[i] = best_Agent;
+        }
+        //Copy newpopulation to actual population
+        for(unsigned i=0; i<population.size();++i)
+        {
+          delete population[i];
+          population[i] = newPopulation[i];
+          newPopulation[i] = NULL;
+          std::cout << "population[" << i << "].nettype = " << population[i]->getnettype() << std::endl;
+
         }
         return 1;
     }

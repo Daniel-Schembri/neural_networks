@@ -134,7 +134,7 @@ public:
 	static void Wrapper_Resize_Panel(int32 w, int32 h);
 	static void Wrapper_Keyboard_Panel(unsigned char key, int x, int y);
 	static void Wrapper_SimulationLoop();
-
+    static void Wrapper_save_simulation(int);
 	static void Wrapper_glui_noclose();
 
 

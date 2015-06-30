@@ -160,7 +160,10 @@ void gui::Wrapper_SimulationLoop()
 	instance->SimulationLoop();
 }
 
-
+void gui::Wrapper_save_simulation(int)
+{
+    //TODO save simulation
+}
 
 void gui::glui_noclose()
 {
@@ -931,11 +934,13 @@ void gui::Create_Panel()
 
 
 	GLUI_Panel* drawPanel = glui->add_panel("Simulation");
-	glui->add_button_to_panel(drawPanel, "New Evolution", 0, Wrapper_create_evolution);  //TODO: New Game
+	glui->add_button_to_panel(drawPanel, "New Evolution", 0, Wrapper_create_evolution); 
 	glui->add_column_to_panel(drawPanel, true);
-	glui->add_button_to_panel(drawPanel, "Pause/Resume", 0, Wrapper_Pause);  //TODO: Pause and Resume!
+	glui->add_button_to_panel(drawPanel, "Pause/Resume", 0, Wrapper_Pause);
 	glui->add_column_to_panel(drawPanel, true);
 	glui->add_button_to_panel(drawPanel, "Restart", 0, Wrapper_Restart_setVal);
+	glui->add_column_to_panel(drawPanel, true);
+	glui->add_button_to_panel(drawPanel, "Save simulation", 0, Wrapper_save_simulation);
 	glui->add_column_to_panel(drawPanel, true);
 //	glui->add_button_to_panel(drawPanel, "Best Agents");
 //	glui->add_column_to_panel(drawPanel, true);
