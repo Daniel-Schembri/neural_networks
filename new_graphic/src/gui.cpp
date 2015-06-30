@@ -869,9 +869,9 @@ void gui::Createevolution_win()
 
 		glui_createevolution->add_statictext("Crossover options");
 		GLUI_Spinner* simulated_eliteSpinner = glui_createevolution->add_spinner("Elite copies", GLUI_SPINNER_INT, &temp_sim_parameter.amount_of_elite_copies);
-		simulated_annealingSpinner->set_int_limits(1, 100);
+		simulated_eliteSpinner->set_int_limits(1, 100);
 		GLUI_Spinner* simulated_crossoverrateSpinner = glui_createevolution->add_spinner("Crossover rate", GLUI_SPINNER_FLOAT, &temp_sim_parameter.crossover_rate);
-		mutationRateSpinner->set_float_limits(0.01f, 1.0f);
+		simulated_crossoverrateSpinner->set_float_limits(0.01f, 1.0f);
         
         glui_createevolution->add_separator();
 		glui_createevolution->add_statictext("Evolutionary algorithm");
