@@ -392,11 +392,12 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
         double angle_y_v = M_PI/2.0 - angle_x_v;
      
 //        Necessary for driving if no food detected
+        /*
         if (0 == inputvals_vector[i][0] && 0 == inputvals_vector[i][1] && angle_x_v == M_PI/2.0 * 1.03f)
         {
             x_value = 1;
         }
-
+        */
         double steering_angle = sgn(x_value) * -angle_y_v;
 
         agent_vals.push_back(steering_angle);
@@ -409,8 +410,9 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
         std::cout << "Input: (" << inputvals_vector[i][0] << "," << inputvals_vector[i][1] << 
                      ") Output:(" << result_vectors[i][0] << "," << result_vectors[i][1] << 
                      ") angle_x_v (" << angle_x_v << "), angle_y_v (" << angle_y_v << ")\n";
-        //std::cout << "angle_x_v :" << angle_x_v << ", angle_y_v: " << angle_y_v << ", steering_angle: " << steering_angle << "\n"; 
 */
+        //std::cout << "angle_x_v :" << angle_x_v << ", angle_y_v: " << angle_y_v << ", steering_angle: " << steering_angle << "\n"; 
+
 //        result_vectors[i][0] = 0;
 //        result_vectors[i][1] = 0;
     }
