@@ -953,7 +953,7 @@ void gui::Create_Panel()
 void gui::Create_plotterwin()
 {
 	//TODO: Set Focus on Subwindow that under Freeglut (Win) it gets Keyboard-callback
-	plotterWindow = glutCreateSubWindow(mainWindow, 880, 0, 400, 800); //848 before
+	plotterWindow = glutCreateSubWindow(mainWindow, 880, 0, 400, 550); //848 before
 	glutDisplayFunc(Wrapper_plotting);
 	glutKeyboardFunc(Wrapper_Keyboard_Panel);
 	glutReshapeFunc(Wrapper_Resize_Panel);
