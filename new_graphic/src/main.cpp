@@ -36,13 +36,9 @@
 #include "evolutionary.hpp"
 #include "gui.h"
 
-
 int main(int argc, char** argv)
 {
-
 	gui ngui("Simulation of Agents", 0, 0, 1280, 928, argc, argv);
-
 	ngui.Start();
-
 	return 0;
 }

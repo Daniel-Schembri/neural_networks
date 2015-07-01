@@ -7,7 +7,7 @@
 
 evolutionary::evolutionary()
 {
-    
+
 }
 
 evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned> ptopology)
@@ -17,8 +17,8 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
     evolvesteps = sim_parameter.evolvetime * 60; //60 Steps per Second (60Hz)
     iterationsteps = 0; generations = 0;
 
-	//Necessary for writing the in and ouputs of the agent in a file
-	datasetwritten = false;
+    //Necessary for writing the in and ouputs of the agent in a file
+    datasetwritten = false;
     //Supervised learning
     net_learned = false;
 
@@ -59,17 +59,13 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
     average_fitnesses.push_back(0.0f);
 
     Agent* local = new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, ptopology, sim_parameter.nettype);
-   // *local = *(population[0]);
 
     best_Agents.push_back(local);  //Just to keep one field to save later best Agent
-
-
-
 }
 
 evolutionary::~evolutionary()
 {
-    
+
     if(!best_Agents.empty())
     {
         for(unsigned i=0; i<best_Agents.size();++i)
@@ -106,7 +102,7 @@ evolutionary::~evolutionary()
         }
         newPopulation.clear();
     }
-    
+
 }
 
 
@@ -197,7 +193,7 @@ int evolutionary::evolve_simulatedannealing()
     return 0;
 }
 
-int evolutionary::evolve_learn()  //
+int evolutionary::evolve_learn() 
 {
     if(!net_learned)
     {
@@ -301,7 +297,6 @@ void evolutionary::mutate_net(Net *net)
     proove_net_maxvals(net);
 }
 
-
 //Evolutionary Algorithms
 void evolutionary::hillclimber(Agent *Agent, bool revert)
 {
@@ -312,9 +307,8 @@ void evolutionary::hillclimber(Agent *Agent, bool revert)
         mutate_net(Agent->angle_net);
         mutate_net(Agent->velocity_net);
     }
-    
-}
 
+}
 
 void evolutionary::learn()
 {
@@ -393,31 +387,21 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
         //                   steering = sign(x) * -(pi/2-(Network output - pi/2))
         double angle_x_v = M_PI/2.0 * population[i]->processA(inputvals_vector[i]);
         double angle_y_v = M_PI/2.0 - angle_x_v;
-     
-//        Necessary for driving if no food detected
-        /*
-        if (0 == inputvals_vector[i][0] && 0 == inputvals_vector[i][1] && angle_x_v == M_PI/2.0 * 1.03f)
-        {
-            x_value = 1;
-        }
-        */
+
         double steering_angle = sgn(x_value) * -angle_y_v;
 
         agent_vals.push_back(steering_angle);
 
-    //    agent_vals[0] = 0;
-    //    agent_vals[1] = 0;
-
         result_vectors.push_back(agent_vals);
-/*
-        std::cout << "Input: (" << inputvals_vector[i][0] << "," << inputvals_vector[i][1] << 
-                     ") Output:(" << result_vectors[i][0] << "," << result_vectors[i][1] << 
-                     ") angle_x_v (" << angle_x_v << "), angle_y_v (" << angle_y_v << ")\n";
-*/
+        /*
+           std::cout << "Input: (" << inputvals_vector[i][0] << "," << inputvals_vector[i][1] << 
+           ") Output:(" << result_vectors[i][0] << "," << result_vectors[i][1] << 
+           ") angle_x_v (" << angle_x_v << "), angle_y_v (" << angle_y_v << ")\n";
+           */
         //std::cout << "angle_x_v :" << angle_x_v << ", angle_y_v: " << angle_y_v << ", steering_angle: " << steering_angle << "\n"; 
 
-//        result_vectors[i][0] = 0;
-//        result_vectors[i][1] = 0;
+        //        result_vectors[i][0] = 0;
+        //        result_vectors[i][1] = 0;
     }
 
     if (!datasetwritten)
@@ -433,42 +417,42 @@ std::vector< std::vector<double> > evolutionary::process(std::vector< std::vecto
 //Save actual in- and outputs of the agents in a file
 void evolutionary::save_vals(std::vector< std::vector<double> > inputvals_vector, std::vector< std::vector<double> > results_vector)
 {
-	std::vector<double> inputvals(2);
-	std::vector<double> resultvals(2);
+    std::vector<double> inputvals(2);
+    std::vector<double> resultvals(2);
 
-	std::string s = "";
+    std::string s = "";
 
-	std::ofstream outfile("agent_vals.txt", std::ofstream::out);
-	if (outfile.is_open())
-	{
-		for (unsigned i = 0; i < inputvals_vector.size(); i++)
-		{
-			inputvals = inputvals_vector[i];
-			resultvals = results_vector[i];
+    std::ofstream outfile("agent_vals.txt", std::ofstream::out);
+    if (outfile.is_open())
+    {
+        for (unsigned i = 0; i < inputvals_vector.size(); i++)
+        {
+            inputvals = inputvals_vector[i];
+            resultvals = results_vector[i];
 
-			s += "Agent: " + std::to_string(i) + " \nInputvals       Outputvals \n";
+            s += "Agent: " + std::to_string(i) + " \nInputvals       Outputvals \n";
 
-			//to convert float to String
+            //to convert float to String
 
-			std::ostringstream floatstring;
+            std::ostringstream floatstring;
 
-			floatstring.clear();
+            floatstring.clear();
 
-			floatstring << inputvals[0] << ", " << inputvals[1] << " | " << resultvals[0] << ", " << resultvals[1] << "\n";
-			s += floatstring.str();
-			floatstring.clear();
+            floatstring << inputvals[0] << ", " << inputvals[1] << " | " << resultvals[0] << ", " << resultvals[1] << "\n";
+            s += floatstring.str();
+            floatstring.clear();
 
-			s += "\n";
-		}
-	// write to outfile
-	outfile.write(s.c_str(), s.length());
+            s += "\n";
+        }
+        // write to outfile
+        outfile.write(s.c_str(), s.length());
 
-	outfile.close();
-	}
-	else
-	{
-		//	std::cerr << "Unable to open file to write stats!";
-	}
+        outfile.close();
+    }
+    else
+    {
+        //	std::cerr << "Unable to open file to write stats!";
+    }
 }
 
 void evolutionary::save_bestFitness()
@@ -538,13 +522,12 @@ void evolutionary::save_bestAgent()
     {    
         if (population[i]->fitness > best_fitness)
         {
-           if (NULL != best_Agents[0])
-           {
-               delete best_Agents[0];
-               best_Agents[0] = NULL;
-           }
-           best_Agents[0] = new Agent(*(population[i]));
-           // *(best_Agents[0]) = *(population[i]); //Doesnt work!
+            if (NULL != best_Agents[0])
+            {
+                delete best_Agents[0];
+                best_Agents[0] = NULL;
+            }
+            best_Agents[0] = new Agent(*(population[i]));
         }
     }
 }
@@ -586,7 +569,7 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
 
     WeightMatrix kid1_weights;
     WeightMatrix kid2_weights;
- 
+
     // To keep track of how many connections have been added
     unsigned gene_count = 0;
 
@@ -635,9 +618,7 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
     kids.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, 0, sim_parameter.topology, sim_parameter.nettype, kid2_weights));
 
 
-
-
-	//Second crossover_point_V for velocity_net
+    //Second crossover_point_V for velocity_net
     unsigned crossover_point_V = rand() % sim_parameter.amount_of_weights + 1;  //Range between 1 and amount_of_weights
 
     assert(crossover_point_V >= 1 && crossover_point_V <= sim_parameter.amount_of_weights);
@@ -647,7 +628,7 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
 
     WeightMatrix kid1_weights_V;
     WeightMatrix kid2_weights_V;
- 
+
     // To keep track of how many connections have been added
     unsigned gene_count_V = 0;
 
@@ -690,9 +671,9 @@ vector<Agent*> evolutionary::crossover(Agent& mum, Agent& dad)
         }
         kid1_weights_V.push_back(kid1_layerConnections_V);
         kid2_weights_V.push_back(kid2_layerConnections_V);
-	}
+    }
 
-	kids[0]->velocity_net->setConnections(kid1_weights_V);
+    kids[0]->velocity_net->setConnections(kid1_weights_V);
     kids[1]->velocity_net->setConnections(kid2_weights_V);
 
     return kids;
@@ -720,35 +701,35 @@ int evolutionary::evolve_crossover()
             }
         }
 
-//        while(sim_parameter.population_size < newPopulation.size())
-//        {
-          int range = 0;
+        //        while(sim_parameter.population_size < newPopulation.size())
+        //        {
+        int range = 0;
 
-          range = population.size()/2;
-          //if popsize is odd
-          if (1 == population.size() % 2)
-          {
-              range = population.size()/2 + 1;
-          }
-          //Crossover-Algorithm
-          for (unsigned i=0; i < range; ++i)
-          {
+        range = population.size()/2;
+        //if popsize is odd
+        if (1 == population.size() % 2)
+        {
+            range = population.size()/2 + 1;
+        }
+        //Crossover-Algorithm
+        for (unsigned i=0; i < range; ++i)
+        {
             //Roulette
-           int mum_id = 0;
-           int dad_id = 0; 
-              if ( (!roulette.empty()) && (!(roulette.size() < 2)) )
-              {
-                  mum_id = roulette[(int) (rand() % (roulette.size()-1) )];
-                  dad_id = roulette[(int) (rand() % (roulette.size()-1) )];
-              }
-              else
-              {
-                  if ( !(population.size() < 2) )
-                  {
-                      mum_id = rand() % (population.size()-1);
-                      dad_id = rand() % (population.size()-1);
-                  }
-              }
+            int mum_id = 0;
+            int dad_id = 0; 
+            if ( (!roulette.empty()) && (!(roulette.size() < 2)) )
+            {
+                mum_id = roulette[(int) (rand() % (roulette.size()-1) )];
+                dad_id = roulette[(int) (rand() % (roulette.size()-1) )];
+            }
+            else
+            {
+                if ( !(population.size() < 2) )
+                {
+                    mum_id = rand() % (population.size()-1);
+                    dad_id = rand() % (population.size()-1);
+                }
+            }
 
             assert(0 <= mum_id && (population.size()-1) >= mum_id);
 
@@ -763,21 +744,21 @@ int evolutionary::evolve_crossover()
             mutate_net(kids[0]->angle_net);
             mutate_net(kids[0]->velocity_net);
 
-			mutate_net(kids[1]->angle_net);
-			mutate_net(kids[1]->velocity_net);		
-			
-            // Insert into the new population
-//Delete old Agents and add new created
-        
-          std::cout << "i: " << i << std::endl;
-          std::cout << "i+range : " << i+range << std::endl;
+            mutate_net(kids[1]->angle_net);
+            mutate_net(kids[1]->velocity_net);		
 
-           // delete newPopulation[i];
+            // Insert into the new population
+            //Delete old Agents and add new created
+
+            std::cout << "i: " << i << std::endl;
+            std::cout << "i+range : " << i+range << std::endl;
+
+            // delete newPopulation[i];
             newPopulation[i] = kids[0];
             if(! ((range > population.size()/2) && (i == range-1)) ) // If popsize is odd and its the last iteration
             {
                 std::cout << "i+range: " << i+range << " assigned" << std::endl;
-            //    delete newPopulation[i+range];
+                //    delete newPopulation[i+range];
                 newPopulation[i+range] = kids[1];
             }
             else
@@ -785,10 +766,10 @@ int evolutionary::evolve_crossover()
                 delete kids[1];
                 kids[1] = NULL;
             }
-        //    newPopulation.push_back(kids[0]);
-        //    newPopulation.push_back(kids[1]);
+            //    newPopulation.push_back(kids[0]);
+            //    newPopulation.push_back(kids[1]);
         }
-        
+
         // Add some elitism by copying the best agent n times
         for(unsigned i=0;i < sim_parameter.amount_of_elite_copies; ++i)
         {
@@ -800,19 +781,19 @@ int evolutionary::evolve_crossover()
             //Make a copy of the best agent
             Agent* best_Agent = new Agent(*(best_Agents[0]));
             mutate_net(best_Agent->angle_net);
-			mutate_net(best_Agent->velocity_net);
+            mutate_net(best_Agent->velocity_net);
             newPopulation[i] = best_Agent;
         }
         //Copy newpopulation to actual population
         for(unsigned i=0; i<population.size();++i)
         {
-          delete population[i];
-          population[i] = newPopulation[i];
-          newPopulation[i] = NULL;
-          std::cout << "population[" << i << "].nettype = " << population[i]->getnettype() << std::endl;
+            delete population[i];
+            population[i] = newPopulation[i];
+            newPopulation[i] = NULL;
+            std::cout << "population[" << i << "].nettype = " << population[i]->getnettype() << std::endl;
 
         }
         return 1;
     }
     return 0;
-}
+    }

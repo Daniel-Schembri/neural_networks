@@ -1,44 +1,42 @@
 /*
-* Copyright (c) 2015 Daniel Schembri https://github.com/Daniel-Schembri/neural_networks
-*
-* neuralworld.cpp
-* This cpp-file uses Box2D by Erin Catto 
-*
-* new_graphic
-* This is a graphical user interface to evolve object collecting agents 
-* The agent have two neural networks for steering angle and velocity.
-*
-* This project includes the neural net framework, called logic,
-* of Jonathan Schwarz https://github.com/jonathan-schwarz/neural_networks
-*
-* new_graphic also uses the Box2D-library by Erin Catto
-* At following the license for Box2D:
-*
-* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
-*
-* This software is provided 'as-is', without any express or implied
-* warranty.  In no event will the authors be held liable for any damages
-* arising from the use of this software.
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute it
-* freely, subject to the following restrictions:
-* 1. The origin of this software must not be misrepresented; you must not
-* claim that you wrote the original software. If you use this software
-* in a product, an acknowledgment in the product documentation would be
-* appreciated but is not required.
-* 2. Altered source versions must be plainly marked as such, and must not be
-* misrepresented as being the original software.
-* 3. This notice may not be removed or altered from any source distribution.
-*/
+ * Copyright (c) 2015 Daniel Schembri https://github.com/Daniel-Schembri/neural_networks
+ *
+ * neuralworld.cpp
+ * This cpp-file uses Box2D by Erin Catto 
+ *
+ * new_graphic
+ * This is a graphical user interface to evolve object collecting agents 
+ * The agent have two neural networks for steering angle and velocity.
+ *
+ * This project includes the neural net framework, called logic,
+ * of Jonathan Schwarz https://github.com/jonathan-schwarz/neural_networks
+ *
+ * new_graphic also uses the Box2D-library by Erin Catto
+ * At following the license for Box2D:
+ *
+ * Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty.  In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 1. The origin of this software must not be misrepresented; you must not
+ * claim that you wrote the original software. If you use this software
+ * in a product, an acknowledgment in the product documentation would be
+ * appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ * misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ */
 
 #include "neuralWorld.h"
-
 
 NeuralWorld::NeuralWorld()
 {
 
 }
-
 
 NeuralWorld::NeuralWorld(std::vector<Agent *> *ppopulation, int pamount_Object, int pfield_size, int pmode)
 {
@@ -98,7 +96,6 @@ NeuralWorld::NeuralWorld(std::vector<Agent *> *ppopulation, int pamount_Object, 
     Init();
 }
 
-
 NeuralWorld::~NeuralWorld()
 {
 
@@ -110,7 +107,6 @@ NeuralWorld::~NeuralWorld()
 
 }
 
-
 void NeuralWorld::Init()
 {
     force[0] = false; force[1] = false; force[2] = false; force[3] = false;
@@ -119,7 +115,6 @@ void NeuralWorld::Init()
     m_world->SetWarmStarting(true);
     m_world->SetContinuousPhysics(true);
     m_world->SetSubStepping(false);
-
 
     for (unsigned int i=0; i<population->size(); i++)
     {
@@ -140,8 +135,6 @@ void NeuralWorld::Init()
 
             b2Vec2 Agentposition; Agentposition.Set((-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10)));
 
-
-
             //Position Correction
             for (unsigned int j=0;j<i;j++) //Look if Agentposition are to near to another Agent and correct it
             {
@@ -155,17 +148,14 @@ void NeuralWorld::Init()
             AgentBodydef[i].position.Set(Agentposition.x, Agentposition.y);
             //Position Correction End
 
-
             //b2Body* player;
             Agentbody[i] = m_world->CreateBody(&(AgentBodydef[i]));
-
 
             AgentFixture[i] = Agentbody[i]->CreateFixture(&(AgentFixtureDef[i]));
             Agentbody[i]->SetAngularVelocity(0);	
             AgentFixture[i]->SetUserData(touches + i);		
 
             //add semicircle sensor to Agent
-
             float radius = 13;
             b2Vec2 m_sensor_vertices[8];
             b2PolygonShape* m_sensorShape = new b2PolygonShape();
@@ -175,7 +165,6 @@ void NeuralWorld::Init()
                 float angle = i / 6.0 * 180 * M_PI / 180;
                 m_sensor_vertices[i + 1].Set(radius * cosf(angle), radius * sinf(angle));
             }
-
             m_sensorShape->Set(m_sensor_vertices, 8);
             SensorFixtureDef[i].shape = m_sensorShape;
             SensorFixture[i] = Agentbody[i]->CreateFixture(&(SensorFixtureDef[i]));
@@ -186,11 +175,9 @@ void NeuralWorld::Init()
 
     for (int i=0; i<amount_Object; i++)
     {
-
         b2PolygonShape* shape = new b2PolygonShape();
         shape->SetAsBox(0.4f, 0.4f);
         ObjectFixtureDef[i].shape = shape;
-
         ObjectFixtureDef[i].density = 1;
         // Override the default friction.
         ObjectFixtureDef[i].filter.maskBits = 0xFFFF;    //Important for Collisions working!
@@ -208,7 +195,6 @@ void NeuralWorld::Init()
         ObjectFixture[i]->SetSensor(true);
         Objectbody[i]->SetAngularVelocity(0);	
         ObjectFixture[i]->SetUserData(touches + population->size()*2 + i); //population->size()*2 because of Agents and their sensors
-
     }
 
     //Obstacles are the walls for example  
@@ -259,12 +245,10 @@ void NeuralWorld::Init()
             ((*touches)[i])[j] = false;
         }
     }
-
 }
 
 void NeuralWorld::Reset()
 {
-
     for(unsigned int i=0; i<population->size(); i++)
     {
         (*population)[i]->fitness = 0;
@@ -285,8 +269,6 @@ void NeuralWorld::Reset()
         //Reset angular and velocity force
         Agentbody[i]->SetLinearVelocity(b2Vec2(0,0));
         Agentbody[i]->SetAngularVelocity(0);
-
-
     }
 
     for (int i = 0; i < amount_of_all_objects; i++)
@@ -306,7 +288,6 @@ void NeuralWorld::Reset()
         Objectbody[i]->SetLinearVelocity(b2Vec2(0,0));
         Objectbody[i]->SetAngularVelocity(0);
     }
-
 }
 
 Test* NeuralWorld::Create(std::vector<Agent *> *ppopulation, int pamount_Object, int pfield_size, int pmode)
@@ -314,14 +295,13 @@ Test* NeuralWorld::Create(std::vector<Agent *> *ppopulation, int pamount_Object,
     return new NeuralWorld(ppopulation, pamount_Object, pfield_size, pmode);
 }
 
-
 void NeuralWorld::move_bodies(std::vector< std::vector<double> > output_vectors)
 {
     for (unsigned int i = 0; i < population->size(); i++)
     {
         //Rotate Agent
         Agentbody[i]->SetTransform(Agentbody[i]->GetPosition(), Agentbody[i]->GetAngle() + 0.075f*(output_vectors[i][1]));
-      //  Agentbody[i]->SetTransform(Agentbody[i]->GetPosition(), Agentbody[i]->GetAngle() - (M_PI/2) *(output_vectors[i][1]));
+        //  Agentbody[i]->SetTransform(Agentbody[i]->GetPosition(), Agentbody[i]->GetAngle() - (M_PI/2) *(output_vectors[i][1]));
         //Accelerate Agent
         Agentbody[i]->ApplyForce(b2Vec2(-sin(Agentbody[i]->GetAngle())*0.075f * 500 * (output_vectors[i][0]), cos(Agentbody[i]->GetAngle())*0.075f * 500 * (output_vectors[i][0])), Agentbody[i]->GetWorldCenter(), true);
     }
@@ -343,13 +323,12 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
     //Initialization
     for (unsigned int i = 0; i < population->size(); i++)
     {
-        //Todo: Get last Object position or get nearest Object position?
         //Agent relative posx and posy to Object. If no Object detected => (0.0f, 0.0f)
         single_vector.push_back(0.0f);
         single_vector.push_back(0.0f);
         //	single_vector.push_back(0.0f);
         input_vectors.push_back(single_vector);
-        single_vector.clear();  //TODO: Reallocation problem? (Dont think so cause not using pointer)
+        single_vector.clear(); 
     }
 
     for (unsigned int i = 0; i < population->size(); i++)
@@ -388,13 +367,13 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
             //negativ y-values arent allowed (out of range of the sensor)
             if(y_tmp < 0.0f)
             {
-            single_vector.push_back(0.0f);
-            single_vector.push_back(0.0f);
+                single_vector.push_back(0.0f);
+                single_vector.push_back(0.0f);
             }
             else
             {
-            single_vector.push_back(x_tmp);
-            single_vector.push_back(y_tmp);
+                single_vector.push_back(x_tmp);
+                single_vector.push_back(y_tmp);
             }
             //		single_vector.push_back(angle);
 
@@ -402,16 +381,16 @@ std::vector< std::vector<double> > NeuralWorld::get_sensor_vectors()
             single_vector.clear();
         }
     }
-return input_vectors;
+    return input_vectors;
 }
 
 void NeuralWorld::Step(Settings* settings)
 {
     //DebugDraw Agent Angles
-//    for(int i=0; i<population->size();++i)
-//    {
-//        m_debugDraw.DrawString(20, 100 + 40*i, "Agent %d Angle: %f \n", i, Agentbody[i]->GetAngle());
-//    }
+    //    for(int i=0; i<population->size();++i)
+    //    {
+    //        m_debugDraw.DrawString(20, 100 + 40*i, "Agent %d Angle: %f \n", i, Agentbody[i]->GetAngle());
+    //    }
     //Deactivate Object if inactive
     for (unsigned int i = 0; i < amount_Object; i++)
     {
@@ -422,12 +401,9 @@ void NeuralWorld::Step(Settings* settings)
             active[population->size() * 2 + i] = true;
             Objectbody[i]->SetTransform( b2Vec2( (-2 * field_size + 5.0f) + (rand() % (2 * field_size - 10)), (2 * field_size - 5.0f) - (rand() % (2 * field_size - 10))),0.0f);
         }
-            
+
     }
 
-
-    //TODO: If drawObjectVectors
-    //TODO: Own Method
     for (unsigned int j = 0; j < population->size(); j++)
     {
         //Draw all active objects in sensorrange
@@ -453,8 +429,8 @@ void NeuralWorld::Step(Settings* settings)
 
                 if(shortest_vec.Length() > distance_object.Length())
                 {
-                   shortest_vec = distance_object;
-                   nearest_object = j;
+                    shortest_vec = distance_object;
+                    nearest_object = j;
                 } 
             }
         }
@@ -466,13 +442,10 @@ void NeuralWorld::Step(Settings* settings)
     Test::Step(settings);
 }
 
-
-
 /*
-   void NeuralWorld::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) //TODO: Necessary?
+   void NeuralWorld::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
    {
    contact->ResetFriction();
-
    }
    */
 
@@ -496,7 +469,6 @@ void NeuralWorld::BeginContact(b2Contact* contact)
                     }
                 }
             }
-
         }
         if (fixtureA == AgentFixture[j])
         {
@@ -509,7 +481,6 @@ void NeuralWorld::BeginContact(b2Contact* contact)
                         (*population)[j]->fitness++;
                         ((*touches)[j])[population->size() * 2 + i] = false; //Because Object then dont need to be detected if inactive
                         active[population->size()*2+i] = false;
-
                     }
                 }
             }
@@ -579,7 +550,6 @@ void NeuralWorld::EndContact(b2Contact* contact)
 
 std::vector<double> NeuralWorld::move_player()
 {
-    //TODO: correct angle?
     std::vector<double> Outputs;
     Outputs.push_back(0.0f); Outputs.push_back(0.0f);
     if (MODE_SINGLEPLAYER == mode)
@@ -662,14 +632,3 @@ void NeuralWorld::KeyboardUp(unsigned char key)
         }
     }
 }
-
-
-//TODO: Maybe needed for BestAgents-Mode
-/*
-   void setPopulation(std::vector<Agent *> *ppopulation)
-   {
-   population = ppopulation;
-   }
-
-*/
-

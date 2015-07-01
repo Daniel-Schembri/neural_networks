@@ -39,9 +39,9 @@ class Agent
         ~Agent();
 
         Agent(float pposx, float pposy, int pid, 
-              std::vector<unsigned> ptopology, int pnet_type);
+                std::vector<unsigned> ptopology, int pnet_type);
         Agent(float pposx, float pposy, int pid, 
-              std::vector<unsigned> ptopology, int pnet_type, WeightMatrix &pweights);
+                std::vector<unsigned> ptopology, int pnet_type, WeightMatrix &pweights);
 
         int getid() const;
         int getnettype() const;

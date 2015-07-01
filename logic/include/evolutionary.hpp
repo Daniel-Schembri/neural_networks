@@ -32,7 +32,6 @@ struct parameter
     int nettype;    
     std::vector<unsigned> topology;
     int amount_of_weights;
-
     //Range [0.0, 1.0]
     float crossover_rate;  
     // Probability threshold of selecting an animal for mutation
@@ -45,7 +44,6 @@ class evolutionary
 {
     //Attributes
     public:
-
         struct parameter sim_parameter;
         unsigned int evolvesteps;
         unsigned int generations;
@@ -58,13 +56,12 @@ class evolutionary
         std::vector<float> average_fitnesses;
 
         std::vector<Agent *> best_Agents;
-
         std::vector<Agent *> newPopulation;
         std::vector<Agent *> population;
 
     private:
         bool net_learned;    
-		bool datasetwritten;
+        bool datasetwritten;
         //double max_delta; 
         std::vector< std::vector<double> > trainingdataV;
         std::vector< std::vector<double> > trainingdataA;
@@ -73,16 +70,12 @@ class evolutionary
         double revert_agent_v[100][100][100];
 
         //Methods
-
     public:
-
         evolutionary();
         evolutionary(struct parameter psim_parameter, std::vector<unsigned> ptopology);
-
         ~evolutionary();
 
         int evolve(int id_algo);
-
 
         std::vector< std::vector<double> > process(std::vector< std::vector<double> > inputvals_vector);
 
@@ -97,7 +90,6 @@ class evolutionary
         void set_trainingdataA(std::vector< std::vector<double> > ptrainingdata);
 
     private:
-
         void do_or_save_revert(Agent *agent, bool revert);
         void mutate_net(Net *net);
         void proove_net_maxvals(Net *net);
@@ -111,7 +103,7 @@ class evolutionary
         void hillclimber(Agent *Agent, bool revert);
         void learn();
 
-		void save_vals(std::vector< std::vector<double> > inputvals_vector, std::vector< std::vector<double> > results_vector);
+        void save_vals(std::vector< std::vector<double> > inputvals_vector, std::vector< std::vector<double> > results_vector);
 };
 
 #endif /* __EVOLUTONARY_HPP__ */

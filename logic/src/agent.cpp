@@ -20,28 +20,28 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
     angle_net    = NULL;
     myscript = NULL;
 
-	switch(nettype)
-	{
-	case NET_FEEDFORWARD:
-		velocity_net = new FeedForwardNet(topology, true);
-		angle_net    = new FeedForwardNet(topology, true);
-		break;
-	case NET_SRN:
-//		velocity_net = new srn(topology, true);
-//		angle_net    = new srn(topology, true);
-		break;
-	case NET_SCRIPT:
-        myscript = new Script();
-		break;
-	default:
-		velocity_net = new FeedForwardNet(topology, true);
-		angle_net    = new FeedForwardNet(topology, true);
-		break;
-	};
+    switch(nettype)
+    {
+        case NET_FEEDFORWARD:
+            velocity_net = new FeedForwardNet(topology, true);
+            angle_net    = new FeedForwardNet(topology, true);
+            break;
+        case NET_SRN:
+            //		velocity_net = new srn(topology, true);
+            //		angle_net    = new srn(topology, true);
+            break;
+        case NET_SCRIPT:
+            myscript = new Script();
+            break;
+        default:
+            velocity_net = new FeedForwardNet(topology, true);
+            angle_net    = new FeedForwardNet(topology, true);
+            break;
+    };
 }
 
 Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology, int pnet_type,
-             WeightMatrix &pweights)
+        WeightMatrix &pweights)
 {
     fitness = 0; lastfitness = 0; id=pid; nettype = pnet_type;
 
@@ -49,28 +49,28 @@ Agent::Agent(float pposx, float pposy, int pid, std::vector<unsigned> ptopology,
 
     posx = pposx; posy = pposy;
     topology = ptopology;
-	
+
     velocity_net = NULL;
     angle_net    = NULL;
     myscript = NULL; 
 
-	switch(nettype)
-	{
-	case NET_FEEDFORWARD:
-		velocity_net = new FeedForwardNet(topology, true);
-		angle_net    = new FeedForwardNet(topology, true);
-		break;
-	case NET_SRN:
-//		velocity_net = new srn(topology, true);
-//		angle_net    = new srn(topology, true);
-		break;
-	case NET_SCRIPT:
-        myscript = new Script();
-		break;
-	default:
-		velocity_net = new FeedForwardNet(topology, true);
-		angle_net    = new FeedForwardNet(topology, true);
-		break;
+    switch(nettype)
+    {
+        case NET_FEEDFORWARD:
+            velocity_net = new FeedForwardNet(topology, true);
+            angle_net    = new FeedForwardNet(topology, true);
+            break;
+        case NET_SRN:
+            //		velocity_net = new srn(topology, true);
+            //		angle_net    = new srn(topology, true);
+            break;
+        case NET_SCRIPT:
+            myscript = new Script();
+            break;
+        default:
+            velocity_net = new FeedForwardNet(topology, true);
+            angle_net    = new FeedForwardNet(topology, true);
+            break;
     };
 
     if(NULL != velocity_net)
@@ -101,7 +101,7 @@ Agent::Agent(const Agent &other)
         }
         else if (NET_SRN == nettype);
         {
-    //        velocity_net = new srn(topology, true);
+            //        velocity_net = new srn(topology, true);
         }
         velocity_net->setConnections(other.velocity_net->getConnections());
     }
@@ -114,7 +114,7 @@ Agent::Agent(const Agent &other)
         }
         else if (NET_SRN == nettype);
         {
-      //      angle_net = new srn(topology, true);
+            //      angle_net = new srn(topology, true);
         }
         angle_net->setConnections(other.angle_net->getConnections());
     }
@@ -124,7 +124,7 @@ Agent::Agent(const Agent &other)
         myscript = new Script();
     }
 
-    
+
 }
 
 Agent::~Agent()
@@ -182,13 +182,6 @@ double Agent::processV(std::vector<double> inputvals)
     {
         velocity_net->feedForward(inputvals);
         velocity_net->getResults(result_vals);
-/*
-        //For driving the agent if no food detected
-        if (idleness_count >= 19)
-        {
-            result_vals[0] = 0.2f;
-        }
-*/
     }
     else
     {
@@ -207,23 +200,6 @@ double Agent::processA(std::vector<double> inputvals)
     {
         angle_net->feedForward(inputvals);
         angle_net->getResults(result_vals);
-    
-        /*
-        //For driving the agent if no food detected
-        if(0 == inputvals[0] && 0 == inputvals[1])
-        {
-            idleness_count++;
-        }
-        else
-        {
-            idleness_count = 0;
-        }
-
-        if (idleness_count >= 20)
-        {
-            result_vals[0] = 1.03f;
-        }
-        */
     }
     else
     {
@@ -261,8 +237,3 @@ bool Agent::operator== (const Agent &other) const
 
     return true;
 }
-
-/*
-float32 a = fabs(player->GetPosition().x - Object[i]->GetPosition().x);
-float32 b = fabs(player->GetPosition().y - Object[i]->GetPosition().y);
-*/
