@@ -137,7 +137,7 @@ public:
     static void Wrapper_save_simulation(int);
 	static void Wrapper_glui_noclose();
 
-
+    void save_simulation(int);
 
 	void KeyboardUp(unsigned char key, int x, int y);
 	void Mouse(int32 button, int32 state, int32 x, int32 y);

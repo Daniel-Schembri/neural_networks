@@ -162,8 +162,9 @@ void gui::Wrapper_SimulationLoop()
 
 void gui::Wrapper_save_simulation(int)
 {
-    //TODO save simulation
+  instance->save_simulation(0);
 }
+
 
 void gui::glui_noclose()
 {
@@ -1220,3 +1221,123 @@ void gui::load_trainingData()
 
 }
 
+void gui::save_simulation(int)
+{
+    if(NULL == evolution_control)
+    {
+        return;
+    }
+
+    std::ofstream sim_ofstream("simulation.txt", std::ofstream::out);
+    if(!sim_ofstream)
+    {
+        std::cerr << "Error opening file to save simulation" << std::endl;
+    }
+    else
+    {
+        sim_ofstream << "Topology: ";
+        for(int i=0;i<evolution_control->sim_parameter.topology.size();++i)
+        {
+            sim_ofstream << evolution_control->sim_parameter.topology[i] << " ";
+        }
+        sim_ofstream << "Network-Type : Feed Forward Net" << std::endl;
+        sim_ofstream << "" << std::endl;
+        sim_ofstream << "Simulation settings: " << std::endl;
+        sim_ofstream << "Population size: " <<  sim_parameter.population_size << std::endl;
+        sim_ofstream << "Amount of Objects: " <<  sim_parameter.amount_of_Object<< std::endl;
+        sim_ofstream << "Evolvetime(sec): " <<  sim_parameter.evolvetime << std::endl;
+        sim_ofstream << "Field size: " <<  sim_parameter.field_size << std::endl;
+        sim_ofstream << "Mutation rate: " <<  sim_parameter.mutation_rate << std::endl;
+        sim_ofstream << "Annealing rate: " <<  sim_parameter.annealing_rate<< std::endl;
+        sim_ofstream << "Amount of elite copies: " <<  sim_parameter.amount_of_elite_copies << std::endl;
+        sim_ofstream << "Crossover rate: " <<  sim_parameter.crossover_rate << std::endl;
+
+        if (0 == sim_parameter.evolve_algorithm)
+        {
+            sim_ofstream << "Evolutionary Algorithm: Hillclimber" << std::endl;
+            plot_debugDraw.DrawString(5, 45, "Evolve_Algorithm: Hillclimber");
+        }
+        else if (1 == sim_parameter.evolve_algorithm)
+        {
+            sim_ofstream << "Evolutionary Algorithm: Simulated Annealing" << std::endl;
+        }
+        else if (2 == sim_parameter.evolve_algorithm)
+        {
+            sim_ofstream << "Evolutionary Algorithm: Supervised Learning" << std::endl;
+        }
+        else if (3 == sim_parameter.evolve_algorithm)
+        {
+            sim_ofstream << "Evolutionary Algorithm: Crossover" << std::endl;
+        }
+        else if (4 == sim_parameter.evolve_algorithm)
+        {
+            sim_ofstream << "Evolutionary Algorithm: Script" << std::endl;
+        }
+
+        sim_ofstream << "" << std::endl;
+        sim_ofstream << "Generations simulated: " << evolution_control->generations << std::endl;
+        sim_ofstream << "Best fitness over the whole process: " << evolution_control->get_bestFitness_overall()  << std::endl;
+        //TODO For-Loop
+
+        sim_ofstream << "Best fitnesses for each generations: ";
+        for(int i=1;i<evolution_control->best_fitnesses.size();++i)
+        {
+            sim_ofstream << " " << evolution_control->best_fitnesses[i];
+        }
+        sim_ofstream << std::endl;
+        sim_ofstream << "Average fitnesses for each generations: ";
+        for(int i=1;i<evolution_control->average_fitnesses.size();++i)
+        {
+            sim_ofstream << " " << evolution_control->average_fitnesses[i];
+        }   
+        sim_ofstream << std::endl;
+        sim_ofstream << std::endl;
+        sim_ofstream << "Each agents fitness and net-weights after the process: " << std::endl;
+        for(int i=0;i<sim_parameter.population_size;++i)
+        {
+            sim_ofstream << "Agent[" << i << "] fitness: " << evolution_control->population[i]->fitness << std::endl;
+        }
+        sim_ofstream <<  std::endl  << std::endl;
+
+
+
+
+        for(int k=0;k<sim_parameter.population_size;++k)
+        {
+
+            sim_ofstream << "Agent[" << k << "] angle_net weights: " << std::endl;
+
+            //Save angle net
+            for (unsigned int i=0; i<evolution_control->population[k]->angle_net->m_layers.size();i++)  //Amount of Layers
+            {
+                for(unsigned int j=0;j<evolution_control->population[k]->angle_net->m_layers[i].size();j++)    //Amount of Neurons
+                {
+                    for (unsigned int w = 0; w < evolution_control->population[k]->angle_net->m_layers[i][j]->m_outputWeights.size(); w++)
+                    {
+                        sim_ofstream << evolution_control->population[k]->angle_net->m_layers[i][j]->m_outputWeights[w].weight << " ";
+                    }
+                }
+            }
+
+            sim_ofstream << std::endl;
+            sim_ofstream << "velocity_net weights: " << std::endl;
+
+            //Save velocity net
+            for (unsigned int i=0; i<evolution_control->population[k]->velocity_net->m_layers.size();i++)  //Amount of Layers
+            {
+                for(unsigned int j=0;j<evolution_control->population[k]->velocity_net->m_layers[i].size();j++)    //Amount of Neurons
+                {
+                    for (unsigned int w = 0; w < evolution_control->population[k]->velocity_net->m_layers[i][j]->m_outputWeights.size(); w++)
+                    {
+                        sim_ofstream << evolution_control->population[k]->velocity_net->m_layers[i][j]->m_outputWeights[w].weight << " ";
+                    }
+                }
+            }
+
+            sim_ofstream << std::endl <<  std::endl;
+
+        }
+
+        sim_ofstream.close();
+    }
+}
