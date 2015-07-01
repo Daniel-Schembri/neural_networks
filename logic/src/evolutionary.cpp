@@ -35,9 +35,22 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
         sim_parameter.population_size = 1;
     }
 
+    for (unsigned int i = 0; i < 100; i++)  
+    {
+        for (unsigned int j = 0; j < 100; j++)    
+        {
+            for (unsigned int w = 0; w < 100; w++)
+            {
+                revert_agent_a[i][j][w] = 0.0;
+                revert_agent_v[i][j][w] = 0.0;
+            }
+        }
+    }
+
     for (unsigned i = 0; i < sim_parameter.population_size; i++)
     {
         population.push_back(new Agent (rand() % 90 - 90, rand() % 80 + 10, i, ptopology, sim_parameter.nettype));
+        do_or_save_revert(population[i], false);
         //For Crossover
         newPopulation.push_back(NULL);
     }
@@ -50,17 +63,7 @@ evolutionary::evolutionary(struct parameter psim_parameter, std::vector<unsigned
 
     best_Agents.push_back(local);  //Just to keep one field to save later best Agent
 
-    for (unsigned int i = 0; i < 100; i++)  
-    {
-        for (unsigned int j = 0; j < 100; j++)    
-        {
-            for (unsigned int w = 0; w < 100; w++)
-            {
-                revert_agent_a[i][j][w] = 0;
-                revert_agent_v[i][j][w] = 0;
-            }
-        }
-    }
+
 
 }
 
@@ -163,7 +166,7 @@ int evolutionary::evolve_hillclimber()
 int evolutionary::evolve_simulatedannealing()
 {
     double T;
-    double randomval = 0.0f;
+    double randomval = (double) (double(rand()) / double(RAND_MAX));
     double r, p;
     r = 0.0f; p = 0.0f; T = sim_parameter.annealing_rate;
     iterationsteps++;
