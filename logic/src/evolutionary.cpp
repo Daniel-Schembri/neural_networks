@@ -733,8 +733,8 @@ int evolutionary::evolve_crossover()
 
             assert(0 <= mum_id && (population.size()-1) >= mum_id);
 
-            Agent& mum = *(population[mum_id]);  //Here maybe a bug?
-            Agent& dad = *(population[dad_id]);  //Here maybe a bug?
+            Agent& mum = *(population[mum_id]); 
+            Agent& dad = *(population[dad_id]); 
 
             std::vector<Agent*> kids;
 
@@ -749,15 +749,9 @@ int evolutionary::evolve_crossover()
 
             // Insert into the new population
             //Delete old Agents and add new created
-
-            std::cout << "i: " << i << std::endl;
-            std::cout << "i+range : " << i+range << std::endl;
-
-            // delete newPopulation[i];
             newPopulation[i] = kids[0];
             if(! ((range > population.size()/2) && (i == range-1)) ) // If popsize is odd and its the last iteration
             {
-                std::cout << "i+range: " << i+range << " assigned" << std::endl;
                 //    delete newPopulation[i+range];
                 newPopulation[i+range] = kids[1];
             }
@@ -766,8 +760,6 @@ int evolutionary::evolve_crossover()
                 delete kids[1];
                 kids[1] = NULL;
             }
-            //    newPopulation.push_back(kids[0]);
-            //    newPopulation.push_back(kids[1]);
         }
 
         // Add some elitism by copying the best agent n times
@@ -790,7 +782,6 @@ int evolutionary::evolve_crossover()
             delete population[i];
             population[i] = newPopulation[i];
             newPopulation[i] = NULL;
-            std::cout << "population[" << i << "].nettype = " << population[i]->getnettype() << std::endl;
 
         }
         return 1;
