@@ -4,12 +4,13 @@ INCDIRLOGIC    = ../logic/include/
 INCDIRBOX2D    = libs/Box2D_v2.3.0/Box2D/
 INCUSR         = /usr/local/include/
 BINDIR         = bin/
-   
-LDFLAGS = -lX11 -lGL -lGLU -lXxf86vm -L${BOX2Dlib} -L${GLUIlib} -lBox2D -lglui -lglut #-lGLU #-lopengl32 -lglu32 -lfreeglut
 
-BOX2Dlib = libs/Box2D_v2.3.0/Box2D/Build/Box2D/libBox2D.a
 BOX2D    = libs/Box2D_v2.3.0/Box2D/
-GLUIlib  = libs/Box2D_v2.3.0/Box2D/Build/glui/libglui.a
+BOX2Dlib = $(BOX2D)Build/Box2D/libBox2D.a
+GLUIlib  = $(BOX2D)Build/glui/libglui.a
+#FREEGLUTlib = $(BOX2D)Build/freeglut/libfreeglut_static.a
+
+LDFLAGS = -lX11 -lGL -lGLU -lXxf86vm ${BOX2Dlib} ${GLUIlib} -lglut #${FREEGLUTlib} #-lglut -lGLU #-lopengl32 -lglu32 -lfreeglut
 
 CXX = g++
 
@@ -50,30 +51,22 @@ TARGET = new_graphic
 %.o:$(SRCDIR)%.cpp
 	$(CXX) -c -o $@ $(CXXFLAGS) $(CXXDEBUGFLAGS) $<
 
+.PHONY: libs auto clean default
+
 default: $(TARGET)
 
-$(TARGET): $(OBJS)
+$(TARGET): $(OBJS) libs
 	$(CXX) -o $@ $(OBJS) $(LDFLAGS)
 	mkdir -p $(BINDIR); mv *.o $(BINDIR); mv ../logic/src/*.o $(BINDIR)
-    
-	
-.PHONY: install
 
-install:
+libs:
 	cd $(BOX2D)/Build/; cmake ..; make
-	cmake -DBOX2D_INSTALL=ON -DBOX2D_BUILD_SHARED=ON ..
-	make
-	make install	
+#	cmake -DBOX2D_INSTALL=ON -DBOX2D_BUILD_SHARED=ON ..
+#	make
+#	make install	
 
-.PHONY: auto
 
 auto: $(TARGET)
-
-$(TARGET): $(OBJS)
-	$(CXX) -o $@ $(OBJS) $(LDFLAGS)
-	mkdir -p $(BINDIR); mv *.o $(BINDIR); mv ../logic/src/*.o $(BINDIR)
-
-.PHONY: clean
 
 clean: 
 	rm -r -f $(TARGET)* $(BINDIR) core *~ *.o

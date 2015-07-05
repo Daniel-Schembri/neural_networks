@@ -1,9 +1,0 @@
-Die Updates sind von ubuntuupdates.org
-
-Achtung 32-bit oder 64-bit!
-Wird benoetigt, da sudo apt-get install libglui-dev nicht mehr unterstuetzt!
-
-1. libglui2c2 installieren (anklicken, Software-Center öffnet sich)
-2. libglui-dev installieren
-
-
