@@ -8,7 +8,7 @@
 \documentclass[10pt,a4paper,DIV=11]{scrreprt}
 
 %British English
-\usepackage[UKenglish]{babel}
+\usepackage[ngerman, UKenglish]{babel}
 %utf8
 \usepackage[utf8]{inputenc}
 
@@ -69,6 +69,7 @@
 %always include as last package
 \usepackage{hyperref}
 
+
 %===========================TITLE PAGE=======================================
 
 %university logo
@@ -93,9 +94,10 @@
 }
 \date
 {
-    Summer term 2015
+    Summer term 2015 \\
+    \today{}
 }
-%\today{}}
+
 
 \publishers
 {
@@ -185,16 +187,23 @@
 \thispagestyle{empty}
 \newpage
 {\large\tableofcontents}
-\newpage
 
-% Ideas for the documentation 
-% -> Robots playing football
-% -> 
-% 
-%
-%
-%
-%
+
+
+
+\begin{abstract} 
+
+\huge{\textbf{Erklärung}} \\
+
+\normalsize
+Ich versichere, die beiliegende Projektarbeit selbständig verfasst, keine anderen als die angegebenen Quellen und Hilfsmittel benutzt sowie alle wörtlich oder sinngemäß übernommenen Stellen in der Arbeit gekennzeichnet zu haben. \\ \\ \\ \\
+
+\selectlanguage{ngerman}
+Kraichtal, den \today{} \hspace{8cm} Daniel Schembri
+\selectlanguage{UKenglish}
+\end{abstract}
+
+
 \begin{abstract} 
 \huge{\textbf{Abstract}} \\
 
@@ -207,7 +216,7 @@ The simulator was written in C++ using the 2D physics-engine Box2D by Erin Catto
 
 The neural network framework is written by Jonathan Schwarz and detaily described in his projectwork ' A comparison of neural network types and learning techniques with an application in artificial life'. \\ \\ \\ \\ \\ \\ \\ \\
 
-\huge{\textbf{Abstract}} \\
+\huge{\textbf{Zusammenfassung}} \\
 
 \normalsize
 
@@ -235,8 +244,8 @@ The following chapters introduce the used libraries and tools.
 The main part describes the implementation of the simulator and the theoretical considerations. The last part concludes with the simulation results and a further view of the discussed topic.
 
 \section{Motivation}
-The classical method to solve a task mostly is to use a detailed prior knowledge. If this knowledge isn't sufficient it has to be acquired hardly. The development of this solution therefore can be difficult, time-consuming and expensive.
-This circumstances causes an interest in solving tasks in an universal way. Creatures seems to solve problems easily by the abilities they received by evolution. This motivated researcher to apply this mechanisms in computer science. Thanks to the computing power of today evolution can be used in an abstract way to cultivate solutions and handle optimization problems.
+The classical method to solve a task mostly is to use a detailed prior knowledge. If this knowledge isn't sufficient it has to be acquired hard. The development of this solution therefore can be difficult, time-consuming and expensive.
+This circumstances cause an interest in solving tasks in an universal way. Creatures seems to solve problems easily by the abilities they received by evolution. This motivated researcher to apply this mechanisms in computer science. Thanks to the computing power of today evolution can be used in an abstract way to cultivate solutions and handle optimization problems.
 
 The concept of software agents is one model of artificial intelligence. It's an abstract view of an intelligent system that perceives its environment and acts self-sufficiently.
 
@@ -267,10 +276,25 @@ The motivation is to create a suitable simulation environment and to compare dif
 %}    \\
 
 \section{Project task}
-The task of this project work is to develop a simulator to let agents collect objects in a 2-dimensional world. The agents logic is realized  by a neural network that is trained supervised or evolved with special algorithms derived from evolution theory.
+The task of this project work is to develop a simulator to let agents collect objects in a 2-dimensional world. As follows a sketch of the main concept: \\
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth,scale=1.0]{files/main-concept.png}  
+		\caption{A sketch of the main concept}
+		\label{fig:concept-main-intro}
+	\end{figure}
+\end{center}
+
+The agents and the objects they have to collect are spawned randomly. An agent has to collect as much objects as possible in a given time. Every agent has a sensor, represented by the semicircle in the sketch, to get the distance vector of an object.
+The object is just detected if it is in range of the sensor. For simplicity just the position of the nearest object is given, if more objects are in range of the sensor. Based on this input data the agent has two possibilities to act: it can rotate left or right and it can drive forward. Therefore the agents output has two parameters, defining the rotation- direction and speed and the velocity.
+To choose the parameters the agent has a logic, processing the input.
+
+This logic is realized  by a neural network that is trained supervised or evolved with special algorithms derived from evolution theory.
 The simulator has to simulate a realistic environment. Therefore a physics engine is used.
 The simulation has to be rated and the collected data displayed. The simulator uses the neural network framework developed by Jonathan Schwarz.
-Artificial neural networks are function approximators and evolved in this project work to see if they can solve the task satisfactionally.
+Artificial neural networks are evolved in this project work to see if they can solve the task satisfactionally.
 The concept of software agents is used as a frame to get an abstract view of the used algorithms. \\
 
 
@@ -278,9 +302,11 @@ The concept of software agents is used as a frame to get an abstract view of the
 
 
 \chapter{The concept of agents}
-An agent is a programm that interacts self-sufficently depending on its actual state. In general, it has sensors, a processing logic and actuators. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input. In this project the concept of agents is used to compare with neural networks.
+An agent is a program that interacts self-sufficently depending on its actual state. In general, it has sensors, a processing logic and actuators. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input.
 
 Most agents are found in the world wide web. For example webcrawlers, search-engines and bots are well known.
+
+In this project the concept of software agents is used as a modelling framework to differentiate the agent from the environment.
 
 The following figure shows the general structure of an agent:
 
@@ -294,10 +320,14 @@ The following figure shows the general structure of an agent:
 	\end{figure}
 \end{center}
 
-The logic part can be less or more complex. Just the actual perception can be processed or a specified sequence of perceptions. This is described detaily in the following sections.
+The logic part of an agent can be less or more complex. Just the actual perception can be processed or a specified sequence of perceptions. This could be realised by a simple script for example.
+In this project the agents logic is realised as a artificial neural network.
 
-\section{Rationality}
-An agent creates a sequence of actions. These actions causes a sequence of states in the corresponding environment. Every sequence of states can be rated. The agent is called rational if it can maximize its score, considering its sequence of perceptions and its previous knowledge of the problem. Its important to distinguish rationality and perfection. An agent never will be perfectly solving a problem. It's unrealistic to expect the best possible solution for a problem in partitial observable environment. It can solve the problem as it can be expected by the given perceptions. The agent can't predict random events.
+In the following sections the different realisation types of the logic is described in detail.
+
+
+\section{Rationality \cite{ai}}
+An agent creates a sequence of actions. These actions cause a sequence of states in the corresponding environment. Every sequence of states can be rated. The agent is called rational if it can maximize its score, considering its sequence of perceptions and its previous knowledge of the problem. Its important to distinguish rationality and perfection. An agent never will be perfectly solving a problem. It's unrealistic to expect the best possible solution for a problem in partitial observable environments. It can solve the problem as it can be expected by the given perceptions. The agent can't predict random events.
 
 In order to achieve rationality the following topics have to be considered: \\
 
@@ -311,14 +341,10 @@ In order to achieve rationality the following topics have to be considered: \\
 		\end{itemize}
 	\end{minipage}
 }   \\
-
-\subsubsection{Learning}
-It is important for the agent to gain further knowledge by its perceptions. Therefore the agent has to make some actions to explore the world, if he acts in a unknown environment.
-An agent who doesn't learn can most likely not solve a problem if the environment changes.
-In nature animals are equipped with reflex actions to survive long enough to learn to adapt to their enviroment.
+See also \cite{ai} chapter 2.2.1
 
 \section{Types of agents}
-
+By \cite{ai} agents can be classified in the following categories:
 \subsection{Simple reflex agent}
 The simplest type of an agent is the reflex based agent.
 This agent only processes the actual perception and act on the base of this actual state. This type of agent can be used for simple tasks. The benefits are a fast implementation and a drastically reduced state space.
@@ -326,7 +352,7 @@ The disadvantage lies within the simplicity. This agent has no memory and theref
 In partially observebale environment there can occur loops of wrong behaviour. This loops can be overcome if a random action can be chosen.
 For best functionality of a simple reflex agent the problem-environment should be fully observable.\footnote{See Chapter \ref{sec:env} for an explanaition of the environment}
 For more complex tasks using the following described agent-types may be a better solution.
-
+(\cite{ai} chapter 2.4.2)
 \subsection{Model-based reflex agent}
 The model-based reflex agent expands the simple reflex agent by a memory. It internally creates a model of the world by past sensor data. This model is used to predict future states in the environment.
 This can be a moving object or changes in the environment made by the agent itself for example.
@@ -335,21 +361,22 @@ Internal states of the agent are used to approximate the state of the environmen
 The model is also used to estimate temporaly unobservable parts of the environment.
 
 The model-based reflex agents ability to solve a task reaches its limit, if it has to act in a new environment or other agents acting in the world, too. The internally created model then may not fit anymore.
-
+(\cite{ai} chapter 2.4.3)
 
 \subsection{Goal-based agent}
 For some tasks it isn't enough to know the correct action on a specified state at the environment, like reflex-based agents do. It can be important for an agent to know the goal behind those actions. This is necessary for the generalization of a problem. For example: For a given route A To B there can be a description for a sequence of actions the agent has to execute in order to reach the target B. It is more difficult to describe specific rules for getting from one point to another in general, as other routes may differ a lot. It's therefore too complex to describe all rules in detail; hencefore a generalization of this task has to be modelised.
 
 The benefit is an agent that can solve complex tasks. The drawback is a need of more computing time. For real-time tasks this can be an obstacle.
+(\cite{ai} chapter 2.4.4)
 
 \subsection{Utility-based agent}
 The utility-based agent expands the goal-based agent by the fact, that it can choose between several solutions. Therefore the agent has a rating function to choose the best or at least a good enough solution by several criteria. This rating function can be more complex then computing solutions of the task itself.
 
 The development of such complex agent and corresponding rating algorithms can be difficult and is an own topic of computer science and includes research areas like perception, representation, reasoning and learning.
-
+(\cite{ai} chapter 2.4.5)
 
 \subsection{Learning agent}
-The complete development of an agent is difficult and time-consuming. Therefore Alan Turing searched in 1950 (\cite{turing}) for a way to speed up this process. The concept of the learning agent was created. The learning agent has four components: \\
+The complete development of an agent is difficult and time-consuming. Therefore Alan Turing searched in 1950 for a way to speed up this process.\cite{turing} The concept of the learning agent was created. The learning agent has four components: \\
 
 \fbox{
 	\begin{minipage}{15cm}
@@ -371,20 +398,20 @@ The \textbf{learning element} is responsible for improvements of the agent. The 
 
 The \textbf{critic} rates the performance element and tells the learning element how to improve it. \\
 
-A \textbf{problem generator} is used to improve learning by making new experiences. Without the problem generator the agent would work with its best actions, but would never try new actions, that may seem uneffective in the first way, but may prove to be more effective in a long term run. \\
+A \textbf{problem generator} is used to improve learning by making new experiences. Without the problem generator the agent would work with its best actions, but would never try new actions, that may seem uneffective in the first way, but may prove to be more effective in a long term run. 
+
+It can be important for the agent to gain further knowledge by its perceptions. Therefore the agent has to make some actions to explore the world, if he acts in a unknown environment.
+An agent who doesn't learn can most likely not solve a problem if the environment changes.
+In nature animals are equipped with reflex actions to survive long enough to learn to adapt to their enviroment. \\
+
 
 The most important part for improvements is the correlation between the \textbf{performance element} and the \textbf{learning element}.
 
-
-
-
-
-(\cite{ai}Chapter 2)
-
+(\cite{ai} chapter 2.4.6)
 
 \section{The task environment}
 \label{sec:env}
-In the first case its preferable to define the task completely. The task environment is defined by four categories: \\
+In the first case its preferable to define the task completely. In \cite{ai} chapter 2.3 the task environment is defined by four categories: \\
 
 \fbox{
 	\begin{minipage}{15cm}
