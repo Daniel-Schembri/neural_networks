@@ -346,8 +346,19 @@ See also \cite{ai} chapter 2.2.1
 \section{Types of agents}
 By \cite{ai} agents can be classified in the following categories:
 \subsection{Simple reflex agent}
+
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,scale=1]{files/Reflexagent.png}  
+		\caption{Structure of a simple reflex agent (oriented on \cite{ai} Figure 2.9)} 
+		\label{fig:agentr}
+	\end{figure}
+\end{center}
+
 The simplest type of an agent is the reflex based agent.
-This agent only processes the actual perception and act on the base of this actual state. This type of agent can be used for simple tasks. The benefits are a fast implementation and a drastically reduced state space.
+This agent only processes the actual perception and act on the base of this actual state. In the simplest case the logic is realised as a lookup table or defined by simple rules. This type of agent can be used for simple tasks. The benefits are a fast implementation and a drastically reduced state space.
 The disadvantage lies within the simplicity. This agent has no memory and therefore doesn't include past states in his decisions. If the present state of the environment doesn't provide enough information or it is just partially observable, the agent could not solve the task.
 In partially observebale environment there can occur loops of wrong behaviour. This loops can be overcome if a random action can be chosen.
 For best functionality of a simple reflex agent the problem-environment should be fully observable.\footnote{See Chapter \ref{sec:env} for an explanaition of the environment}
@@ -392,6 +403,16 @@ The complete development of an agent is difficult and time-consuming. Therefore 
 }   \\
 \\
 
+
+%\begin{center}
+%	\begin{figure}[H]
+%		\centering
+%		\includegraphics[width=1.0\textwidth,scale=1]{files/Learningagent.png}  
+%		\caption{General structure of a learning agent (oriented on \cite{ai} Figure 2.15)} 
+%		\label{fig:agentl}
+%	\end{figure}
+%\end{center}
+
 The \textbf{performance element} is the executive part of the agent. It processes sensor data and makes actions. \\
 
 The \textbf{learning element} is responsible for improvements of the agent. The learning element can contain a decision tree, a neural net, a support vector machine or other learning structures. \\
@@ -417,8 +438,8 @@ In the first case its preferable to define the task completely. In \cite{ai} cha
 	\begin{minipage}{15cm}
 		\begin{multicols}{2}
 			\begin{itemize} 
-				\item \textbf{The performance}
-				\item \textbf{The environment}
+				\item \textbf{Performance}
+				\item \textbf{Environment}
 				\item \textbf{Actuators}
 				\item \textbf{Sensors}
 			\end{itemize}
@@ -427,32 +448,34 @@ In the first case its preferable to define the task completely. In \cite{ai} cha
 }   \\
 \\
 
-\textbf{The performance} is defined by the rating the agent can achieve. Therefore (TODO)\\
+The \textbf{performance} is defined by the rating the agent can achieve. The performance measure is done by metrics the developer has to choose before creating agents. Metrics can for example be how good an agent solves the problem, how fast it solves it, how efficient it uses ressources, etc. It is possible to rate the agent by multiple criteria. \\
 
-\textbf{The environment} is the frame an agent solves a task within.
+The \textbf{environment} is the frame an agent solves a task within.
 If the sensors allow the agent to get the information of the whole environment, the environment is called \textbf{fully observeable}. The agent therefore can get all relevant information for its actions. Otherwise an environment is classified as \textbf{partially observeable}. For example this can be if the sensors are limited or influenced by interferences.
 If the agent has no sensors at all, the task environment is called \textbf{unobserveable}. Instinctively you would think this kind of agent would be totally useless, but there exist succesful algorithms to solve problems. For example a vacuuming robot can clean a room effectively. It therefore uses stochastic algorithms. In factories this is used effectively to turn objects on an assembly line. The benefit is less costs in sensors. \\
 
 It can also be necessary to know if the environment is a \textbf{single-} or \textbf{multiagent}-based one. Multiple agents can \textbf{cooperate} or \textbf{compete}. \\
 
-The environment is \textbf{deterministic} if all further states are predictable by the current state and there are no random events. Otherwise it is \textbf{stochastic}. In reality there can exist deterministic environments. But often the possibilities are too complex. The environment must then be handled by the agent as if it were stochastic. There are given probabilities for each possibility. If not it is called \textbf{non-deterministic}. \\
+The environment is \textbf{deterministic} if all further states are predictable by the current state and there are no random events. Otherwise it is \textbf{stochastic}.
+In a stochastic environment there are given probabilities for each possible event. If not it is called \textbf{non-deterministic}.
+In reality there can exist deterministic environments with the disadvantage of too much possibilities. An agent can't  compute every possible effect then.
+In this case the environment must be handled by the agent as if it were stochastic to get a chance of solving the task. \\
 
 If the action of the agent does only depend on the actual environment state and does not influence future state the environment is called \textbf{episodic}. Otherwise its called
 \textbf{sequential}. Chess for example is a sequential environment because every move can bring the game in a win- or lose-situation. \\
 
-A \textbf{static} environment doesn't change. This makes it easier for the agent to solve a task. A \textbf{dynamically} environment on the other hand needs a continuously observation. If the environment doesn't change, but the agent's rating-process, it is called \textbf{semidynamically}. \\
+A \textbf{static} environment doesn't change. This makes it easier for the agent to solve a task. A \textbf{dynamic} environment on the other hand needs a continuously observation.
+It is possible that the environment is static, but the rating of the agent depends on the passed time. \textbf{semidynamic}. An example for a static environment is chess. Playing chess with a clock is semidynamic. \\
 
 The environment can have \textbf{discrete} or \textbf{continous} states. Chess has discrete states, as it is played move by move. It could get a continous character if the time to calculate a move plays a role. Driving a car is in general continously as accelerating and steering have continous units.\\
 
 The environment can be \textbf{known} or \textbf{unknown}. That means that the agent has foreknowledge about the environment. This category has nothing to do with observability. \\
 
 
-\textbf{The actuators} are the components an agent uses to interact with the environment. In developing an agent there must be kept an eye on the possible actions an agent can do.\\
+\textbf{The actuators} are the components an agent uses to interact with the environment. While developing an agent the types of actuators and, for physical agents, the degrees of freedom\footnote{The degrees of freedom are the amount of independent parameters of a physical system that is necessary to describe the state of this system} may be considered.\\
 
-\textbf{The sensors} are responsible for receiving data of the environment. With good algorithms costs for sensors can be noticeably reduced.
+\textbf{The sensors} are responsible for receiving data of the environment. With appropriate algorithms a better evaluation of sensor data is possible. The advantage can be a noticeable reduction of sensor costs.
 
-
-(\cite{ai}Chapter 2.3)
 
 \chapter{Artificial neural networks}
 Artficial neural networks (ANN) are inspired by their biological equivalents.
