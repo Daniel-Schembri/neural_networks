@@ -502,10 +502,131 @@ They map a function as follows\cite{rojas}:
 \end{equation} 
 
 
+In general an ANN has an inputlayer, containing the inputvector $\vec{X}$, optional hidden layers and one outputlayer.
+All layers have real weights, thresholds and output values.
+
+\def\layersep{2.5cm}
+\begin{figure}[H]
+\begin{center}
+\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
+\tikzstyle{every pin edge}=[<-,shorten <=1pt]
+\tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+\tikzstyle{input neuron}=[neuron, fill=green!50];
+\tikzstyle{output neuron}=[neuron, fill=red!50];
+\tikzstyle{hidden neuron}=[neuron, fill=blue!50];
+\tikzstyle{annot} = [text width=4em, text centered]
+
+% Draw the input layer nodes
+\foreach \name / \y in {1,...,3}
+% This is the same as writing \foreach \name / \y in {1/1,2/2,3/3,4/4}
+\node[input neuron] (I-\name) at (0,-\y) {$x_\y$};
+
+
+% Draw the hidden layer nodes
+\foreach \name / \y in {1,...,4}
+\path[yshift=0.5cm]
+node[hidden neuron] (H-\name) at (\layersep,-\y cm) {};
+
+% Draw the output layer node
+%\foreach \name / \y in {1,...,2}
+\node[output neuron,pin={[pin edge={->}]right:$Y_1$}, right of=H-2] (O-1) {};
+\node[output neuron,pin={[pin edge={->}]right:$Y_2$}, right of=H-3] (O-2) {};
+% Connect every node in the input layer with every node in the
+% hidden layer.
+\foreach \source in {1,...,3}
+\foreach \dest in {1,...,4}
+\path (I-\source) edge (H-\dest);
+
+% Connect every node in the hidden layer with the output layer
+\foreach \source in {1,...,4}
+	\foreach \dest in {1,...,2}
+	\path (H-\source) edge (O-\dest);
+
+% Annotate the layers
+\node[annot,above of=H-1, node distance=1.3cm] (hl) { Hidden layer};
+\node[annot,below of=hl, node distance=0.6cm] (h2) {(optional)};
+\node[annot,above of=I-1, node distance=1.3cm] {Input layer};
+\node[annot,above of=O-1, node distance=1.8cm] {Output layer};
+
+\end{tikzpicture}
+	\caption{The general structure of an artificial neural net}
+	\label{fig:general-ann}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[H]
+	\begin{center}
+		\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
+		\tikzstyle{every pin edge}=[<-,shorten <=1pt]
+		\tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+		\tikzstyle{input neuron}=[neuron, fill=green!50];
+		\tikzstyle{output neuron}=[neuron, fill=red!50];
+		\tikzstyle{hidden neuron}=[neuron, fill=blue!50];
+		\tikzstyle{annot} = [text width=4em, text centered]
+		
+		% Draw the input neuron
+		\node[input neuron] (I-1) at (0,-1)
+		{$x_1$};
+		\node[input neuron] (I-2) at (0,-2)	
+		{$x_2$};
+		\node[input neuron] (I-3) at (0,-3)
+		{$x_3$};
+		% Draw the hidden layer nodes
+		\foreach \name / \y in {1,...,1}
+		\path[yshift=0.5cm]
+		node[hidden neuron] (H-\name) at (\layersep,-2.4cm) {$H_1$};
+		% Connect every node in the input layer with every node in the hidden layer.
+		\path (I-1) edge node[above]{$w_{1,1}$} (H-1);	
+		\path (I-2) edge node[above]{$w_{1,2}$} (H-1);
+		\path (I-3) edge node[above]{$w_{1,3}$} (H-1);					
+		\end{tikzpicture}
+		\caption{The input of an neuron}
+		\label{fig:neuron-input}
+	\end{center}
+\end{figure}
+
+
+\begin{figure}[H]
+	\begin{center}
+		\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
+		\tikzstyle{every pin edge}=[<-,shorten <=1pt]
+		\tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+		\tikzstyle{input neuron}=[neuron, fill=green!50];
+		\tikzstyle{output neuron}=[neuron, fill=red!50];
+		\tikzstyle{hidden neuron}=[neuron, fill=blue!50];
+		\tikzstyle{annot} = [text width=4em, text centered]
+		
+		% Draw the input neuron
+		\node[input neuron] (I-1) at (0,-1)
+		{$3$};
+		\node[input neuron] (I-2) at (0,-2)	
+		{$-1$};
+		\node[input neuron] (I-3) at (0,-3)
+		 {$0$};
+ 	%	\node[input neuron] (I-4) at (0,-4) {$2$};
+		% Draw the hidden layer nodes
+		\foreach \name / \y in {1,...,1}
+		\path[yshift=0.5cm]
+		node[hidden neuron] (H-\name) at (\layersep,-2.4cm) {$11$};
+		% Connect every node in the input layer with every node in the hidden layer.
+		\path (I-1) edge node[above]{4} (H-1);	
+		\path (I-2) edge node[above]{1} (H-1);
+		\path (I-3) edge node[above]{2} (H-1);	
+%		\path (I-4) edge node[above]{-1} (H-1);				
+		\end{tikzpicture}
+		\caption{The input of an neuron}
+		\label{fig:neuron-input}
+	\end{center}
+\end{figure}
+
+
+
 
 \section{Network types}
 In this section the different neuron- and networktypes are described.
 \subsection{The model of McCulloch and Pitts}
+\label{sec:pitts}
 The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
 developed by Warren McCulloch and Walter Pitts in 1943.\cite{NEURONMATH}
 They wanted to realise a simple, realistic neuron-modell of the operations in the human brain and find out if the brain could compute turing computable functions.
@@ -617,7 +738,7 @@ It was the first mathematical model of artifical neural networks.
 
 \subsection{Perceptron}
 The classical perceptron was published by Frank Rosenblatt in 1958.
-It has an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
+It has just an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
 the perceptron has additionally real weights. The advantage is that learning-algorithms just have to change the weights instead of the topology or the threshold. It's possible to define positive (stimulation), negative (supression) and zero (neutral) weights.
 
 \subsubsection*{Linear seperability (TODO)}
