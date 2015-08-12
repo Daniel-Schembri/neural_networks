@@ -29,6 +29,8 @@
 
 %plots
 \usepackage{pgfplots}
+\usetikzlibrary{calc}
+%\usepackage{amsmath}
 
 %blocks - used by tikz-uml, included before
 \pgfdeclarelayer{background}
@@ -41,7 +43,9 @@
 
 %subfigure
 \usepackage{graphicx}
-\usepackage{subfigure}
+%\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{subcaption}
 
 %prevent figure from floating pictures
 \usepackage{float}
@@ -502,8 +506,8 @@ They map a function as follows\cite{rojas}:
 \end{equation} 
 
 
-In general an ANN has an inputlayer, containing the inputvector $\vec{X}$, optional hidden layers and one outputlayer.
-All layers have real weights, thresholds and output values.
+In general an ANN has an input layer, containing the inputvector $\vec{X}$ with $n$ components, optional hidden layers and one output layer giving the resultvector $\vec{Y}$ with $m$ components.
+All neurons, except the input neurons, have real weighted input connections, an activation function and output values. The input neurons do no computation. They just contain the input data. As follows a neural network:
 
 \def\layersep{2.5cm}
 \begin{figure}[H]
@@ -543,13 +547,13 @@ node[hidden neuron] (H-\name) at (\layersep,-\y cm) {};
 	\path (H-\source) edge (O-\dest);
 
 % Annotate the layers
-\node[annot,above of=H-1, node distance=1.3cm] (hl) { Hidden layer};
+\node[annot,above of=H-1, node distance=1.3cm] (hl) { Hidden layers};
 \node[annot,below of=hl, node distance=0.6cm] (h2) {(optional)};
 \node[annot,above of=I-1, node distance=1.3cm] {Input layer};
 \node[annot,above of=O-1, node distance=1.8cm] {Output layer};
 
 \end{tikzpicture}
-	\caption{The general structure of an artificial neural net}
+	\caption{The general structure of an artificial neural network}
 	\label{fig:general-ann}
 \end{center}
 \end{figure}
@@ -577,15 +581,168 @@ node[hidden neuron] (H-\name) at (\layersep,-\y cm) {};
 		\path[yshift=0.5cm]
 		node[hidden neuron] (H-\name) at (\layersep,-2.4cm) {$H_1$};
 		% Connect every node in the input layer with every node in the hidden layer.
-		\path (I-1) edge node[above]{$w_{1,1}$} (H-1);	
-		\path (I-2) edge node[above]{$w_{1,2}$} (H-1);
-		\path (I-3) edge node[above]{$w_{1,3}$} (H-1);					
+		\path (I-1) edge node[above]{$w_{11}$} (H-1);	
+		\path (I-2) edge node[above]{$w_{12}$} (H-1);
+		\path (I-3) edge node[above]{$w_{13}$} (H-1);					
+		\draw[->] (H-1) -- (4.5,-1.9cm) node[above]{};
+		\draw[->] (H-1) -- (4.5,-1.9cm)
+		node[right] {$f(I)$};
 		\end{tikzpicture}
 		\caption{The input of an neuron}
 		\label{fig:neuron-input}
 	\end{center}
 \end{figure}
 
+The total neuron input $I$ is the sum of all input values $x_i$ multiplied by their given weights $w_{1i}$. The first index 1 stands for the receiving neuron $H1$:
+\begin{figure}[H]
+	\begin{center}
+		\begin{flalign*}
+I = \sum_{i=1}^{n}(x_{i}*w_{1i})
+		\end{flalign*}
+	\end{center}
+	\caption{The total neuron input}
+	\label{eq:neuroninputex}
+\end{figure}
+
+The output of the neuron is then computed by an activation function $f(I)$. Usually all neurons of an entire layer have the same activation function. Commonly used are tangens hyperbolicus and linear functions:
+
+\begin{figure}[H]
+\begin{subfigure}[]{0.5\linewidth}
+\begin{tikzpicture}
+\begin{axis}[
+%	name=plot1,
+	xmin=-3, xmax=3,
+	ymin=-1.5, ymax=1.5,
+	y=1.2cm,x=1cm,
+	axis lines=center,
+	axis on top=true,
+	domain=-2.5:2.5,
+	ylabel=$Y$,
+	xlabel=$I$,
+	]
+	
+	\addplot [mark=none,draw=black,ultra thick] {\x};
+%	\node [right, red] at (axis cs: 1,0.7) {$Y = I$};
+\end{axis}
+\end{tikzpicture}
+\begin{align*}
+Y = I
+\end{align*}
+  \caption*{Linear function (here: identity function)}
+  \label{fig:sub1}
+\end{subfigure}
+\hspace{0.5cm}
+\begin{subfigure}[]{0.5\linewidth}
+\begin{tikzpicture}
+\begin{axis}[
+%name=plot2, at=(plot1.right of south east),
+xmin=-3, xmax=3,
+ymin=-1.5, ymax=1.5,
+y=1.2cm,x=1cm,
+axis lines=center,
+axis on top=true,
+domain=-2.5:2.5,
+ylabel=$Y$,
+xlabel=$I$,
+]
+\addplot [mark=none,draw=black,ultra thick] {tanh(\x)};
+%\node [right, red] at (axis cs: 1,0.7) {$Y = \tanh(I)$};
+
+%% Add the asymptotes
+%\draw [blue, dotted, thick] (axis cs:-2.5,-1)-- (axis cs:0,-1);
+%\draw [blue, dotted, thick] (axis cs:+2.5,+1)-- (axis cs:0,+1);
+\end{axis}
+\end{tikzpicture}
+  \begin{align*}
+  Y = \tanh{(I)}
+  \end{align*}
+  \caption*{Tangens hyperbolicus}
+  \label{fig:sub2}
+\end{subfigure}
+  \caption{Activation functions}
+\end{figure}
+
+Activation functions can have a threshold $S$. The neurons output is zero if $I<S$:
+
+\begin{figure}[H]
+\begin{subfigure}[]{0.5\linewidth}
+	\begin{tikzpicture}
+	\begin{axis}[
+	%name=plot2, at=(plot1.right of south east),
+	xmin=-3, xmax=3,
+	ymin=-1.5, ymax=1.5,
+	y=1.2cm,x=1cm,
+	axis lines=center,
+	axis on top=true,
+	domain=-2.5:2.5,
+	ylabel=$Y$,
+	xlabel=$I$,
+	]
+	\addplot[domain=-3:0,mark=none,draw=black,ultra thick] {0};
+	
+	\addplot[domain=0:3,mark=none,draw=black,ultra thick] {abs(\x))};
+	\end{axis}
+	\end{tikzpicture}
+	\begin{align*}
+	&S = 0 \\
+	&Y =
+	\begin{cases}
+	I       & \quad \text{if } I  \geq S \\
+	0  & \quad \text{otherwise}\\
+	\end{cases}
+	\end{align*}
+	\caption*{Identity function with threshold $S$}
+	\label{fig:sub3}
+\end{subfigure}
+\hspace{0.5cm}
+\begin{subfigure}[]{0.5\linewidth}
+	\begin{tikzpicture}
+	\begin{axis}[
+	%name=plot2, at=(plot1.right of south east),
+	xmin=-3, xmax=3,
+	ymin=-1.5, ymax=1.5,
+	y=1.2cm,x=1cm,
+	axis lines=center,
+	axis on top=true,
+	domain=-2.5:2.5,
+	ylabel=$Y$,
+	xlabel=$I$,
+	]
+	
+	\addplot[domain=-3:0.5,mark=none,draw=black,ultra thick] {0};
+	
+	\addplot[domain=0.5:3,mark=none,draw=black,ultra thick] {1};
+	\end{axis}
+	\end{tikzpicture}
+	\begin{align*}
+	&S = 0.5 \\
+	&Y =
+	\begin{cases}
+	1       & \quad \text{if } I  \geq S \\
+	0  & \quad \text{otherwise}\\
+	\end{cases}
+	\end{align*}
+	\caption*{Binary function with threshold $S$}
+	\label{fig:sub4}
+\end{subfigure}
+  \caption{Activation functions with threshold}
+\end{figure}
+
+It computes this input by an activation function that has to be defined. Usually an entire layer of neurons has the same activation function. It follows commonly used activation functions:
+\begin{figure}[H]
+	\begin{center}
+		\begin{equation}
+		f(I)=
+		\end{equation}
+		\caption{The activation fucntion}
+		\label{eq:transferfunction}
+	\end{center}
+\end{figure} 
+
+ 
+ It follows an example of the computation of a neural net. Assume there are 3 input neurons and 1 output neuron:
+
+ 
 
 \begin{figure}[H]
 	\begin{center}
@@ -608,7 +765,7 @@ node[hidden neuron] (H-\name) at (\layersep,-\y cm) {};
 		% Draw the hidden layer nodes
 		\foreach \name / \y in {1,...,1}
 		\path[yshift=0.5cm]
-		node[hidden neuron] (H-\name) at (\layersep,-2.4cm) {$11$};
+		node[output neuron] (H-\name) at (\layersep,-2.4cm) {$11$};
 		% Connect every node in the input layer with every node in the hidden layer.
 		\path (I-1) edge node[above]{4} (H-1);	
 		\path (I-2) edge node[above]{1} (H-1);
@@ -616,15 +773,49 @@ node[hidden neuron] (H-\name) at (\layersep,-\y cm) {};
 %		\path (I-4) edge node[above]{-1} (H-1);				
 		\end{tikzpicture}
 		\caption{The input of an neuron}
-		\label{fig:neuron-input}
+		\label{fig:neuron-input-example}
 	\end{center}
 \end{figure}
 
+ The activation function of this output neuron is defined by the identity function with a threshold: 
+ \begin{equation}
+ f(I) =
+ \begin{cases}
+ Z       & \quad \text{if } neuroninput  \geq S \\
+ 0  & \quad \text{otherwise}\\
+ \end{cases}
+ \end{equation}
+ 
+
+
+In this example the output neuron gets an total input of:
+\begin{figure}[H]
+	\begin{center}
+		\begin{flalign*}
+		&x_1=3,\quad x_2=-1,\quad x_3=0\\
+		&w_{11}=4,\quad w_{12}=1,\quad w_{13}=2\\
+		&neuroninput = \sum_{i=1}^{3}(x_{i}*w_{1i}) = (3*4) + (-1*1) + (0*2) = 11
+		\end{flalign*}
+	\end{center}
+	\caption{The total neuron input}
+	\label{eq:neuroninputex}
+\end{figure}
+
+It computes this input by its threshold function
+\begin{figure}[H]
+	\begin{center}
+		\begin{equation}
+		f(neuroninput)=\tanh{(neuroninput)}
+		\end{equation}
+		\caption{The activation fucntion}
+		\label{eq:transferfunction}
+	\end{center}
+\end{figure} 
 
 
 
-\section{Network types}
-In this section the different neuron- and networktypes are described.
+\section{Neuron- and network types}
+In this section the different neuron- and networktypes are described by a chronological view.
 \subsection{The model of McCulloch and Pitts}
 \label{sec:pitts}
 The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
@@ -635,7 +826,7 @@ A real threshold has to be defined for each neuron, which reached, let the neuro
 Its possible to add absolute suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs.
 Its possible to use relative suppressing inputs instead. For each relative suppressing input the threshold of the neuron is then incremented.
 \footnote{In \cite{rojas} chapter 2.4.2 it's shown that Mcculloch-Pitts-networks with absolute suppressing inputs can be replaced by networks with relative suppressing inputs and vice versa. The topologies may differ}
-
+In contrast to the general ANN-model, seen in figure \ref{fig:general-ann} this neuron model has no weights.
 
 
 Neural networks of this type of neuron can just learn by changing the threshold and the topology of the network. This causes an unnecessary workload due to its high effort in implementation.
