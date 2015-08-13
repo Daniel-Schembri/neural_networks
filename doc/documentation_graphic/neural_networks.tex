@@ -507,7 +507,7 @@ They map a function as follows\cite{rojas}:
 
 
 In general an ANN has an input layer, containing the inputvector $\vec{X}$ with $n$ components, optional hidden layers and one output layer giving the resultvector $\vec{Y}$ with $m$ components.
-All neurons, except the input neurons, have real weighted input connections, an activation function and output values. The input neurons do no computation. They just contain the input data. As follows a neural network:
+All neurons, except the input neurons, have real weighted input connections, an activation function and output values. The input neurons do no computation. They just contain the input data and pass it to the next layer. As follows a neural network:
 
 \def\layersep{2.5cm}
 \begin{figure}[H]
@@ -604,7 +604,7 @@ I = \sum_{i=1}^{n}(x_{i}*w_{1i})
 	\label{eq:neuroninputex}
 \end{figure}
 
-The output of the neuron is then computed by an activation function $f(I)$. Usually all neurons of an entire layer have the same activation function. Commonly used are tangens hyperbolicus and linear functions:
+The output of the neuron is then computed by an activation function $f(I)$. If the computing neuron is a hidden neuron the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $Y$ Usually all neurons of an entire layer have the same activation function. Commonly used are tangens hyperbolicus and linear functions:
 
 \begin{figure}[H]
 \begin{subfigure}[]{0.5\linewidth}
@@ -781,7 +781,7 @@ It computes this input by an activation function that has to be defined. Usually
  \begin{equation}
  f(I) =
  \begin{cases}
- Z       & \quad \text{if } neuroninput  \geq S \\
+ I       & \quad \text{if } I  \geq S \\
  0  & \quad \text{otherwise}\\
  \end{cases}
  \end{equation}
@@ -1191,7 +1191,7 @@ TODO source: Daniel Rey Book
 
 
 \section{Learning}
-One way of learning can happen supervised by a given training data set. The net is then trained by learning algorithms. The net error is minimized. After the training cycle the net is tested by a test data set, that should differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training exactly. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} \\
+One way of learning can happen supervised by a given training data set. The net is then trained by learning algorithms. The network error is minimized. After the training cycle the net is tested by a test data set, that must differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training exactly. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} \\
 
 Other ways of learning are unsupervised and semi-supervised learning. At unsupervised learning there is no training set given and the net has to organize itself to find a solution. This can happen by different methods like clustering. On semi-supervised learning a incomplete and unlabeled data set is given. \\
 
@@ -1200,9 +1200,97 @@ An alternative to these learning methods is the evolutionary training of the net
 In this project work the topology and type of the networks are kept and only the weights are changed by the evolution process.
 
 
-
-
-
+\begin{figure}[H]
+	\begin{subfigure}[]{0.5\linewidth}
+		\begin{tikzpicture}		
+		\begin{axis}[
+		%name=plot2, at=(plot1.right of south east),
+		xmin=-3, xmax=3,
+		ymin=-1.5, ymax=1.5,
+		y=1.2cm,x=1cm,
+		axis lines=center,
+		axis on top=true,
+		domain=-2.5:2.5,
+		ylabel=$x_1$,
+		xlabel=$x_2$,
+		]
+		\addplot[domain=0:3,mark=none,draw=black,ultra thick] {1.2};
+		\end{axis}
+		
+		\draw plot[mark=*, mark options={fill=white}] (3.8,3.8);
+		\draw plot[mark=*, mark options={fill=white}] (3.5,3);
+		\draw plot[mark=*, mark options={fill=white}] (4.5,3.6);
+		
+		\draw plot[mark=+, mark options={fill=white}] (5.7,2.6);
+		\draw plot[mark=+, mark options={fill=white}] (4.5,2);
+		\draw plot[mark=+, mark options={fill=white}] (5.3,2.3);
+						
+				
+		\end{tikzpicture}
+		\caption*{Underfitting}
+		\label{fig:sep}
+	\end{subfigure}
+	\hspace{0.5cm}
+	\begin{subfigure}[]{0.5\linewidth}
+	\begin{tikzpicture}		
+		\begin{axis}[
+		%name=plot2, at=(plot1.right of south east),
+		xmin=-3, xmax=3,
+		ymin=-1.5, ymax=1.6,
+		y=1.2cm,x=1cm,
+		axis lines=center,
+		axis on top=true,
+		domain=-2.5:2.5,
+		ylabel=$x_1$,
+		xlabel=$x_2$,
+		]
+		%\addplot[domain=0:0.7,mark=none,draw=black,ultra thick] {0.5*\x^4+1.3*\x};
+		\addplot[domain=0:3,mark=none,samples=500,draw=black,ultra thick] {0.5*sin(\x*400)+0.5*\x};
+		%\addplot[domain=0.7:1.7,mark=none,draw=black,ultra thick] {\x^3};
+		\end{axis}
+		
+		\draw plot[mark=*, mark options={fill=white}] (4.0,3.2);
+		\draw plot[mark=*, mark options={fill=white}] (3.5,2.7);
+		\draw plot[mark=*, mark options={fill=white}] (4.5,3.6);
+		
+		\draw plot[mark=+, mark options={fill=white}] (5.7,2.6);
+		\draw plot[mark=+, mark options={fill=white}] (4.5,2);
+		\draw plot[mark=+, mark options={fill=white}] (5.3,2.3);
+		
+		
+		\end{tikzpicture}
+		\caption*{Overfitting}
+		\label{fig:sep2}
+	\end{subfigure}	
+	\hspace{0.5cm}
+		\begin{subfigure}[]{0.5\linewidth}
+			\begin{tikzpicture}		
+			\begin{axis}[
+			%name=plot2, at=(plot1.right of south east),
+			xmin=-3, xmax=3,
+			ymin=-1.5, ymax=1.5,
+			y=1.2cm,x=1cm,
+			axis lines=center,
+			axis on top=true,
+			domain=-2.5:2.5,
+			ylabel=$x_1$,
+			xlabel=$x_2$,
+			]
+			\addplot[domain=0:3,mark=none,draw=black,ultra thick] {abs(0.5*\x))};
+			\end{axis}
+			
+			\draw plot[mark=*, mark options={fill=white}] (3.8,3.8);
+			\draw plot[mark=*, mark options={fill=white}] (3.5,3);
+			\draw plot[mark=*, mark options={fill=white}] (4.5,3.6);
+			
+			\draw plot[mark=+, mark options={fill=white}] (5.7,2.6);
+			\draw plot[mark=+, mark options={fill=white}] (4.5,2);
+			\draw plot[mark=+, mark options={fill=white}] (5.3,2.3);
+			\end{tikzpicture}
+			\caption*{Perfect seperating plane}
+			\label{fig:psep}
+		\end{subfigure}	
+\end{figure}[H]
 
 
 
