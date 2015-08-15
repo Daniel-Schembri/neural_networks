@@ -498,13 +498,12 @@ Artificial neural networks are often seen as a black box: \\
 	\end{figure}
 \end{center} 
 They approximate target functions. For a given input vector $\vec{X}$ an output vector $\vec{Y}$ can be computed.
-This happens on the base on a given data set or completely unsupervised.
+This happens on the base of a given data set or completely unsupervised.
 They map a function as follows\cite{rojas}:
 
 \begin{equation}
 	F: R^n \to R^m 
 \end{equation} 
-
 
 In general an ANN has an input layer, containing the inputvector $\vec{X}$ with $n$ components, optional hidden layers and one output layer giving the resultvector $\vec{Y}$ with $m$ components.
 All neurons, except the input neurons, have real weighted input connections, an activation function and output values. The input neurons do no computation. They just contain the input data and pass it to the next layer. As follows a neural network:
@@ -558,6 +557,7 @@ node[hidden neuron] (H-\name) at (\layersep,-\y cm) {};
 \end{center}
 \end{figure}
 
+This is a typical feed forward network. The computation results are passed from one layer to the next one. Its possible to add a bias neuron to each layer. Bias neurons have always the value 1 and have weighted connections to all neurons of the next layer.
 
 \begin{figure}[H]
 	\begin{center}
@@ -588,12 +588,12 @@ node[hidden neuron] (H-\name) at (\layersep,-\y cm) {};
 		\draw[->] (H-1) -- (4.5,-1.9cm)
 		node[right] {$f(I)$};
 		\end{tikzpicture}
-		\caption{The input of an neuron}
+		\caption{Computation of a neurons output}
 		\label{fig:neuron-input}
 	\end{center}
 \end{figure}
 
-The total neuron input $I$ is the sum of all input values $x_i$ multiplied by their given weights $w_{1i}$. The first index 1 stands for the receiving neuron $H1$:
+The total neuron input $I$ is the sum of all input values $x_i$ multiplied by their given weights $w_{1i}$. The first index of the weight stands for the receiving neuron; the second index for the sending neuron:
 \begin{figure}[H]
 	\begin{center}
 		\begin{flalign*}
@@ -604,7 +604,7 @@ I = \sum_{i=1}^{n}(x_{i}*w_{1i})
 	\label{eq:neuroninputex}
 \end{figure}
 
-The output of the neuron is then computed by an activation function $f(I)$. If the computing neuron is a hidden neuron the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $Y$ Usually all neurons of an entire layer have the same activation function. Commonly used are tangens hyperbolicus and linear functions:
+The output of the neuron is computed by an so called activation function $f(I)$. If the computing neuron is a hidden neuron, the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $\vec{Y}$ Usually all neurons of an entire layer have the same activation function. As follows some commonly used activation functions:
 
 \begin{figure}[H]
 \begin{subfigure}[]{0.5\linewidth}
@@ -728,21 +728,12 @@ Activation functions can have a threshold $S$. The neurons output is zero if $I<
   \caption{Activation functions with threshold}
 \end{figure}
 
-It computes this input by an activation function that has to be defined. Usually an entire layer of neurons has the same activation function. It follows commonly used activation functions:
-\begin{figure}[H]
-	\begin{center}
-		\begin{equation}
-		f(I)=
-		\end{equation}
-		\caption{The activation fucntion}
-		\label{eq:transferfunction}
-	\end{center}
-\end{figure} 
+Discrete activation functions can be used for classification of a dataset.
 
- 
- It follows an example of the computation of a neural net. Assume there are 3 input neurons and 1 output neuron:
+Continous functions can be used for regression. Regression analysis is the process of finding a target function to fit a sequence of datapoints. This is used for prediction.\\
 
- 
+
+ As follows an example of the computation of a neural network. Assume there are 3 input neurons, 1 output neuron and no bias neurons:
 
 \begin{figure}[H]
 	\begin{center}
@@ -770,22 +761,18 @@ It computes this input by an activation function that has to be defined. Usually
 		\path (I-1) edge node[above]{4} (H-1);	
 		\path (I-2) edge node[above]{1} (H-1);
 		\path (I-3) edge node[above]{2} (H-1);	
-%		\path (I-4) edge node[above]{-1} (H-1);				
+		
+		\path[yshift=0.5cm]
+		node[] (B-1) at (4.7cm,-2.4cm) {$5.5$};
+		
+		\path (H-1) edge node[above]{$f(11)$} (B-1);	
+		
+		%\path (H-1) edge node[right]{2} (3.5,-1.8);	
 		\end{tikzpicture}
 		\caption{The input of an neuron}
 		\label{fig:neuron-input-example}
 	\end{center}
 \end{figure}
-
- The activation function of this output neuron is defined by the identity function with a threshold: 
- \begin{equation}
- f(I) =
- \begin{cases}
- I       & \quad \text{if } I  \geq S \\
- 0  & \quad \text{otherwise}\\
- \end{cases}
- \end{equation}
- 
 
 
 In this example the output neuron gets an total input of:
@@ -794,18 +781,28 @@ In this example the output neuron gets an total input of:
 		\begin{flalign*}
 		&x_1=3,\quad x_2=-1,\quad x_3=0\\
 		&w_{11}=4,\quad w_{12}=1,\quad w_{13}=2\\
-		&neuroninput = \sum_{i=1}^{3}(x_{i}*w_{1i}) = (3*4) + (-1*1) + (0*2) = 11
+		&I = \sum_{i=1}^{3}(x_{i}*w_{1i}) = (3*4) + (-1*1) + (0*2) = 11
 		\end{flalign*}
 	\end{center}
 	\caption{The total neuron input}
 	\label{eq:neuroninputex}
 \end{figure}
 
-It computes this input by its threshold function
+This input is computed by an linear activation function with threshold $S$:
+
+ 	\begin{flalign*}
+ 	 &S = 0 \\
+	 &f(I) =
+	 \begin{cases}
+	 0.5*I       & \quad \text{if } I  \geq S \\
+	 0  & \quad \text{otherwise}\\
+	 \end{cases}	  	\end{flalign*}
+
+ The final result of the output neuron's computation is:
 \begin{figure}[H]
 	\begin{center}
 		\begin{equation}
-		f(neuroninput)=\tanh{(neuroninput)}
+		f(I)=0.5*I=0.5*11=5.5
 		\end{equation}
 		\caption{The activation fucntion}
 		\label{eq:transferfunction}
@@ -814,7 +811,35 @@ It computes this input by its threshold function
 
 
 
-\section{Neuron- and network types}
+\section{Network models}
+
+In the section before a feedforward network of the 2nd generation has been presented. In this network type the data is passed from one layer to the the next one.
+At the moment there are three generations of neural networks: \\
+
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item \textbf{1. generation - Mccullloch-Pitts Neuron, Perceptron (binary)}
+			\item \textbf{2. generation - real valued perceptron, multi layer perceptron(MLP) (real)}
+			\item \textbf{3. generation - spiking neural networks (encoding through time)}
+		\end{itemize}
+	\end{minipage}
+}   \\
+\\
+
+The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
+In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
+The newest generation uses spikes, an encoding through time.
+
+
+TODO source: Daniel Rey Book
+
+
+
+
+
+%\section{Neuron- and network types}
 In this section the different neuron- and networktypes are described by a chronological view.
 \subsection{The model of McCulloch and Pitts}
 \label{sec:pitts}
@@ -823,6 +848,7 @@ developed by Warren McCulloch and Walter Pitts in 1943.\cite{NEURONMATH}
 They wanted to realise a simple, realistic neuron-modell of the operations in the human brain and find out if the brain could compute turing computable functions.
 McCulloch-Pitts-neuron has binary inputs and one binary output.
 A real threshold has to be defined for each neuron, which reached, let the neuron fire\footnote{In biology the word 'fire' means that the neuron puts out a signal} one or otherwise zero as output.
+In contrast to other models it has no input weights.
 Its possible to add absolute suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs.
 Its possible to use relative suppressing inputs instead. For each relative suppressing input the threshold of the neuron is then incremented.
 \footnote{In \cite{rojas} chapter 2.4.2 it's shown that Mcculloch-Pitts-networks with absolute suppressing inputs can be replaced by networks with relative suppressing inputs and vice versa. The topologies may differ}
@@ -856,7 +882,7 @@ The neuron has n inputs and 1 output that can be connected to multiple neurons. 
 The overall input is computed by:
 
 \begin{equation}
-neuroninput = \sum_{i=1}^{n} x_{i} \quad  x \in \{0, 1\}
+I = \sum_{i=1}^{n} x_{i} \quad  x \in \{0, 1\}
 \end{equation}
 
 $x_{n}$ are the binary inputs. \\
@@ -866,7 +892,7 @@ The output Y is:
 
 \[ Y =
 \begin{cases}
-1       & \quad \text{if } neuroninput  \geq S \\
+1       & \quad \text{if } I  \geq S \\
 0  & \quad \text{otherwise}\\
 \end{cases}
 \]
@@ -899,41 +925,19 @@ A function composition:
 
 The function composition is a concatenation of multiple neurons. \\
 
-A recursive neuron:
-
-\begin{figure}[H]
-	\centering
-	\begin{tikzpicture}
-	\node [align=center] (dummy1) at (-0.25,3) {$x_{t}$}; 
-	\node [draw=black, fill=white, align=center, circle] (f1) at (1,3) {f}; 		
-	\node [align=center] (dummy2) at (4,3) {f($x_{t}$,f($x_{t-1}$,f($x_{t-2}$,...)))}; 
-	\draw[arrow]	(dummy1) -- (f1);
-	\draw[arrow]	(f1) -- (dummy2);
-	\draw[arrow] (1.35,3) .. controls (1.3,2.15) and (0.6,2.2) .. (0.70, 3);
-	\end{tikzpicture}
-	\caption{Recursive McCulloch-Pitts-neuron}
-	\label{fig:pitts3}
-\end{figure}
-
-The output is given after a defined timestep $t$. $t$ represents the amount of cycles a recursive neural net computes before the output is used. A recursive computation of a neuron can be stopped after any  timestep and the output can be used. A recursive connection behaves like a memory that contains the amount of $t$ post states.
-
 \paragraph{Applications}
 The McCulloch-Pitts-neuron is biologically not plausible, because learning
 can just happen by changing the threshold and the network topology. This needs complex algorithms.
 But this neuron type can realise AND-, OR- and NOT-Gates.
-Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. You can simulate finite state machines, too.
-You may think if its better to have real or at least integer values to transmit more information instead of just binary signals. However this depends on the application type. Binary values are easier to realize, both in electrical and biological systems and mcculloch-pitts-networks are equivalent to other kind of networks with more signalstates. Though you get a more complex network topology, if you use binary neurons.
-
-It was the first mathematical model of artifical neural networks.
-
+Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. 
+The usage of a McCulloch-Pitts network depends on the application type. Binary signals have the advantage of beeing less susceptible to interferences as multiple signal states.
+The drawback can be a complex topology.
 
 \subsection{Perceptron}
-The classical perceptron was published by Frank Rosenblatt in 1958.
-It has just an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts-neuron
-the perceptron has additionally real weights. The advantage is that learning-algorithms just have to change the weights instead of the topology or the threshold. It's possible to define positive (stimulation), negative (supression) and zero (neutral) weights.
+The classical perceptron was published by Frank Rosenblatt in 1958.(Source)
+It is an artificial neural network with just an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts network it has additionally real weights. The advantage is that learning-algorithms just have to change the weights instead of the topology or the threshold. It's possible to define positive (stimulation), negative (supression) and zero (neutral) weights.
 
-\subsubsection*{Linear seperability (TODO)}
-One main task of neural networks is to classify data. The net is therefore used as a seperator.
+One main task of neural networks is to classify data. The network is therefore used as a seperator.
 The classical perceptron can seperate linear datasets. 
 
 
@@ -960,34 +964,74 @@ The classical perceptron can seperate linear datasets.
 \end{figure}
 
 \begin{figure}[H]
-	\begin{center}
-		\begin{tikzpicture}
-		\tikzstyle{point}=[circle,fill=black!255,minimum size=7pt,inner sep=0pt]
-		
-		\draw[->] (-0.2,0) -- (3,0) node[right] {$x1$};
-		\draw[->] (0,-0.2) -- (0,3) node[above] {$x2$};
-		\node at (0,-0.5) {0};
-		\node at (-0.5,0) {0};
-		\node at (-0.5,2.5) {1};
-		\node at (2.5,-0.5) {1};
-		\draw plot[mark=square*, mark options={fill=white}] (0,0);
-		\draw plot[mark=*, mark options={fill=black}] (2.5,0);
-		\draw plot[mark=*, mark options={fill=black}] (0,2.5);
-		\draw plot[mark=*, mark options={fill=black}] (2.5,2.5);
-		\draw (0,1.3) -- (1.3,0); 
-		%legend
-		\draw plot[mark=square*, mark options={fill=white}]
-		(0,-1.5);
-		\node at (0.8,-1.5) {False};
-		\draw plot[mark=*, mark options={fill=black}]
-		(0,-1);
-		\node at (0.8,-1) {True};
-		
-		\end{tikzpicture}
-	\end{center}
-	\caption{Or-Function: separation function}
-	\label{fig:sepplot1}	
+	
 \end{figure}
+
+\begin{figure}[H]
+	\begin{subfigure}[]{0.5\linewidth}
+				\begin{tikzpicture}
+				\tikzstyle{point}=[circle,fill=black!255,minimum size=7pt,inner sep=0pt]
+				
+				\draw[->] (-0.2,0) -- (3,0) node[right] {$x1$};
+				\draw[->] (0,-0.2) -- (0,3) node[above] {$x2$};
+				\node at (0,-0.5) {0};
+				\node at (-0.5,0) {0};
+				\node at (-0.5,2.5) {1};
+				\node at (2.5,-0.5) {1};
+				\draw plot[mark=square*, mark options={fill=white}] (0,0);
+				\draw plot[mark=*, mark options={fill=black}] (2.5,0);
+				\draw plot[mark=*, mark options={fill=black}] (0,2.5);
+				\draw plot[mark=*, mark options={fill=black}] (2.5,2.5);
+				\draw (0,1.3) -- (1.3,0); 
+				%legend
+				\draw plot[mark=square*, mark options={fill=white}]
+				(0,-1.5);
+				\node at (0.8,-1.5) {False};
+				\draw plot[mark=*, mark options={fill=black}]
+				(0,-1);
+				\node at (0.8,-1) {True};
+				
+				\end{tikzpicture}
+			\caption{Or-Function: separation function}
+			\label{fig:sepplot1}
+	\end{subfigure}	
+	\hspace{0.5cm}
+		\begin{subfigure}[]{0.5\linewidth}
+			\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
+			\tikzstyle{every pin edge}=[<-,shorten <=1pt]
+			\tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+			\tikzstyle{input neuron}=[neuron, fill=green!50];
+			\tikzstyle{output neuron}=[neuron, fill=red!50];
+			\tikzstyle{hidden neuron}=[neuron, fill=blue!50];
+			\tikzstyle{annot} = [text width=4em, text centered]
+			
+			
+			\node[] (T-1) at (\layersep,-0.5)
+			{$S=1$};
+			
+			% Draw the input neuron
+			\node[input neuron] (I-1) at (0,-1)
+			{$x_1$};
+			\node[input neuron] (I-2) at (0,-2)	
+			{$x_2$};
+			%	\node[input neuron] (I-4) at (0,-4) {$2$};
+			% Draw the hidden layer nodes
+			\foreach \name / \y in {1,...,1}
+			\path[yshift=0.5cm]
+			node[output neuron] (H-\name) at (\layersep,-2.0cm) {$Y$};
+			% Connect every node in the input layer with every node in the hidden layer.
+			\path (I-1) edge node[above]{1} (H-1);	
+			\path (I-2) edge node[above]{1} (H-1);	
+			
+			
+			%\path (H-1) edge node[right]{2} (3.5,-1.8);	
+			\end{tikzpicture}
+			\caption{The input of an neuron}
+			\label{fig:neuron-input-example}
+			\end{subfigure}
+\end{figure}
+
+
 
 
 \begin{figure}[H]
@@ -1012,37 +1056,99 @@ The classical perceptron can seperate linear datasets.
 	\label{fig:linsep2}
 \end{figure}
 
-\begin{figure}[H]
-	\begin{center}
-	\begin{tikzpicture}
-		\tikzstyle{point}=[circle,fill=black!255,minimum size=7pt,inner sep=0pt]
-			
-		\draw[->] (-0.2,0) -- (3,0) node[right] {$x1$};
-		\draw[->] (0,-0.2) -- (0,3) node[above] {$x2$};
-		\node at (0,-0.5) {0};
-		\node at (-0.5,0) {0};
-		\node at (-0.5,2.5) {1};
-		\node at (2.5,-0.5) {1};
-		\draw plot[mark=square*, mark options={fill=white}] (0,0);
-		\draw plot[mark=square*, mark options={fill=white}] (2.5,0);
-		\draw plot[mark=square*, mark options={fill=white}] (0,2.5);
-		\draw plot[mark=*, mark options={fill=black}] (2.5,2.5);
-		\draw (0,2.8) -- (2.8,0); 
-		%legend
-		\draw plot[mark=square*, mark options={fill=white}]
-		(0,-1.5);
-		\node at (0.8,-1.5) {False};
-		\draw plot[mark=*, mark options={fill=black}]
-		(0,-1);
-		\node at (0.8,-1) {True};
 
+\begin{figure}[H]
+	\begin{subfigure}[]{0.5\linewidth}
+	\begin{tikzpicture}
+	\tikzstyle{point}=[circle,fill=black!255,minimum size=7pt,inner sep=0pt]
+	
+	\draw[->] (-0.2,0) -- (3,0) node[right] {$x1$};
+	\draw[->] (0,-0.2) -- (0,3) node[above] {$x2$};
+	\node at (0,-0.5) {0};
+	\node at (-0.5,0) {0};
+	\node at (-0.5,2.5) {1};
+	\node at (2.5,-0.5) {1};
+	\draw plot[mark=square*, mark options={fill=white}] (0,0);
+	\draw plot[mark=square*, mark options={fill=white}] (2.5,0);
+	\draw plot[mark=square*, mark options={fill=white}] (0,2.5);
+	\draw plot[mark=*, mark options={fill=black}] (2.5,2.5);
+	\draw (0,2.8) -- (2.8,0); 
+	%legend
+	\draw plot[mark=square*, mark options={fill=white}]
+	(0,-1.5);
+	\node at (0.8,-1.5) {False};
+	\draw plot[mark=*, mark options={fill=black}]
+	(0,-1);
+	\node at (0.8,-1) {True};
+	
 	\end{tikzpicture}
-	\end{center}
 	\caption{And-Function: separation function}
-	\label{fig:sepplot2}	
+	\label{fig:sepplot2}
+	\end{subfigure}	
+	\hspace{0.5cm}
+	\begin{subfigure}[]{0.5\linewidth}
+		\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
+		\tikzstyle{every pin edge}=[<-,shorten <=1pt]
+		\tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+		\tikzstyle{input neuron}=[neuron, fill=green!50];
+		\tikzstyle{output neuron}=[neuron, fill=red!50];
+		\tikzstyle{hidden neuron}=[neuron, fill=blue!50];
+		\tikzstyle{annot} = [text width=4em, text centered]
+		
+		
+		\node[] (T-1) at (\layersep,-0.5)
+		{$S=2$};
+		
+		% Draw the input neuron
+		\node[input neuron] (I-1) at (0,-1)
+		{$x_1$};
+		\node[input neuron] (I-2) at (0,-2)	
+		{$x_2$};
+		%	\node[input neuron] (I-4) at (0,-4) {$2$};
+		% Draw the hidden layer nodes
+		\foreach \name / \y in {1,...,1}
+		\path[yshift=0.5cm]
+		node[output neuron] (H-\name) at (\layersep,-2.0cm) {$Y$};
+		% Connect every node in the input layer with every node in the hidden layer.
+		\path (I-1) edge node[above]{1} (H-1);	
+		\path (I-2) edge node[above]{1} (H-1);	
+		
+		
+		%\path (H-1) edge node[right]{2} (3.5,-1.8);	
+		\end{tikzpicture}
+		\caption{The input of an neuron}
+		\label{fig:neuron-input-example}
+	\end{subfigure}
 \end{figure}
 
 XOR-Problem
+
+\begin{figure}[H]
+	\centering
+	%	\subfigure[]
+	%	{
+	\begin{tabular}{|c|c||c|c|c|c|c|c>{\columncolor{red}}cr|c>{\columncolor{red}}cr|c|c|c|c|c|c|c|c|c|}
+		\hline
+		x1 & x2 & f0 & f1 & f2 & f3 & f4 & f5 & f6 & f7 & f8 & f9 & f10 & f11 & f12 & f13 & f14 & f15\\
+		\hline
+		0 & 0 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 \\
+		\hline
+		0 & 1 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 1 \\
+		\hline
+		1 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+		\hline
+		1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+		\hline
+	\end{tabular}
+	%}
+	\\
+	The two red marked functions aren't linearly seperable
+	\caption{Boolean functions for two parameters}
+	\label{fig:linsep1}
+\end{figure}
+
+
+
 
 \begin{figure}[H]
 	\begin{center}
@@ -1072,8 +1178,8 @@ XOR-Problem
 		
 		\end{tikzpicture}
 	\end{center}
-	\caption{XOR: separation function}
-	\label{fig:sepplot3}	
+	\caption{The XOR-separation problem}
+	\label{fig:xor-problem}	
 \end{figure}
 
 \paragraph{Applications}
@@ -1165,30 +1271,6 @@ An widely known example is the xor-problem.
 
 %\subsection{Feed Forward}
 %\subsection{Recurrent}
-
-\section{Network models}
-At the moment there are three generations of neural networks: \\
-
-
-\fbox{
-	\begin{minipage}{15cm}
-		\begin{itemize} 
-			\item \textbf{1. generation - Mccullloch-Pitts Neuron, Perceptron (binary)}
-			\item \textbf{2. generation - real valued perceptron, multi layer perceptron(MLP) (real)}
-			\item \textbf{3. generation - spiking neural networks (encoding through time)}
-		\end{itemize}
-	\end{minipage}
-}   \\
-\\
-
-At the moment there are three generations of neural networks. 
-The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
-In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
-The newest generation uses spikes, an encoding through time.
-
-
-TODO source: Daniel Rey Book
-
 
 \section{Learning}
 One way of learning can happen supervised by a given training data set. The net is then trained by learning algorithms. The network error is minimized. After the training cycle the net is tested by a test data set, that must differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training exactly. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} \\
@@ -1464,7 +1546,7 @@ In this project work the topology and type of the networks are kept and only the
 		ylabel=$x_1$,
 		xlabel=$x_2$,
 		]
-		\addplot[domain=0:3,mark=none,draw=black,ultra thick] {0.6*\x-0.2)};
+		\addplot[domain=0:3,mark=none,draw=black,ultra thick] {0.6*\x-0.225)};
 		\end{axis}
 		%Trainingdata
 		\draw plot[mark=*, mark options={fill=white}] (4.0,3.2);
