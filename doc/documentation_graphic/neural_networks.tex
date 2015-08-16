@@ -604,7 +604,7 @@ I = \sum_{i=1}^{n}(x_{i}*w_{1i})
 	\label{eq:neuroninputex}
 \end{figure}
 
-The output of the neuron is computed by an so called activation function $f(I)$. If the computing neuron is a hidden neuron, the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $\vec{Y}$ Usually all neurons of an entire layer have the same activation function. As follows some commonly used activation functions:
+The output of the neuron is computed by a so called activation function $f(I)$. If the computing neuron is a hidden neuron, the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $\vec{Y}$ Usually all neurons of an entire layer have the same activation function. As follows some commonly used activation functions:
 
 \begin{figure}[H]
 \begin{subfigure}[]{0.5\linewidth}
@@ -733,7 +733,18 @@ Discrete activation functions can be used for classification of a dataset.
 Continous functions can be used for regression. Regression analysis is the process of finding a target function to fit a sequence of datapoints. This is used for prediction.\\
 
 
- As follows an example of the computation of a neural network. Assume there are 3 input neurons, 1 output neuron and no bias neurons:
+ As follows an example of the computation of a neural network. Assume there are 3 input neurons, 1 output neuron and no bias neurons. Assume we have the following input values and weights:
+
+\begin{figure}[H]
+	\begin{center}
+		\begin{flalign*}
+			&x_1=3,\quad x_2=-1,\quad x_3=0\\
+			&w_{11}=4,\quad w_{12}=1,\quad w_{13}=2
+		\end{flalign*}
+	\end{center}
+	\caption{Input values and weights}
+	\label{eq:values}
+\end{figure}
 
 \begin{figure}[H]
 	\begin{center}
@@ -769,18 +780,16 @@ Continous functions can be used for regression. Regression analysis is the proce
 		
 		%\path (H-1) edge node[right]{2} (3.5,-1.8);	
 		\end{tikzpicture}
-		\caption{The input of an neuron}
-		\label{fig:neuron-input-example}
+		\caption{Example computation of a neuron}
+		\label{fig:neuron-example-compute}
 	\end{center}
 \end{figure}
 
 
-In this example the output neuron gets an total input of:
+In this example the output neuron gets a total input of:
 \begin{figure}[H]
 	\begin{center}
 		\begin{flalign*}
-		&x_1=3,\quad x_2=-1,\quad x_3=0\\
-		&w_{11}=4,\quad w_{12}=1,\quad w_{13}=2\\
 		&I = \sum_{i=1}^{3}(x_{i}*w_{1i}) = (3*4) + (-1*1) + (0*2) = 11
 		\end{flalign*}
 	\end{center}
@@ -788,7 +797,7 @@ In this example the output neuron gets an total input of:
 	\label{eq:neuroninputex}
 \end{figure}
 
-This input is computed by an linear activation function with threshold $S$:
+This input is processed by a linear activation function with a threshold:
 
  	\begin{flalign*}
  	 &S = 0 \\
@@ -796,7 +805,8 @@ This input is computed by an linear activation function with threshold $S$:
 	 \begin{cases}
 	 0.5*I       & \quad \text{if } I  \geq S \\
 	 0  & \quad \text{otherwise}\\
-	 \end{cases}	  	\end{flalign*}
+	 \end{cases}	  
+	 \end{flalign*}
 
  The final result of the output neuron's computation is:
 \begin{figure}[H]
@@ -804,7 +814,7 @@ This input is computed by an linear activation function with threshold $S$:
 		\begin{equation}
 		f(I)=0.5*I=0.5*11=5.5
 		\end{equation}
-		\caption{The activation fucntion}
+		\caption{Result of the activation fucntion}
 		\label{eq:transferfunction}
 	\end{center}
 \end{figure} 
@@ -822,15 +832,18 @@ At the moment there are three generations of neural networks: \\
 		\begin{itemize} 
 			\item \textbf{1. generation - Mccullloch-Pitts Neuron, Perceptron (binary)}
 			\item \textbf{2. generation - real valued perceptron, multi layer perceptron(MLP) (real)}
-			\item \textbf{3. generation - spiking neural networks (encoding through time)}
+			\item \textbf{3. generation - spiking neural networks (time encoding)}
 		\end{itemize}
 	\end{minipage}
 }   \\
 \\
 
-The first generation works with binary in- and outputs, but real thresholds. The first model was presented in 1943.
-In the second generation, presented in the 90s, the firerates symbolizes real values transmitted on in- and outputs. Real thresholds are still used.
-The newest generation uses spikes, an encoding through time.
+The first generation works with binary in- and outputs, but real thresholds. The first model, the Mcculloch-Pitts Neuron was presented in 1943.
+The second generation was presented in the 90s. Scientists supposed that the firerate of a neuron in one second symbolise an encoding of information. Henceforth new models used real values representing these firerates.
+Further research showed that biological neural networks can compute information faster than a second generation network.
+A third generation of artificial neural networks was modeled. Not just the firerate keeps information. Also the time delay between single signals encodes information. These signal pulses are called spikes. A third generation neural network is called a 'spiking neural network'.
+
+ (Source: NAT00 (see Paper))
 
 
 TODO source: Daniel Rey Book
@@ -940,11 +953,11 @@ It is an artificial neural network with just an input- and an outputlayer with b
 One main task of neural networks is to classify data. The network is therefore used as a seperator.
 The classical perceptron can seperate linear datasets. 
 
+As follows two examples of linear separable boolean functions:
 
 \begin{figure}[H]
+	\begin{subfigure}[]{0.5\linewidth}
 	\centering
-	%	\subfigure[]
-	%	{
 	\begin{tabular}{|c|c|c|}
 		\hline
 		x1 & x2 & f(x1, x2)\\
@@ -958,9 +971,28 @@ The classical perceptron can seperate linear datasets.
 		1 & 1 & 1 \\
 		\hline
 	\end{tabular}
-	%}
 	\caption{OR-Function: linear seperable}
 	\label{fig:linsep1}
+	\end{subfigure}
+\begin{subfigure}[]{0.5\linewidth}
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		x1 & x2 & f(x1, x2)\\
+		\hline
+		0 & 0 & 0 \\
+		\hline
+		0 & 1 & 0 \\
+		\hline
+		1 & 0 & 0 \\
+		\hline
+		1 & 1 & 1 \\
+		\hline
+	\end{tabular}
+	\caption{And-Function: linear separable}
+	\label{fig:linsep2}
+\end{subfigure}
+
 \end{figure}
 
 \begin{figure}[H]
@@ -969,6 +1001,7 @@ The classical perceptron can seperate linear datasets.
 
 \begin{figure}[H]
 	\begin{subfigure}[]{0.5\linewidth}
+		\centering
 				\begin{tikzpicture}
 				\tikzstyle{point}=[circle,fill=black!255,minimum size=7pt,inner sep=0pt]
 				
@@ -997,6 +1030,7 @@ The classical perceptron can seperate linear datasets.
 	\end{subfigure}	
 	\hspace{0.5cm}
 		\begin{subfigure}[]{0.5\linewidth}
+					\centering
 			\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
 			\tikzstyle{every pin edge}=[<-,shorten <=1pt]
 			\tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
@@ -1026,39 +1060,18 @@ The classical perceptron can seperate linear datasets.
 			
 			%\path (H-1) edge node[right]{2} (3.5,-1.8);	
 			\end{tikzpicture}
-			\caption{The input of an neuron}
+			\caption{The input of a neuron}
 			\label{fig:neuron-input-example}
 			\end{subfigure}
 \end{figure}
 
+For the weights $w_1=w_2=1$ the threshold has to be $0<S\leq{2}$.
 
-
-
-\begin{figure}[H]
-	\centering
-	%	\subfigure[]
-	%	{
-	\begin{tabular}{|c|c|c|}
-		\hline
-		x1 & x2 & f(x1, x2)\\
-		\hline
-		0 & 0 & 0 \\
-		\hline
-		0 & 1 & 0 \\
-		\hline
-		1 & 0 & 0 \\
-		\hline
-		1 & 1 & 1 \\
-		\hline
-	\end{tabular}
-	%}
-	\caption{And-Function: linear separable}
-	\label{fig:linsep2}
-\end{figure}
 
 
 \begin{figure}[H]
 	\begin{subfigure}[]{0.5\linewidth}
+	\centering
 	\begin{tikzpicture}
 	\tikzstyle{point}=[circle,fill=black!255,minimum size=7pt,inner sep=0pt]
 	
@@ -1087,6 +1100,7 @@ The classical perceptron can seperate linear datasets.
 	\end{subfigure}	
 	\hspace{0.5cm}
 	\begin{subfigure}[]{0.5\linewidth}
+		\centering
 		\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
 		\tikzstyle{every pin edge}=[<-,shorten <=1pt]
 		\tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
@@ -1116,12 +1130,18 @@ The classical perceptron can seperate linear datasets.
 		
 		%\path (H-1) edge node[right]{2} (3.5,-1.8);	
 		\end{tikzpicture}
-		\caption{The input of an neuron}
+		\caption{The input of a neuron}
 		\label{fig:neuron-input-example}
 	\end{subfigure}
 \end{figure}
 
-XOR-Problem
+
+For the weights $w_1=w_2=1$ the threshold has to be $1<S\leq{1}$
+
+\paragraph{XOR-Problem}
+
+For two binary inputs there are just two functions that aren't linary separable. These are the XOR- and the NXOR function.
+
 
 \begin{figure}[H]
 	\centering
@@ -1273,17 +1293,11 @@ An widely known example is the xor-problem.
 %\subsection{Recurrent}
 
 \section{Learning}
-One way of learning can happen supervised by a given training data set. The net is then trained by learning algorithms. The network error is minimized. After the training cycle the net is tested by a test data set, that must differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training exactly. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} \\
+One way of learning can happen supervised by a given training data set. The network is then trained by learning algorithms. The network error is minimized. After the training cycle the network is tested by a test data set, that must differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training set exactly. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} Therefore its important to have an appropriate number of hidden neurons. If there are too few hidden neurons the network may not fit the target function properly. If there are too much neurons  overfitting may happen.\\
 
-Other ways of learning are unsupervised and semi-supervised learning. At unsupervised learning there is no training set given and the net has to organize itself to find a solution. This can happen by different methods like clustering. On semi-supervised learning a incomplete and unlabeled data set is given. \\
+As follows an example of underfitting, overfitting and generalization of supervised learning at binary classification.
 
-An alternative to these learning methods is the evolutionary training of the net. Populations of nets are cultivated and rated by a fitness function. For these there exist many optimization algorithms.\footnote{Some of them are described in chapter \ref{sec:evo}} \\
-
-In this project work the topology and type of the networks are kept and only the weights are changed by the evolution process.
-
-
-
-
+Assume there is a set of labeled data that is devided into a training set and a test set, to control the accuracy auf the network:
 \begin{figure}[H]
 	\begin{subfigure}[]{0.5\linewidth}
 		\begin{tikzpicture}		
@@ -1348,6 +1362,8 @@ In this project work the topology and type of the networks are kept and only the
 	\end{subfigure}	
 \end{figure}
 
+The neural network is trained by a learning algorithm\footnote{This may be the backpropagation algorithm}. In the following figures three different separation functions are shown, produced by three different neural networks distinguishing by a different amount of hidden neurons.
+
 
 \begin{figure}[H]
 	\begin{subfigure}[]{0.5\linewidth}
@@ -1378,6 +1394,7 @@ In this project work the topology and type of the networks are kept and only the
 				
 		\end{tikzpicture}
 		\caption*{Underfitting}
+		A too simple separating plane causes underfitting. This can happen if there are too few hidden neurons.
 		\label{fig:sep}
 	\end{subfigure}
 	\hspace{0.5cm}
@@ -1411,6 +1428,7 @@ In this project work the topology and type of the networks are kept and only the
 		
 		\end{tikzpicture}
 		\caption*{Overfitting}
+		A too complex function causes overfitting. This can happen if there are too much hidden neurons.
 		\label{fig:sep2}
 	\end{subfigure}	
 	\hspace{0.5cm}
@@ -1440,12 +1458,13 @@ In this project work the topology and type of the networks are kept and only the
 		
 			\end{tikzpicture}
 			\caption*{Perfect seperating plane}
+			This plane separates the two classes perfectly as it has the maximal margin between the two classes.
 			\label{fig:psep}
 		\end{subfigure}	
 \end{figure}
 
 
-
+As follows the results of the three functions:
 
 
 \begin{figure}[H]
@@ -1573,6 +1592,13 @@ In this project work the topology and type of the networks are kept and only the
 	\end{subfigure}	
 \end{figure}
 
+\newpage
+
+Other ways of learning are unsupervised and semi-supervised learning. At unsupervised learning the training data is completely unlabeled. The network has to find patterns in this data. This can happen by different algoritms. At semi-supervised learning the main part of the data set is unlabeled. But there exist a small amount of labeled data. This data can improve the learning accuracy. \\
+
+An alternative to these learning methods is the evolutionary training of the net. Populations of nets are cultivated and rated by a fitness function. For these there exist many optimization algorithms.\footnote{Some of them are described in chapter \ref{sec:evo}} \\
+
+In this project work the topology and type of the networks are kept and only the weights are changed by the evolution process.
 
 
 
