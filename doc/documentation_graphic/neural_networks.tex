@@ -593,7 +593,7 @@ This is a typical feed forward network. The computation results are passed from 
 	\end{center}
 \end{figure}
 
-The total neuron input $I$ is the sum of all input values $x_i$ multiplied by their given weights $w_{1i}$. The first index of the weight stands for the receiving neuron; the second index for the sending neuron:
+The total neuron input $I$ is the sum of all input values $x_i$ multiplied by their respective weight $w_{1i}$. The first index of the weight stands for the receiving neuron; the second index for the sending neuron:
 \begin{figure}[H]
 	\begin{center}
 		\begin{flalign*}
@@ -604,7 +604,7 @@ I = \sum_{i=1}^{n}(x_{i}*w_{1i})
 	\label{eq:neuroninputex}
 \end{figure}
 
-The output of the neuron is computed by a so called activation function $f(I)$. If the computing neuron is a hidden neuron, the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $\vec{Y}$ Usually all neurons of an entire layer have the same activation function. As follows some commonly used activation functions:
+The output of the neuron is computed by a so called activation function $f(I)$. If the computing neuron is a hidden neuron, the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $\vec{Y}$. Usually all neurons of an entire layer have the same activation function. As follows some commonly used activation functions:
 
 \begin{figure}[H]
 \begin{subfigure}[]{0.5\linewidth}
@@ -1040,7 +1040,7 @@ As follows two examples of linear separable boolean functions:
 			\tikzstyle{annot} = [text width=4em, text centered]
 			
 			
-			\node[] (T-1) at (\layersep,-0.5)
+			\node[] (T-1) at (\layersep,-0.8)
 			{$S=1$};
 			
 			% Draw the input neuron
@@ -1050,13 +1050,21 @@ As follows two examples of linear separable boolean functions:
 			{$x_2$};
 			%	\node[input neuron] (I-4) at (0,-4) {$2$};
 			% Draw the hidden layer nodes
-			\foreach \name / \y in {1,...,1}
-			\path[yshift=0.5cm]
-			node[output neuron] (H-\name) at (\layersep,-2.0cm) {$Y$};
+			%\foreach \name / \y in {1,...,1}
+			%\path[yshift=0.5cm]
+			%node[output neuron] (H-\name) at (\layersep,-2.0cm) {$Y$};
 			% Connect every node in the input layer with every node in the hidden layer.
-			\path (I-1) edge node[above]{1} (H-1);	
-			\path (I-2) edge node[above]{1} (H-1);	
+			\node[draw=none,fill=none] (H-E) at (0,-1.5cm) {};
 			
+			\node[output neuron,pin={[pin edge={->}]right:$Y$}, right of=H-E] (O-1) {};
+						
+			
+			\path (I-1) edge node[above]{1} (O-1);	
+			\path (I-2) edge node[above]{1} (O-1);	
+			
+
+					
+
 			
 			%\path (H-1) edge node[right]{2} (3.5,-1.8);	
 			\end{tikzpicture}
@@ -1110,7 +1118,7 @@ For the weights $w_1=w_2=1$ the threshold has to be $0<S\leq{2}$.
 		\tikzstyle{annot} = [text width=4em, text centered]
 		
 		
-		\node[] (T-1) at (\layersep,-0.5)
+		\node[] (T-1) at (\layersep,-0.8)
 		{$S=2$};
 		
 		% Draw the input neuron
@@ -1120,13 +1128,16 @@ For the weights $w_1=w_2=1$ the threshold has to be $0<S\leq{2}$.
 		{$x_2$};
 		%	\node[input neuron] (I-4) at (0,-4) {$2$};
 		% Draw the hidden layer nodes
-		\foreach \name / \y in {1,...,1}
-		\path[yshift=0.5cm]
-		node[output neuron] (H-\name) at (\layersep,-2.0cm) {$Y$};
+	%	\foreach \name / \y in {1,...,1}
+	%	\path[yshift=0.5cm]
+	%	node[output neuron] (H-\name) at (\layersep,-2.0cm) {$Y$};
 		% Connect every node in the input layer with every node in the hidden layer.
-		\path (I-1) edge node[above]{1} (H-1);	
-		\path (I-2) edge node[above]{1} (H-1);	
+		\path (I-1) edge node[above]{1} (O-1);	
+		\path (I-2) edge node[above]{1} (O-1);	
 		
+		\node[draw=none,fill=none] (H-E) at (0,-1.5cm) {};
+		
+		\node[output neuron,pin={[pin edge={->}]right:$Y$}, right of=H-E] (O-1) {};
 		
 		%\path (H-1) edge node[right]{2} (3.5,-1.8);	
 		\end{tikzpicture}
@@ -1165,8 +1176,8 @@ For two binary inputs there are just two functions that aren't linary separable.
 	The two red marked functions aren't linearly seperable
 	\caption{Boolean functions for two parameters}
 	\label{fig:linsep1}
-\end{figure}
 
+\end{figure}
 
 
 
@@ -1247,6 +1258,7 @@ An widely known example is the xor-problem.
 
 
 \begin{figure}[H]
+	\begin{subfigure}[]{0.5\linewidth}
 	\begin{center}
 		\begin{tikzpicture}
 		\tikzstyle{point}=[circle,fill=black!255,minimum size=7pt,inner sep=0pt]
@@ -1274,7 +1286,73 @@ An widely known example is the xor-problem.
 		\end{tikzpicture}
 	\end{center}
 	\caption{XOR: separation function}
-	\label{fig:sepplot3}	
+	\label{fig:sepplot3}
+	\end{subfigure}	
+			\hspace{0.5cm}
+			\begin{subfigure}[]{0.5\linewidth}
+				\begin{center}
+					\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
+					\tikzstyle{every pin edge}=[<-,shorten <=1pt]
+					\tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+					\tikzstyle{input neuron}=[neuron, fill=green!50];
+					\tikzstyle{output neuron}=[neuron, fill=red!50];
+					\tikzstyle{hidden neuron}=[neuron, fill=blue!50];
+					\tikzstyle{annot} = [text width=4em, text centered]
+					
+					% Draw the input layer nodes
+					\foreach \name / \y in {1,...,2}
+					% This is the same as writing \foreach \name / \y in {1/1,2/2,3/3,4/4}
+					\node[input neuron] (I-\name) at (0,-\y) {$x_\y$};
+					
+					
+					% Draw the hidden layer nodes
+					%	\foreach \name / \y in {1,...,2}
+					\path[yshift=0.5cm]
+					node[hidden neuron] (H-1) at (\layersep,-1 cm) {};
+					\path[yshift=0.5cm]
+					node[hidden neuron] (H-2) at (\layersep,-3 cm) {};
+					
+					\node[draw=none,fill=none] (H-E) at (\layersep,-1.5cm) {};
+					
+					% Draw the output layer node
+					%\foreach \name / \y in {1,...,2}
+					\node[output neuron,pin={[pin edge={->}]right:$Y$}, right of=H-E] (O-1) {};
+					% Connect every node in the input layer with every node in the
+					% hidden layer.
+					%	\foreach \source in {1,...,2}
+					%	\foreach \dest in {1,...,2}
+					%	\path (I-\source) edge (H-\dest);
+					
+					\path (I-1) edge node[above]{1} (H-1);
+					\path (I-1) edge node[above]{-1} (H-2);
+					\path (I-2) edge node[above]{-1} (H-1);
+					\path (I-2) edge node[above]{1} (H-2);
+					
+					
+					% Connect every node in the hidden layer with the output layer
+					\foreach \source in {1,...,2}
+					\foreach \dest in {1,...,1}
+					\path (H-\source) edge node[above]{1} (O-\dest);
+					
+					
+					\node[] (T-1) at (\layersep,0)
+					{$S_1=0.5$};
+					\node[] (T-1) at (\layersep,-2)
+					{$S_2=0.5$};
+					\node[] (T-1) at (5.2,-0.8)
+					{$S_3=0.5$};
+					
+					% Annotate the layers
+					\node[annot,above of=H-1, node distance=1.8cm] (hl) { Hidden layers};
+					\node[annot,below of=hl, node distance=0.6cm] (h2) {(optional)};
+					\node[annot,above of=I-1, node distance=1.3cm] {Input layer};
+					\node[annot,above of=O-1, node distance=1.8cm] {Output layer};
+					
+					\end{tikzpicture}
+					\caption{The general structure of an artificial neural network}
+					\label{fig:xor-solution}
+				\end{center}
+			\end{subfigure}
 \end{figure}
 
 \paragraph{Applications}
