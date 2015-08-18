@@ -1375,7 +1375,7 @@ One way of learning can happen supervised by a given training data set. The netw
 
 As follows an example of underfitting, overfitting and generalization of supervised learning at binary classification.
 
-Assume there is a set of labeled data that is devided into a training set and a test set, to control the accuracy auf the network:
+Assume there is a set of labeled data that is devided into a training set and a test set, to control the accuracy auf the network. There are two classes to separate:
 \begin{figure}[H]
 	\begin{subfigure}[]{0.5\linewidth}
 		\begin{tikzpicture}		
@@ -1687,42 +1687,63 @@ Optimization is widely used, for example in information technology, engineering 
 economics. Applications are the routing of circuits, the optimal usage of machinery,
 the traveling-salesman-problem\footnote{The traveling salesman problem describes to find the shortest route between cities} and others. It is often difficult to create a mathematical
 model for such optimization problems. Over the last decades methods were developed who use principles of the evolution.
-The simplest method is the selection-method. In this model a dateset will be generated and random changes, called mutations, are made. The best datasets, chosen by the best fitness, will be kept. The fitness depends on the modelisation of the problem.
-Each dateset is called an individual. A set of individuals is called a population. The individuals
-of a population can be recombined. Mostly the best individuals are recombined with randomly chosen
-ones. This method is more effective than the selection-method. This and other methods are  called
-evolutionary algorithms. To use an evolutionary algorithm, the problem must not be in a defined form;
+
+
+A model of the optimization is important to limit the amount of parameter.
+
+
+The simplest method is the selection-method. In this method a random initialized parameter set will be generated. A parameter set is called a solution\footnote{In literature also called chromosome or individual} as it could possibly solve the task sufficiently.
+The solution is rated to determine the fitness, which represents the quality of the solution.
+This solution is randomly changed\footnote{In literature a random change of a chromosome is also called mutation} and rated for a defined amount of cycles. The solution with the best fitness, determined in this process, will be kept.
+
+A set of solutions is called a population. Another method of optimization is the recombination of solutions. Mostly the best solutions are recombined with randomly chosen
+ones. This and other methods are called evolutionary algorithms. To use an evolutionary algorithm, the problem doesn't have to be in a defined form;
 therefore it hasn't to be linear or differentiable. \\
 
 In this project evolutionary algortihms are used to find the best 
-(unsupervised) neural network to controll one creature. The idea is to use the amount of food a creature collect over a defined time as fitnessvalue. The evolutionary algorithm changes the agent weights of the multilayer perceptron.
+(unsupervised) neural network to controll one agent. The idea is to use the amount of objects an agent collects over a defined time as fitness value. The evolutionary algorithm changes the agent weights of the feed-forward multilayer perceptron.
 
-\section{Modelisation}
-A good model of the optimization problem is important to find a satisfying solution with optimization- respectively evolutionary algorithms. At least a partial prior knowledge of the task is necessary.
-A model has the following components: \\
+\section{The general form of an optimization problem}
+In general an optimzation problem is defined by the following components: \\
 
 \fbox{
 	\begin{minipage}{15cm}
 		\begin{itemize} 
 			\item \textbf{Search space}
 			\item \textbf{Rating function (fitness- or error function)}
-			\item \textbf{Evolutionary algorihtm}
+			\item \textbf{Evolutionary algorithm}
 		\end{itemize}
 	\end{minipage}
 }   \\
 \\
 
-\subsection{Search space}
-The search space contains all possible solutions of the optimization problem. But it only defines the general form a solution can have. To effectively optimize, its important to define a simple structered search space, because in a too large and complex one the algorithm could not find a feasible solution in an appropriate time.
+The \textbf{search space} $D$ is the domain of the optimization function. It defines the general form of a solution. Figure \ref{fig:hill} and \ref{fig:hill2} are examples of search spaces. Every point in the search space is a possible solution of the optimization task.
+A solution $x$ is a vector of $n$ components. Each solution gets a real value to determine its quality. $F$ is a function that maps $D$ to the set of real numbers. A solution $x$ with the best quality is wanted, means $F(x)$ is optimal\footnote{Depending on the task a minimal or maximal value is wanted}:
 
-\subsection{Rating function}
-With the search space on its own a good solution cannot be found. A rating function, representing the quality of a solution has to be defined. For maximization problems the function is called fitness function. A high score represents a good solution. For minimization problems a error function has to be choosen. This function describes the deviation of the result. A minimal difference of the target output (preferably zero) is the goal.
+\begin{flalign}
+F: D \mapsto R \\
+D \subset R^n  \\
+x \in D
+\end{flalign} 
 
-\subsection{Algorithms}
-In general, if you look at all possible optimization problems, all algorithms are equal in effectivness, even a completely random choice of parameters. This is described by the no-free-lunch-theorem(TODO Source). There is no best universal algorithm to solve all problems. Some algorithms are better in a special field of problems and aren't in other ones. Therefore a categorisation of the problem to a specific class of algorithms is helpful.
+This means the  the amount of parameters $n$ a solution have, has to be defined before an optimization algortihm can be used efficiently. If there are too much possibilities, for example by having too much parameters, the algorithm may never find a satisfying solution. Therefore its recommended to reduce the search space and define the general form of a parameter set early. (Also a transformation of the search space can speed up the algorithm (Example is a binary search space transformed in grey code for the crossover operator. All good solutions are in one cluster)) Therefore at least a basic prior knowledge of the task is necessary.
+
+The \textbf{rating function} $F(x)$ gives the quality value for a solution. At maximization problems it's wanted to maximize the fitness. At minimization problems it's wanted to minimize an error value.
+ 
+
+
+
+%\subsection{Search space}
+%The search space contains all possible solutions of the optimization problem. But it only defines the general form a solution can have. To effectively optimize, its important to define a simple structered search space, because in a too large and complex one the algorithm could not find a feasible solution in an appropriate time.
+
+%\subsection{Rating function}
+%With the search space on its own a good solution cannot be found. A rating function, representing the quality of a solution has to be defined. For maximization problems the function is called fitness function. A high score represents a good solution. For minimization problems a error function has to be choosen. This function describes the deviation of the result. A minimal difference of the target output (preferably zero) is the goal.
+
+%\subsection{Algorithms}
+%In general, if you look at all possible optimization problems, all algorithms are equal in effectivness, even a completely random choice of parameters. This is described by the no-free-lunch-theorem(TODO Source). There is no best universal algorithm to solve all problems. Some algorithms are better in a special field of problems and aren't in other ones. Therefore a categorisation of the problem to a specific class of algorithms is helpful.
 
 \section{The hill climber method}
-The hillclimber method, also called the creepy random search method, is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973. % 1973 correct?? look at literaturesource in kinnebruck
+The hillclimber method is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973.(Source) % 1973 correct?? look at literaturesource in kinnebruck
 Parameters of a system are randomly changed untill a minimum or maximum of a targetfunction is reached. The value of the parameterchanges per iterationstep are limited. \\
 
 \textbf{The main algorithm is:}
@@ -1730,9 +1751,9 @@ Parameters of a system are randomly changed untill a minimum or maximum of a tar
 \fbox{
 	\begin{minipage}{15cm}
 		\begin{enumerate} 
-			\item Generate a randomly initialized chromosome.
-			\item Change the chromosome parameter by limited random delta-values. 
-			\item Prove if the chromosome has a better fitness than the old one and replace it. Otherwise refuse the new chromosome.
+			\item Generate a randomly initialized solution.
+			\item Change the solution's parameter by limited random delta-values. 
+			\item Prove if the solution has a better fitness than the old one and replace it. Otherwise refuse the new solution.
 			\item If the optimization-condition is reached abort, otherwise go to step 2.
 		\end{enumerate}
 	\end{minipage}
@@ -1772,17 +1793,17 @@ The algorihm can be imagined as a blind hillclimber. The hillclimber makes a ran
 \end{center}
 
 
-\section{Variants of the creepy random search method}
-In the main-method of the creepy random search you just accept better fitness values after an iteration-step and reject worse ones.
-The problem is, that with this algorithm you will mostly get stuck on a local optimum, instead of finding the global one.
-To solve this problem you should allow temporal low fitness-values. It should be possible to leave a local optimum to find a better one.
+\section{Variants of the hill climber method}
+In the main-method of the hill climber algorithm just a better fitness value is accepted after an iteration-step and a worse one is rejected.
+The problem is, that this algorithm will mostly get stuck on a local optimum, instead of finding the global one.
+To solve this problem temporal low fitness values should be allowed. It should be possible for the algorithm to leave a local optimum to find a better one.
 To realise this, there have been developed some extended versions of this method: \\
 
 \fbox{
 	\begin{minipage}{15cm}
 		\begin{itemize} 
-			\item A stagnation of the fitness is allowed by a specified probability (Simulated annealing)
-			\item A stagnation of the fitness is allowed untill a maximal deterioration. (Threshold accepting, deluge method)
+			\item A decrease of the fitness is allowed by a specified probability (Simulated annealing)
+			\item A decrease of the fitness is allowed untill a maximal deterioration. (Threshold accepting, deluge method)
 		\end{itemize}
 	\end{minipage}
 } \\
@@ -1792,19 +1813,24 @@ To realise this, there have been developed some extended versions of this method
 Simulated annealing is a probabilistic optimization method.
 It is inspired by the annealing of fluid materia to a solid aggregate states in metallurgy. While cooling down a material the thermodynamic free energy has to get as minimal as possible to get a clear crystalline structure. Therefore its suggested to cool down to material slowly for a better probability of getting a clear solid body.
 
-Analog in optimization you start with a high temperature T, means reaching a wide area in the search space. That way it's possible to reach more maxima. At the beginning each chromosome has the same probability to get selected. With each iteration the temperature is reduced and the reached area is getting smaller. Selecting better chromosomes is now more probalistic.
-Towards the end the algorithm commutes in an optimum and behaves like the standard hillclimbing-algorithm.
+Analog in optimization the algorithm starts with a high temperature T, means reaching a wide area in the search space. That way it's possible to reach more maxima. At the beginning each solution has the same probability to get selected. With each iteration the temperature is reduced and the reached area is getting smaller. Selecting better solutions is now more probalistic.
+Towards the end the algorithm commutes in an optimum and behaves like the standard hillclimbing algorithm.
 
-Slowly reducing the temperature increases the chance to find the global optimum. Cooling to fast leads to commuting early into a local optimum instead.
+Slowly reducing the temperature increases the chance to find the global optimum. Cooling to fast leads to commuting early into a local optimum instead. \\
 
-The following formula shows the probability of selecting a chromosome with lower fitness:
+First the difference of the fitness between the previous solution $x$ and the new solution $x'$ is computed by:
+
+\begin{equation}
+r = F(x') - F(x)
+\end{equation} 
+
+Then the probability of selecting a solution with lower fitness is computed:
 
 \begin{equation}
 p(r) = \frac{1}{1+exp(-r/T)}
 \end{equation} 
 
-The probability to select a worse chromosome should be small.
-At the beginning a big T tends to equalize the probability of all chromosomes. For $T \to \infty$ all chromosomes have the same chance to get selected. Lowering T gives good chromosomes priority.
+At the beginning a big T tends to equalize the probability of all chromosomes. For $T \to \infty$ all chromosomes have the same chance to get selected. Lowering T gives good solutions priority.
 
 
 \section{Crossover}
