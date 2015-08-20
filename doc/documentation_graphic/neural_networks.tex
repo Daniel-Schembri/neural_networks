@@ -1686,22 +1686,18 @@ In this project work the topology and type of the networks are kept and only the
 Optimization is widely used, for example in information technology, engineering and
 economics. Applications are the routing of circuits, the optimal usage of machinery,
 the traveling-salesman-problem\footnote{The traveling salesman problem describes to find the shortest route between cities} and others. It is often difficult to create a mathematical
-model for such optimization problems. Over the last decades methods were developed who use principles of the evolution.
+model for such optimization problems. Over the last decades methods were developed who use principles of the evolution. The idea is to reverse engineer nature's evolution process, because animals seem to solve complex problems easily.
 
-
-A model of the optimization is important to limit the amount of parameter.
-
-
-The simplest method is the selection-method. In this method a random initialized parameter set will be generated. A parameter set is called a solution\footnote{In literature also called chromosome or individual} as it could possibly solve the task sufficiently.
+The simplest method is the selection method. In this method a random initialized parameter set will be generated. A parameter set is called a solution\footnote{In literature also called chromosome or individual} as it could possibly solve the task sufficiently.
 The solution is rated to determine the fitness, which represents the quality of the solution.
-This solution is randomly changed\footnote{In literature a random change of a chromosome is also called mutation} and rated for a defined amount of cycles. The solution with the best fitness, determined in this process, will be kept.
+This solution is randomly changed\footnote{In literature a random change of a chromosome is also called mutation} and rated. This process is repeated for a specified amount of cycles or until the optimization condition is reached. The solution with the best fitness, determined in this process, will be kept.
 
 A set of solutions is called a population. Another method of optimization is the recombination of solutions. Mostly the best solutions are recombined with randomly chosen
 ones. This and other methods are called evolutionary algorithms. To use an evolutionary algorithm, the problem doesn't have to be in a defined form;
 therefore it hasn't to be linear or differentiable. \\
 
 In this project evolutionary algortihms are used to find the best 
-(unsupervised) neural network to controll one agent. The idea is to use the amount of objects an agent collects over a defined time as fitness value. The evolutionary algorithm changes the agent weights of the feed-forward multilayer perceptron.
+(unsupervised) neural network to controll one agent. The idea is to use the amount of objects an agent collects over a defined time as fitness value. The evolutionary algorithm changes the agent's weights of the feed-forward multilayer perceptron.
 
 \section{The general form of an optimization problem}
 In general an optimzation problem is defined by the following components: \\
@@ -1711,14 +1707,14 @@ In general an optimzation problem is defined by the following components: \\
 		\begin{itemize} 
 			\item \textbf{Search space}
 			\item \textbf{Rating function (fitness- or error function)}
-			\item \textbf{Evolutionary algorithm}
+			\item \textbf{Optimization algorithm}
 		\end{itemize}
 	\end{minipage}
 }   \\
 \\
 
 The \textbf{search space} $D$ is the domain of the optimization function. It defines the general form of a solution. Figure \ref{fig:hill} and \ref{fig:hill2} are examples of search spaces. Every point in the search space is a possible solution of the optimization task.
-A solution $x$ is a vector of $n$ components. Each solution gets a real value to determine its quality. $F$ is a function that maps $D$ to the set of real numbers. A solution $x$ with the best quality is wanted, means $F(x)$ is optimal\footnote{Depending on the task a minimal or maximal value is wanted}:
+A solution $x$ is a vector of $n$ components. Each solution gets a real value to determine its quality. $F$ is a function that maps $D$ to the set of real numbers. A solution $x$ with the best quality is wanted, means $F(x)$ is optimal. Depending on the task a minimal or maximal value of $F(x)$ is wanted. As follows the general formula of an optimzation problem:
 
 \begin{flalign}
 F: D \mapsto R \\
@@ -1726,12 +1722,82 @@ D \subset R^n  \\
 x \in D
 \end{flalign} 
 
-This means the  the amount of parameters $n$ a solution have, has to be defined before an optimization algortihm can be used efficiently. If there are too much possibilities, for example by having too much parameters, the algorithm may never find a satisfying solution. Therefore its recommended to reduce the search space and define the general form of a parameter set early. (Also a transformation of the search space can speed up the algorithm (Example is a binary search space transformed in grey code for the crossover operator. All good solutions are in one cluster)) Therefore at least a basic prior knowledge of the task is necessary.
+The amount of parameters $n$ a solution have, has to be defined before an optimization algortihm can be used efficiently. If there are too much possibilities, for example by having too much parameters, the algorithm may never find a satisfying solution. Therefore its recommended to reduce the search space and define the general form of a parameter set early. Also a transformation of the search space can speed up the optimization process.
 
-The \textbf{rating function} $F(x)$ gives the quality value for a solution. At maximization problems it's wanted to maximize the fitness. At minimization problems it's wanted to minimize an error value.
- 
+Evolutionary Algorithms have the advantage that there is no need for deep knowledge of a problem.
+But at least a basic prior knowledge of the task is necessary. Also it's not guaranteed that the optimization process will find a good solution. \\
+
+The \textbf{rating function} $F(x)$ gives the quality value for a solution. At maximization problems it's wanted to maximize the fitness. At minimization problems it's wanted to minimize an error value. A maximization problem can be transformed into a minimization problem  and vice versa by inverting the fitness function. In some cases constraints have to be considered. Some parameters may have limits they must not exceed.
+In industry often multiple rating functions are defined, because not only the quality of a solution is important, but also efficiency, cost reduction, etc. These functions $F_i(x)$ can be weighted and a general rating function can be computed by:
+
+\begin{flalign}
+F(x) = \sum_{i=1}^{n}w_{i}*F_{i}(x)
+\end{flalign}
+(Source: Evolutionaere Algorithmen - Ingrid Gerdes, ..)
+For maximization tasks $w_i > 0$ and for minimization tasks $w_i < 0$. 
+
+It's possible that the rating of a solution includes a complex simulation or real testing. An example is the rating of the aerodynamic properties of a car in a wind tunnel. \\
 
 
+There are different \textbf{optimization algorithms}. 
+
+The No-Free-Lunch- theoreme, introduced by David Wolpert and William G. Macready (Source) states that for the set of all optimization problems there exist no universal algorithm that solves all problems well. An algorithm may solve a subset of these problems well, but may fail at other ones. Therefore it's important to classify the task first and select a proven algorithm. \\
+
+In general the optimization process is as follows:
+
+Define a model (Amount of Parameters)
+Select a al
+
+Start with a random initialized solution.
+
+Test the solution and distinguish the quality.
+
+Change the solution.
+
+Repeat this process a specified amount of cycles
+or until the optimization condition is reached.
+
+\begin{figure}[H]
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+text width=6.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+minimum height=2em]
+\tikzstyle{cloud2} = [draw, ellipse,fill=blue!20, node distance=3cm,
+minimum height=2em]
+
+\begin{tikzpicture}[node distance = 2cm, auto]
+% Place nodes
+\node [cloud2] (start) {Start};
+\node [block, below of=start] (init) {Create model};
+%\node [cloud, left of=init] (expert) {user};
+%\node [cloud, right of=init] (system) {system};
+\node [block, below of=init] (identify) {Create random solution};
+\node [block, below of=identify] (evaluate) {Test the solution};
+\node [block, left of=evaluate, node distance=3cm] (update) {Change the solution by an algorithm};
+\node [decision, below of=evaluate, node distance=3.4cm] (decide) {Amount of Cycles or optimization condition reached?};
+\node [block, below of=decide, node distance=3.4cm] (stop) {Abort};
+% Draw edges
+\path [line] (start) -- (init);
+\path [line] (init) -- (identify);
+\path [line] (identify) -- (evaluate);
+\path [line] (evaluate) -- (decide);
+\path [line] (decide) -| node [near start] {no} (update);
+\path [line] (update) |- (evaluate);
+\path [line] (decide) -- node {yes}(stop);
+%\path [line,dashed] (expert) -- (init);
+%\path [line,dashed] (system) -- (init);
+%\path [line,dashed] (system) |- (evaluate);
+
+\node[draw,align=left, text width=8cm] at (7,-2) {User defines the amount of parameters a solution has, specifies the problem and chooses an optimization algorithm. The optimization condition and the maximum amount of running cylces is defined};
+
+\node[draw,align=left, text width=8cm] at (7,-13) {Save the best solution found};
+\end{tikzpicture}
+\caption{The general process of optimization}
+\label{fig:gen-opt}
+\end{figure}
 
 %\subsection{Search space}
 %The search space contains all possible solutions of the optimization problem. But it only defines the general form a solution can have. To effectively optimize, its important to define a simple structered search space, because in a too large and complex one the algorithm could not find a feasible solution in an appropriate time.
@@ -1744,7 +1810,7 @@ The \textbf{rating function} $F(x)$ gives the quality value for a solution. At m
 
 \section{The hill climber method}
 The hillclimber method is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973.(Source) % 1973 correct?? look at literaturesource in kinnebruck
-Parameters of a system are randomly changed untill a minimum or maximum of a targetfunction is reached. The value of the parameterchanges per iterationstep are limited. \\
+Parameters of a system are randomly changed untill a minimum or maximum of a target function is reached. The value of the parameterchanges per iteration step are limited. \\
 
 \textbf{The main algorithm is:}
 
@@ -1753,7 +1819,7 @@ Parameters of a system are randomly changed untill a minimum or maximum of a tar
 		\begin{enumerate} 
 			\item Generate a randomly initialized solution.
 			\item Change the solution's parameter by limited random delta-values. 
-			\item Prove if the solution has a better fitness than the old one and replace it. Otherwise refuse the new solution.
+			\item Test if the solution has a better fitness than the old one and replace it. Otherwise refuse the new solution.
 			\item If the optimization-condition is reached abort, otherwise go to step 2.
 		\end{enumerate}
 	\end{minipage}
@@ -1772,6 +1838,7 @@ The algorihm can be imagined as a blind hillclimber. The hillclimber makes a ran
 	\end{minipage}
 }   \\
 
+As follows two examples of 
 
 
 \begin{center}
