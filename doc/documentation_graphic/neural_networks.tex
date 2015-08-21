@@ -1776,9 +1776,9 @@ minimum height=2em]
 %\node [cloud, right of=init] (system) {system};
 \node [block, below of=init] (identify) {Create random solution};
 \node [block, below of=identify] (evaluate) {Test the solution};
-\node [block, left of=evaluate, node distance=3cm] (update) {Change the solution by an algorithm};
+\node [block, left of=evaluate, node distance=3cm] (update) {Change the solution by selected algorithm};
 \node [decision, below of=evaluate, node distance=3.4cm] (decide) {Amount of Cycles or optimization condition reached?};
-\node [block, below of=decide, node distance=3.4cm] (stop) {Abort};
+\node [block, below of=decide, node distance=3.4cm] (stop) {Save and quit};
 % Draw edges
 \path [line] (start) -- (init);
 \path [line] (init) -- (identify);
@@ -1905,8 +1905,8 @@ The crossover algorithm represents the idea of cultivating a population of indiv
 The process is repeated until a satisfying solution is cultivated or the process is aborted.\footnote{For more information see project work of Jonathan Schwarz}
 
 \section{Applications}
-The use of a specific algorithm depends on the problem and its modelisation. In general all optimization-methods are equal in effectivness, if we look over all posible optimization-problems in one set (No-free-Lunch-Theorem Source). Astonishingly a purely random search isn't less effective.
-Some of the given methods are better in special cases than others. Also a good understanding of the problem's topic is essentially. Evolutinary algortihms take advantage of reducing the set of problems and a good modelisation.
+The usage of a specific algorithm depends on the problem and its model. In general all optimization methods are equal in effectivness, if we look over all posible optimization-problems in one set .
+Some of the given methods are better in special cases than others. Also a good understanding of the problem's topic is essentially.
 Simulated annealing is suitable for functions with many local optima.
 
 
