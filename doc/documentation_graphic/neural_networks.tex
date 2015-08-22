@@ -557,7 +557,7 @@ node[hidden neuron] (H-\name) at (\layersep,-\y cm) {};
 \end{center}
 \end{figure}
 
-This is a typical feed forward network. The computation results are passed from one layer to the next one. Its possible to add a bias neuron to each layer. Bias neurons have always the value 1 and have weighted connections to all neurons of the next layer.
+This is a typical feed forward network. The computation results are passed from one layer to the next one. All values are passed at the same time. The values are weighted a defined weight of the respective connection to the next neuron. It's possible to add a bias neuron to each layer. Bias neurons have always the value 1 and have also weighted connections to all neurons of the next layer. The neural network learns by adjusting the weights. In the most cases the weights are adjusted by a specified learning algorithm to fit the target functionality.
 
 \begin{figure}[H]
 	\begin{center}
@@ -593,7 +593,7 @@ This is a typical feed forward network. The computation results are passed from 
 	\end{center}
 \end{figure}
 
-The total neuron input $I$ is the sum of all input values $x_i$ multiplied by their respective weight $w_{1i}$. The first index of the weight stands for the receiving neuron; the second index for the sending neuron:
+The total neuron input $I$ is the sum of all input values $x_i$ multiplied by their respective weight $w_{1i}$. The first index of the weight stands for the receiving neuron; the second index for the sending neuron. As follows the total input of a receiving neuron:
 \begin{figure}[H]
 	\begin{center}
 		\begin{flalign*}
@@ -604,7 +604,9 @@ I = \sum_{i=1}^{n}(x_{i}*w_{1i})
 	\label{eq:neuroninputex}
 \end{figure}
 
-The output of the neuron is computed by a so called activation function $f(I)$. If the computing neuron is a hidden neuron, the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $\vec{Y}$. Usually all neurons of an entire layer have the same activation function. As follows some commonly used activation functions:
+The output of the neuron is computed by a so called activation function $f(I)$ having as parameter the before determined total input of the receiving neuron.
+
+If the computing neuron is a hidden neuron, the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $\vec{Y}$. Usually all neurons of an entire layer have the same activation function. As follows some commonly used activation functions:
 
 \begin{figure}[H]
 \begin{subfigure}[]{0.5\linewidth}
@@ -691,7 +693,7 @@ Activation functions can have a threshold $S$. The neurons output is zero if $I<
 	0  & \quad \text{otherwise}\\
 	\end{cases}
 	\end{align*}
-	\caption*{Identity function with threshold $S$}
+	\caption*{Linear function with threshold $S$}
 	\label{fig:sub3}
 \end{subfigure}
 \hspace{0.5cm}
@@ -730,10 +732,10 @@ Activation functions can have a threshold $S$. The neurons output is zero if $I<
 
 Discrete activation functions can be used for classification of a dataset.
 
-Continous functions can be used for regression. Regression analysis is the process of finding a target function to fit a sequence of datapoints. This is used for prediction.\\
+Continous functions can be used for regression. Regression analysis is the process of finding a target function to fit a sequence of datapoints. This is used for prediction of further datapoints.\\
 
 
- As follows an example of the computation of a neural network. Assume there are 3 input neurons, 1 output neuron and no bias neurons. Assume we have the following input values and weights:
+ As follows an example of the computation of a neural network. Assume there are 3 input neurons, 1 output neuron, no hidden neurons and no bias neurons. Assume there are the following input values and weights:
 
 \begin{figure}[H]
 	\begin{center}
@@ -797,7 +799,7 @@ In this example the output neuron gets a total input of:
 	\label{eq:neuroninputex}
 \end{figure}
 
-This input is processed by a linear activation function with a threshold:
+This input may be processed in this example by a linear activation function with a threshold:
 
  	\begin{flalign*}
  	 &S = 0 \\
@@ -839,9 +841,11 @@ At the moment there are three generations of neural networks: \\
 \\
 
 The first generation works with binary in- and outputs, but real thresholds. The first model, the Mcculloch-Pitts Neuron was presented in 1943.
-The second generation was presented in the 90s. Scientists supposed that the firerate of a neuron in one second symbolise an encoding of information. Henceforth new models used real values representing these firerates.
+The second generation was presented in the 90s. At that time scientists supposed that the firerate of a neuron, means the amount of binary signals in one second symbolise an encoding of information. Henceforth new models used real values representing these firerates instead of just binary values.
 Further research showed that biological neural networks can compute information faster than a second generation network.
 A third generation of artificial neural networks was modeled. Not just the firerate keeps information. Also the time delay between single signals encodes information. These signal pulses are called spikes. A third generation neural network is called a 'spiking neural network'.
+
+There also exist other kind of topologies. For example there are recurrent network models in which a neuron can have a weighted connection to itself to process it's own output. Another topology is the kohonen map. In this topology all hidden neurons are interconnected. In this project work the focus lies on the feed forward topology. All others would go beyond the scope.
 
  (Source: NAT00 (see Paper))
 
@@ -853,19 +857,18 @@ TODO source: Daniel Rey Book
 
 
 %\section{Neuron- and network types}
-In this section the different neuron- and networktypes are described by a chronological view.
+As follows some different neuron- and networktypes are described by a chronological view.
 \subsection{The model of McCulloch and Pitts}
 \label{sec:pitts}
 The first mathematical model of a neuron was the McCulloch-Pitts-neuron,
 developed by Warren McCulloch and Walter Pitts in 1943.\cite{NEURONMATH}
-They wanted to realise a simple, realistic neuron-modell of the operations in the human brain and find out if the brain could compute turing computable functions.
+They wanted to realise a simple, realistic neuron-model of the operations in the human brain and find out if the brain could compute turing computable functions.
 McCulloch-Pitts-neuron has binary inputs and one binary output.
 A real threshold has to be defined for each neuron, which reached, let the neuron fire\footnote{In biology the word 'fire' means that the neuron puts out a signal} one or otherwise zero as output.
-In contrast to other models it has no input weights.
-Its possible to add absolute suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs.
-Its possible to use relative suppressing inputs instead. For each relative suppressing input the threshold of the neuron is then incremented.
+In contrast to other models of further generations, it has no input weights.
+It's possible to add absolute suppressing inputs. If one of these has the value one, the neuron gives out zero, no matter of other inputs.
+Also it's possible to use relative suppressing inputs instead. For each relative suppressing input, the sum of all neuron inputs is decremented.
 \footnote{In \cite{rojas} chapter 2.4.2 it's shown that Mcculloch-Pitts-networks with absolute suppressing inputs can be replaced by networks with relative suppressing inputs and vice versa. The topologies may differ}
-In contrast to the general ANN-model, seen in figure \ref{fig:general-ann} this neuron model has no weights.
 
 
 Neural networks of this type of neuron can just learn by changing the threshold and the topology of the network. This causes an unnecessary workload due to its high effort in implementation.
@@ -938,10 +941,10 @@ A function composition:
 
 The function composition is a concatenation of multiple neurons. \\
 
-\paragraph{Applications}
+\paragraph*{Applications}
 The McCulloch-Pitts-neuron is biologically not plausible, because learning
 can just happen by changing the threshold and the network topology. This needs complex algorithms.
-But this neuron type can realise AND-, OR- and NOT-Gates.
+But this neuron type can realise AND-, OR- and NOT-Gates. (See Rojas)
 Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. 
 The usage of a McCulloch-Pitts network depends on the application type. Binary signals have the advantage of beeing less susceptible to interferences as multiple signal states.
 The drawback can be a complex topology.
@@ -992,12 +995,9 @@ As follows two examples of linear separable boolean functions:
 	\caption{And-Function: linear separable}
 	\label{fig:linsep2}
 \end{subfigure}
-
 \end{figure}
 
-\begin{figure}[H]
-	
-\end{figure}
+The perceptrons can be realised as follows:
 
 \begin{figure}[H]
 	\begin{subfigure}[]{0.5\linewidth}
@@ -1025,7 +1025,7 @@ As follows two examples of linear separable boolean functions:
 				\node at (0.8,-1) {True};
 				
 				\end{tikzpicture}
-			\caption{Or-Function: separation function}
+			\caption{A separating plane of the or-function}
 			\label{fig:sepplot1}
 	\end{subfigure}	
 	\hspace{0.5cm}
@@ -1068,7 +1068,7 @@ As follows two examples of linear separable boolean functions:
 			
 			%\path (H-1) edge node[right]{2} (3.5,-1.8);	
 			\end{tikzpicture}
-			\caption{The input of a neuron}
+			\caption{Or-function perceptron}
 			\label{fig:neuron-input-example}
 			\end{subfigure}
 \end{figure}
@@ -1103,7 +1103,7 @@ For the weights $w_1=w_2=1$ the threshold has to be $0<S\leq{2}$.
 	\node at (0.8,-1) {True};
 	
 	\end{tikzpicture}
-	\caption{And-Function: separation function}
+	\caption{A separating plane of the and-function}
 	\label{fig:sepplot2}
 	\end{subfigure}	
 	\hspace{0.5cm}
@@ -1141,17 +1141,15 @@ For the weights $w_1=w_2=1$ the threshold has to be $0<S\leq{2}$.
 		
 		%\path (H-1) edge node[right]{2} (3.5,-1.8);	
 		\end{tikzpicture}
-		\caption{The input of a neuron}
+		\caption{And-function perceptron}
 		\label{fig:neuron-input-example}
 	\end{subfigure}
 \end{figure}
 
 
-For the weights $w_1=w_2=1$ the threshold has to be $1<S\leq{1}$
+For the weights $w_1=w_2=1$ the threshold has to be $1<S\leq{1}$ \\
 
-\paragraph{XOR-Problem}
-
-For two binary inputs there are just two functions that aren't linary separable. These are the XOR- and the NXOR function.
+For two binary inputs there are just two functions that aren't linary separable. These are the \textbf{XOR}- and the \textbf{NXOR} function.
 
 
 \begin{figure}[H]
@@ -1178,9 +1176,7 @@ For two binary inputs there are just two functions that aren't linary separable.
 	\label{fig:linsep1}
 
 \end{figure}
-
-
-
+In literature the impossibility of the linear separation of the XOR-function with a classical perceptron is called the \textbf{XOR-Problem}:
 \begin{figure}[H]
 	\begin{center}
 		\begin{tikzpicture}
@@ -1213,25 +1209,16 @@ For two binary inputs there are just two functions that aren't linary separable.
 	\label{fig:xor-problem}	
 \end{figure}
 
-\paragraph{Applications}
+The solution of the problem is shown in the following section.
+
+\paragraph*{Applications}
 The perceptron can be used as pattern associator to assign an input pattern to a class. It can also be used as competitive network. Also linear seperable data can be categorised.
-It can be trained with the hebbian- or the delta-learning rule.(see also \eqref{sec:learning})
 
-\begin{center}
-	\begin{figure}[H]
-		\centering
-	%	\includegraphics[width=0.8\textwidth,scale=1]{files/neuron.jpg}  
-		\caption{A singlelayer perceptron \cite{PERSIN}.}
-		\label{fig:neuron}
-	\end{figure}
-\end{center}
+\subsection{Multi layer perceptron} \label{sec:mlp}
+The multilayer perceptron (MLP) was intruduced by Minsky and Papert in 1969. It has an input-, an output- and
+one or multiple hiddenlayers (see figure \ref{fig:general-ann}). In contrast to the singlelayer perceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
 
-
-\subsection{Multi layer perceptron (MLP) (TODO)} \label{sec:mlp}
-The multilayer perceptron was intruduced by Minsky and Papert in . It has an input-, an output- and
-one or multiple hiddenlayers. In contrast to the singlelayer perceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
-
-An widely known example is the xor-problem.
+An widely known example is the xor-problem:
 
 \begin{figure}[H]
 	\centering
@@ -1256,6 +1243,8 @@ An widely known example is the xor-problem.
 
 \end{figure}
 
+Surely this problem can be solved by just two layers and with non-linear activation functions. But a linear separating plane is prefered, because it's easier to handle and in general faster at computation.
+To solve the XOR-Problem a hidden layer has to be added. With negative weights the activation of the respective hidden neuron can be surpressed:
 
 \begin{figure}[H]
 	\begin{subfigure}[]{0.5\linewidth}
@@ -1355,8 +1344,17 @@ An widely known example is the xor-problem.
 			\end{subfigure}
 \end{figure}
 
-\paragraph{Applications}
 
+The XOR-Problem shows that to separate a data set linear it's necessary to have at least one hidden layer.
+For 3 variables there exist 256 possible logical functions. 104 are linear separable.
+for 4 variables and 65536 possible functions, only 1084 functions are linear separable.
+The ratio of linear separable to non linear separable functions tends to zero for x-> infinity. (Source)
+This shows that with increasing input parameters, hidden layers are necessary to compute this data.
+
+
+\paragraph*{Applications}
+
+The MLP is used for classification and  regression. It can approximate functions for complex problems.
 
 %\subsection{Kohonen networks / Selforganizing maps (SOM)}
 %Kohonen-networks are inventioned by the finnish engineer Teuvo Kohonen in 1982. They have two layers. An inputlayer and a n-dimensional outputlayer.
@@ -1371,9 +1369,10 @@ An widely known example is the xor-problem.
 %\subsection{Recurrent}
 
 \section{Learning}
-One way of learning can happen supervised by a given training data set. The network is then trained by learning algorithms. The network error is minimized. After the training cycle the network is tested by a test data set, that must differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training set exactly. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{footnote A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} Therefore its important to have an appropriate number of hidden neurons. If there are too few hidden neurons the network may not fit the target function properly. If there are too much neurons  overfitting may happen.\\
+A neural network learns by adjusting the connection weights.
+One way of learning can happen supervised by a given training data set. The network is then trained by a learning algorithm. The network error, means the difference of the wanted output from the actual output, is minimized. After the training cycle the network is tested by a test data set, that must differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training set exactly, but may fail at the test data set. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} Therefore its important to have an appropriate number of hidden neurons. If there are too few hidden neurons the network may not fit the target function properly. This is called underfitting. If there are too much neurons, overfitting may happen.\\
 
-As follows an example of underfitting, overfitting and generalization of supervised learning at binary classification.
+As follows an example of underfitting, overfitting and the wanted generalization of supervised learning at binary classification.
 
 Assume there is a set of labeled data that is devided into a training set and a test set, to control the accuracy auf the network. There are two classes to separate:
 \begin{figure}[H]
@@ -1439,9 +1438,10 @@ Assume there is a set of labeled data that is devided into a training set and a 
 		\label{fig:traintestset}
 	\end{subfigure}	
 \end{figure}
+\vspace{0.5cm}
 
 The neural network is trained by a learning algorithm\footnote{This may be the backpropagation algorithm}. In the following figures three different separation functions are shown, produced by three different neural networks distinguishing by a different amount of hidden neurons.
-
+\vspace{0.5cm}
 
 \begin{figure}[H]
 	\begin{subfigure}[]{0.5\linewidth}
@@ -1536,11 +1536,10 @@ The neural network is trained by a learning algorithm\footnote{This may be the b
 		
 			\end{tikzpicture}
 			\caption*{Perfect seperating plane}
-			This plane separates the two classes perfectly as it has the maximal margin between the two classes.
+			This plane separates the two classes perfectly because it has the maximal margin between the two classes.
 			\label{fig:psep}
 		\end{subfigure}	
 \end{figure}
-
 
 As follows the results of the three functions:
 
@@ -1670,8 +1669,6 @@ As follows the results of the three functions:
 	\end{subfigure}	
 \end{figure}
 
-\newpage
-
 Other ways of learning are unsupervised and semi-supervised learning. At unsupervised learning the training data is completely unlabeled. The network has to find patterns in this data. This can happen by different algoritms. At semi-supervised learning the main part of the data set is unlabeled. But there exist a small amount of labeled data. This data can improve the learning accuracy. \\
 
 An alternative to these learning methods is the evolutionary training of the net. Populations of nets are cultivated and rated by a fitness function. For these there exist many optimization algorithms.\footnote{Some of them are described in chapter \ref{sec:evo}} \\
@@ -1688,19 +1685,22 @@ economics. Applications are the routing of circuits, the optimal usage of machin
 the traveling-salesman-problem\footnote{The traveling salesman problem describes to find the shortest route between cities} and others. It is often difficult to create a mathematical
 model for such optimization problems. Over the last decades methods were developed who use principles of the evolution. The idea is to reverse engineer nature's evolution process, because animals seem to solve complex problems easily.
 
-The simplest method is the selection method. In this method a random initialized parameter set will be generated. A parameter set is called a solution\footnote{In literature also called chromosome or individual} as it could possibly solve the task sufficiently.
+The simplest method is the selection method. In this method a random initialized parameter set will be generated. A parameter set is called a solution\footnote{In literature also called chromosome or individual},because it could possibly solve the task sufficiently.
 The solution is rated to determine the fitness, which represents the quality of the solution.
 This solution is randomly changed\footnote{In literature a random change of a chromosome is also called mutation} and rated. This process is repeated for a specified amount of cycles or until the optimization condition is reached. The solution with the best fitness, determined in this process, will be kept.
 
 A set of solutions is called a population. Another method of optimization is the recombination of solutions. Mostly the best solutions are recombined with randomly chosen
 ones. This and other methods are called evolutionary algorithms. To use an evolutionary algorithm, the problem doesn't have to be in a defined form;
-therefore it hasn't to be linear or differentiable. \\
+therefore it hasn't to be linear or differentiable.
+
+Evolutionary algorithms differ from classical optimization algorithms by their probabilistic and metaheuristic nature. The general idea is not to compute a solution than rather 'cultivate' it. Classical algorithms are specified for some kind of problem. Evolutionary algorithms acting probabilistic (random changes). Metaheuristic means that these algorithms are used in a more general way, means the task has not to be a specific kind of problem. But it's not guaranteed that they find a good solution. \\
+
 
 In this project evolutionary algortihms are used to find the best 
 (unsupervised) neural network to controll one agent. The idea is to use the amount of objects an agent collects over a defined time as fitness value. The evolutionary algorithm changes the agent's weights of the feed-forward multilayer perceptron.
 
-\section{The general form of an optimization problem}
-In general an optimzation problem is defined by the following components: \\
+\section{The general form of the optimization process}
+In general the optimzation process is defined by the following components: \\
 
 \fbox{
 	\begin{minipage}{15cm}
@@ -1714,7 +1714,7 @@ In general an optimzation problem is defined by the following components: \\
 \\
 
 The \textbf{search space} $D$ is the domain of the optimization function. It defines the general form of a solution. Figure \ref{fig:hill} and \ref{fig:hill2} are examples of search spaces. Every point in the search space is a possible solution of the optimization task.
-A solution $x$ is a vector of $n$ components. Each solution gets a real value to determine its quality. $F$ is a function that maps $D$ to the set of real numbers. A solution $x$ with the best quality is wanted, means $F(x)$ is optimal. Depending on the task a minimal or maximal value of $F(x)$ is wanted. As follows the general formula of an optimzation problem:
+A solution $x$ is a vector of $n$ components. Each solution gets a real value to determine it's quality. $F$ is a function that maps $D$ to the set of real numbers. A solution $x$ with the best quality is wanted, means $F(x)$ is optimal. Depending on the task a minimal or maximal value of $F(x)$ is wanted. As follows the general formula of an optimzation problem:
 
 \begin{flalign}
 F: D \mapsto R \\
@@ -1722,40 +1722,28 @@ D \subset R^n  \\
 x \in D
 \end{flalign} 
 
-The amount of parameters $n$ a solution have, has to be defined before an optimization algortihm can be used efficiently. If there are too much possibilities, for example by having too much parameters, the algorithm may never find a satisfying solution. Therefore its recommended to reduce the search space and define the general form of a parameter set early. Also a transformation of the search space can speed up the optimization process.
+The amount of parameters $n$ a solution has, has to be defined before an optimization algortihm can be used efficiently. If there are too much possibilities, for example by having too much parameters, the algorithm may never find a satisfying solution. Therefore its recommended to reduce the search space and define the general form of a parameter set early. Also a transformation of the search space can speed up the optimization process.
 
 Evolutionary Algorithms have the advantage that there is no need for deep knowledge of a problem.
-But at least a basic prior knowledge of the task is necessary. Also it's not guaranteed that the optimization process will find a good solution. \\
+But at least a basic prior knowledge of the task is necessary. \\
 
-The \textbf{rating function} $F(x)$ gives the quality value for a solution. At maximization problems it's wanted to maximize the fitness. At minimization problems it's wanted to minimize an error value. A maximization problem can be transformed into a minimization problem  and vice versa by inverting the fitness function. In some cases constraints have to be considered. Some parameters may have limits they must not exceed.
+The \textbf{rating function} $F(x)$ gives the quality value for a solution. At maximization problems it's wanted to maximize a fitness value. At minimization problems it's wanted to minimize an error value. A maximization problem can be transformed into a minimization problem  and vice versa by inverting the rating function. In some cases constraints have to be considered. Some parameters may have limits they must not exceed.
 In industry often multiple rating functions are defined, because not only the quality of a solution is important, but also efficiency, cost reduction, etc. These functions $F_i(x)$ can be weighted and a general rating function can be computed by:
 
 \begin{flalign}
 F(x) = \sum_{i=1}^{n}w_{i}*F_{i}(x)
 \end{flalign}
-(Source: Evolutionaere Algorithmen - Ingrid Gerdes, ..)
-For maximization tasks $w_i > 0$ and for minimization tasks $w_i < 0$. 
+For maximization tasks $w_i > 0$ and for minimization tasks $w_i < 0$. (Source: Evolutionaere Algorithmen - Ingrid Gerdes, ..)
 
-It's possible that the rating of a solution includes a complex simulation or real testing. An example is the rating of the aerodynamic properties of a car in a wind tunnel. \\
+It's possible that the rating of a solution includes not only a rating function but also a complex simulation or real testing. An example is the rating of the aerodynamic properties of a car in a wind tunnel. \\
 
 
-There are different \textbf{optimization algorithms}. 
+The \textbf{optimization algorithm} starts with a random initialised solution. It changes the solution each step until the optimization condition is reached or the process is aborted. Different algorithms are explained in more detail from section \ref{sec:ea}.
 
 The No-Free-Lunch- theoreme, introduced by David Wolpert and William G. Macready (Source) states that for the set of all optimization problems there exist no universal algorithm that solves all problems well. An algorithm may solve a subset of these problems well, but may fail at other ones. Therefore it's important to classify the task first and select a proven algorithm. \\
 
-In general the optimization process is as follows:
-
-Define a model (Amount of Parameters)
-Select a al
-
-Start with a random initialized solution.
-
-Test the solution and distinguish the quality.
-
-Change the solution.
-
-Repeat this process a specified amount of cycles
-or until the optimization condition is reached.
+\newpage
+As follows an optimization process in general:
 
 \begin{figure}[H]
 \tikzstyle{decision} = [diamond, draw, fill=blue!20, 
@@ -1777,23 +1765,42 @@ minimum height=2em]
 \node [block, below of=init] (identify) {Create random solution};
 \node [block, below of=identify] (evaluate) {Test the solution};
 \node [block, left of=evaluate, node distance=3cm] (update) {Change the solution by selected algorithm};
-\node [decision, below of=evaluate, node distance=3.4cm] (decide) {Amount of Cycles or optimization condition reached?};
+
+\node [decision, below of=evaluate, node distance=3.4cm] (decide1) {Current solution better than previous?};
+
+\node [block, right of=decide1, node distance=3.5cm] (save) {Save solution};
+
+\node [below left=1.1cm and -0.8cm of decide1] (t1) {};
+
+\node [decision, below of=decide1, node distance=4.4cm] (decide) {Amount of Cycles or optimization condition reached?};
 \node [block, below of=decide, node distance=3.4cm] (stop) {Save and quit};
 % Draw edges
 \path [line] (start) -- (init);
 \path [line] (init) -- (identify);
 \path [line] (identify) -- (evaluate);
-\path [line] (evaluate) -- (decide);
+\path [line] (evaluate) -- (decide1);
+\path [line] (decide1) -- (save);
+\path [line] (decide1) -- (decide);
+
+
+%\path [line] (save) -- (t1);
+\path [line] (save) |- node [near start] {} (t1);
+
 \path [line] (decide) -| node [near start] {no} (update);
 \path [line] (update) |- (evaluate);
 \path [line] (decide) -- node {yes}(stop);
+
+\path [line] (decide1) -- node [near start] {yes} (save);
+\path [line] (decide1) -- node [near start] {no} (decide);
+
+
 %\path [line,dashed] (expert) -- (init);
 %\path [line,dashed] (system) -- (init);
 %\path [line,dashed] (system) |- (evaluate);
 
 \node[draw,align=left, text width=8cm] at (7,-2) {User defines the amount of parameters a solution has, specifies the problem and chooses an optimization algorithm. The optimization condition and the maximum amount of running cylces is defined};
 
-\node[draw,align=left, text width=8cm] at (7,-13) {Save the best solution found};
+\node[draw,align=left, text width=8cm] at (7,-17.1) {Save the best solution found};
 \end{tikzpicture}
 \caption{The general process of optimization}
 \label{fig:gen-opt}
@@ -1809,8 +1816,9 @@ minimum height=2em]
 %In general, if you look at all possible optimization problems, all algorithms are equal in effectivness, even a completely random choice of parameters. This is described by the no-free-lunch-theorem(TODO Source). There is no best universal algorithm to solve all problems. Some algorithms are better in a special field of problems and aren't in other ones. Therefore a categorisation of the problem to a specific class of algorithms is helpful.
 
 \section{The hill climber method}
+\label{sec:ea}
 The hillclimber method is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973.(Source) % 1973 correct?? look at literaturesource in kinnebruck
-Parameters of a system are randomly changed untill a minimum or maximum of a target function is reached. The value of the parameterchanges per iteration step are limited. \\
+Parameters of a system are randomly changed untill a minimum or maximum of a rating function is reached. The value of the parameter-changes per iteration step are limited. \\
 
 \textbf{The main algorithm is:}
 
@@ -1820,7 +1828,7 @@ Parameters of a system are randomly changed untill a minimum or maximum of a tar
 			\item Generate a randomly initialized solution.
 			\item Change the solution's parameter by limited random delta-values. 
 			\item Test if the solution has a better fitness than the old one and replace it. Otherwise refuse the new solution.
-			\item If the optimization-condition is reached abort, otherwise go to step 2.
+			\item If the optimization condition is reached abort, otherwise go to step 2.
 		\end{enumerate}
 	\end{minipage}
 } \\
@@ -1838,7 +1846,7 @@ The algorihm can be imagined as a blind hillclimber. The hillclimber makes a ran
 	\end{minipage}
 }   \\
 
-As follows two examples of 
+As follows two examples of optimization problems:
 
 
 \begin{center}
@@ -1861,8 +1869,8 @@ As follows two examples of
 
 
 \section{Variants of the hill climber method}
-In the main-method of the hill climber algorithm just a better fitness value is accepted after an iteration-step and a worse one is rejected.
-The problem is, that this algorithm will mostly get stuck on a local optimum, instead of finding the global one.
+In the main-method of the hill climber algorithm just a better fitness value is accepted after an iteration step and a worse one is rejected.
+The problem is that this algorithm will mostly get stuck on a local optimum, instead of finding the global one.
 To solve this problem temporal low fitness values should be allowed. It should be possible for the algorithm to leave a local optimum to find a better one.
 To realise this, there have been developed some extended versions of this method: \\
 
@@ -1876,9 +1884,9 @@ To realise this, there have been developed some extended versions of this method
 } \\
 
 
-\subsection{Simulated annealing}
+\section{Simulated annealing}
 Simulated annealing is a probabilistic optimization method.
-It is inspired by the annealing of fluid materia to a solid aggregate states in metallurgy. While cooling down a material the thermodynamic free energy has to get as minimal as possible to get a clear crystalline structure. Therefore its suggested to cool down to material slowly for a better probability of getting a clear solid body.
+It is inspired by the annealing of fluid materia to a solid aggregate states in metallurgy. While cooling down a material the thermodynamic free energy has to get as minimal as possible to get a clear crystalline structure. Therefore it's suggested to cool down to material slowly for a better probability of getting a clear solid body.
 
 Analog in optimization the algorithm starts with a high temperature T, means reaching a wide area in the search space. That way it's possible to reach more maxima. At the beginning each solution has the same probability to get selected. With each iteration the temperature is reduced and the reached area is getting smaller. Selecting better solutions is now more probalistic.
 Towards the end the algorithm commutes in an optimum and behaves like the standard hillclimbing algorithm.
@@ -1899,15 +1907,11 @@ p(r) = \frac{1}{1+exp(-r/T)}
 
 At the beginning a big T tends to equalize the probability of all chromosomes. For $T \to \infty$ all chromosomes have the same chance to get selected. Lowering T gives good solutions priority.
 
+Simulated annealing is suitable for functions with many local optima.
 
 \section{Crossover}
-The crossover algorithm represents the idea of cultivating a population of individual solutions. After rating the population, the best individual is choosen and crossed with a random one of the actual population. There are two children created, who can optionally be mutated. This is done until the a new generation of individuals is created.
-The process is repeated until a satisfying solution is cultivated or the process is aborted.\footnote{For more information see project work of Jonathan Schwarz}
-
-\section{Applications}
-The usage of a specific algorithm depends on the problem and its model. In general all optimization methods are equal in effectivness, if we look over all posible optimization-problems in one set .
-Some of the given methods are better in special cases than others. Also a good understanding of the problem's topic is essentially.
-Simulated annealing is suitable for functions with many local optima.
+The crossover algorithm represents the idea of cultivating a population of individual solutions. After rating the population, the best individual is choosen and crossed with a random one of the actual population. There are two children created, who can optionally be mutated. This is done until a new generation of individuals is created.
+The process is repeated until a satisfying solution is found or the process is aborted.\footnote{For more information see project work of Jonathan Schwarz}
 
 
 
