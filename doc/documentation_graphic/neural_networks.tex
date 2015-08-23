@@ -1,5 +1,5 @@
 %------------------------------------------------------
-%Author             : Daniel Schembri, Jonathan Schwarz
+%Author             : Daniel Schembri
 %University         : Pforzheim University
 %Date of last edit  : Wed, 03 Sep 2014 14:12:16 +0200
 %Filename           : multithreading_with_posix_pthreads.tex
@@ -845,7 +845,7 @@ The second generation was presented in the 90s. At that time scientists supposed
 Further research showed that biological neural networks can compute information faster than a second generation network.
 A third generation of artificial neural networks was modeled. Not just the firerate keeps information. Also the time delay between single signals encodes information. These signal pulses are called spikes. A third generation neural network is called a 'spiking neural network'.
 
-There also exist other kind of topologies. For example there are recurrent network models in which a neuron can have a weighted connection to itself to process it's own output. Another topology is the kohonen map. In this topology all hidden neurons are interconnected. In this project work the focus lies on the feed forward topology. All others would go beyond the scope.
+There also exist other kind of topologies. For example there are recurrent network models in which a neuron can have a weighted connection to itself to process it's own output in the next computation cycle of the network. Another topology is the kohonen map. In this topology all hidden neurons are interconnected. In this project work the focus lies on the feed forward topology.
 
  (Source: NAT00 (see Paper))
 
@@ -945,7 +945,7 @@ The function composition is a concatenation of multiple neurons. \\
 The McCulloch-Pitts-neuron is biologically not plausible, because learning
 can just happen by changing the threshold and the network topology. This needs complex algorithms.
 But this neuron type can realise AND-, OR- and NOT-Gates. (See Rojas)
-Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. 
+Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. (See Rojas)
 The usage of a McCulloch-Pitts network depends on the application type. Binary signals have the advantage of beeing less susceptible to interferences as multiple signal states.
 The drawback can be a complex topology.
 
@@ -1073,7 +1073,7 @@ The perceptrons can be realised as follows:
 			\end{subfigure}
 \end{figure}
 
-For the weights $w_1=w_2=1$ the threshold has to be $0<S\leq{2}$.
+For the weights $w_1=w_2=1$ the threshold has to be $0<S\leq{1}$.
 
 
 
@@ -1147,7 +1147,7 @@ For the weights $w_1=w_2=1$ the threshold has to be $0<S\leq{2}$.
 \end{figure}
 
 
-For the weights $w_1=w_2=1$ the threshold has to be $1<S\leq{1}$ \\
+For the weights $w_1=w_2=1$ the threshold has to be $1<S\leq{2}$ \\
 
 For two binary inputs there are just two functions that aren't linary separable. These are the \textbf{XOR}- and the \textbf{NXOR} function.
 
@@ -1215,7 +1215,7 @@ The solution of the problem is shown in the following section.
 The perceptron can be used as pattern associator to assign an input pattern to a class. It can also be used as competitive network. Also linear seperable data can be categorised.
 
 \subsection{Multi layer perceptron} \label{sec:mlp}
-The multilayer perceptron (MLP) was intruduced by Minsky and Papert in 1969. It has an input-, an output- and
+The multilayer perceptron (MLP) was intruduced by Minsky and Papert in 1969 (Source?). It has an input-, an output- and
 one or multiple hiddenlayers (see figure \ref{fig:general-ann}). In contrast to the singlelayer perceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
 
 An widely known example is the xor-problem:
@@ -1344,11 +1344,19 @@ To solve the XOR-Problem a hidden layer has to be added. With negative weights t
 			\end{subfigure}
 \end{figure}
 
+If both input neurons sends 0, no threshold is reached and the network gives 0 as output.
+
+If one input neuron sends a 1 and the other input neuron sends 0 then the threshold of the respective hidden neuron is exceeded and it sends a 1 to the outputneuron. The  output neuron's threshold is also exceeded and the network output is 1.
+
+If both input neurons sends 1 the total input of both hidden neurons is 0, because the negative weights surpress the activation. The network output is 0.\\
+
+
+
 
 The XOR-Problem shows that to separate a data set linear it's necessary to have at least one hidden layer.
 For 3 variables there exist 256 possible logical functions. 104 are linear separable.
-for 4 variables and 65536 possible functions, only 1084 functions are linear separable.
-The ratio of linear separable to non linear separable functions tends to zero for x-> infinity. (Source)
+for 4 variables and 65536 possible functions, only 1882 functions are linear separable.
+The ratio of linear separable to non linear separable functions tends to zero for x-> infinity. (Rojas page 61 or chapter 6?)
 This shows that with increasing input parameters, hidden layers are necessary to compute this data.
 
 
@@ -1754,7 +1762,7 @@ text width=5em, text centered, rounded corners, minimum height=4em]
 \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
 minimum height=2em]
 \tikzstyle{cloud2} = [draw, ellipse,fill=blue!20, node distance=3cm,
-minimum height=2em]
+minimum height=3em, minimum width=7em]
 
 \begin{tikzpicture}[node distance = 2cm, auto]
 % Place nodes
@@ -1924,7 +1932,7 @@ Box2D is used by the project to simulate a realistic physical environment, provi
 
 Erin Catto wrote a testing gui, called Testbed, using the opengl-framework GLUT, respectively freeglut for windows.
 
-The project-structure is based on the testbed-program.
+The project-structure is based on the Testbed program.
 
 
 \section{Core concepts}
@@ -1942,9 +1950,9 @@ A body contains the following values: \\
 			\item \textbf{Angle}
 			\item \textbf{Velocity}
 			\item \textbf{Angular velocity}
-			\item \textbf{rotational inertia}
-			\item \textbf{mass}
-			\item \textbf{1 or more fixtures}
+			\item \textbf{Rotational inertia}
+			\item \textbf{Mass}
+			\item \textbf{One or more fixtures}
 			\end{itemize}
 		\end{multicols}
 	\end{minipage}
@@ -1975,10 +1983,10 @@ There are three types of bodies:
 }   \\
 \\
 
-A \textbf{static body} is excluded from the simulation. It also doesn't move. Static bodies are used as world-borders for example. Static bodies doesn't collide with other static- or kinematic bodies. \\
+A \textbf{static body} is excluded from the simulation. It also doesn't move. Static bodies are used as world-borders for example. Static bodies don't collide with other static- or kinematic bodies. \\
 
 A \textbf{kinematic body} can move by setting its velocity, but isn't influenced by forces.
-Kinematic bodies doesn't collide with other static- or kinematic bodies.\\
+Kinematic bodies don't collide with other static- or kinematic bodies.\\
 
 The \textbf{dynamic body} is the commonly used bodytype in Box2D-simulations. It is fully simulated and can be moved by the user or by forces, as its usual way.
 
@@ -2035,7 +2043,7 @@ The following properties are part of a fixture:
 }   \\
 \\
 
-A single \textbf{shape} is contained by the fixture. The shape can be a rect, a polygon or a circle. Shapes aren't linked to the body directly, because they may be used independly of the simulation. Therefore the fixture is interposed between body and shape. In Box2D the maximum amount of vertices is defaultly set to eight. A vertex defines the position-vector of a body's edge. A polygon therefore can be created with a minimum of three position-vectors and maximally with eight.
+A single \textbf{shape} is contained by the fixture. The shape can be a rectangular, a polygon or a circle. Shapes aren't linked to the body directly, because they may be used independly of the simulation. Therefore the fixture is interposed between body and shape. In Box2D the maximum amount of vertices is defaultly set to eight. A vertex defines the position-vector of a body's edge. A polygon therefore can be created with a minimum of three position-vectors and maximally with eight.
 \\
 
 \textbf{Broad-phase proxies} are used internally by Box2D to accelerate collision detection. Therefore a dynamic tree containing the collision-pairs in form of AABB's\footnote{AABB: Axis aligned boundary box. AABBs are used for fast computing of collision detection} are used. In the most cases it isn't necessary for the user to use proxies. \\
@@ -2050,7 +2058,7 @@ The \textbf{friction} of two fixtures is multiplied at collision. \\
 
 A \textbf{pointer to the affiliated body} is stored in the fixture.\\
 
-\textbf{User data} is used as a 'hook' to identify a fixture by an id or add it some self-defined properties. User data is a 'void *'-pointer. Therefore it can contain any datatype. \\
+\textbf{User data} is used as a 'hook' to identify a fixture by an id or add it some self-defined properties. User data is a 'void'-pointer. Therefore it can contain any datatype. \\
 
 The \textbf{sensor flag} defines that a fixture doesn't interact physically with other fixtures, except by detecting collisions. \\
 
@@ -2270,14 +2278,53 @@ This draws every shape in the bodylist of the world.
 \section{Structure of a Box2D-Project}
 As follows, you can see the general structure of a Box2D-Project: \\
 
-\begin{center}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.4\textwidth,scale=0.5]{files/Box2D-Structure.png}
-		\caption{The general structure of a Box2D-application} \cite{box2d-structure}
-		\label{fig:box2d-structure}
-	\end{figure}
-\end{center}
+
+\begin{figure}[H]
+	\centering
+	\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+	text width=8.5em, text badly centered, node distance=3cm, inner sep=0pt]
+	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+	text width=8.5em, text centered, rounded corners, minimum height=4em]
+	\tikzstyle{line} = [draw, -latex']
+	\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+	minimum height=2em]
+	\tikzstyle{cloud2} = [draw, ellipse,fill=blue!20, node distance=3cm,
+	minimum height=3em, minimum width=7em]
+	
+	\begin{tikzpicture}[node distance = 2cm, auto]
+	% Place nodes
+	\node [cloud2] (start) {Start};
+	\node [block, below of=start] (create) {Create the world};
+	\node [block, below of=create] (init) {Initialization};
+	\node [block, below of=init] (process) {Process user input};
+	\node [below left=0.1cm and 0.9cm of init] (t1) {};
+	\node [below left=0.1cm and -1.25cm of init] (t2) {};
+	\node [block, below of=process] (update) {Update variables};
+	\node [block, below of=update] (sim) {Box2D Simulation step};
+	\node [block, below of=sim] (graphics) {Display graphics};
+	
+	% Draw edges
+	\path [line] (start) -- (create);
+	\path [line] (create) -- (init);	
+	\path [line] (init) -- (process);
+	\path [line] (process) -- (update);
+	\path [line] (update) -- (sim);
+	\path [line] (sim) -- (graphics);
+
+\draw[->] (0,-12.7) -- (0,-13) --(-3, -13) -- (-3, -5) -- (0, -5);
+% 	\path [line] (graphics) -|- (t2);
+
+	
+	\node[draw,align=left, text width=5cm] at (7,-2) {Create the world, bodies, fixtures, etc.};
+	
+	\node[draw,align=left, text width=5cm] at (7,-6) {Process keyboard, mouse, etc.};
+	
+	\end{tikzpicture}
+	\caption{The general process of optimization}
+	\label{fig:box2d-gent}
+\end{figure}
+
+
 
 TODO: short description
 
