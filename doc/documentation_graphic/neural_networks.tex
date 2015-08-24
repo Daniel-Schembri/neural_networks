@@ -307,9 +307,7 @@ The concept of software agents is used as a frame to get an abstract view of the
 
 \chapter{The concept of agents}
 An agent is a program that interacts self-sufficently depending on its actual state. In general, it has sensors, a processing logic and actuators. The input data will be processed to behave in the desired way. In the simplest case this could be a table containing the required output to every possible input.
-
 Most agents are found in the world wide web. For example webcrawlers, search-engines and bots are well known.
-
 In this project the concept of software agents is used as a modelling framework to differentiate the agent from the environment.
 
 The following figure shows the general structure of an agent:
@@ -606,7 +604,7 @@ I = \sum_{i=1}^{n}(x_{i}*w_{1i})
 
 The output of the neuron is computed by a so called activation function $f(I)$ having as parameter the before determined total input of the receiving neuron.
 
-If the computing neuron is a hidden neuron, the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $\vec{Y}$. Usually all neurons of an entire layer have the same activation function. As follows some commonly used activation functions:
+If the computing neuron is a hidden neuron, the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $\vec{Y}$. Usually all neurons of an entire layer have the same activation function.\cite{rey} As follows some commonly used activation functions:
 
 \begin{figure}[H]
 \begin{subfigure}[]{0.5\linewidth}
@@ -844,10 +842,10 @@ The first generation works with binary in- and outputs, but real thresholds. The
 The second generation was presented in the 90s. At that time scientists supposed that the firerate of a neuron, means the amount of binary signals in one second symbolise an encoding of information. Henceforth new models used real values representing these firerates instead of just binary values.
 Further research showed that biological neural networks can compute information faster than a second generation network.
 A third generation of artificial neural networks was modeled. Not just the firerate keeps information. Also the time delay between single signals encodes information. These signal pulses are called spikes. A third generation neural network is called a 'spiking neural network'.
+\cite{SNN}
 
-There also exist other kind of topologies. For example there are recurrent network models in which a neuron can have a weighted connection to itself to process it's own output in the next computation cycle of the network. Another topology is the kohonen map. In this topology all hidden neurons are interconnected. In this project work the focus lies on the feed forward topology.
+There also exist other kind of topologies. For example there are recurrent network models in which a neuron can have a weighted connection to itself to process it's own output in the next computation cycle of the network. Another topology is the kohonen map. In this topology all hidden neurons are interconnected. In this project work the focus lies on the 2nd generation neural networks and the feed forward topology.
 
- (Source: NAT00 (see Paper))
 
 
 TODO source: Daniel Rey Book
@@ -950,7 +948,7 @@ The usage of a McCulloch-Pitts network depends on the application type. Binary s
 The drawback can be a complex topology.
 
 \subsection{Perceptron}
-The classical perceptron was published by Frank Rosenblatt in 1958.(Source)
+The classical perceptron was published by Frank Rosenblatt in 1958\cite{ros}.
 It is an artificial neural network with just an input- and an outputlayer with binary values. In contrast to the McCulloch-Pitts network it has additionally real weights. The advantage is that learning-algorithms just have to change the weights instead of the topology or the threshold. It's possible to define positive (stimulation), negative (supression) and zero (neutral) weights.
 
 One main task of neural networks is to classify data. The network is therefore used as a seperator.
@@ -1215,7 +1213,7 @@ The solution of the problem is shown in the following section.
 The perceptron can be used as pattern associator to assign an input pattern to a class. It can also be used as competitive network. Also linear seperable data can be categorised.
 
 \subsection{Multi layer perceptron} \label{sec:mlp}
-The multilayer perceptron (MLP) was intruduced by Minsky and Papert in 1969 (Source?). It has an input-, an output- and
+The multilayer perceptron (MLP) was intruduced by Minsky and Papert in 1969 \cite{min}. It has an input-, an output- and
 one or multiple hiddenlayers (see figure \ref{fig:general-ann}). In contrast to the singlelayer perceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
 
 An widely known example is the xor-problem:
@@ -1378,7 +1376,7 @@ The MLP is used for classification and  regression. It can approximate functions
 
 \section{Learning}
 A neural network learns by adjusting the connection weights.
-One way of learning can happen supervised by a given training data set. The network is then trained by a learning algorithm. The network error, means the difference of the wanted output from the actual output, is minimized. After the training cycle the network is tested by a test data set, that must differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training set exactly, but may fail at the test data set. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{A detailed describtion of supervised learning can be found at Jonathan Schwarz' documentation. (Source)} Therefore its important to have an appropriate number of hidden neurons. If there are too few hidden neurons the network may not fit the target function properly. This is called underfitting. If there are too much neurons, overfitting may happen.\\
+One way of learning can happen supervised by a given training data set. The network is then trained by a learning algorithm. The network error, means the difference of the wanted output from the actual output, is minimized. After the training cycle the network is tested by a test data set, that must differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training set exactly, but may fail at the test data set. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{A detailed describtion of supervised learning can be found at \cite{Jona}} Therefore its important to have an appropriate number of hidden neurons. If there are too few hidden neurons the network may not fit the target function properly. This is called underfitting. If there are too much neurons, overfitting may happen.\\
 
 As follows an example of underfitting, overfitting and the wanted generalization of supervised learning at binary classification.
 
@@ -1741,14 +1739,14 @@ In industry often multiple rating functions are defined, because not only the qu
 \begin{flalign}
 F(x) = \sum_{i=1}^{n}w_{i}*F_{i}(x)
 \end{flalign}
-For maximization tasks $w_i > 0$ and for minimization tasks $w_i < 0$. (Source: Evolutionaere Algorithmen - Ingrid Gerdes, ..)
+For maximization tasks $w_i > 0$ and for minimization tasks $w_i < 0$. \cite{ing} %(chapter 2.3)
 
 It's possible that the rating of a solution includes not only a rating function but also a complex simulation or real testing. An example is the rating of the aerodynamic properties of a car in a wind tunnel. \\
 
 
 The \textbf{optimization algorithm} starts with a random initialised solution. It changes the solution each step until the optimization condition is reached or the process is aborted. Different algorithms are explained in more detail from section \ref{sec:ea}.
 
-The No-Free-Lunch- theoreme, introduced by David Wolpert and William G. Macready (Source) states that for the set of all optimization problems there exist no universal algorithm that solves all problems well. An algorithm may solve a subset of these problems well, but may fail at other ones. Therefore it's important to classify the task first and select a proven algorithm. \\
+The No-Free-Lunch- theoreme, introduced by David Wolpert and William G. Macready \cite{lunch} states that for the set of all optimization problems there exist no universal algorithm that solves all problems well. An algorithm may solve a subset of these problems well, but may fail at other ones. Therefore it's important to classify the task first and select a proven algorithm. \\
 
 \newpage
 As follows an optimization process in general:
@@ -1814,18 +1812,9 @@ minimum height=3em, minimum width=7em]
 \label{fig:gen-opt}
 \end{figure}
 
-%\subsection{Search space}
-%The search space contains all possible solutions of the optimization problem. But it only defines the general form a solution can have. To effectively optimize, its important to define a simple structered search space, because in a too large and complex one the algorithm could not find a feasible solution in an appropriate time.
-
-%\subsection{Rating function}
-%With the search space on its own a good solution cannot be found. A rating function, representing the quality of a solution has to be defined. For maximization problems the function is called fitness function. A high score represents a good solution. For minimization problems a error function has to be choosen. This function describes the deviation of the result. A minimal difference of the target output (preferably zero) is the goal.
-
-%\subsection{Algorithms}
-%In general, if you look at all possible optimization problems, all algorithms are equal in effectivness, even a completely random choice of parameters. This is described by the no-free-lunch-theorem(TODO Source). There is no best universal algorithm to solve all problems. Some algorithms are better in a special field of problems and aren't in other ones. Therefore a categorisation of the problem to a specific class of algorithms is helpful.
-
 \section{The hill climber method}
 \label{sec:ea}
-The hillclimber method is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973.(Source) % 1973 correct?? look at literaturesource in kinnebruck
+The hillclimber method is a basic method of an evolutionary algorithm, developed by Ingo Rechenberg in 1973.\cite{rec}
 Parameters of a system are randomly changed untill a minimum or maximum of a rating function is reached. The value of the parameter-changes per iteration step are limited. \\
 
 \textbf{The main algorithm is:}
@@ -1924,7 +1913,7 @@ The process is repeated until a satisfying solution is found or the process is a
 
 
 \chapter{The Box2D-Physicsengine}
-Box2D is a 2-dimensional physics engine, created by Erin Catto(Source). It is licensed under the zlib-license, hence it is non commercial and open source. The Box2D library is written platform-independently in C++. It is used mainly for game development. Many portations into other programming languages, like Java and C\# exist.
+Box2D is a 2-dimensional physics engine, created by Erin Catto\cite{box}. It is licensed under the zlib-license, hence it is non commercial and open source. The Box2D library is written platform-independently in C++. It is used mainly for game development. Many portations into other programming languages, like Java and C\# exist.
 
 Box2D is used by the project to simulate a realistic physical environment, proving the agents behaviour. The project is based on the testbed GUI of Erin Catto. This program is a testing application for general phyiscs functionality. It uses GLUT respectively freeglut to accelerate graphics. Testbed is also licensed by the zlib-license and a modification is allowed, naming the origin of this software. In this project work it is modified and enhanced to create a simulation environment for virtual agents.
 
@@ -2045,7 +2034,7 @@ The \textbf{sensor flag} defines that a fixture doesn't interact physically with
 
 A fixture is created by initializing a fixture definition and passing its address to the body:
 
-\begin{lstlisting}[caption={Creation of a fixture (source Box2D manual)},label=lst:fixture-create]
+\begin{lstlisting}[caption={Creation of a fixture \cite{box}},label=lst:fixture-create]
 b2FixtureDef fixtureDef;
 fixtureDef.shape = &myShape;
 fixtureDef.density = 1.0f;
@@ -2085,9 +2074,10 @@ The default value is 60Hz. The author of Box2D suggests not to use values lower 
 
 \textbf{Positioniterations} defines the resolution of overlapping bodies. This is important for a correct collision detection of bodies. The default value is 3. \\
 
+\cite{box}
 
-source: www.iforce2d.net/b2dtut/worlds
-source: box2d.org/manual.pdf
+\cite{iforce}
+
 
 \section{Collision detection}
 In Box2D collisions are computed between two fixtures. A contact object, containing information about collision coordinates, normals and impulses among ohter things, is created if a collision happens. A contact object can be used to manage a collision.
@@ -2098,7 +2088,7 @@ An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is 
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.8\textwidth,scale=1.0]{files/aabbs-crossing.png}  
-		\caption{Two AABBs are overlapping. (source iForce2D) \cite{box2d-iforce}.}
+		\caption{Two AABBs are overlapping \cite{iforce}}
 		\label{fig:aabbs}
 	\end{figure}
 \end{center}
@@ -2123,7 +2113,7 @@ The following figure shows the processing of a collision:
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=1.0\textwidth,scale=1.0]{files/fixtures-overlap.png}
-		\caption{Two fixtures are overlapping (source iForce2D) \cite{box2d-iforce}.}
+		\caption{Two fixtures are overlapping \cite{iforce}}
 		\label{fig:fixture-overlap}
 	\end{figure}
 \end{center}
@@ -2157,7 +2147,7 @@ The collision-computation processes four phases: \\
 \\
 
 
-source: iforce2D
+\cite{iforce}
 
 
 \begin{lstlisting}[caption={Contact listener methods},label=lst:collision-contact]
@@ -2704,7 +2694,7 @@ Care that the fixture shapes center is at (0,0) (The body's center). Can be prob
 
 Coordinate system transformation for each agent.
 
-Sensor as semicircle (Source: iforce2D Radarsensor)
+Sensor as semicircle (\cite{iforce})
 
 Detection of food: atan2-function
 
