@@ -115,7 +115,7 @@
 %footer &header
 
 %\fancyfoot[L]{\textbf{Multi-Threading mit POSIX-pThreads}}
-\fancyhead[R]{Page \thepage}
+\fancyfoot[C]{\thepage}
 %\fancyhead[L]{\thechapter}
 
 %chapter number and title
@@ -1924,21 +1924,15 @@ The process is repeated until a satisfying solution is found or the process is a
 
 
 \chapter{The Box2D-Physicsengine}
-Box2D is a 2-dimensional physics engine, created by Erin Catto. It is licensed under the zlib-license, hence it is noncommercial and open source. The Box2D library is written platform-independently in C++. It is used mainly for game development. Many portations into other programming languages, like Java and C\# exists. \\
-(source jbox2d)
+Box2D is a 2-dimensional physics engine, created by Erin Catto(Source). It is licensed under the zlib-license, hence it is non commercial and open source. The Box2D library is written platform-independently in C++. It is used mainly for game development. Many portations into other programming languages, like Java and C\# exist.
 
-
-Box2D is used by the project to simulate a realistic physical environment, proving the agents behaviour. \\
-
-Erin Catto wrote a testing gui, called Testbed, using the opengl-framework GLUT, respectively freeglut for windows.
-
-The project-structure is based on the Testbed program.
+Box2D is used by the project to simulate a realistic physical environment, proving the agents behaviour. The project is based on the testbed GUI of Erin Catto. This program is a testing application for general phyiscs functionality. It uses GLUT respectively freeglut to accelerate graphics. Testbed is also licensed by the zlib-license and a modification is allowed, naming the origin of this software. In this project work it is modified and enhanced to create a simulation environment for virtual agents.
 
 
 \section{Core concepts}
 
 \subsection{Bodies}
-Bodies are the main objects, affected by physics-simulation.
+Bodies are the main objects, affected by physics simulation.
 
 A body contains the following values: \\
 
@@ -1965,9 +1959,9 @@ A body contains one or more fixtures, containing the shape and more properties o
 
 If a body is moved, the fixtures are also moved.
 
-\subsubsection*{Bodydefinitions}
-To create a body, a bodydefinition has to be created first. It's holding the bodytype, linear- and angular damping values, among other things.
-The bodydefinition can also be used to set the start- position and angle of the body. This can increase start-up performance.
+\subsubsection*{Body definitions}
+To create a body, a body definition has to be created first. It's holding, among other things, the body type, linear- and angular damping values.
+The body definition can also be used to set the start- position and angle of the body. This can increase start-up performance.
 
 \subsubsection*{Body types}
 There are three types of bodies:
@@ -1983,12 +1977,12 @@ There are three types of bodies:
 }   \\
 \\
 
-A \textbf{static body} is excluded from the simulation. It also doesn't move. Static bodies are used as world-borders for example. Static bodies don't collide with other static- or kinematic bodies. \\
+A \textbf{static body} is excluded from the simulation. It also doesn't move. Static bodies are used as world-borders for example. Static bodies don't collide with other static- or kinematic bodies, but dynamic bodies can collide with them. \\
 
 A \textbf{kinematic body} can move by setting its velocity, but isn't influenced by forces.
-Kinematic bodies don't collide with other static- or kinematic bodies.\\
+Kinematic bodies don't collide with other static- or kinematic bodies, but dynamic bodies can collide with them.\\
 
-The \textbf{dynamic body} is the commonly used bodytype in Box2D-simulations. It is fully simulated and can be moved by the user or by forces, as its usual way.
+The \textbf{dynamic body} is the commonly used bodytype in Box2D-simulations. It is fully simulated and can be moved by the user or by forces, as its usual way. Also it can collide with any other object.
 
 \subsubsection*{Damping, friction and gravity scale}
 \textbf{Damping} reduces the velocity (linear and angular) of the body.
@@ -1999,24 +1993,9 @@ The damping parameter can be zero for no damping and infinite for full damping. 
 The \textbf{gravity scale} is a factor that determines how much the worlds gravity influences the body. 0 determines no influence. The standard value is 1.
 
 \subsubsection*{Activation and Sleeping}
-A body can be set asleep. This is used to save cpu-time as for sleeping bodies there is no computing of physics necessary. The body will be woken up, if an other body collides with it.
+A body can be set asleep. This is used to save cpu-time as for sleeping bodies no computation of physics is necessary. The body will be woken up, if an other body collides with it.
 A body can be completely excluded from simulation by setting it inactive instead.
-In contrast to the sleeping-mode it will not be woken up.
-
-%\subsubsection*{Methods}
-%TODO
-
-%\begin{lstlisting}[caption={Setting body definitions},label=lst:bodydef]
-%b2BodyDef myBodyDef;
-%myBodyDef.type = b2_dynamicBody;
-%myBodyDef.position.Set(0, 20); //set start position
-%myBodyDef.angle = 0; //set start angle
-%\end{lstlisting}
-
-
-%Transforming a body
-%Set Velocity
-%Set Angular velocity
+In contrast to the sleeping mode it will not be woken up.
 
 \subsection{Fixtures}
 Fixtures give bodies a shape and additional properties. A body can have multiple fixtures, with their positions relativly to the body's origin.
@@ -2098,8 +2077,8 @@ The physics-simulation is controlled by three parameters: \\
 
 These parameters are used by the step-method of the world in which one single simulation step is processed. \\
 
-The \textbf{timeStep} parameter defines the time-resolution on which the simulation will update the environment. A lower timestep improves the quality of the simulation, but on costs of performance. A higher timestep increases the performance, but the simulation can be inaccurate on too low values.
-The default value is 60Hz. The author of Box2D suggests not to use values lower than 30Hz. As set, the timestep should not be changed as it could cause unwanted behaviour. For a faster simulation the step-method should just called multiple times. \\
+The \textbf{timeStep} parameter defines the time-resolution on which the simulation will update the environment. A lower timestep improves the quality of the simulation, but on costs of performance. A higher timestep increases the performance, but the simulation can be inaccurate by too low values.
+The default value is 60Hz. The author of Box2D suggests not to use values lower than 30Hz. As set, the timestep should not be changed as it could cause unwanted behaviour. For a faster simulation the step-method should called multiple times instead. \\
 
 
 \textbf{Velocityiterations} is the resolution of computing impulses to move bodies precisly. The default value is 8. \\
@@ -2110,14 +2089,8 @@ The default value is 60Hz. The author of Box2D suggests not to use values lower 
 source: www.iforce2d.net/b2dtut/worlds
 source: box2d.org/manual.pdf
 
-\subsubsection*{Methods}
-TODO
-\begin{lstlisting}[caption={World creates a body},label=lst:world-body]
-b2Body* m_body = m_world->CreateBody(&myBodyDef);
-\end{lstlisting}
-
 \section{Collision detection}
-In Box2D collisions are computed between two fixtures. A contact object, containing information about collision coordinates, normals and impulse among ohter things, is created if a collision happens. A contact object can be used to manage a collision.
+In Box2D collisions are computed between two fixtures. A contact object, containing information about collision coordinates, normals and impulses among ohter things, is created if a collision happens. A contact object can be used to manage a collision.
 
 An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is used for fast performance of computing geometrical operations. (source: wikipedia)
 
@@ -2131,8 +2104,8 @@ An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is 
 \end{center}
 If two AABBs are overlapping, a contact between the two fixtures is created, but the isTouching()-method returns 'False', because the shapes aren't overlapping.
 
-Sometimes, fast moving bodies misses collisions. Therefore it is possible to define the body as a bullet for high resolution at collisions, in cost of performance.
-This can be accomplished at creation of the body, by the body's definition instance:
+Sometimes, fast moving bodies miss collisions and incorectly pass through each other. This effect is called tunneling. Therefore it is possible to define the body as a 'bullet' for high resolution at collisions. The physics engine then uses a method called continous collision detection (CCD) for this body. Usually this method is just used for high speed and static bodies, because it costs cpu performance. 
+A body can be defined as a bullet by it's definition instance:
 
 \begin{lstlisting}[caption={Define fixture as bullet before creation},label=lst:fixture-bullet-before]
 bodyDef.bullet = true;
@@ -2155,10 +2128,11 @@ The following figure shows the processing of a collision:
 	\end{figure}
 \end{center}
 
-In the first picture, a contact is created, because the AABBs of the two object are overlapping.
-The second picture shows non-bullet bodies overlapping. A bullet-body takes more cpu-time to compute but would get picture three as result.
+The first picture shows the beginning of a contact of two bodies. A contact object is created, because the AABBs of the two bodies are overlapping.
 
-Bullet bodies
+The second picture shows non-bullet bodies tunneling each other. Incorrectly the collision is missed. This can happen if the bodies move too fast.
+
+The third picture shows the correct result of a collision as it should be. For fast moving bodies this can be acquired by defining a body as bullet.
 
 \subsection{Contact listener}
 The contact listener executes callback-methods if the events 'Begin contact' or 'End contact' are triggered.
@@ -2208,10 +2182,10 @@ The end contact callback is called when the two colliding fixtures cease touchin
 The presolve callback is executed after detection of a collision, but before computing the resulting impulses. It contains a pointer to the contact.
 
 \subsubsection*{Postsolve}
-The postsolve callback is executed after computation and applying the contactimpulses of the collision. It contains a pointer to the contact and also the computed impulsedata.
+The postsolve callback is executed after computation and applying the contactimpulses of the collision. It contains a pointer to the contact and also the computed impulse data.
 
 \subsection{Collision filtering}
-The default behaviour is that all fixtures can collide with each other. If you want to specify which groups of fixtures can collide and which pass through each other, you can use category- and mask bits to manage 16 groups of fixtures. If you need more precise behaviour you can use group indizes or define own rules by overriding the 'ShouldCollide'-method.
+The default behaviour is that all fixtures can collide with each other. If a user wants to specify which groups of fixtures can collide and which pass through each other, he can use category- and mask bits to manage 16 groups of fixtures. If more precise behaviour is necessary group indizes can be used or own rules can be defined by overriding the 'ShouldCollide'-method.
 
 \subsubsection*{Category- and maskbits}
 
@@ -2228,9 +2202,9 @@ For a value nonzero the following rules are applied at collision: \\
 \fbox{
 	\begin{minipage}{15cm}
 		\begin{itemize} 
-			\item if both groupindizes are different, use the category/mask rules as described above
-			\item if both groupindizes are equal and positive, collide
-			\item if both groupindizes are equal and negative, don't collide
+			\item if both group indizes are different, use the category/mask rules as described above
+			\item if both group indizes are equal and positive, collide
+			\item if both group indizes are equal and negative, don't collide
 		\end{itemize}
 	\end{minipage}
 }   \\
@@ -2247,9 +2221,9 @@ bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB);
 The debugdraw class is used as a debugging feature to display the physics simulation of Box2D. It uses OpenGL. Debugdraw can draw the shapes, contact points, contact normals, the AABBs, etc.
 As the debugdraw offers all wanted basic shapes it is used by the simulator.
 
-To use the debug-draw first the debugdraw object hast to be instanciated and linked to the world by: \\
+To use the debug-draw first the debugdraw object has to be instanciated and linked to the world by: \\
 
-\begin{lstlisting}[caption={Linking debugdraw instance to the world instance},label=lst:box2d-ddrawset]
+\begin{lstlisting}[caption={Registering a debugdraw instance to the world instance},label=lst:box2d-ddrawset]
 m_world->setDebugDraw(&m_debugDraw);
 \end{lstlisting}
 
@@ -2273,10 +2247,10 @@ After each calling of the step-method the following method has to be called: \\
 m_world->DrawDebugData();
 \end{lstlisting}
 
-This draws every shape in the bodylist of the world.
+This draws every shape in the body list of the world.
  \newpage
-\section{Structure of a Box2D-Project}
-As follows, you can see the general structure of a Box2D-Project: \\
+\section{The program flow of a Box2D project}
+As follows, the general program flow of a Box2D project: \\
 
 
 \begin{figure}[H]
@@ -2300,7 +2274,7 @@ As follows, you can see the general structure of a Box2D-Project: \\
 	\node [below left=0.1cm and 0.9cm of init] (t1) {};
 	\node [below left=0.1cm and -1.25cm of init] (t2) {};
 	\node [block, below of=process] (update) {Update variables};
-	\node [block, below of=update] (sim) {Box2D Simulation step};
+	\node [block, below of=update] (sim) {Box2D Simulation step(s)};
 	\node [block, below of=sim] (graphics) {Display graphics};
 	
 	% Draw edges
@@ -2320,28 +2294,18 @@ As follows, you can see the general structure of a Box2D-Project: \\
 	\node[draw,align=left, text width=5cm] at (7,-6) {Process keyboard, mouse, etc.};
 	
 	\end{tikzpicture}
-	\caption{The general process of optimization}
+	\caption{Flowchart of a Box2D project}
 	\label{fig:box2d-gent}
 \end{figure}
 
+At first the Box2d world and affiliated objects have to be created and initialized.
+It follows a cycle of processing the user inputs, updating the variables and simulating the physics. The objects can optionally be displayed.
+
+The physics simulation can be speeded up by calling the simulation step multiple times before continuing the program flow. Also avoiding the display of graphics speeds up the program.
 
 
-TODO: short description
-
-%Important: In BeginContact and EndContact no change of active-flag and some other values of a body/fixture
-
-
-\section{Testbed}
-
-TODO
-
-%AnimalFixtureDef[i].isSensor = false;
-%AnimalFixtureDef[i].friction = 1.0f;
-%AnimalBodydef[i].linearDamping = 1.0f;
-%AnimalBodydef[i].angularDamping = 2.0f;
-
-\chapter{The OpenGL graphics library}
-OpenGL stands for Open Graphics Library. It is a widely used for developing graphics applications and was published in 1992 by Silicon Graphics. Since 2006 it is maintained by the Khronos Group. It is licensed under a open source license. The logo and the trademark are licensed under a trademark-license.
+\chapter{OpenGL}
+OpenGL stands for 'Open Graphics Library'. It is widely used for developing graphics applications and was published in 1992 by Silicon Graphics. Since 2006 it is maintained by the Khronos Group. It is licensed under an open source license. The logo and the trademark are licensed under a trademark-license.
 OpenGL is platform-independent.
 
 
@@ -2361,7 +2325,7 @@ source: www.codeproject.com/Articles/19760/GLUT-Window-Template
 www.opengl.org/resources/libraries/glut/
 
 \subsection{Freeglut}
-Freeglut is developed by Pawel W. Olszta and is an alternative to GLUT. It is also a Windows substitute. Freeglut is still maintained. Freeglut is used, because the originally GLUT-library is deprecated and not maintained anymore.
+Freeglut is developed by Pawel W. Olszta(Source) and is an alternative to GLUT. It is also a substitute for GLUT to use under Microsoft Windows. Freeglut is still maintained. Freeglut is used, because the originally GLUT-library is deprecated and not maintained anymore.
 
 source: freeglut.sourceforge.net/
 
@@ -2369,32 +2333,26 @@ source: freeglut.sourceforge.net/
 In this section the basic structure of a freeglut-program is explained.
 The following code shows the initialization and creation of a window:
 
-\begin{lstlisting}[caption={Initialization a GLUT-program},label=lst:glut-init]
+\begin{lstlisting}[caption={Initialization of a GLUT program},label=lst:glut-init]
 #include "glut.h"
 
-int mainWindow;  //Window handler
+int mainWindow;  //Window handle
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
   // Glut initialitation
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
   glutInitWindowPosition(0, 0); 
   glutInitWindowSize(1024, 768);
-  
   mainWindow = glutCreateWindow("Title");
-  
   //Register function callbacks
   glutDisplayFunc(Display);
   glutKeyboardFunc(Keyhandler);
   glutReshapeFunc(Resizehandler);
-  
   //Here optionally a GLUI-window can be included, see Chapter 6.3
-  
   //Enter glut main loop, usually no return from this function
   glutMainLoop(); 
-  return 0;
-}
+  return 0;}
 \end{lstlisting}
 
 In the first lines glut is initialised, a window with specified position, size and a title is created.
@@ -2428,7 +2386,7 @@ static void Display()
 }
 \end{lstlisting}
 
-The first line sets the draw-color to white and with no transparency. The color is formatted in RGBA. The first three parameters represent the colors red, green and blue. The last parameter is alpha, the transparency of the figure. 0.0f means no quantity of the according parameter and 1.0f as the full quantity.
+The first line sets the draw-color to white and with no transparency. The color is formatted in RGBA. The first three parameters represent the colors red, green and blue. The last parameter is alpha, the opacity of the figure. 0.0f means no quantity of the according parameter and 1.0f as the full quantity.
  This is used by the second line to clear the scene.
 Then the viewmode is set, the position of the camera is loaded.
 With 'glBegin' the drawing of an object is started. In this example a triangle is drawn. Therefore the three vertices of the triangle has to OpenGl. This is done by. Each object has to finished with the 'glEnd'-command.
@@ -2450,8 +2408,6 @@ gluPerspective(45.0f, (double)w / (double)h, 1.0f, 200.0f);
 
 The first line sets the viewports position and size. The following operations should than applied on the projection-matrix. Therefore the Matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered in this case. \\
 
-TODO: Figure of the camera perspective
-
 \section{The OpenGL User Interface Library(GLUI)}
 The OpenGL User Inteface Library (GLUI) is a GLUT-based user interface library developed by Paul Rademacher. It is written in C++ and usable for multiple platforms.
 
@@ -2472,8 +2428,9 @@ source: www.codeproject.com/Articles/20286/GLUI-Window-Template
 
 glui.sourceforge.net/
 
+\newpage
 
-\subsection{GLUI-Program}
+\section{A GLUI program}
 In this section is described how a GLUI-window is set up.
 The following code is included after the creation of a GLUT-window and before entering the glut main loop (see \ref{lst:glut-init}) :
 
