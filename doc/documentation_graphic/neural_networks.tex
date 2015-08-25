@@ -504,7 +504,7 @@ They map a function as follows\cite{rojas}:
 \end{equation} 
 
 In general an ANN has an input layer, containing the inputvector $\vec{X}$ with $n$ components, optional hidden layers and one output layer giving the resultvector $\vec{Y}$ with $m$ components.
-All neurons, except the input neurons, have real weighted input connections, an activation function and output values. The input neurons do no computation. They just contain the input data and pass it to the next layer. As follows a neural network:
+All neurons, except the input neurons, have real weighted input connections, an activation function and output values. The input neurons do no computation. They just contain the input data and pass it to the next layer. In literature a artificial neural network is often showed as follows: \cite{rojas} \cite{rey}
 
 \def\layersep{2.5cm}
 \begin{figure}[H]
@@ -659,7 +659,7 @@ xlabel=$I$,
   \caption*{Tangens hyperbolicus}
   \label{fig:sub2}
 \end{subfigure}
-  \caption{Activation functions}
+  \caption{Activation functions (oriented on \cite{rey})}
 \end{figure}
 
 Activation functions can have a threshold $S$. The neurons output is zero if $I<S$:
@@ -725,7 +725,7 @@ Activation functions can have a threshold $S$. The neurons output is zero if $I<
 	\caption*{Binary function with threshold $S$}
 	\label{fig:sub4}
 \end{subfigure}
-  \caption{Activation functions with threshold}
+  \caption{Activation functions with threshold (oriented on \cite{rey})}
 \end{figure}
 
 Discrete activation functions can be used for classification of a dataset.
@@ -847,13 +847,6 @@ A third generation of artificial neural networks was modeled. Not just the firer
 There also exist other kind of topologies. For example there are recurrent network models in which a neuron can have a weighted connection to itself to process it's own output in the next computation cycle of the network. Another topology is the kohonen map. In this topology all hidden neurons are interconnected. In this project work the focus lies on the 2nd generation neural networks and the feed forward topology.
 
 
-
-TODO source: Daniel Rey Book
-
-
-
-
-
 %\section{Neuron- and network types}
 As follows some different neuron- and networktypes are described by a chronological view.
 \subsection{The model of McCulloch and Pitts}
@@ -910,11 +903,6 @@ The output Y is:
 0  & \quad \text{otherwise}\\
 \end{cases}
 \]
-
-
-
-
-%Source Rochas
 
 A function composition:
 
@@ -1174,7 +1162,7 @@ For two binary inputs there are just two functions that aren't linary separable.
 	\label{fig:linsep1}
 
 \end{figure}
-In literature the impossibility of the linear separation of the XOR-function with a classical perceptron is called the \textbf{XOR-Problem}:
+In literature the impossibility of the linear separation of the XOR-function with a classical perceptron is called the \textbf{XOR-Problem}\footnote{see also \cite{sch1} chapter 2.4 and \cite{rojas} chapter 3.2.3}:
 \begin{figure}[H]
 	\begin{center}
 		\begin{tikzpicture}
@@ -1917,6 +1905,7 @@ Box2D is a 2-dimensional physics engine, created by Erin Catto\cite{box}. It is 
 
 Box2D is used by the project to simulate a realistic physical environment, proving the agents behaviour. The project is based on the testbed GUI of Erin Catto. This program is a testing application for general phyiscs functionality. It uses GLUT respectively freeglut to accelerate graphics. Testbed is also licensed by the zlib-license and a modification is allowed, naming the origin of this software. In this project work it is modified and enhanced to create a simulation environment for virtual agents.
 
+The following sections are a summary of \cite{box} and \cite{iforce}.
 
 \section{Core concepts}
 
@@ -2074,15 +2063,13 @@ The default value is 60Hz. The author of Box2D suggests not to use values lower 
 
 \textbf{Positioniterations} defines the resolution of overlapping bodies. This is important for a correct collision detection of bodies. The default value is 3. \\
 
-\cite{box}
-
-\cite{iforce}
+\cite{box} \cite{iforce}
 
 
 \section{Collision detection}
 In Box2D collisions are computed between two fixtures. A contact object, containing information about collision coordinates, normals and impulses among ohter things, is created if a collision happens. A contact object can be used to manage a collision.
 
-An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is used for fast performance of computing geometrical operations. (source: wikipedia)
+An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is used for fast performance of computing geometrical operations.\cite{aabb}
 
 \begin{center}
 	\begin{figure}[H]
@@ -2094,7 +2081,7 @@ An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is 
 \end{center}
 If two AABBs are overlapping, a contact between the two fixtures is created, but the isTouching()-method returns 'False', because the shapes aren't overlapping.
 
-Sometimes, fast moving bodies miss collisions and incorectly pass through each other. This effect is called tunneling. Therefore it is possible to define the body as a 'bullet' for high resolution at collisions. The physics engine then uses a method called continous collision detection (CCD) for this body. Usually this method is just used for high speed and static bodies, because it costs cpu performance. 
+Sometimes, fast moving bodies miss collisions and incorectly pass through each other. This effect is called tunneling. Therefore it is possible to define the body as a 'bullet' for high resolution at collisions. The physics engine then uses a method called continous collision detection\cite{ccd} for this body. Usually this method is just used for high speed and static bodies, because it costs cpu performance. 
 A body can be defined as a bullet by it's definition instance:
 
 \begin{lstlisting}[caption={Define fixture as bullet before creation},label=lst:fixture-bullet-before]
@@ -2145,10 +2132,6 @@ The collision-computation processes four phases: \\
 	\end{minipage}
 }   \\
 \\
-
-
-\cite{iforce}
-
 
 \begin{lstlisting}[caption={Contact listener methods},label=lst:collision-contact]
 /b2ContactListener
@@ -2295,7 +2278,7 @@ The physics simulation can be speeded up by calling the simulation step multiple
 
 
 \chapter{OpenGL}
-OpenGL stands for 'Open Graphics Library'. It is widely used for developing graphics applications and was published in 1992 by Silicon Graphics. Since 2006 it is maintained by the Khronos Group. It is licensed under an open source license. The logo and the trademark are licensed under a trademark-license.
+OpenGL stands for 'Open Graphics Library'\cite{ogl}. It is widely used for developing graphics applications and was published in 1992 by Silicon Graphics. Since 2006 it is maintained by the Khronos Group. It is licensed under an open source license. The logo and the trademark are licensed under a trademark-license.
 OpenGL is platform-independent.
 
 
@@ -2303,24 +2286,15 @@ It is used by the project to accelerrate the simulator.
 
 The Box2D-Testbed uses GLUT respectively Freeglut and GLUI. Thererefore theses libraries are also used in this project.
 
-source: www.opengl.org
-www.sgi.com/tech/opengl/?/
-
 
 \section{The OpenGL Utility Toolkit (GLUT)}
-The OpenGL Utility Toolkit (GLUT) was developed by Mark Kilgard. It is used to extend OpenGL-Applications by window-management. GLUT is used for small- and medium sized OpenGL-applications.
-
-source: www.codeproject.com/Articles/19760/GLUT-Window-Template
-
-www.opengl.org/resources/libraries/glut/
+The OpenGL Utility Toolkit (GLUT) was developed by Mark Kilgard\cite{glut}. It is used to extend OpenGL-Applications by window-management. GLUT is used for small- and medium sized OpenGL-applications.
 
 \subsection{Freeglut}
-Freeglut is developed by Pawel W. Olszta(Source) and is an alternative to GLUT. It is also a substitute for GLUT to use under Microsoft Windows. Freeglut is still maintained. Freeglut is used, because the originally GLUT-library is deprecated and not maintained anymore.
-
-source: freeglut.sourceforge.net/
+Freeglut is developed by Pawel W. Olszta\cite{freeglut} and is an alternative to GLUT. It is also a substitute for GLUT to use under Microsoft Windows. Freeglut is still maintained. Freeglut is used, because the originally GLUT-library is deprecated and not maintained anymore.
 
 \subsection{Program structure}
-In this section the basic structure of a freeglut-program is explained.
+In this section the basic structure of a freeglut program is explained.
 The following code shows the initialization and creation of a window:
 
 \begin{lstlisting}[caption={Initialization of a GLUT program},label=lst:glut-init]
@@ -2399,7 +2373,7 @@ gluPerspective(45.0f, (double)w / (double)h, 1.0f, 200.0f);
 The first line sets the viewports position and size. The following operations should than applied on the projection-matrix. Therefore the Matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered in this case. \\
 
 \section{The OpenGL User Interface Library(GLUI)}
-The OpenGL User Inteface Library (GLUI) is a GLUT-based user interface library developed by Paul Rademacher. It is written in C++ and usable for multiple platforms.
+The OpenGL User Inteface Library (GLUI) is a GLUT-based user interface library developed by Paul Rademacher\cite{rad}. It is written in C++ and usable for multiple platforms.
 
 GLUI is used to implement GUI controls, like buttons, labels, listboxes, etc.
 
@@ -2409,20 +2383,16 @@ The following figure shows some components of GLUI:
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.8\textwidth,scale=1.0]{files/glui.png}  
-		\caption{Some GLUI Components (source www.cs.unc.edu/~rademach/glui/) \cite{ogl-glui}.}
+		\caption{Some GLUI Components \cite{rad}}
 		\label{fig:ogl-glui}
 	\end{figure}
 \end{center}
-
-source: www.codeproject.com/Articles/20286/GLUI-Window-Template
-
-glui.sourceforge.net/
 
 \newpage
 
 \section{A GLUI program}
 In this section is described how a GLUI-window is set up.
-The following code is included after the creation of a GLUT-window and before entering the glut main loop (see \ref{lst:glut-init}) :
+The following code is included after the creation of a GLUT-window and before entering the glut main loop (see listing \ref{lst:glut-init}) :
 
 
 \begin{lstlisting}[caption={Creating a GLUI-window},label=lst:glui-create]
@@ -2527,7 +2497,7 @@ Therefore at first a translation is made, then the rotation of the agent is appl
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.5\textwidth,scale=1.0]{files/CoordinateRotation.png}  
-		\caption{(Source https://de.wikipedia.org/wiki/Koordinatentransformation) \cite{wikipedia}.}
+		\caption{Rotated coordinate system \cite{wikkoor}}
 		\label{fig:cosys-transform}
 	\end{figure}
 \end{center}
