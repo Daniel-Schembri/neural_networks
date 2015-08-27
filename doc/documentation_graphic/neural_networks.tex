@@ -23,6 +23,8 @@
 
 \usepackage[table]{xcolor}
 
+\usepackage{pdfpages} 
+
 %tikz
 \usepackage{tikz}
 \usetikzlibrary{arrows,positioning,fit}
@@ -467,7 +469,7 @@ If the action of the agent does only depend on the actual environment state and 
 \textbf{sequential}. Chess for example is a sequential environment because every move can bring the game in a win- or lose-situation. \\
 
 A \textbf{static} environment doesn't change. This makes it easier for the agent to solve a task. A \textbf{dynamic} environment on the other hand needs a continuously observation.
-It is possible that the environment is static, but the rating of the agent depends on the passed time. \textbf{semidynamic}. An example for a static environment is chess. Playing chess with a clock is semidynamic. \\
+It is possible that the environment is static, but the rating of the agent depends on the passed time. Then it's classified as \textbf{semidynamic}. An example for a static environment is chess. Playing chess with a clock is semidynamic. \\
 
 The environment can have \textbf{discrete} or \textbf{continous} states. Chess has discrete states, as it is played move by move. It could get a continous character if the time to calculate a move plays a role. Driving a car is in general continously as accelerating and steering have continous units.\\
 
@@ -2081,7 +2083,7 @@ An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is 
 \end{center}
 If two AABBs are overlapping, a contact between the two fixtures is created, but the isTouching()-method returns 'False', because the shapes aren't overlapping.
 
-Sometimes, fast moving bodies miss collisions and incorectly pass through each other. This effect is called tunneling. Therefore it is possible to define the body as a 'bullet' for high resolution at collisions. The physics engine then uses a method called continous collision detection\cite{ccd} for this body. Usually this method is just used for high speed and static bodies, because it costs cpu performance. 
+Sometimes, fast moving bodies miss collisions and incorectly pass through each other. This effect is called tunneling. Therefore it is possible to define the body as a 'bullet' for high resolution at collisions. The physics engine then uses a method called continous collision detection (CCD)\cite{ccd} for this body. Usually this method is just used for high speed and static bodies, because it costs cpu performance. 
 A body can be defined as a bullet by it's definition instance:
 
 \begin{lstlisting}[caption={Define fixture as bullet before creation},label=lst:fixture-bullet-before]
@@ -2373,6 +2375,7 @@ gluPerspective(45.0f, (double)w / (double)h, 1.0f, 200.0f);
 The first line sets the viewports position and size. The following operations should than applied on the projection-matrix. Therefore the Matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered in this case. \\
 
 \section{The OpenGL User Interface Library(GLUI)}
+\label{sec:glui}
 The OpenGL User Inteface Library (GLUI) is a GLUT-based user interface library developed by Paul Rademacher\cite{rad}. It is written in C++ and usable for multiple platforms.
 
 GLUI is used to implement GUI controls, like buttons, labels, listboxes, etc.
@@ -2431,7 +2434,7 @@ Callbacks are now defined. This has to be static functions, like in GLUT.
 
 \section{Concept}
 The main concept is to cultivate a population of agents by different evolutionary algorithms to find a satisfying solution. Each agent has a sensor, representing an own coordinate system. The agents have to collect as much objects as possible within a given time. Therefore it has a feedforward neural network realized as multilayer perceptron.
-The objects and the agents are spawned randomly every round.
+The objects and the agents are spawned randomly every round. After collecting an object a new one is spawned randomly.
 
 \begin{center}
 	\begin{figure}[H]
@@ -2442,8 +2445,8 @@ The objects and the agents are spawned randomly every round.
 	\end{figure}
 \end{center}
 
-\subsection{The task environment}
-The simulation environment is: \\
+\section{The task environment}
+By the definitions of a task environment, explained in chapter \ref{sec:env}, the simulation environment can be categorised as: \\
 
 \fbox{
 	\begin{minipage}{15cm}				\begin{multicols}{2}
@@ -2461,37 +2464,42 @@ The simulation environment is: \\
 }   \\
 \\
 
-The simulation environment is \textbf{partially observeable} because the agents perception is limited by the sensor that has a fixed radius. \\
+The simulation environment is \textbf{partially observeable} because the agents perception is limited by the sensors range. \\
 
-It can be both \textbf{single agent based or mulitagend based and competive}, depending on the population size. If there is just one agent to train its single agent based, with more agents multiagent based and competive. \\
+It can be both, \textbf{single agent based} or \textbf{mulitagend based and competive}, depending on the population size. If there is just one agent to train it's single agent based. With more agents the simulation is multiagent based and competive, because the best agent will 'survive' the evolution process. \\
 
 The environment is \textbf{deterministic}. The start positions are choosen randomly, but the process of collecting the objects is from this point on deterministic as each step to get objects can be desribed step by step. \\
 
 Its \textbf{episodic} as the actual state does not change the general method of collecting further objects.
 
-The task environment is \textbf{static}, even if there are multiple agents we consider a static behaviour of the environment for simplicity. The agent don't interrupt each other to often. \\
+The task environment is \textbf{semidynamic}, even if there are multiple agents the environment is considered by a static behaviour for simplicity. Also there is a time limit for collecting objects. \\
 
-\textbf{Continuity} is given, because we handle with real values like the acceleration, the rotation and real valued neuron weights. The time for one generation is also continous. \\
+\textbf{Continuity} is given, because an agent handles with real values, like the acceleration, the rotation. The time for one generation is also continous. \\
 
-The environment is \textbf{known} as the agents sensor gives all data necessary to solve the task.\\
+The \textbf{knowledge} about the environment is in the first case \textbf{unknown} as the neural net is not trained, respectively evolved. On a successful evolution process the agent's knowledge turns from unknown to \textbf{known}, because the agent gets a model of the environment, represented by the correct weights of the neural net.
+The knowledge of the environment has nothing to do with the observeability. The knowledge just categorieses the agent's ability to understand the  specific rules of the environment. The environment task doens't change. As soon as the agent understands the principles of the environment, it remains knowing. 
 
-\subsection{Realizing the agent}
+\section{The agent}
+\subsection*{The agents logic}
 In this project work a simple reflex agent is realized.
-The agents processing logic is realized by a multilayer perceptron. That means the agent has no memory and just processes the actual perception\footnote{To get a memory a recurrent neural network could be used}. This categorises the agent to a simple reflex agent.
+The agents processing logic is realized by a multilayer perceptron. That means the agent has no memory and just processes the actual perception. This categorises the agent to a simple reflex agent.
 
-\subsubsection*{The agents sensor}
-The agents sensor is a semicircle detecting just collectable objects in an given radius. The sensor returns a vector containing the X- and Y-coordinate relative to the agents actual position.
-
-\subsubsection*{The agents actuator}
+\subsection*{The agents actuator}
 The agent can rotate left or right.
-The agent can accelerate just forwards.
+The agent can accelerate just forwards. Damping happens by the physics engine.
+
+It can determine the factor of acceleration and rotation.
+
+\subsection*{The agents sensor}
+The agents sensor is a semicircle detecting just collectable objects in an given radius. The sensor returns a vector containing the X- and Y-coordinate relative to the agents actual position. For simplicity just the vector of the nearest object is recognized.
 
 
 \subsection{Coordinate system transformation}
-
 To get the relative position of an object the global coordinate system has to be transformed into the agents local coordinate system, considering the agents actual angle.
 
 Therefore at first a translation is made, then the rotation of the agent is applied.
+
+As follows a figure of the translation and rotation of the coordinate system:
 
 \begin{center}
 	\begin{figure}[H]
@@ -2502,6 +2510,17 @@ Therefore at first a translation is made, then the rotation of the agent is appl
 	\end{figure}
 \end{center}
 
+
+Vector $\vec{P_a}$ holds the position of the agent and $\vec{P_o}$ the position of the object in the global coordinate system.
+
+At first the coordinate of the object relative to the agent has to be determined by:
+\begin{equation}
+\vec{P} = \vec{P_o} - \vec{P_a}
+\end{equation}
+Then the actual angle $\alpha$ of the agent has to be considered. Therefore the final position vector $\vec{P'}$ and the corresponding components $x'$ and $y'$ has to be computed by rotating the vector $\vec{P}$:
+
+This is described by the following transformation matrix: \cite{transform} 
+
 \begin{equation}
 \vec{P'}^{\,} =
 \begin{pmatrix}
@@ -2510,83 +2529,94 @@ Therefore at first a translation is made, then the rotation of the agent is appl
 0 & 0 & 1
 \end{pmatrix}
 * \vec{P}^{\,}
-\end{equation}
+\end{equation} \\
 
-\begin{equation}
-x' = x * \cos \alpha + y * \sin \alpha
-\end{equation}
-\begin{equation}
+So the components of vector $\vec{P'}$ are computed as follows:
+
+\begin{gather}
+x' = x * \cos \alpha + y * \sin \alpha \\
 y' = -x * \sin \alpha + y * \cos \alpha
-\end{equation}
-
-Source: Wikipedia
+\end{gather}
 
 
-Transformation of the inputvalues through the input-neurons from range [-20.0, 20.0] and [0.0, 20.0] (Sensor x and y) and [-Pi, +Pi] (DeltaAngle) to the range [-1.0,+1.0] or [0.0, 1.0] with tanh function. (Better function? Linear function?)
+%Transformation of the inputvalues through the input-neurons from range [-20.0, 20.0] and [0.0, 20.0] (Sensor x and y) and [-Pi, +Pi] (DeltaAngle) to the range [-1.0,+1.0] or [0.0, 1.0] with tanh function. (Better function? Linear function?)
 
-Explain why DeltaAngle is necessary:
-rotate clockwise. If Agent is rotated by 180degree error should rotate counter-clockwise,but
-has learned to rotate clockwise without deltaangle as input.
-
-
-Optional: Random placement of Objects and agents: see algorithm in NeuralWorld.cpp
+%Optional: Random placement of Objects and agents: see algorithm in NeuralWorld.cpp
 
 
 
-Scalability of the World
+%Scalability of the World
 
 
-Modes:
-Singleplayer with recording
-Supervised learning:
-Evolutionary algorithms
+%Modes:
+%Singleplayer with recording
+%Supervised learning:
+%Evolutionary algorithms
 
-Scalable World:
-- Size
-- Amount of Objects
-- Amount of Agents
+%Scalable World:
+%- Size
+%- Amount of Objects
+%- Amount of Agents
+
+\newpage
+
+\section{The neural network}
+
+The neural network has to compute a regression as the outputs are real valued.
+To simplify the evolution of the network. The two possible outputs are divided into two independent ANN, each having 2 input-, 8 hidden- and 1 output neuron.
+
 
 \section{The graphical user interface}
 
+The graphical user interface (GUI) was created with GLUI\footnote{see chapter \ref{sec:glui}}
+As follows a figure of the GUI:
 
 \begin{center}
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1.0\textwidth,scale=1.0]{files/new_graphic.png}  
-		\caption{new graphic}
-		\label{fig:cosys-transform}
+		\includegraphics[width=1.0\textwidth,scale=1.0]{files/simuinaction.png}  
+		\caption{The simulation GUI}
+		\label{fig:sim-gui}
 	\end{figure}
 \end{center}
 
+The GUI is divided into three parts.
+At the bottom is a menue to create, save and pause the simulation.
+
+At the middle of the window the simulation is visualized.
+
+And at the right side there are stats and two plots, representing the best- and the average fitness values of each generation.
+
+As follows a figure of the 'new evolution' menue:
 
 \begin{center}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.2\textwidth,scale=1.0]{files/new_graphic_new_ev.png}
-		\caption{new graphic create evolution}
-		\label{fig:cosys-transform}
+		\caption{Create a new evolution process}
+		\label{fig:sim-new}
 	\end{figure}
 \end{center}
 
-
-
-\subsection{Visualisation}
-
-Fitness Graph
-Weight Matrix
-Neural Network
-% \subsection{The fitness-function}
-
-
-% \subsection{Neural networks}
-
-
+The user can choose an evolutionary algortihm or the supervised learning method.\footnote{The crossover- and the supervised training algorithm were developed by \cite{Jona}
+}
+There are given standard parameters for each algorithm. The user can change them.
 
 \section{Software-Engineering}
 
 \subsection{Classdiagram}
 
 \subsection{Use-Cases}
+
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,scale=1.0]{files/Use-case-GUI.png}
+		\caption{GUI: Use Cases}
+		\label{fig:usecases}
+	\end{figure}
+\end{center}
 
 
 
@@ -2668,26 +2698,31 @@ Sensor as semicircle (\cite{iforce})
 
 Detection of food: atan2-function
 
-\section{Tools}
-Make, CMake
-Python for Trainingdata
-
-
 
 \chapter{Results of the simulation}
 
-\section{A simple script}
-The simple script is based on trigonometric function.
-
-\section{The hillclimber method}
-
-\section{Simulated annealing}
-
-
+\begin{figure}[H]
+	\begin{subfigure}[]{\textwidth}
+		\centering
+	\includegraphics[width=0.8\textwidth,scale=1.0]{files/all_average.pdf}
+	\label{fig:result-avg}
+	\caption{Average fitnesses of the evolution \cite{Jona}}
+	\end{subfigure}
+	\vspace{0.5cm}
+	
+	\begin{subfigure}[]{\textwidth}
+		\centering
+	\includegraphics[width=0.8\textwidth,scale=1.0]{files/all_best.pdf}
+	\label{fig:result-best}
+	\caption{Best fitnesses of the evolution \cite{Jona}}
+	\end{subfigure}
+\end{figure}
 
 \chapter{Conclusion}
 
-
+The evolutionary algorithms showed that it's possible to find solutions someone would not expect in the first case. As example an agent who is driving 'blindly' across the environment and collecting a huge amount of objects.
+The evolutionary algorithms didn't find a satisfying solution. The main cause could be a too large amount of hidden neurons that cause overfitting.
+Further tests with less hidden neurons have to be made.
 
 
 \KOMAoptions{listof=leveldown}
