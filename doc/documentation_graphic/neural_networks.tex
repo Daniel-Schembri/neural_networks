@@ -2474,27 +2474,46 @@ Its \textbf{episodic} as the actual state does not change the general method of 
 
 The task environment is \textbf{semidynamic}, even if there are multiple agents the environment is considered by a static behaviour for simplicity. Also there is a time limit for collecting objects. \\
 
-\textbf{Continuity} is given, because an agent handles with real values, like the acceleration, the rotation. The time for one generation is also continous. \\
+\textbf{Continuity} is given, because an agent handles with real values, like the velocity and the rotation. The time for one generation is also continous. \\
 
 The \textbf{knowledge} about the environment is in the first case \textbf{unknown} as the neural net is not trained, respectively evolved. On a successful evolution process the agent's knowledge turns from unknown to \textbf{known}, because the agent gets a model of the environment, represented by the correct weights of the neural net.
 The knowledge of the environment has nothing to do with the observeability. The knowledge just categorieses the agent's ability to understand the  specific rules of the environment. The environment task doens't change. As soon as the agent understands the principles of the environment, it remains knowing. 
 
 \section{The agent}
+The inputs: 
+x  [0.0, 20.0]
+y   [0.0, 20.0]
+alpha  [-PI, PI] (Radians)
+
+If no object is detected :
+x = 0
+y = 0,
+alpha = 0 
+
+
+Outputs are:
+Velocity of the agent: [0.0, 1.0] (with a resolution of 0.001)
+multiplied with the maximum velocity of 
+(-sin(Agent->GetAngle())*0.075f * 500 * ,  cos(Agent->GetAngle())*0.075f * 500)
+
+Rotation by angle the agent: [-1.0, 1.0] (with a resolution of 0.001)
+multiplied with the maximum rotationspeed of 0.075
 \subsection*{The agents logic}
 In this project work a simple reflex agent is realized.
 The agents processing logic is realized by a multilayer perceptron. That means the agent has no memory and just processes the actual perception. This categorises the agent to a simple reflex agent.
 
 \subsection*{The agents actuator}
 The agent can rotate left or right.
-The agent can accelerate just forwards. Damping happens by the physics engine.
+The agent can drive just forwards. Damping happens by the physics engine.
 
-It can determine the factor of acceleration and rotation.
+It can determine the factor of velocity and rotation.
 
 \subsection*{The agents sensor}
 The agents sensor is a semicircle detecting just collectable objects in an given radius. The sensor returns a vector containing the X- and Y-coordinate relative to the agents actual position. For simplicity just the vector of the nearest object is recognized.
 
 
 \subsection{Coordinate system transformation}
+Before the computation of the outputvector of the neural network can be done the local coordinate system of the agent has to be determined.
 To get the relative position of an object the global coordinate system has to be transformed into the agents local coordinate system, considering the agents actual angle.
 
 Therefore at first a translation is made, then the rotation of the agent is applied.
@@ -2558,12 +2577,72 @@ y' = -x * \sin \alpha + y * \cos \alpha
 %- Amount of Objects
 %- Amount of Agents
 
-\newpage
+%\newpage
+
+
 
 \section{The neural network}
 
 The neural network has to compute a regression as the outputs are real valued.
 To simplify the evolution of the network. The two possible outputs are divided into two independent ANN, each having 2 input-, 8 hidden- and 1 output neuron.
+
+
+\section{Software concept}
+
+\subsection{Use-Cases}
+As follows the use cases of the simulation software:
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,scale=1.0]{files/Use-case-GUI.png}
+		\caption{GUI: Use Cases}
+		\label{fig:usecases}
+	\end{figure}
+\end{center}
+
+The user should be able to create and start, pause, resume, restart the simulation.
+He should be able to save the actual simulation state and quit the simulator.
+
+While simulation the user can interact with the simulation environment. The simulation can be speeded up by toggling a turbo mode. The computation power then should be used for simulation only.
+
+This can be helpful to see how a single agent acts
+
+\subsection{Classdiagram}
+
+The main structure of the simulator contains a graphical user interface (GUI), a simulation environment, a class of the agent, a class for the evolutionary optimization logic and a neural network framework:
+
+\begin{center}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,scale=1.0]{files/ClassDiagram1.png}
+		\caption{Class diagram of the simulator}
+		\label{fig:usecases}
+	\end{figure}
+\end{center}
+
+\textbf{GUI} \\
+The Class GUI is the main class in the simulation software. It contains one evolution controller (Evolutionary) and one simulation environment (Neuralworld).
+The GUI manages the user's keyboard- and mouse input. \\
+
+\textbf{Neuralworld} \\
+Neuralworld is the Box2D simulation environment. It contains a world and bodies for each agent, object and the world borders.
+The world borders are realized as static bodies. Neuralworld inherits functionalites, like drawing shapes, debug messages from 'Test' \\
+
+\textbf{Evolutionary} \\
+Evolutionary is the evolution controller class. It contains methods to apply the evolutionary algorithms. Also it contains a population of agents, realized as a vector. At least one agent has to be in the population.
+In the vector 'best\_agents' the best agents found during the optimization process are saved. In the actual version just the best agent is saved. \\
+
+\textbf{Agent} \\
+The agent's class contains an id, two feed forward neural networks for velocity and rotation and member variables of the position and angle.
+The methods 'ProcessV' and 'ProcessA' return the computation results of the neural net. 'V' stands for velocity and 'A' for angle.
+'LearnV' and 'LearnA' are methods to train the corresponding network by the given dataset. \\
+
+\textbf{Net} \\
+'Net' is the main class of the neural network framework\cite{Jona}. It has a vector of layers, holding input-, hidden- and the output layer.  The method 'FeedForward' let the network compute it's output. The results can be stored in a vector by calling the 'getResults'-method. \\
+
+\textbf{FeedForwardNet} \\
+'FeedForwardNet' is also part of the neural network framework. It is the network type used in this project work. It inherits from the abstract class 'Net'. An agent posses two feed forward networks. \\
 
 
 \section{The graphical user interface}
@@ -2602,62 +2681,6 @@ The user can choose an evolutionary algortihm or the supervised learning method.
 }
 There are given standard parameters for each algorithm. The user can change them.
 
-\section{Software-Engineering}
-
-\subsection{Classdiagram}
-
-\subsection{Use-Cases}
-
-
-\begin{center}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=1.0\textwidth,scale=1.0]{files/Use-case-GUI.png}
-		\caption{GUI: Use Cases}
-		\label{fig:usecases}
-	\end{figure}
-\end{center}
-
-
-
-Buttons, Modes
-
-Optical Design of the gui
-
-Weight-Matrix
-
-Neural Network Activation
-
-
-The inputs: 
-x  [0.0, 20.0]
-y   [0.0, 20.0]
-alpha  [-PI, PI] (Radians)
-
-If no object is detected :
-x = 0
-y = 0,
-alpha = 0 
-
-If an object is detected:
-x= Agent.x - Object.x  
-y = Agent.y - Object.y
-alpha = Agent.Angle - (atan2(det, dot)) 
-alpha is the difference between the actual direction of the agent and
-the angle between the Position vector of the agent and the object. 
-Helpervariables:
-determinant: det =  Agent.x * Object.y - Agent.y * Object.x 
-dot product:  dot =  Agent.x * Object.x + Agent.y * Object.y 
-
-
-Outputs are:
-Acceleration of the agent: [0.0, 1.0] (with a resolution of 0.001)
-multiplied with the maximum accelartion of 
-(-sin(Agent->GetAngle())*0.075f * 500 * ,  cos(Agent->GetAngle())*0.075f * 500)
-
-Rotation by angle the agent: [-1.0, 1.0] (with a resolution of 0.001)
-multiplied with the maximum rotationspeed of 0.075
-
 
 \subsection{File saving and loading}
 
@@ -2666,21 +2689,8 @@ TODO Parser diagram loading the data.
 %The
 %To minimize  that the agents are missing
 
-\section{OpenGL}
-Used to accelerate the simulation.
-
-
-GLUT, Windows Substitute Freeglut and GLUI. (used because Box2D Testbed used it)
-
-\subsection{Rendering system}
-
-\subsection{ViewPort}
 
 \subsection{MainLoop}
-
-Concept
-
-\subsection{ViewPort}
 
 \section{Box2D}
 
@@ -2700,21 +2710,20 @@ Detection of food: atan2-function
 
 
 \chapter{Results of the simulation}
-
 \begin{figure}[H]
 	\begin{subfigure}[]{\textwidth}
 		\centering
-	\includegraphics[width=0.8\textwidth,scale=1.0]{files/all_average.pdf}
-	\label{fig:result-avg}
-	\caption{Average fitnesses of the evolution \cite{Jona}}
+		\includegraphics[width=0.8\textwidth,scale=1.0]{files/all_average.pdf}
+		\label{fig:result-avg}
+		\caption{Average fitnesses of the evolution \cite{Jona}}
 	\end{subfigure}
 	\vspace{0.5cm}
 	
 	\begin{subfigure}[]{\textwidth}
 		\centering
-	\includegraphics[width=0.8\textwidth,scale=1.0]{files/all_best.pdf}
-	\label{fig:result-best}
-	\caption{Best fitnesses of the evolution \cite{Jona}}
+		\includegraphics[width=0.8\textwidth,scale=1.0]{files/all_best.pdf}
+		\label{fig:result-best}
+		\caption{Best fitnesses of the evolution \cite{Jona}}
 	\end{subfigure}
 \end{figure}
 
