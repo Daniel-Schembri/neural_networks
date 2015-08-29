@@ -2498,21 +2498,35 @@ multiplied with the maximum velocity of
 
 Rotation by angle the agent: [-1.0, 1.0] (with a resolution of 0.001)
 multiplied with the maximum rotationspeed of 0.075
-\subsection*{The agents logic}
+\subsection{The agent's logic}
 In this project work a simple reflex agent is realized.
 The agents processing logic is realized by a multilayer perceptron. That means the agent has no memory and just processes the actual perception. This categorises the agent to a simple reflex agent.
 
-\subsection*{The agents actuator}
+
+\subsection*{The neural network}
+
+The neural network has to compute a regression as the outputs are real valued.
+The evolution process of the network is just changing the weights and not the topology. The two possible outputs are divided into two independent ANN, each having 2 input-, 8 hidden- and 1 output neuron. Additionally the
+input- and the hidden layer each get 1 bias neuron, because if no object is in range the agent should still drive around the world until it detects one. In that case the input vector is $0 \choose 0$.
+
+The evolutionary algorithm gets the following amount of parameters it has to optimize:
+
+3*8 + 9*1 = 33weights
+
+This causes a 33-dimensional search space.
+
+
+\subsection{The agent's actuator}
 The agent can rotate left or right.
 The agent can drive just forwards. Damping happens by the physics engine.
 
 It can determine the factor of velocity and rotation.
 
-\subsection*{The agents sensor}
+\subsection{The agent's sensor}
 The agents sensor is a semicircle detecting just collectable objects in an given radius. The sensor returns a vector containing the X- and Y-coordinate relative to the agents actual position. For simplicity just the vector of the nearest object is recognized.
 
 
-\subsection{Coordinate system transformation}
+\subsection*{Coordinate system transformation}
 Before the computation of the outputvector of the neural network can be done the local coordinate system of the agent has to be determined.
 To get the relative position of an object the global coordinate system has to be transformed into the agents local coordinate system, considering the agents actual angle.
 
@@ -2579,14 +2593,6 @@ y' = -x * \sin \alpha + y * \cos \alpha
 
 %\newpage
 
-
-
-\section{The neural network}
-
-The neural network has to compute a regression as the outputs are real valued.
-To simplify the evolution of the network. The two possible outputs are divided into two independent ANN, each having 2 input-, 8 hidden- and 1 output neuron.
-
-
 \section{Software concept}
 
 \subsection{Use-Cases}
@@ -2604,7 +2610,7 @@ As follows the use cases of the simulation software:
 The user should be able to create and start, pause, resume, restart the simulation.
 He should be able to save the actual simulation state and quit the simulator.
 
-While simulation the user can interact with the simulation environment. The simulation can be speeded up by toggling a turbo mode. The computation power then should be used for simulation only.
+While simulating the user can interact with the simulation environment. The simulation can be speeded up by toggling a turbo mode. The computation power then should be used for simulation only.
 
 This can be helpful to see how a single agent acts
 
@@ -2644,7 +2650,6 @@ The methods 'ProcessV' and 'ProcessA' return the computation results of the neur
 \textbf{FeedForwardNet} \\
 'FeedForwardNet' is also part of the neural network framework. It is the network type used in this project work. It inherits from the abstract class 'Net'. An agent posses two feed forward networks. \\
 
-
 \section{The graphical user interface}
 
 The graphical user interface (GUI) was created with GLUI\footnote{see chapter \ref{sec:glui}}
@@ -2681,19 +2686,6 @@ The user can choose an evolutionary algortihm or the supervised learning method.
 }
 There are given standard parameters for each algorithm. The user can change them.
 
-
-\subsection{File saving and loading}
-
-TODO Parser diagram loading the data.
-
-%The
-%To minimize  that the agents are missing
-
-
-\subsection{MainLoop}
-
-\section{Box2D}
-
 \subsection{The interface}
 (to the concrete implementation in Box2D)
 
@@ -2710,10 +2702,13 @@ Detection of food: atan2-function
 
 
 \chapter{Results of the simulation}
+
+
+
 \begin{figure}[H]
 	\begin{subfigure}[]{\textwidth}
 		\centering
-		\includegraphics[width=0.8\textwidth,scale=1.0]{files/all_average.pdf}
+		\includegraphics[width=0.7\textwidth,scale=1.0]{files/all_average.pdf}
 		\label{fig:result-avg}
 		\caption{Average fitnesses of the evolution \cite{Jona}}
 	\end{subfigure}
@@ -2721,7 +2716,7 @@ Detection of food: atan2-function
 	
 	\begin{subfigure}[]{\textwidth}
 		\centering
-		\includegraphics[width=0.8\textwidth,scale=1.0]{files/all_best.pdf}
+		\includegraphics[width=0.7\textwidth,scale=1.0]{files/all_best.pdf}
 		\label{fig:result-best}
 		\caption{Best fitnesses of the evolution \cite{Jona}}
 	\end{subfigure}
@@ -2732,6 +2727,14 @@ Detection of food: atan2-function
 The evolutionary algorithms showed that it's possible to find solutions someone would not expect in the first case. As example an agent who is driving 'blindly' across the environment and collecting a huge amount of objects.
 The evolutionary algorithms didn't find a satisfying solution. The main cause could be a too large amount of hidden neurons that cause overfitting.
 Further tests with less hidden neurons have to be made.
+The project work shows that too much parameters can make an evolutionary algorithm insufficient. Therefore a good prior knowledge can be helpful in solving optimization problems.
+
+Neural networks are a probabilistic model to solve problems. To use these networks effectively some rules of thumb have to be considered. Too much hidden neurons can cause overfitting and a unnecessary effort.
+
+ 
+A successful method can be a deep learning neural network.
+That means splitting a task into multiple sub tasks and have multiple hidden layers. Each layer solves a task and passes it to the next layer.
+
 
 
 \KOMAoptions{listof=leveldown}
@@ -2771,7 +2774,21 @@ Further tests with less hidden neurons have to be made.
 %Software-Engineering books?
 
 %Opengl, GLUT and GLUI
+\newpage
 
+\chapter*{Appendix}
 
+The source code and the associated documents of this project are on the enclosed CD / Archive: \\
+
+\fbox{
+	\begin{minipage}{15cm}
+		\begin{itemize} 
+			\item The project report in pdf-format
+			\item The source code of the simulator
+			\item A short tutorial of the simulator
+			\item Associated sources in pdf-format
+		\end{itemize}
+	\end{minipage}
+}   \\
 
 \end{document}
