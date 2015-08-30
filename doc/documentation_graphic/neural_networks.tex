@@ -74,7 +74,7 @@
 %table of contents with hyperlinks
 %always include as last package
 \usepackage{hyperref}
-
+\usepackage{acronym}
 
 %===========================TITLE PAGE=======================================
 
@@ -216,7 +216,7 @@ Kraichtal, den \today{} \hspace{8cm} Daniel Schembri
 \normalsize
 
 This document was created for the project work at Pforzheim university in the course: Master of Science in Embedded Systems. 
-This projectwork describes the development of a simulation environment for object collecting agents. The agents can base on a simple script or have a neural network that can be trained supervised or evolved by evolutionary algorithms.
+This projectwork describes the development of a simulation environment for object collecting agents. The agents have a neural network that can be trained supervised or evolved by evolutionary algorithms.
 
 The simulator was written in C++ using the 2D physics-engine Box2D by Erin Catto and using the OpenGl-frameworks GLUT, respectively Freeglut for accelerating the displaying of the simulation and GLUI for the graphical user interface. 
 
@@ -228,7 +228,7 @@ The neural network framework is written by Jonathan Schwarz and detaily describe
 
 Dieser Projektbericht wurde im Rahmen der Projektarbeit des Studienganges Master of Science in Embedded Systems der Hochschule Pforzheim angefertigt. 
 
-Diese Projektarbeit beschreibt die Entwicklung eines Simulators für virtuelle Agenten, die Objekte in einer 2-dimensionalen Umgebung sammeln. 
+Diese Projektarbeit beschreibt die Entwicklung eines Simulators für virtuelle Agenten, die Objekte in einer 2-dimensionalen Umgebung sammeln. Die Agenten besitzen ein neuronales Netz das wahlweise supervised oder evolutionär angepasst werden kann.
 
 Der Simulator wurde in C++ entwickelt. Die Physics-engine Box2D von Erin Catto wird verwendet. Ebenso die OpenGL-Frameworks GLUT bzw. Freeglut zur beschleunigten Darstellung der Simulation und GLUI für die Graphische Benutzer Schnittstelle. 
 
@@ -237,7 +237,15 @@ Das Framework der neuronalen Netze wurde von Jonathan Schwarz entwickelt und wir
 	
 \end{abstract}
 
-
+\section*{List of acronyms}
+\begin{acronym}[AWGN]
+	\acro{AABB}{Axis aligned bounding box} 
+	\acro{ANN}{Artificial neural network} 
+	\acro{GLUI}{OpenGL User Interface Library} 
+	\acro{GLUT}{OpenGL Utility Toolkit} 
+	\acro{MLP}{Multilayer perceptron} 
+	\acro{OpenGL}{Open Graphics Library}  
+\end{acronym}
 
 \chapter{Introduction}
 This document was created at Pforzheim University in the course Master of Science in Embedded Systems.
@@ -330,8 +338,8 @@ In this project the agents logic is realised as a artificial neural network.
 In the following sections the different realisation types of the logic is described in detail.
 
 
-\section{Rationality \cite{ai}}
-An agent creates a sequence of actions. These actions cause a sequence of states in the corresponding environment. Every sequence of states can be rated. The agent is called rational if it can maximize its score, considering its sequence of perceptions and its previous knowledge of the problem. Its important to distinguish rationality and perfection. An agent never will be perfectly solving a problem. It's unrealistic to expect the best possible solution for a problem in partitial observable environments. It can solve the problem as it can be expected by the given perceptions. The agent can't predict random events.
+\section{Rationality}
+An agent creates a sequence of actions. These actions cause a sequence of states in the corresponding environment. Every sequence of states can be rated. The agent is called rational if it can maximize its score, considering its sequence of perceptions and its previous knowledge of the problem.\cite{ai} It's important to distinguish rationality and perfection. An agent never will be perfectly solving a problem. It's unrealistic to expect the best possible solution for a problem in partitial observable environments. It can solve the problem as it can be expected by the given perceptions. The agent can't predict random events.
 
 In order to achieve rationality the following topics have to be considered: \\
 
@@ -364,7 +372,7 @@ By \cite{ai} agents can be classified in the following categories:
 The simplest type of an agent is the reflex based agent.
 This agent only processes the actual perception and act on the base of this actual state. In the simplest case the logic is realised as a lookup table or defined by simple rules. This type of agent can be used for simple tasks. The benefits are a fast implementation and a drastically reduced state space.
 The disadvantage lies within the simplicity. This agent has no memory and therefore doesn't include past states in his decisions. If the present state of the environment doesn't provide enough information or it is just partially observable, the agent could not solve the task.
-In partially observebale environment there can occur loops of wrong behaviour. This loops can be overcome if a random action can be chosen.
+In partially observebale environments there can occur loops of wrong behaviour. This loops can be overcome if a random action can be chosen.
 For best functionality of a simple reflex agent the problem-environment should be fully observable.\footnote{See Chapter \ref{sec:env} for an explanaition of the environment}
 For more complex tasks using the following described agent-types may be a better solution.
 (\cite{ai} chapter 2.4.2)
@@ -372,14 +380,14 @@ For more complex tasks using the following described agent-types may be a better
 The model-based reflex agent expands the simple reflex agent by a memory. It internally creates a model of the world by past sensor data. This model is used to predict future states in the environment.
 This can be a moving object or changes in the environment made by the agent itself for example.
 
-Internal states of the agent are used to approximate the state of the environment if changes occur. 
+Internal states of the agent are used to approximate the state of the environment, if changes occur. 
 The model is also used to estimate temporaly unobservable parts of the environment.
 
 The model-based reflex agents ability to solve a task reaches its limit, if it has to act in a new environment or other agents acting in the world, too. The internally created model then may not fit anymore.
 (\cite{ai} chapter 2.4.3)
 
 \subsection{Goal-based agent}
-For some tasks it isn't enough to know the correct action on a specified state at the environment, like reflex-based agents do. It can be important for an agent to know the goal behind those actions. This is necessary for the generalization of a problem. For example: For a given route A To B there can be a description for a sequence of actions the agent has to execute in order to reach the target B. It is more difficult to describe specific rules for getting from one point to another in general, as other routes may differ a lot. It's therefore too complex to describe all rules in detail; hencefore a generalization of this task has to be modelised.
+For some tasks it isn't enough to know the correct action on a specified state at the environment, like reflex-based agents do. It can be important for an agent to know the goal behind those actions. This is necessary for the generalization of a problem. For example: For a given route A to B there can be a description for a sequence of actions the agent has to execute in order to reach the target B. It is more difficult to describe specific rules for getting from one point to another in general, as other routes may differ a lot. It's therefore too complex to describe all rules in detail; hencefore a generalization of this task has to be modeled.
 
 The benefit is an agent that can solve complex tasks. The drawback is a need of more computing time. For real-time tasks this can be an obstacle.
 (\cite{ai} chapter 2.4.4)
@@ -436,7 +444,7 @@ The most important part for improvements is the correlation between the \textbf{
 
 \section{The task environment}
 \label{sec:env}
-In the first case its preferable to define the task completely. In \cite{ai} chapter 2.3 the task environment is defined by four categories: \\
+In the first case it's preferable to define the task completely. In \cite{ai} chapter 2.3 the task environment is defined by four categories: \\
 
 \fbox{
 	\begin{minipage}{15cm}
@@ -465,7 +473,7 @@ In a stochastic environment there are given probabilities for each possible even
 In reality there can exist deterministic environments with the disadvantage of too much possibilities. An agent can't  compute every possible effect then.
 In this case the environment must be handled by the agent as if it were stochastic to get a chance of solving the task. \\
 
-If the action of the agent does only depend on the actual environment state and does not influence future state the environment is called \textbf{episodic}. Otherwise its called
+If the action of the agent does only depend on the actual environment state and does not influence future state the environment is called \textbf{episodic}. Otherwise it's called
 \textbf{sequential}. Chess for example is a sequential environment because every move can bring the game in a win- or lose-situation. \\
 
 A \textbf{static} environment doesn't change. This makes it easier for the agent to solve a task. A \textbf{dynamic} environment on the other hand needs a continuously observation.
@@ -506,7 +514,7 @@ They map a function as follows\cite{rojas}:
 \end{equation} 
 
 In general an ANN has an input layer, containing the inputvector $\vec{X}$ with $n$ components, optional hidden layers and one output layer giving the resultvector $\vec{Y}$ with $m$ components.
-All neurons, except the input neurons, have real weighted input connections, an activation function and output values. The input neurons do no computation. They just contain the input data and pass it to the next layer. In literature a artificial neural network is often showed as follows: \cite{rojas} \cite{rey}
+All neurons, except the input neurons, have real weighted input connections, an activation function and output values. The input neurons do no computation. They just contain the input data and pass it to the next layer. In literature an artificial neural network is often showed as follows: \cite{rojas} \cite{rey}
 
 \def\layersep{2.5cm}
 \begin{figure}[H]
@@ -557,7 +565,9 @@ node[hidden neuron] (H-\name) at (\layersep,-\y cm) {};
 \end{center}
 \end{figure}
 
-This is a typical feed forward network. The computation results are passed from one layer to the next one. All values are passed at the same time. The values are weighted a defined weight of the respective connection to the next neuron. It's possible to add a bias neuron to each layer. Bias neurons have always the value 1 and have also weighted connections to all neurons of the next layer. The neural network learns by adjusting the weights. In the most cases the weights are adjusted by a specified learning algorithm to fit the target functionality.
+This is a typical feed forward network. The computation results are passed from one layer to the next one. All values are passed at the same time. The values are weighted by a defined weight of the respective connection to the next neuron. It's possible to add a bias neuron to each layer. Bias neurons have always the value 1 and have also weighted connections to all neurons of the next layer. The neural network learns by adjusting the weights. In the most cases the weights are adjusted by a specified learning algorithm to fit the target functionality.
+
+As follows the input of one neuron and the output result:
 
 \begin{figure}[H]
 	\begin{center}
@@ -593,20 +603,15 @@ This is a typical feed forward network. The computation results are passed from 
 	\end{center}
 \end{figure}
 
-The total neuron input $I$ is the sum of all input values $x_i$ multiplied by their respective weight $w_{1i}$. The first index of the weight stands for the receiving neuron; the second index for the sending neuron. As follows the total input of a receiving neuron:
-\begin{figure}[H]
-	\begin{center}
-		\begin{flalign*}
+The total neuron input $I$ is the sum of all input values $x_i$ multiplied by their respective weight $w_{1i}$. The first index of the weight stands for the receiving neuron; the second index for the sending neuron. As follows the total input $I$ of a receiving neuron:
+\begin{flalign}
 I = \sum_{i=1}^{n}(x_{i}*w_{1i})
-		\end{flalign*}
-	\end{center}
-	\caption{The total neuron input}
-	\label{eq:neuroninputex}
-\end{figure}
+\end{flalign}
 
-The output of the neuron is computed by a so called activation function $f(I)$ having as parameter the before determined total input of the receiving neuron.
 
-If the computing neuron is a hidden neuron, the output is also weighted and passed to the next unit. If it is an output neuron then the output is a component of the Outputvector $\vec{Y}$. Usually all neurons of an entire layer have the same activation function.\cite{rey} As follows some commonly used activation functions:
+The output of the neuron is computed by a so called activation function $f(I)$, having as parameter the before determined total input $I$ of the receiving neuron.
+
+If the computing neuron is a hidden neuron, the output is also weighted and passed to the next units. If it is an output neuron then the output is a component of the Outputvector $\vec{Y}$. Usually all neurons of an entire layer have the same activation function.\cite{rey} As follows some commonly used activation functions:
 
 \begin{figure}[H]
 \begin{subfigure}[]{0.5\linewidth}
@@ -737,16 +742,11 @@ Continous functions can be used for regression. Regression analysis is the proce
 
  As follows an example of the computation of a neural network. Assume there are 3 input neurons, 1 output neuron, no hidden neurons and no bias neurons. Assume there are the following input values and weights:
 
-\begin{figure}[H]
-	\begin{center}
-		\begin{flalign*}
+		\begin{flalign}
 			&x_1=3,\quad x_2=-1,\quad x_3=0\\
-			&w_{11}=4,\quad w_{12}=1,\quad w_{13}=2
-		\end{flalign*}
-	\end{center}
-	\caption{Input values and weights}
-	\label{eq:values}
-\end{figure}
+			&w_{11}=4,\quad w_{12}=1,\quad w_{13}=2 \nonumber
+		\end{flalign}
+
 
 \begin{figure}[H]
 	\begin{center}
@@ -789,37 +789,27 @@ Continous functions can be used for regression. Regression analysis is the proce
 
 
 In this example the output neuron gets a total input of:
-\begin{figure}[H]
-	\begin{center}
-		\begin{flalign*}
-		&I = \sum_{i=1}^{3}(x_{i}*w_{1i}) = (3*4) + (-1*1) + (0*2) = 11
-		\end{flalign*}
-	\end{center}
-	\caption{The total neuron input}
-	\label{eq:neuroninputex}
-\end{figure}
+\begin{flalign}
+	&I = \sum_{i=1}^{3}(x_{i}*w_{1i}) = (3*4) + (-1*1) + (0*2) = 11
+\end{flalign}
 
 This input may be processed in this example by a linear activation function with a threshold:
 
- 	\begin{flalign*}
+ 	\begin{flalign}
  	 &S = 0 \\
 	 &f(I) =
-	 \begin{cases}
+	 \begin{cases} \nonumber
 	 0.5*I       & \quad \text{if } I  \geq S \\
 	 0  & \quad \text{otherwise}\\
 	 \end{cases}	  
-	 \end{flalign*}
+	 \end{flalign}
 
  The final result of the output neuron's computation is:
-\begin{figure}[H]
-	\begin{center}
-		\begin{equation}
-		f(I)=0.5*I=0.5*11=5.5
-		\end{equation}
-		\caption{Result of the activation fucntion}
-		\label{eq:transferfunction}
-	\end{center}
-\end{figure} 
+\begin{equation}
+f(I)=0.5*I=0.5*11=5.5
+\end{equation}
+
+
 
 
 
@@ -846,7 +836,7 @@ Further research showed that biological neural networks can compute information 
 A third generation of artificial neural networks was modeled. Not just the firerate keeps information. Also the time delay between single signals encodes information. These signal pulses are called spikes. A third generation neural network is called a 'spiking neural network'.
 \cite{SNN}
 
-There also exist other kind of topologies. For example there are recurrent network models in which a neuron can have a weighted connection to itself to process it's own output in the next computation cycle of the network. Another topology is the kohonen map. In this topology all hidden neurons are interconnected. In this project work the focus lies on the 2nd generation neural networks and the feed forward topology.
+There also exist other kind of topologies. For example there are recurrent network models in which a neuron can have a weighted connection to itself to process its own output in the next computation cycle of the network. Another topology is the kohonen map. In this topology all hidden neurons are interconnected. In this project work the focus lies on the 2nd generation neural networks and the feed forward topology.
 
 
 %\section{Neuron- and network types}
@@ -899,12 +889,12 @@ $x_{n}$ are the binary inputs. \\
 The output Y is:
 
 
-\[ Y =
+\begin{equation}
 \begin{cases}
 1       & \quad \text{if } I  \geq S \\
 0  & \quad \text{otherwise}\\
 \end{cases}
-\]
+\end{equation}
 
 A function composition:
 
@@ -932,8 +922,8 @@ The function composition is a concatenation of multiple neurons. \\
 \paragraph*{Applications}
 The McCulloch-Pitts-neuron is biologically not plausible, because learning
 can just happen by changing the threshold and the network topology. This needs complex algorithms.
-But this neuron type can realise AND-, OR- and NOT-Gates. (See Rojas)
-Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. (See Rojas)
+But this neuron type can realise AND-, OR- and NOT-Gates.
+Therefore a network of neurons can realise every boolean logic and it is used in electrical engineering, because of realising logic gates efficently in contrast to classical gates. \cite{rojas}
 The usage of a McCulloch-Pitts network depends on the application type. Binary signals have the advantage of beeing less susceptible to interferences as multiple signal states.
 The drawback can be a complex topology.
 
@@ -1206,7 +1196,7 @@ The perceptron can be used as pattern associator to assign an input pattern to a
 The multilayer perceptron (MLP) was intruduced by Minsky and Papert in 1969 \cite{min}. It has an input-, an output- and
 one or multiple hiddenlayers (see figure \ref{fig:general-ann}). In contrast to the singlelayer perceptron it can solve the xor-problem and other non-linear problems. It can be trained super- or unsupervised.
 
-An widely known example is the xor-problem:
+A widely known example is the xor-problem:
 
 \begin{figure}[H]
 	\centering
@@ -1342,9 +1332,9 @@ If both input neurons sends 1 the total input of both hidden neurons is 0, becau
 
 
 The XOR-Problem shows that to separate a data set linear it's necessary to have at least one hidden layer.
-For 3 variables there exist 256 possible logical functions. 104 are linear separable.
-for 4 variables and 65536 possible functions, only 1882 functions are linear separable.
-The ratio of linear separable to non linear separable functions tends to zero for x-> infinity. (Rojas page 61 or chapter 6?)
+For an amount of 3 binary variables ($n=3$) there exist 256 possible logical functions. 104 are linear separable.
+For $n=4$ there are 65536 possible functions, only 1882 functions are linear separable.
+The ratio of linear separable to non linear separable functions tends to zero for $n \to \infty$. (\cite{rojas} page 61)
 This shows that with increasing input parameters, hidden layers are necessary to compute this data.
 
 
@@ -1366,7 +1356,7 @@ The MLP is used for classification and  regression. It can approximate functions
 
 \section{Learning}
 A neural network learns by adjusting the connection weights.
-One way of learning can happen supervised by a given training data set. The network is then trained by a learning algorithm. The network error, means the difference of the wanted output from the actual output, is minimized. After the training cycle the network is tested by a test data set, that must differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training set exactly, but may fail at the test data set. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{A detailed describtion of supervised learning can be found at \cite{Jona}} Therefore its important to have an appropriate number of hidden neurons. If there are too few hidden neurons the network may not fit the target function properly. This is called underfitting. If there are too much neurons, overfitting may happen.\\
+One way of learning can happen supervised by a given training data set. The network is then trained by a learning algorithm. The network error, means the difference of the wanted output from the actual output, is minimized. After the training cycle the network is tested by a test data set, that must differ from the training data set. One big challenge is to avoid overfitting. Overfitting means the neural net learns the training set exactly, but may fail at the test data set. This behaviour can cause issues if the input data is not the same. A generalization of the net is wanted to cover a variation of the input data on the choosen task.\footnote{A detailed describtion of supervised learning can be found at \cite{Jona}} Therefore it's important to have an appropriate number of hidden neurons. If there are too few hidden neurons the network may not fit the target function properly. This is called underfitting. If there are too much neurons, overfitting may happen.\\
 
 As follows an example of underfitting, overfitting and the wanted generalization of supervised learning at binary classification.
 
@@ -1436,7 +1426,7 @@ Assume there is a set of labeled data that is devided into a training set and a 
 \end{figure}
 \vspace{0.5cm}
 
-The neural network is trained by a learning algorithm\footnote{This may be the backpropagation algorithm}. In the following figures three different separation functions are shown, produced by three different neural networks distinguishing by a different amount of hidden neurons.
+The neural network is trained by a learning algorithm\footnote{This may be the backpropagation algorithm. Described in \cite{Jona}}. In the following figures three different separation functions are shown, produced by three different neural networks distinguishing by a different amount of hidden neurons.
 \vspace{0.5cm}
 
 \begin{figure}[H]
@@ -1665,9 +1655,11 @@ As follows the results of the three functions:
 	\end{subfigure}	
 \end{figure}
 
-Other ways of learning are unsupervised and semi-supervised learning. At unsupervised learning the training data is completely unlabeled. The network has to find patterns in this data. This can happen by different algoritms. At semi-supervised learning the main part of the data set is unlabeled. But there exist a small amount of labeled data. This data can improve the learning accuracy. \\
+The figures show that the 1st and 2nd separation functions do not fit all data points. The 3rd figure shows a good generalization, because the separating plane lies exactly in the middle of the two classes.
 
-An alternative to these learning methods is the evolutionary training of the net. Populations of nets are cultivated and rated by a fitness function. For these there exist many optimization algorithms.\footnote{Some of them are described in chapter \ref{sec:evo}} \\
+Other ways of learning are unsupervised and semi-supervised learning. At unsupervised learning the training data is completely unlabeled. The network has to find patterns in this data. This can happen by different algoritms described in literature. At semi-supervised learning the main part of the data set is unlabeled. But there exist a small amount of labeled data. This data can improve the learning accuracy. \\
+
+An alternative to these learning methods is the evolutionary optimization of the network. This may belong to the unsupervised learning methods. Populations of nets are cultivated and rated by a fitness function. For these there exist many optimization algorithms.\footnote{Some of them are described in chapter \ref{sec:evo}} \\
 
 In this project work the topology and type of the networks are kept and only the weights are changed by the evolution process.
 
@@ -1693,7 +1685,7 @@ Evolutionary algorithms differ from classical optimization algorithms by their p
 
 
 In this project evolutionary algortihms are used to find the best 
-(unsupervised) neural network to controll one agent. The idea is to use the amount of objects an agent collects over a defined time as fitness value. The evolutionary algorithm changes the agent's weights of the feed-forward multilayer perceptron.
+(unsupervised) neural network to control one agent. The idea is to use the amount of objects an agent collects over a defined time as fitness value. The evolutionary algorithm changes the agent's weights of the feed-forward multilayer perceptron.
 
 \section{The general form of the optimization process}
 In general the optimzation process is defined by the following components: \\
@@ -1710,17 +1702,17 @@ In general the optimzation process is defined by the following components: \\
 \\
 
 The \textbf{search space} $D$ is the domain of the optimization function. It defines the general form of a solution. Figure \ref{fig:hill} and \ref{fig:hill2} are examples of search spaces. Every point in the search space is a possible solution of the optimization task.
-A solution $x$ is a vector of $n$ components. Each solution gets a real value to determine it's quality. $F$ is a function that maps $D$ to the set of real numbers. A solution $x$ with the best quality is wanted, means $F(x)$ is optimal. Depending on the task a minimal or maximal value of $F(x)$ is wanted. As follows the general formula of an optimzation problem:
+A solution $x$ is a vector of $n$ components. Each solution gets a real value to determine its quality. $F$ is a function that maps $D$ to the set of real numbers. A solution $x$ with the best quality is wanted, means $F(x)$ is optimal. Depending on the task a minimal or maximal value of $F(x)$ is wanted. As follows the general formula of an optimzation problem:
 
 \begin{flalign}
 F: D \mapsto R \\
-D \subset R^n  \\
-x \in D
+D \subset R^n  \nonumber \\
+x \in D \nonumber
 \end{flalign} 
 
-The amount of parameters $n$ a solution has, has to be defined before an optimization algortihm can be used efficiently. If there are too much possibilities, for example by having too much parameters, the algorithm may never find a satisfying solution. Therefore its recommended to reduce the search space and define the general form of a parameter set early. Also a transformation of the search space can speed up the optimization process.
+The amount of parameters $n$ a solution has, has to be defined before an optimization algortihm can be used efficiently. If there are too much possibilities, for example by having too much parameters, the algorithm may never find a satisfying solution. Therefore it's recommended to reduce the search space and define the general form of a parameter set early. Also a transformation of the search space can speed up the optimization process.
 
-Evolutionary Algorithms have the advantage that there is no need for deep knowledge of a problem.
+Evolutionary algorithms have the advantage that there is no need for deep knowledge of a problem.
 But at least a basic prior knowledge of the task is necessary. \\
 
 The \textbf{rating function} $F(x)$ gives the quality value for a solution. At maximization problems it's wanted to maximize a fitness value. At minimization problems it's wanted to minimize an error value. A maximization problem can be transformed into a minimization problem  and vice versa by inverting the rating function. In some cases constraints have to be considered. Some parameters may have limits they must not exceed.
@@ -1820,7 +1812,7 @@ Parameters of a system are randomly changed untill a minimum or maximum of a rat
 	\end{minipage}
 } \\
 
-The algorihm can be imagined as a blind hillclimber. The hillclimber makes a random step. If he gets higher, he makes the next step. Otherwise he takes back his last step and makes another random step. The main problem is, that this algorithm mostly converges in a local optimum. \\
+The algorihm can be imagined as a blind hillclimber. The hillclimber makes a random step. If he gets higher, he makes the next step. Otherwise he takes back his last step and makes another random step. The main problem is, that this algorithm mostly converges in a local optimum. \cite{evo} \\
 
 \textbf{Reasons to use this kind of algorithm:}
 
@@ -1892,13 +1884,13 @@ Then the probability of selecting a solution with lower fitness is computed:
 p(r) = \frac{1}{1+exp(-r/T)}
 \end{equation} 
 
-At the beginning a big T tends to equalize the probability of all chromosomes. For $T \to \infty$ all chromosomes have the same chance to get selected. Lowering T gives good solutions priority.
+At the beginning a big T tends to equalize the probability of all solutions. For $T \to \infty$ all solutions have the same chance to get selected. Lowering T gives better solutions priority.
 
-Simulated annealing is suitable for functions with many local optima.
+Simulated annealing is suitable for functions with many local optima. \cite{evo}
 
 \section{Crossover}
-The crossover algorithm represents the idea of cultivating a population of individual solutions. After rating the population, the best individual is choosen and crossed with a random one of the actual population. There are two children created, who can optionally be mutated. This is done until a new generation of individuals is created.
-The process is repeated until a satisfying solution is found or the process is aborted.\footnote{For more information see project work of Jonathan Schwarz}
+The crossover algorithm represents the idea of cultivating a population of individual solutions. After rating the population, the best individual is chosen and crossed with a random one of the actual population. There are two children created, who can optionally be mutated. This is done until a new generation of individuals is created.
+The process is repeated until a satisfying solution is found or the process is aborted.\footnote{For a detailed description see \cite{Jona}}
 
 
 
@@ -1973,7 +1965,7 @@ The damping parameter can be zero for no damping and infinite for full damping. 
 The \textbf{gravity scale} is a factor that determines how much the worlds gravity influences the body. 0 determines no influence. The standard value is 1.
 
 \subsubsection*{Activation and Sleeping}
-A body can be set asleep. This is used to save cpu-time as for sleeping bodies no computation of physics is necessary. The body will be woken up, if an other body collides with it.
+A body can be set asleep. This is used to save cpu-time as for sleeping bodies no computation of physics is necessary. The body will be woken up, if another body collides with it.
 A body can be completely excluded from simulation by setting it inactive instead.
 In contrast to the sleeping mode it will not be woken up.
 
@@ -2005,7 +1997,7 @@ The following properties are part of a fixture:
 A single \textbf{shape} is contained by the fixture. The shape can be a rectangular, a polygon or a circle. Shapes aren't linked to the body directly, because they may be used independly of the simulation. Therefore the fixture is interposed between body and shape. In Box2D the maximum amount of vertices is defaultly set to eight. A vertex defines the position-vector of a body's edge. A polygon therefore can be created with a minimum of three position-vectors and maximally with eight.
 \\
 
-\textbf{Broad-phase proxies} are used internally by Box2D to accelerate collision detection. Therefore a dynamic tree containing the collision-pairs in form of AABB's\footnote{AABB: Axis aligned boundary box. AABBs are used for fast computing of collision detection} are used. In the most cases it isn't necessary for the user to use proxies. \\
+\textbf{Broad-phase proxies} are used internally by Box2D to accelerate collision detection. Therefore a dynamic tree containing the collision-pairs in form of AABB's\footnote{AABB: Axis aligned bounding box. AABBs are used for fast computing of collision detection} are used. In the most cases it isn't necessary for the user to use proxies. \\
 
 The \textbf{densitiy} is used for computation of the body's mass.\\
 
@@ -2034,15 +2026,15 @@ b2Fixture* myFixture = myBody->CreateFixture(&fixtureDef);
 
 
 \subsection{Joints}
-Joints are used to connect two or more bodies. For more detailed information read the Box2D manual Chapter 8.
+Joints are used to connect two or more bodies. For more detailed information read the Box2D manual Chapter 8.\cite{box}
 
 \subsection{World}
-A world is the simulation-environment. It contains all bodies and joints and manages all aspects for simulation. It is the main entity.
+A world is the simulation environment. It contains all bodies and joints and manages all aspects for simulation. It is the main entity.
 
-The world represents a factory pattern, because it can create and detroy bodies and joints.
+The world represents a factory pattern, because it can create and destroy bodies and joints.
 
 \subsubsection*{Simulation parameters}
-The physics-simulation is controlled by three parameters: \\
+The physics simulation is controlled by three parameters: \\
 
 \fbox{
 	\begin{minipage}{15cm}
@@ -2084,7 +2076,7 @@ An AABB is an 'axis aligned bounding box'. It completly contains a shape. It is 
 If two AABBs are overlapping, a contact between the two fixtures is created, but the isTouching()-method returns 'False', because the shapes aren't overlapping.
 
 Sometimes, fast moving bodies miss collisions and incorectly pass through each other. This effect is called tunneling. Therefore it is possible to define the body as a 'bullet' for high resolution at collisions. The physics engine then uses a method called continous collision detection (CCD)\cite{ccd} for this body. Usually this method is just used for high speed and static bodies, because it costs cpu performance. 
-A body can be defined as a bullet by it's definition instance:
+A body can be defined as a bullet by its definition instance:
 
 \begin{lstlisting}[caption={Define fixture as bullet before creation},label=lst:fixture-bullet-before]
 bodyDef.bullet = true;
@@ -2196,7 +2188,7 @@ bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB);
 The debugdraw class is used as a debugging feature to display the physics simulation of Box2D. It uses OpenGL. Debugdraw can draw the shapes, contact points, contact normals, the AABBs, etc.
 As the debugdraw offers all wanted basic shapes it is used by the simulator.
 
-To use the debug-draw first the debugdraw object has to be instanciated and linked to the world by: \\
+To use the debugdraw first the debugdraw object has to be instanciated and registered to the world by: \\
 
 \begin{lstlisting}[caption={Registering a debugdraw instance to the world instance},label=lst:box2d-ddrawset]
 m_world->setDebugDraw(&m_debugDraw);
@@ -2284,7 +2276,7 @@ OpenGL stands for 'Open Graphics Library'\cite{ogl}. It is widely used for devel
 OpenGL is platform-independent.
 
 
-It is used by the project to accelerrate the simulator.
+It is used by the project to accelerrate the simulator graphics.
 
 The Box2D-Testbed uses GLUT respectively Freeglut and GLUI. Thererefore theses libraries are also used in this project.
 
@@ -2293,7 +2285,7 @@ The Box2D-Testbed uses GLUT respectively Freeglut and GLUI. Thererefore theses l
 The OpenGL Utility Toolkit (GLUT) was developed by Mark Kilgard\cite{glut}. It is used to extend OpenGL-Applications by window-management. GLUT is used for small- and medium sized OpenGL-applications.
 
 \subsection{Freeglut}
-Freeglut is developed by Pawel W. Olszta\cite{freeglut} and is an alternative to GLUT. It is also a substitute for GLUT to use under Microsoft Windows. Freeglut is still maintained. Freeglut is used, because the originally GLUT-library is deprecated and not maintained anymore.
+Freeglut is developed by Pawel W. Olszta\cite{freeglut} and is an alternative to GLUT. It is also a substitute for GLUT to use at Microsoft Windows. Freeglut is still maintained. Freeglut is used, because the originally GLUT-library is deprecated and not maintained anymore.
 
 \subsection{Program structure}
 In this section the basic structure of a freeglut program is explained.
@@ -2324,7 +2316,7 @@ int main(int argc, char* argv[]){
 In the first lines glut is initialised, a window with specified position, size and a title is created.
 The variable 'mainWindow' is of type int. It stores the adress of the window-structure.
 
-In the second part of the codesnippet the handler-functions are set. The handler functions have to be static functions.
+In the second part of the codesnippet the handler functions are set. The handler functions have to be static functions.
 At the end the glut main loop is entered. Usually this function never returns. In Freeglut there exist functions to leave and re-enter the main loop.
 
 The following Codesnippet shows the drawing of a simple triangle:
@@ -2372,7 +2364,7 @@ gluPerspective(45.0f, (double)w / (double)h, 1.0f, 200.0f);
 }
 \end{lstlisting}
 
-The first line sets the viewports position and size. The following operations should than applied on the projection-matrix. Therefore the Matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered in this case. \\
+The first line sets the viewports position and size. The following operations should than applied on the projection matrix. Therefore the matrix is resetted to the identity matrix and the clipping of the world the camera should record is set. The near z-coordinate sets the 2D-viewing plane of the camera. The 3D-world will be projected on this 2D-plane. This is the picture that the user will finally see. The far-z perspective defines how deep the sight of the camera into the world is. Objects out of range aren't considered in this case. \\
 
 \section{The OpenGL User Interface Library(GLUI)}
 \label{sec:glui}
@@ -2433,8 +2425,8 @@ Callbacks are now defined. This has to be static functions, like in GLUT.
 \chapter{Implementation}
 
 \section{Concept}
-The main concept is to cultivate a population of agents by different evolutionary algorithms to find a satisfying solution. Each agent has a sensor, representing an own coordinate system. The agents have to collect as much objects as possible within a given time. Therefore it has a feedforward neural network realized as multilayer perceptron.
-The objects and the agents are spawned randomly every round. After collecting an object a new one is spawned randomly.
+The main concept is to cultivate a population of agents by different evolutionary algorithms to find a satisfying solution. Each agent has a sensor, representing an own coordinate system. The agents have to collect as much objects as possible within a given time. Therefore it has a feed forward multilayer perceptron.
+The objects and the agents are spawned randomly every generation. After collecting an object a new one is spawned instantly on a random position.
 
 \begin{center}
 	\begin{figure}[H]
@@ -2455,9 +2447,9 @@ By the definitions of a task environment, explained in chapter \ref{sec:env}, th
 			\item \textbf{single agent based or mulitagend based and competive} 
 			\item \textbf{deterministic}
 			\item \textbf{episodic}
-		    \item \textbf{static}
+		    \item \textbf{semidynamic}
 		    \item \textbf{continous}
-		    \item \textbf{known}, because the sensors give all necessary values
+		    \item \textbf{first unknown then known}
 		\end{itemize}
 	\end{multicols}
 	\end{minipage}
@@ -2468,25 +2460,23 @@ The simulation environment is \textbf{partially observeable} because the agents 
 
 It can be both, \textbf{single agent based} or \textbf{mulitagend based and competive}, depending on the population size. If there is just one agent to train it's single agent based. With more agents the simulation is multiagent based and competive, because the best agent will 'survive' the evolution process. \\
 
-The environment is \textbf{deterministic}. The start positions are choosen randomly, but the process of collecting the objects is from this point on deterministic as each step to get objects can be desribed step by step. \\
+The environment is \textbf{deterministic}. The start positions are chosen randomly, but the process of collecting the objects is from this point on deterministic as each step to get objects can be desribed step by step. \\
 
-Its \textbf{episodic} as the actual state does not change the general method of collecting further objects.
+It's \textbf{episodic} as the actual state does not change the general method of collecting further objects.
 
 The task environment is \textbf{semidynamic}, even if there are multiple agents the environment is considered by a static behaviour for simplicity. Also there is a time limit for collecting objects. \\
 
-\textbf{Continuity} is given, because an agent handles with real values, like the velocity and the rotation. The time for one generation is also continous. \\
+\textbf{Continuity} is given, because an agent handles with real values, like the object's position, the agent's velocity and rotation. The time for one generation is also continous. \\
 
 The \textbf{knowledge} about the environment is in the first case \textbf{unknown} as the neural net is not trained, respectively evolved. On a successful evolution process the agent's knowledge turns from unknown to \textbf{known}, because the agent gets a model of the environment, represented by the correct weights of the neural net.
 The knowledge of the environment has nothing to do with the observeability. The knowledge just categorieses the agent's ability to understand the  specific rules of the environment. The environment task doens't change. As soon as the agent understands the principles of the environment, it remains knowing. 
 
-\section{The agent}
-
-\subsection{The agent's logic}
+\section{The agent's logic}
 In this project work a simple reflex agent is realized.
 The agents processing logic is realized by a multilayer perceptron. That means the agent has no memory and just processes the actual perception. This categorises the agent to a simple reflex agent.
 
 
-\subsection*{The neural network}
+\subsection{The neural network}
 
 The neural network outputs are real valued and continous, because factors of velocity and rotation speed are wanted.
 The evolution process of the network is just changing the weights and not the topology. The two possible outputs are divided into two independent ANN, each having 2 input-, 8 hidden- and 1 output neuron. Additionally the
@@ -2497,7 +2487,7 @@ The input range of both ANNs is:
 
 \begin{flalign}
 &x \in [-20.0\ ;\ 20.0] \\
-&y \in  [0.0\ ;\ 20.0]
+&y \in  [0.0\ ;\ 20.0] \nonumber
 \end{flalign}
 In the case that no object is in range, the input vector is $0 \choose 0$. \\
 
@@ -2517,6 +2507,7 @@ And for the rotation ANN:
 
 This output is multiplied with the agent's maximum rotation speed.\\
 
+\subsection{Evolutionary optimization}
 Each neuron of a layer, including bias neurons, is connected with all neurons of the next layer.
 It follows that the evolutionary algorithm gets the following amount of parameters it has to optimize:
 
@@ -2524,18 +2515,18 @@ It follows that the evolutionary algorithm gets the following amount of paramete
 3*8 + 9*1 = 33\ weights
 \end{flalign}
 
-This causes two 33-dimensional search spaces, one for finding the correct velocity and one to find the correct rotation speed.
+This causes two 33-dimensional search spaces, one for finding the correct velocity and one to find the correct rotation speed. The rating function is a \textbf{fitness function}, because a maximum amount of collected objects is wanted.
 
 
-\subsection{The agent's actuator}
+\section{The agent's actuator}
 The agent can rotate left or right.
 The agent can drive just forwards.
 It can determine the factor of velocity and rotation until the maximum, defined in the Box2D environment.
 
 The physiscs engine damps the agent's movement and its rotation. So it will stop after a while if it use its actuators.
 
-\subsection{The agent's sensor}
-The agents sensor is a semicircle detecting just collectable objects in an given radius.\footnote{The semicircle sensor shape is based on \cite{iforce}} The sensor returns a vector containing the X- and Y-coordinate relative to the agents actual position. For simplicity just the vector of the nearest object is recognized.
+\section{The agent's sensor}
+The agents sensor is a semicircle detecting just collectable objects in a given radius.\footnote{The semicircle sensor shape is based on \cite{iforce}} The sensor returns a vector containing the X- and Y-coordinate relative to the agents actual position. For simplicity just the vector of the nearest object is recognized.
 The X- and Y values have to be transformed. This is described as follows:
 
 \subsection*{Coordinate system transformation}
@@ -2580,7 +2571,7 @@ So the components of vector $\vec{P'}$ are computed as follows:
 
 \begin{gather}
 x' = x * \cos \alpha + y * \sin \alpha \\
-y' = -x * \sin \alpha + y * \cos \alpha
+y' = -x * \sin \alpha + y * \cos \alpha \nonumber
 \end{gather}
 
 
@@ -2604,7 +2595,7 @@ y' = -x * \sin \alpha + y * \cos \alpha
 %- Amount of Agents
 
 %\newpage
-
+\newpage
 \section{Software concept}
 
 \subsection{Use-Cases}
@@ -2619,12 +2610,12 @@ As follows the use cases of the simulation software:
 	\end{figure}
 \end{center}
 
-The user should be able to create and start, pause, resume, restart the simulation.
-He should be able to save the actual simulation state and quit the simulator.
+The user is able to create and start, pause, resume, restart the simulation.
+He is able to save the actual simulation state and quit the simulator.
 
 While simulating the user can interact with the simulation environment. The simulation can be speeded up by toggling a turbo mode. The computation power then is used for simulation only. The view can be scrolled and zoomed.
 
-The user can also move and hold an agent or an object by mouse. This can be helpful to make some experiments and to see how a single agent acts.
+The user can also move and hold an agent or an object by mouse. This can be helpful to make some experiments and to see how a single agent reacts.
 
 \newpage
 \subsection{Classdiagram}
@@ -2653,12 +2644,12 @@ Evolutionary is the evolution controller class. It contains methods to apply the
 In the vector 'best\_agents' the best agents found during the optimization process are saved. In the actual simulator version just the best agent is saved. To use the crossover algorithm a second vector of agents was added. \\
 
 \textbf{Agent} \\
-The agent's class contains an id, two feed forward neural networks for velocity and rotation and member variables of the position and angle.
+The agent's class contains an id, two feed forward multilayer perceptrons for velocity and rotation and member variables of the position and angle.
 The methods 'ProcessV' and 'ProcessA' return the computation results of the neural net. 'V' stands for velocity and 'A' for angle.
 'LearnV' and 'LearnA' are methods to train the corresponding network by the given dataset, if supervised learning was chosen. \\
 
 \textbf{Net} \\
-'Net' is the main class of the neural network by framework\cite{Jona}. It is abstract and has a vector of layers, holding input-, hidden- and the output layer.  The method 'FeedForward' let the network compute it's output. The results is stored in a vector and can be accessed by calling the 'getResults'-method. \\
+'Net' is the main class of the neural network by framework\cite{Jona}. It is abstract and has a vector of layers, holding input-, hidden- and the output layer.  The method 'FeedForward' let the network compute its output. The results is stored in a vector and can be accessed by calling the 'getResults'-method. \\
 
 \textbf{FeedForwardNet} \\
 'FeedForwardNet' is also part of the neural network framework. It is the network type used in this project work. It inherits from the abstract class 'Net'. An agent posses two feed forward networks. \\
@@ -2686,7 +2677,7 @@ The red line shows the distance to the nearest object. The grey lines are the di
 
 And at the right side there are stats and two plots, representing the best- and the average fitness values of each generation.
 
-The time to measure the fitness of one generation can beAn evolution step 
+The time to measure the fitness of one generation can be chosen.
 
 As follows a figure of the 'new evolution' menue:
 
@@ -2740,7 +2731,7 @@ A separation of the task into multiple subtasks and a distribution to multiple i
 To simplify the optimization process the transformation and preprocessing of the input data may be helpful to reduce the search space and let the network adjust it weights just for the essential task.
 
 There are many methods to use neural networks.
-A successful method can be a deep learning neural network.
+A successful method can be a deep learning neural network.\cite{deep}
 In contrast to a classical feed forward network this means splitting a task into multiple sub tasks and having multiple hidden layers. Each layer solves a subtask and passes the result to the next layer, instead of letting all hidden layers solve the main task. This abstraction can improve the performance significantly.
 
 
@@ -2751,8 +2742,8 @@ In contrast to a classical feed forward network this means splitting a task into
 %=========================================LISTS=========================================
 
 \listoffigures
-\listoftables
-\listofalgorithms
+%\listoftables
+%\listofalgorithms
 \lstlistoflistings
 
 \newpage
