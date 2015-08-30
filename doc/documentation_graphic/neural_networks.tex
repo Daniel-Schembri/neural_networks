@@ -2480,24 +2480,7 @@ The \textbf{knowledge} about the environment is in the first case \textbf{unknow
 The knowledge of the environment has nothing to do with the observeability. The knowledge just categorieses the agent's ability to understand the  specific rules of the environment. The environment task doens't change. As soon as the agent understands the principles of the environment, it remains knowing. 
 
 \section{The agent}
-The inputs: 
-x  [0.0, 20.0]
-y   [0.0, 20.0]
-alpha  [-PI, PI] (Radians)
 
-If no object is detected :
-x = 0
-y = 0,
-alpha = 0 
-
-
-Outputs are:
-Velocity of the agent: [0.0, 1.0] (with a resolution of 0.001)
-multiplied with the maximum velocity of 
-(-sin(Agent->GetAngle())*0.075f * 500 * ,  cos(Agent->GetAngle())*0.075f * 500)
-
-Rotation by angle the agent: [-1.0, 1.0] (with a resolution of 0.001)
-multiplied with the maximum rotationspeed of 0.075
 \subsection{The agent's logic}
 In this project work a simple reflex agent is realized.
 The agents processing logic is realized by a multilayer perceptron. That means the agent has no memory and just processes the actual perception. This categorises the agent to a simple reflex agent.
@@ -2505,26 +2488,55 @@ The agents processing logic is realized by a multilayer perceptron. That means t
 
 \subsection*{The neural network}
 
-The neural network has to compute a regression as the outputs are real valued.
+The neural network outputs are real valued and continous, because factors of velocity and rotation speed are wanted.
 The evolution process of the network is just changing the weights and not the topology. The two possible outputs are divided into two independent ANN, each having 2 input-, 8 hidden- and 1 output neuron. Additionally the
-input- and the hidden layer each get 1 bias neuron, because if no object is in range the agent should still drive around the world until it detects one. In that case the input vector is $0 \choose 0$.
+input- and the hidden layer each get 1 bias neuron, because if no object is in range the agent should still drive around the world until it detects one.
+The activation function of each neuron is a tangens hyperbolicus with no threshold. This scales the output as described in this section.
 
-The evolutionary algorithm gets the following amount of parameters it has to optimize:
+The input range of both ANNs is:
 
-3*8 + 9*1 = 33weights
+\begin{flalign}
+&x \in [-20.0\ ;\ 20.0] \\
+&y \in  [0.0\ ;\ 20.0]
+\end{flalign}
+In the case that no object is in range, the input vector is $0 \choose 0$. \\
 
-This causes a 33-dimensional search space.
+The output is scaled.
+The output range of the velocity ANN is:
+
+\begin{flalign}
+&v \in [0.0\ ;\ 1.0]
+\end{flalign}
+
+The output is multiplied with the agent's maximum velocity. \\
+
+And for the rotation ANN:
+\begin{flalign}
+&a \in  [-1.0\ ;\ 1.0]
+\end{flalign}
+
+This output is multiplied with the agent's maximum rotation speed.\\
+
+Each neuron of a layer, including bias neurons, is connected with all neurons of the next layer.
+It follows that the evolutionary algorithm gets the following amount of parameters it has to optimize:
+
+\begin{flalign}
+3*8 + 9*1 = 33\ weights
+\end{flalign}
+
+This causes two 33-dimensional search spaces, one for finding the correct velocity and one to find the correct rotation speed.
 
 
 \subsection{The agent's actuator}
 The agent can rotate left or right.
-The agent can drive just forwards. Damping happens by the physics engine.
+The agent can drive just forwards.
+It can determine the factor of velocity and rotation until the maximum, defined in the Box2D environment.
 
-It can determine the factor of velocity and rotation.
+The physiscs engine damps the agent's movement and its rotation. So it will stop after a while if it use its actuators.
 
 \subsection{The agent's sensor}
-The agents sensor is a semicircle detecting just collectable objects in an given radius. The sensor returns a vector containing the X- and Y-coordinate relative to the agents actual position. For simplicity just the vector of the nearest object is recognized.
-
+The agents sensor is a semicircle detecting just collectable objects in an given radius.\footnote{The semicircle sensor shape is based on \cite{iforce}} The sensor returns a vector containing the X- and Y-coordinate relative to the agents actual position. For simplicity just the vector of the nearest object is recognized.
+The X- and Y values have to be transformed. This is described as follows:
 
 \subsection*{Coordinate system transformation}
 Before the computation of the outputvector of the neural network can be done the local coordinate system of the agent has to be determined.
@@ -2610,13 +2622,14 @@ As follows the use cases of the simulation software:
 The user should be able to create and start, pause, resume, restart the simulation.
 He should be able to save the actual simulation state and quit the simulator.
 
-While simulating the user can interact with the simulation environment. The simulation can be speeded up by toggling a turbo mode. The computation power then should be used for simulation only.
+While simulating the user can interact with the simulation environment. The simulation can be speeded up by toggling a turbo mode. The computation power then is used for simulation only. The view can be scrolled and zoomed.
 
-This can be helpful to see how a single agent acts
+The user can also move and hold an agent or an object by mouse. This can be helpful to make some experiments and to see how a single agent acts.
 
+\newpage
 \subsection{Classdiagram}
 
-The main structure of the simulator contains a graphical user interface (GUI), a simulation environment, a class of the agent, a class for the evolutionary optimization logic and a neural network framework:
+The main structure of the simulator contains a graphical user interface (GUI), a simulation environment, a class of the agent, a class for the evolutionary optimization logic and a neural network framework\footnote{The ANN framework is described in \cite{Jona}}:
 
 \begin{center}
 	\begin{figure}[H]
@@ -2633,23 +2646,24 @@ The GUI manages the user's keyboard- and mouse input. \\
 
 \textbf{Neuralworld} \\
 Neuralworld is the Box2D simulation environment. It contains a world and bodies for each agent, object and the world borders.
-The world borders are realized as static bodies. Neuralworld inherits functionalites, like drawing shapes, debug messages from 'Test' \\
+The world borders are realized as static bodies. Neuralworld inherits functionalites, like interaction by mouse and drawing shapes and status messages from 'Test'. \\
 
 \textbf{Evolutionary} \\
 Evolutionary is the evolution controller class. It contains methods to apply the evolutionary algorithms. Also it contains a population of agents, realized as a vector. At least one agent has to be in the population.
-In the vector 'best\_agents' the best agents found during the optimization process are saved. In the actual version just the best agent is saved. \\
+In the vector 'best\_agents' the best agents found during the optimization process are saved. In the actual simulator version just the best agent is saved. To use the crossover algorithm a second vector of agents was added. \\
 
 \textbf{Agent} \\
 The agent's class contains an id, two feed forward neural networks for velocity and rotation and member variables of the position and angle.
 The methods 'ProcessV' and 'ProcessA' return the computation results of the neural net. 'V' stands for velocity and 'A' for angle.
-'LearnV' and 'LearnA' are methods to train the corresponding network by the given dataset. \\
+'LearnV' and 'LearnA' are methods to train the corresponding network by the given dataset, if supervised learning was chosen. \\
 
 \textbf{Net} \\
-'Net' is the main class of the neural network framework\cite{Jona}. It has a vector of layers, holding input-, hidden- and the output layer.  The method 'FeedForward' let the network compute it's output. The results can be stored in a vector by calling the 'getResults'-method. \\
+'Net' is the main class of the neural network by framework\cite{Jona}. It is abstract and has a vector of layers, holding input-, hidden- and the output layer.  The method 'FeedForward' let the network compute it's output. The results is stored in a vector and can be accessed by calling the 'getResults'-method. \\
 
 \textbf{FeedForwardNet} \\
 'FeedForwardNet' is also part of the neural network framework. It is the network type used in this project work. It inherits from the abstract class 'Net'. An agent posses two feed forward networks. \\
 
+\newpage
 \section{The graphical user interface}
 
 The graphical user interface (GUI) was created with GLUI\footnote{see chapter \ref{sec:glui}}
@@ -2668,8 +2682,11 @@ The GUI is divided into three parts.
 At the bottom is a menue to create, save and pause the simulation.
 
 At the middle of the window the simulation is visualized.
+The red line shows the distance to the nearest object. The grey lines are the distances to other objects in the sensors range.
 
 And at the right side there are stats and two plots, representing the best- and the average fitness values of each generation.
+
+The time to measure the fitness of one generation can beAn evolution step 
 
 As follows a figure of the 'new evolution' menue:
 
@@ -2684,39 +2701,27 @@ As follows a figure of the 'new evolution' menue:
 
 The user can choose an evolutionary algortihm or the supervised learning method.\footnote{The crossover- and the supervised training algorithm were developed by \cite{Jona}
 }
-There are given standard parameters for each algorithm. The user can change them.
-
-\subsection{The interface}
-(to the concrete implementation in Box2D)
-
-
-Call the Step-multiple times instead of changing the timestepvalue
-
-Care that the fixture shapes center is at (0,0) (The body's center). Can be problem at rotation if shape is not centered.
-
-Coordinate system transformation for each agent.
-
-Sensor as semicircle (\cite{iforce})
-
-Detection of food: atan2-function
-
-
+He can also change parameters like the field size, the amount of agents and objects and algorithm parameters.
+There are given standard values and limits for each parameter.
 \chapter{Results of the simulation}
 
+The result shows that evolutionary algorithms doesn't solve the task sufficiently. Some agents just spinning around and the collection of objects is just a lucky shot. But while optimizing, the process evolved some unexpected agents. Instead of directly driving to an object, these agents drive straightly through the whole environment. They rotate just sometimes and then continue driving straight ahead. They seem to exploit the fact that objects are spawned randomly in an uniform distribution.
 
+Nonetheless a supervised training, means to teach the agent to directly drive from object to object shows much better results.\cite{Jona}
+
+As follows the average- and the best fitnesses of an evolution process:
 
 \begin{figure}[H]
 	\begin{subfigure}[]{\textwidth}
 		\centering
-		\includegraphics[width=0.7\textwidth,scale=1.0]{files/all_average.pdf}
+		\includegraphics[width=0.55\textwidth,scale=1.0]{files/all_average.pdf}
 		\label{fig:result-avg}
 		\caption{Average fitnesses of the evolution \cite{Jona}}
 	\end{subfigure}
-	\vspace{0.5cm}
-	
+		\vspace{0.5cm}
 	\begin{subfigure}[]{\textwidth}
 		\centering
-		\includegraphics[width=0.7\textwidth,scale=1.0]{files/all_best.pdf}
+		\includegraphics[width=0.55\textwidth,scale=1.0]{files/all_best.pdf}
 		\label{fig:result-best}
 		\caption{Best fitnesses of the evolution \cite{Jona}}
 	\end{subfigure}
@@ -2725,16 +2730,18 @@ Detection of food: atan2-function
 \chapter{Conclusion}
 
 The evolutionary algorithms showed that it's possible to find solutions someone would not expect in the first case. As example an agent who is driving 'blindly' across the environment and collecting a huge amount of objects.
-The evolutionary algorithms didn't find a satisfying solution. The main cause could be a too large amount of hidden neurons that cause overfitting.
+The evolutionary algorithms didn't find a satisfying solution. The main cause could be a too large amount of hidden neurons that causes overfitting.
 Further tests with less hidden neurons have to be made.
-The project work shows that too much parameters can make an evolutionary algorithm insufficient. Therefore a good prior knowledge can be helpful in solving optimization problems.
+The project work shows that too much parameters can make an evolutionary algorithm insufficient. Therefore a good prior knowledge can be helpful in modeling the optimization process.
 
-Neural networks are a probabilistic model to solve problems. To use these networks effectively some rules of thumb have to be considered. Too much hidden neurons can cause overfitting and a unnecessary effort.
+Neural networks are a probabilistic mehtod to solve problems. To use these networks effectively some rules of thumb have to be considered. Too much hidden neurons can cause overfitting and an unnecessary effort. Also the usage of multiple hidden layers doesn't improve the accuracy in the most cases.
 
- 
+A separation of the task into multiple subtasks and a distribution to multiple independent neural networks can improve the efficiency and give a clearer view of the task.
+To simplify the optimization process the transformation and preprocessing of the input data may be helpful to reduce the search space and let the network adjust it weights just for the essential task.
+
+There are many methods to use neural networks.
 A successful method can be a deep learning neural network.
-That means splitting a task into multiple sub tasks and have multiple hidden layers. Each layer solves a task and passes it to the next layer.
-
+In contrast to a classical feed forward network this means splitting a task into multiple sub tasks and having multiple hidden layers. Each layer solves a subtask and passes the result to the next layer, instead of letting all hidden layers solve the main task. This abstraction can improve the performance significantly.
 
 
 \KOMAoptions{listof=leveldown}
